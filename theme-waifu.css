@@ -1,0 +1,20 @@
+header h1 { color: #ff9ff3; text-shadow: 0 0 10px rgba(255, 159, 243, 0.4); }
+.panel { border-color: #ff9ff3; box-shadow: 0 0 15px rgba(255, 159, 243, 0.2); }
+.panel h2 { color: #ff9ff3; }
+
+#current-image-container { border-color: #ff9ff3; box-shadow: 0 0 15px rgba(255, 159, 243, 0.3); }
+
+.rank-btn { color: #ff9ff3; border-color: #ff9ff3; }
+.rank-btn:hover:not(:disabled) { background-color: rgba(255, 159, 243, 0.2); box-shadow: 0 0 10px rgba(255, 159, 243, 0.5); }
+
+.end-title { color: #ff9ff3; text-shadow: 0 0 20px rgba(255, 159, 243, 0.8); }
+
+.rate-btn { color: #ff9ff3; border-color: #ff9ff3; box-shadow: 0 0 5px rgba(255, 159, 243, 0.3); }
+.rate-btn:hover { background-color: rgba(255, 159, 243, 0.2); box-shadow: 0 0 15px rgba(255, 159, 243, 0.6); }
+.rate-btn.selected { background-color: #ff9ff3; box-shadow: 0 0 20px rgba(255, 159, 243, 0.8); }
+
+#restart-btn { background-color: #f368e0; }
+#restart-btn:hover { background-color: #ff9ff3; }
+
+.updates-content { border-color: #ff9ff3; box-shadow: 0 0 30px rgba(255, 159, 243, 0.3); }
+.version-badge { background-color: #f368e0; }

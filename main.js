@@ -1,30 +1,55 @@
-// main.js
-import { starWarsCharacters } from './data.js';
-import { initChangelog } from './changelog.js';
+import { starWarsCharacters } from './data-starwars.js';
+import { waifuCharacters } from './data-waifu.js';
+import { patchNotesStarWars } from './changelog-starwars.js';
+import { patchNotesWaifu } from './changelog-waifu.js';
+import { initChangelog, updateChangelogContent } from './changelog.js';
+
+let currentMode = 'starwars'; 
+let activeCharacterDatabase = starWarsCharacters; 
+let activeChangelogDatabase = patchNotesStarWars;
 
 let activePool = [];
 let currentIndex = 0;
 let placedCharacters = { 1: null, 2: null, 3: null, 4: null, 5: null };
 
-// DOM Elemente
 const rankButtons = document.querySelectorAll('.rank-btn');
 const imgContainer = document.getElementById('current-image-container');
 const progressText = document.getElementById('progress-text');
 const restartBtn = document.getElementById('restart-btn');
-
-// Phasen-Container
 const activeGameArea = document.getElementById('active-game-area');
 const endScreenArea = document.getElementById('end-screen-area');
-
-// Rating
 const rateButtons = document.querySelectorAll('.rate-btn');
 const ratingFeedback = document.getElementById('rating-feedback');
+const mainTitle = document.getElementById('main-title'); 
+const themeStylesheet = document.getElementById('theme-stylesheet'); 
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown') {
+        e.preventDefault(); 
+        
+        if (currentMode === 'starwars') {
+            currentMode = 'waifu';
+            activeCharacterDatabase = waifuCharacters;
+            activeChangelogDatabase = patchNotesWaifu;
+            mainTitle.textContent = "WAIFU RANKING";
+            themeStylesheet.href = "theme-waifu.css"; 
+        } else {
+            currentMode = 'starwars';
+            activeCharacterDatabase = starWarsCharacters;
+            activeChangelogDatabase = patchNotesStarWars;
+            mainTitle.textContent = "STAR WARS RANKING";
+            themeStylesheet.href = "theme-starwars.css"; 
+        }
+        
+        updateChangelogContent(activeChangelogDatabase);
+        initGame(); 
+    }
+});
 
 function initGame() {
     currentIndex = 0;
     placedCharacters = { 1: null, 2: null, 3: null, 4: null, 5: null };
     
-    // Areas umschalten
     endScreenArea.classList.add('hidden');
     activeGameArea.classList.remove('hidden');
     ratingFeedback.classList.add('hidden');
@@ -39,7 +64,7 @@ function initGame() {
         labelSpan.classList.remove('revealed-name');
     }
     
-    const shuffled = [...starWarsCharacters].sort(() => 0.5 - Math.random());
+    const shuffled = [...activeCharacterDatabase].sort(() => 0.5 - Math.random());
     activePool = shuffled.slice(0, 5);
     
     showNextCharacter();
@@ -49,9 +74,8 @@ function showNextCharacter() {
     if (currentIndex < 5) {
         progressText.textContent = `CHARAKTER ${currentIndex + 1} / 5`;
         const currentChar = activePool[currentIndex];
-        imgContainer.innerHTML = `<img src="${currentChar.img}" alt="Star Wars Charakter">`;
+        imgContainer.innerHTML = `<img src="${currentChar.img}" alt="Charakter Bild">`;
     } else {
-        // Spielende: Verstecke das aktive Spiel, zeige den End-Screen
         activeGameArea.classList.add('hidden');
         revealNames();
         endScreenArea.classList.remove('hidden');
@@ -71,7 +95,7 @@ rankButtons.forEach(btn => {
         const rank = btn.dataset.rank;
         const currentChar = activePool[currentIndex];
         
-        document.querySelector(`#slot-${rank} .card-content`).innerHTML = `<img src="${currentChar.img}" alt="Ranked Charakter">`;
+        document.querySelector(`#slot-${rank} .card-content`).innerHTML = `<img src="${currentChar.img}" alt="Ranked">`;
         placedCharacters[rank] = currentChar;
         
         btn.disabled = true;
@@ -92,4 +116,5 @@ rateButtons.forEach(btn => {
 restartBtn.addEventListener('click', initGame);
 
 initChangelog();
+updateChangelogContent(activeChangelogDatabase);
 initGame();
