@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charakter Ranking Spiel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Ranke deine Charaktere!</h1>
+    <p>Ziehe die 5 zufälligen Charaktere in dein Top-5-Ranking.</p>
+
+    <div class="game-container">
+        <!-- Hier landen die zufällig ausgewählten Charaktere -->
+        <div class="zone" id="character-pool">
+            <h2>Dein Team</h2>
+            <!-- Wird von JavaScript befüllt -->
+        </div>
+
+        <!-- Hier ist das Ranking-Board -->
+        <div class="zone" id="ranking-board">
+            <h2>Top 5</h2>
+            <div class="rank-slot" data-rank="1"><span class="rank-number">1.</span></div>
+            <div class="rank-slot" data-rank="2"><span class="rank-number">2.</span></div>
+            <div class="rank-slot" data-rank="3"><span class="rank-number">3.</span></div>
+            <div class="rank-slot" data-rank="4"><span class="rank-number">4.</span></div>
+            <div class="rank-slot" data-rank="5"><span class="rank-number">5.</span></div>
+        </div>
+    </div>
+
+    <button id="submit-btn">Ranking bestätigen</button>
+
+    <!-- Wichtig: type="module" erlaubt es uns, andere Dateien zu importieren -->
+    <script type="module" src="main.js"></script>
+</body>
+</html>
