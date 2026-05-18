@@ -1,79 +1,87 @@
 // main.js
-import { characterPool } from './data.js';
+import { starWarsCharacters } from './data.js';
 
-// 1. 5 zufällige Charaktere auswählen
-function getRandomCharacters(pool, count) {
-    // Array mischen und die ersten 'count' Elemente nehmen
-    const shuffled = [...pool].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count);
+let currentRank = 1;
+let activePool = [];
+
+// DOM Elemente
+const poolContainer = document.getElementById('character-pool');
+const promptText = document.getElementById('current-prompt');
+const restartBtn = document.getElementById('restart-btn');
+
+function initGame() {
+    currentRank = 1;
+    restartBtn.classList.add('hidden');
+    
+    // 5 zufällige Charaktere ziehen
+    const shuffled = [...starWarsCharacters].sort(() => 0.5 - Math.random());
+    activePool = shuffled.slice(0, 5);
+    
+    // UI zurücksetzen
+    resetRankingBoard();
+    updatePrompt();
+    renderPool();
 }
 
-const selectedCharacters = getRandomCharacters(characterPool, 5);
-const poolContainer = document.getElementById('character-pool');
-const slots = document.querySelectorAll('.rank-slot');
-
-// 2. Charaktere auf dem Bildschirm rendern
-selectedCharacters.forEach((charName, index) => {
-    const charElement = document.createElement('div');
-    charElement.classList.add('character');
-    charElement.draggable = true; // Macht das Element ziehbar
-    charElement.id = `char-${index}`;
-    charElement.textContent = charName;
-
-    // Drag Start: Wir merken uns, welches Element gezogen wird
-    charElement.addEventListener('dragstart', (e) => {
-        e.dataTransfer.setData('text/plain', e.target.id);
-        setTimeout(() => e.target.classList.add('dragging'), 0);
+function renderPool() {
+    poolContainer.innerHTML = ''; // Pool leeren
+    
+    activePool.forEach(character => {
+        const card = document.createElement('div');
+        card.className = 'character-card';
+        card.innerHTML = `
+            <img src="${character.img}" alt="${character.name}">
+            <p>${character.name}</p>
+        `;
+        
+        // Klick-Event: Charakter auswählen
+        card.addEventListener('click', () => selectCharacter(character));
+        poolContainer.appendChild(card);
     });
+}
 
-    // Drag End: Visuelles Feedback zurücksetzen
-    charElement.addEventListener('dragend', (e) => {
-        e.target.classList.remove('dragging');
-    });
+function selectCharacter(character) {
+    if (currentRank > 5) return;
 
-    poolContainer.appendChild(charElement);
-});
+    // 1. Aus dem Pool entfernen und neu rendern
+    activePool = activePool.filter(c => c.name !== character.name);
+    renderPool();
 
-// 3. Drop-Logik für die Ranking-Slots
-slots.forEach(slot => {
-    slot.addEventListener('dragover', (e) => {
-        e.preventDefault(); // Zwingend notwendig, um 'drop' zu erlauben
-    });
+    // 2. Unten ins Ranking einfügen
+    const slot = document.getElementById(`rank-${currentRank}`);
+    slot.innerHTML = `
+        <span class="rank-number">${currentRank}.</span>
+        <div class="ranked-character">
+            <img src="${character.img}" alt="${character.name}">
+            <span>${character.name}</span>
+        </div>
+    `;
+    slot.classList.add('filled');
 
-    slot.addEventListener('drop', (e) => {
-        e.preventDefault();
-        const draggedId = e.dataTransfer.getData('text/plain');
-        const draggedElement = document.getElementById(draggedId);
+    // 3. Nächsten Platz vorbereiten
+    currentRank++;
+    updatePrompt();
+}
 
-        // Prüfen, ob der Slot schon belegt ist (enthält <span> und evtl. schon einen Charakter)
-        if (slot.children.length < 2) {
-            slot.appendChild(draggedElement);
-        }
-    });
-});
-
-// 4. Drop-Logik für den Pool (falls man es sich anders überlegt)
-poolContainer.addEventListener('dragover', (e) => e.preventDefault());
-poolContainer.addEventListener('drop', (e) => {
-    e.preventDefault();
-    const draggedId = e.dataTransfer.getData('text/plain');
-    const draggedElement = document.getElementById(draggedId);
-    poolContainer.appendChild(draggedElement);
-});
-
-// 5. Überprüfen Button
-document.getElementById('submit-btn').addEventListener('click', () => {
-    const results = [];
-    slots.forEach(slot => {
-        // Wenn mehr als 1 Kind drin ist (<span> + Charakter)
-        if (slot.children.length > 1) {
-            results.push(slot.lastChild.textContent);
-        }
-    });
-
-    if (results.length === 5) {
-        alert(`Dein finales Ranking:\n1. ${results[0]}\n2. ${results[1]}\n3. ${results[2]}\n4. ${results[3]}\n5. ${results[4]}`);
+function updatePrompt() {
+    if (currentRank <= 5) {
+        promptText.textContent = `Wähle deinen Platz ${currentRank}`;
     } else {
-        alert("Bitte ranke alle 5 Charaktere, bevor du bestätigst!");
+        promptText.textContent = `Die Macht ist stark in diesem Ranking!`;
+        restartBtn.classList.remove('hidden');
     }
-});
+}
+
+function resetRankingBoard() {
+    for (let i = 1; i <= 5; i++) {
+        const slot = document.getElementById(`rank-${i}`);
+        slot.innerHTML = `<span class="rank-number">${i}.</span> <span class="placeholder-text">Wartet auf Auswahl...</span>`;
+        slot.classList.remove('filled');
+    }
+}
+
+// Event Listener für den Neustart-Button
+restartBtn.addEventListener('click', initGame);
+
+// Spiel beim Laden der Seite starten
+initGame();

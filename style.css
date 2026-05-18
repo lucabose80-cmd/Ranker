@@ -1,79 +1,140 @@
 /* style.css */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #1e1e2f;
+    font-family: 'Arial', sans-serif;
+    background-color: #000000;
     color: #ffffff;
     text-align: center;
     margin: 0;
     padding: 20px;
 }
 
-.game-container {
+.app-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+h1 {
+    color: #ffe81f; /* Star Wars Gelb */
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+h2 {
+    color: #b2bec3;
+}
+
+/* Der obere Auswahl-Pool */
+.horizontal-pool {
     display: flex;
     justify-content: center;
-    gap: 40px;
-    margin-top: 30px;
+    gap: 15px;
+    min-height: 180px; /* Hält den Platz frei, auch wenn leer */
+    margin-bottom: 40px;
 }
 
-.zone {
-    background-color: #2a2a40;
-    padding: 20px;
-    border-radius: 10px;
-    width: 250px;
-    min-height: 350px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+.character-card {
+    background-color: #111;
+    border: 2px solid #333;
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+    width: 120px;
 }
 
-.character {
-    background-color: #ff4757;
-    color: white;
-    padding: 12px;
-    margin: 10px 0;
+.character-card:hover {
+    transform: translateY(-5px);
+    border-color: #ffe81f;
+}
+
+.character-card img {
+    width: 100px;
+    height: 100px;
     border-radius: 5px;
-    cursor: grab;
+    object-fit: cover;
+}
+
+.character-card p {
+    font-size: 0.9rem;
     font-weight: bold;
-    transition: transform 0.2s;
+    margin: 10px 0 0 0;
 }
 
-.character:active {
-    cursor: grabbing;
-}
-
-.character.dragging {
-    opacity: 0.5;
-    transform: scale(0.95);
+/* Das Ranking-Board unten */
+.vertical-board {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
 }
 
 .rank-slot {
-    background-color: #1a1a2e;
-    border: 2px dashed #5352ed;
+    background-color: #111;
+    border: 1px dashed #555;
     border-radius: 5px;
-    margin: 10px 0;
-    min-height: 45px;
+    width: 100%;
+    max-width: 400px;
+    min-height: 60px;
     display: flex;
     align-items: center;
-    padding: 0 10px;
-}
-
-.rank-number {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #5352ed;
-    margin-right: 15px;
-}
-
-#submit-btn {
-    margin-top: 40px;
-    background-color: #2ed573;
-    color: #fff;
-    border: none;
-    padding: 15px 30px;
-    font-size: 1.2rem;
-    border-radius: 8px;
-    cursor: pointer;
+    padding: 0 15px;
     transition: background-color 0.3s;
 }
 
-#submit-btn:hover {
-    background-color: #25a85b;
+.rank-slot.filled {
+    border: 1px solid #ffe81f;
+    background-color: #1a1a1a;
+}
+
+.rank-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffe81f;
+    margin-right: 20px;
+    min-width: 30px;
+}
+
+.placeholder-text {
+    color: #666;
+    font-style: italic;
+}
+
+.ranked-character {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.ranked-character img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.ranked-character span {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Neustart Button */
+button {
+    margin-top: 30px;
+    background-color: #ffe81f;
+    color: #000;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+button:hover {
+    background-color: #d4c111;
+}
+
+.hidden {
+    display: none;
 }
