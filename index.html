@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <button id="changelog-open-btn" class="text-btn">CHANGELOG</button>
+
     <div class="app-container">
         <header>
             <h1>STAR WARS RANKING</h1>
@@ -19,62 +21,37 @@
                 <div class="rank-column" id="slot-1">
                     <div class="card-container">
                         <span class="rank-number">1</span>
-                        <div class="card-content">
-                            <span class="placeholder-icon">👤</span>
-                        </div>
+                        <div class="card-content"><span class="placeholder-icon">👤</span></div>
                     </div>
-                    <div class="card-label">
-                        <span>???</span>
-                        <span>???</span>
-                    </div>
+                    <div class="card-label"><span>???</span></div>
                 </div>
                 <div class="rank-column" id="slot-2">
                     <div class="card-container">
                         <span class="rank-number">2</span>
-                        <div class="card-content">
-                            <span class="placeholder-icon">👤</span>
-                        </div>
+                        <div class="card-content"><span class="placeholder-icon">👤</span></div>
                     </div>
-                    <div class="card-label">
-                        <span>???</span>
-                        <span>???</span>
-                    </div>
+                    <div class="card-label"><span>???</span></div>
                 </div>
                 <div class="rank-column" id="slot-3">
                     <div class="card-container">
                         <span class="rank-number">3</span>
-                        <div class="card-content">
-                            <span class="placeholder-icon">👤</span>
-                        </div>
+                        <div class="card-content"><span class="placeholder-icon">👤</span></div>
                     </div>
-                    <div class="card-label">
-                        <span>???</span>
-                        <span>???</span>
-                    </div>
+                    <div class="card-label"><span>???</span></div>
                 </div>
                 <div class="rank-column" id="slot-4">
                     <div class="card-container">
                         <span class="rank-number">4</span>
-                        <div class="card-content">
-                            <span class="placeholder-icon">👤</span>
-                        </div>
+                        <div class="card-content"><span class="placeholder-icon">👤</span></div>
                     </div>
-                    <div class="card-label">
-                        <span>???</span>
-                        <span>???</span>
-                    </div>
+                    <div class="card-label"><span>???</span></div>
                 </div>
                 <div class="rank-column" id="slot-5">
                     <div class="card-container">
                         <span class="rank-number">5</span>
-                        <div class="card-content">
-                            <span class="placeholder-icon">👤</span>
-                        </div>
+                        <div class="card-content"><span class="placeholder-icon">👤</span></div>
                     </div>
-                    <div class="card-label">
-                        <span>???</span>
-                        <span>???</span>
-                    </div>
+                    <div class="card-label"><span>???</span></div>
                 </div>
             </div>
         </div>
@@ -88,15 +65,33 @@
             </div>
             
             <h2 class="mystery-name">???</h2>
-            <p class="mystery-sub">???</p>
             
-            <p class="prompt-text">AUF WELCHEN PLATZ?</p>
-            <div class="action-buttons">
-                <button class="rank-btn" data-rank="1">1</button>
-                <button class="rank-btn" data-rank="2">2</button>
-                <button class="rank-btn" data-rank="3">3</button>
-                <button class="rank-btn" data-rank="4">4</button>
-                <button class="rank-btn" data-rank="5">5</button>
+            <div id="action-area">
+                <p class="prompt-text">AUF WELCHEN PLATZ?</p>
+                <div class="action-buttons">
+                    <button class="rank-btn" data-rank="1">1</button>
+                    <button class="rank-btn" data-rank="2">2</button>
+                    <button class="rank-btn" data-rank="3">3</button>
+                    <button class="rank-btn" data-rank="4">4</button>
+                    <button class="rank-btn" data-rank="5">5</button>
+                </div>
+            </div>
+
+            <div id="rating-area" class="hidden">
+                <p class="prompt-text text-highlight">Bewerte deine Liste (1-10):</p>
+                <div class="rating-buttons">
+                    <button class="rate-btn">1</button>
+                    <button class="rate-btn">2</button>
+                    <button class="rate-btn">3</button>
+                    <button class="rate-btn">4</button>
+                    <button class="rate-btn">5</button>
+                    <button class="rate-btn">6</button>
+                    <button class="rate-btn">7</button>
+                    <button class="rate-btn">8</button>
+                    <button class="rate-btn">9</button>
+                    <button class="rate-btn">10</button>
+                </div>
+                <p id="rating-feedback" class="hidden">Danke für deine Bewertung!</p>
             </div>
             
             <button id="restart-btn" class="hidden">NEUES SPIEL</button>
