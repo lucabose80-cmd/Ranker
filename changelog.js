@@ -1,56 +1,67 @@
 // changelog.js
 
-// Hier pflegst du in Zukunft einfach deine Updates ein
 const patchNotes = [
     {
-        version: "v1.2 - The Reveal Update",
+        version: "v2.0",
+        title: "Server Heartbeat Update",
+        changes: [
+            "Echtes Online-System: Spieler verschwinden nach 45s Inaktivität.",
+            "Live-Games sind nun synchronisiert und tatsächlich zuschau-bar.",
+            "Ghost-Games Bereinigung im Admin-Panel eingebaut."
+        ]
+    },
+    {
+        version: "v1.9",
+        title: "Admin Erweiterung",
+        changes: [
+            "Admin kann nun User und sich selbst gezielt zurücksetzen."
+        ]
+    },
+    {
+        version: "v1.8",
+        title: "Developer Modus",
+        changes: [
+            "Neuer Entwickler-Modus im Admin-Bereich.",
+            "Manuelle Auswahl von 5 Charakteren zum Testen von Themes.",
+            "Fortschritt ist im Dev-Modus deaktiviert."
+        ]
+    },
+    {
+        version: "v1.2",
+        title: "The Reveal Update",
         changes: [
             "Feature: Charakternamen werden am Ende des Spiels enthüllt.",
-            "Feature: Spieler können ihre finale Liste mit 1 bis 10 bewerten.",
-            "Code: Changelog komplett modularisiert und ausgelagert."
-        ]
-    },
-    {
-        version: "v1.1 - Sci-Fi UI Update",
-        changes: [
-            "Design: Komplettes Rework im Neon-Sci-Fi-Look.",
-            "Mechanik: Steuerung auf Buttons im unteren Bereich umgestellt.",
-            "Mechanik: 'Blind Ranking' eingeführt (Namen versteckt)."
-        ]
-    },
-    {
-        version: "v1.0 - Initial Release",
-        changes: [
-            "Grundgerüst des Spiels mit Drag-and-Drop.",
-            "5 zufällige Charaktere aus dem Pool wählbar."
+            "Feature: Großes neues Rating-UI am Ende des Spiels (1-10)."
         ]
     }
 ];
 
-// Diese Funktion exportieren wir, um sie in der main.js zu starten
 export function initChangelog() {
-    // 1. Das HTML für das Modal dynamisch generieren
     const modalHTML = `
         <div id="changelog-modal" class="modal hidden">
-            <div class="modal-content">
+            <div class="modal-content updates-content">
                 <span id="close-modal" class="close-btn">&times;</span>
-                <h2>PATCH NOTES</h2>
-                ${patchNotes.map(patch => `
-                    <div class="patch-entry">
-                        <h3>${patch.version}</h3>
-                        <ul>
-                            ${patch.changes.map(change => `<li>${change}</li>`).join('')}
-                        </ul>
-                    </div>
-                `).join('')}
+                <h2 class="updates-main-title">UPDATES & CHANGELOG</h2>
+                <hr class="updates-divider">
+                
+                <div class="updates-list">
+                    ${patchNotes.map(patch => `
+                        <div class="update-card">
+                            <h3 class="update-card-title">
+                                <span class="version-badge">${patch.version}</span> ${patch.title}
+                            </h3>
+                            <ul>
+                                ${patch.changes.map(change => `<li>${change}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `).join('')}
+                </div>
             </div>
         </div>
     `;
 
-    // 2. Das generierte HTML an das Ende des <body> anfügen
     document.body.insertAdjacentHTML('beforeend', modalHTML);
 
-    // 3. Event Listener für das Modal aktivieren
     const changelogBtn = document.getElementById('changelog-open-btn');
     const changelogModal = document.getElementById('changelog-modal');
     const closeModalBtn = document.getElementById('close-modal');
@@ -58,7 +69,6 @@ export function initChangelog() {
     changelogBtn.addEventListener('click', () => changelogModal.classList.remove('hidden'));
     closeModalBtn.addEventListener('click', () => changelogModal.classList.add('hidden'));
 
-    // Schließen, wenn man außerhalb der Box klickt
     window.addEventListener('click', (e) => {
         if (e.target === changelogModal) changelogModal.classList.add('hidden');
     });
