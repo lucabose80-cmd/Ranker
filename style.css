@@ -9,7 +9,7 @@ body {
 }
 
 .app-container {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
 }
 
@@ -17,118 +17,120 @@ h1 {
     color: #ffe81f; /* Star Wars Gelb */
     text-transform: uppercase;
     letter-spacing: 2px;
+    margin-bottom: 40px;
 }
 
 h2 {
     color: #b2bec3;
+    margin-bottom: 20px;
 }
 
-/* Der obere Auswahl-Pool */
-.horizontal-pool {
+/* OBERER BEREICH: Ranking horizontal */
+.horizontal-board {
     display: flex;
     justify-content: center;
     gap: 15px;
-    min-height: 180px; /* Hält den Platz frei, auch wenn leer */
-    margin-bottom: 40px;
-}
-
-.character-card {
-    background-color: #111;
-    border: 2px solid #333;
-    border-radius: 8px;
-    padding: 10px;
-    cursor: pointer;
-    transition: transform 0.2s, border-color 0.2s;
-    width: 120px;
-}
-
-.character-card:hover {
-    transform: translateY(-5px);
-    border-color: #ffe81f;
-}
-
-.character-card img {
-    width: 100px;
-    height: 100px;
-    border-radius: 5px;
-    object-fit: cover;
-}
-
-.character-card p {
-    font-size: 0.9rem;
-    font-weight: bold;
-    margin: 10px 0 0 0;
-}
-
-/* Das Ranking-Board unten */
-.vertical-board {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
+    margin-bottom: 50px;
+    flex-wrap: wrap; /* Falls der Bildschirm sehr schmal wird */
 }
 
 .rank-slot {
     background-color: #111;
-    border: 1px dashed #555;
-    border-radius: 5px;
-    width: 100%;
-    max-width: 400px;
-    min-height: 60px;
+    border: 2px dashed #555;
+    border-radius: 8px;
+    width: 120px;
+    height: 120px;
     display: flex;
+    justify-content: center;
     align-items: center;
-    padding: 0 15px;
-    transition: background-color 0.3s;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+/* Hover-Effekt nur für freie Plätze */
+.rank-slot:not(.filled):hover {
+    border-color: #ffe81f;
+    background-color: #222;
+    transform: translateY(-5px);
 }
 
 .rank-slot.filled {
-    border: 1px solid #ffe81f;
-    background-color: #1a1a1a;
+    border: 2px solid #ffe81f;
+    background-color: #000;
+    cursor: default; /* Nicht mehr klickbar */
 }
 
 .rank-number {
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: bold;
-    color: #ffe81f;
-    margin-right: 20px;
-    min-width: 30px;
+    color: #555;
 }
 
-.placeholder-text {
-    color: #666;
-    font-style: italic;
-}
-
-.ranked-character {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.ranked-character img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.ranked-character span {
+/* Wenn der Slot befüllt ist, rückt die Zahl nach oben links */
+.rank-number.top-left {
+    position: absolute;
+    top: 5px;
+    left: 8px;
     font-size: 1.2rem;
-    font-weight: bold;
+    color: #ffe81f;
+    z-index: 2;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+}
+
+.ranked-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+    opacity: 0.8;
+}
+
+/* UNTERER BEREICH: Aktueller Charakter */
+.selection-area {
+    background-color: #0a0a0a;
+    padding: 30px;
+    border-radius: 10px;
+    border: 1px solid #333;
+    display: inline-block;
+    min-width: 300px;
+}
+
+#current-character-container {
+    height: 200px; /* Feste Höhe, damit nichts springt */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.current-img {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 3px solid #fff;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    animation: popIn 0.3s ease-out;
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
 }
 
 /* Neustart Button */
 button {
-    margin-top: 30px;
+    margin-top: 40px;
     background-color: #ffe81f;
     color: #000;
     border: none;
-    padding: 12px 25px;
+    padding: 15px 30px;
     font-size: 1.1rem;
     font-weight: bold;
     border-radius: 5px;
     cursor: pointer;
     text-transform: uppercase;
+    transition: background-color 0.2s;
 }
 
 button:hover {

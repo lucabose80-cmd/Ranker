@@ -3,30 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Star Wars Ranking</title>
+    <title>Star Wars Blind Ranking</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="app-container">
-        <h1>A Galatic Ranking</h1>
+        <h1>Galactic Blind Ranking</h1>
         
-        <!-- Bereich für die aktive Auswahl -->
-        <div class="selection-area">
-            <h2 id="current-prompt">Wähle deinen Platz 1</h2>
-            <div id="character-pool" class="horizontal-pool">
-                <!-- Wird von JavaScript befüllt -->
+        <!-- Bereich für das fertige Ranking (Oben Horizontal) -->
+        <div class="ranking-area">
+            <div id="ranking-board" class="horizontal-board">
+                <!-- data-rank ist wichtig für unser JavaScript -->
+                <div class="rank-slot" data-rank="1"><span class="rank-number">1</span></div>
+                <div class="rank-slot" data-rank="2"><span class="rank-number">2</span></div>
+                <div class="rank-slot" data-rank="3"><span class="rank-number">3</span></div>
+                <div class="rank-slot" data-rank="4"><span class="rank-number">4</span></div>
+                <div class="rank-slot" data-rank="5"><span class="rank-number">5</span></div>
             </div>
         </div>
 
-        <!-- Bereich für das fertige Ranking -->
-        <div class="ranking-area">
-            <h2>Dein Top 5 Ranking</h2>
-            <div id="ranking-board" class="vertical-board">
-                <div class="rank-slot" id="rank-1"><span class="rank-number">1.</span> <span class="placeholder-text">Wartet auf Auswahl...</span></div>
-                <div class="rank-slot" id="rank-2"><span class="rank-number">2.</span> <span class="placeholder-text">Wartet auf Auswahl...</span></div>
-                <div class="rank-slot" id="rank-3"><span class="rank-number">3.</span> <span class="placeholder-text">Wartet auf Auswahl...</span></div>
-                <div class="rank-slot" id="rank-4"><span class="rank-number">4.</span> <span class="placeholder-text">Wartet auf Auswahl...</span></div>
-                <div class="rank-slot" id="rank-5"><span class="rank-number">5.</span> <span class="placeholder-text">Wartet auf Auswahl...</span></div>
+        <!-- Bereich für die aktive Auswahl (Darunter, Einzeln) -->
+        <div class="selection-area">
+            <h2 id="current-prompt">Klicke oben auf einen freien Platz!</h2>
+            <div id="current-character-container">
+                <!-- Wird vom JavaScript mit nur einem Bild befüllt -->
             </div>
         </div>
         

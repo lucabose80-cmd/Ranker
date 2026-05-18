@@ -1,84 +1,75 @@
 // main.js
 import { starWarsCharacters } from './data.js';
 
-let currentRank = 1;
 let activePool = [];
+let currentIndex = 0; // Welcher der 5 Charaktere ist gerade dran?
+let filledRanks = { 1: false, 2: false, 3: false, 4: false, 5: false };
 
 // DOM Elemente
-const poolContainer = document.getElementById('character-pool');
+const slots = document.querySelectorAll('.rank-slot');
+const currentContainer = document.getElementById('current-character-container');
 const promptText = document.getElementById('current-prompt');
 const restartBtn = document.getElementById('restart-btn');
 
 function initGame() {
-    currentRank = 1;
+    // Spielstatus zurücksetzen
+    currentIndex = 0;
+    filledRanks = { 1: false, 2: false, 3: false, 4: false, 5: false };
     restartBtn.classList.add('hidden');
     
     // 5 zufällige Charaktere ziehen
     const shuffled = [...starWarsCharacters].sort(() => 0.5 - Math.random());
     activePool = shuffled.slice(0, 5);
     
-    // UI zurücksetzen
     resetRankingBoard();
-    updatePrompt();
-    renderPool();
+    showNextCharacter();
 }
 
-function renderPool() {
-    poolContainer.innerHTML = ''; // Pool leeren
-    
-    activePool.forEach(character => {
-        const card = document.createElement('div');
-        card.className = 'character-card';
-        card.innerHTML = `
-            <img src="${character.img}" alt="${character.name}">
-            <p>${character.name}</p>
-        `;
-        
-        // Klick-Event: Charakter auswählen
-        card.addEventListener('click', () => selectCharacter(character));
-        poolContainer.appendChild(card);
+function resetRankingBoard() {
+    slots.forEach(slot => {
+        const rank = slot.dataset.rank;
+        slot.innerHTML = `<span class="rank-number">${rank}</span>`;
+        slot.classList.remove('filled');
     });
 }
 
-function selectCharacter(character) {
-    if (currentRank > 5) return;
-
-    // 1. Aus dem Pool entfernen und neu rendern
-    activePool = activePool.filter(c => c.name !== character.name);
-    renderPool();
-
-    // 2. Unten ins Ranking einfügen
-    const slot = document.getElementById(`rank-${currentRank}`);
-    slot.innerHTML = `
-        <span class="rank-number">${currentRank}.</span>
-        <div class="ranked-character">
-            <img src="${character.img}" alt="${character.name}">
-            <span>${character.name}</span>
-        </div>
-    `;
-    slot.classList.add('filled');
-
-    // 3. Nächsten Platz vorbereiten
-    currentRank++;
-    updatePrompt();
-}
-
-function updatePrompt() {
-    if (currentRank <= 5) {
-        promptText.textContent = `Wähle deinen Platz ${currentRank}`;
+function showNextCharacter() {
+    if (currentIndex < 5) {
+        // Zeige nur das Bild des aktuellen Charakters (ohne Namen)
+        const currentChar = activePool[currentIndex];
+        currentContainer.innerHTML = `<img src="${currentChar.img}" alt="Unbekannter Charakter" class="current-img">`;
+        promptText.textContent = `Auf welchen Platz setzt du diesen Charakter?`;
     } else {
-        promptText.textContent = `Die Macht ist stark in diesem Ranking!`;
+        // Spiel vorbei
+        currentContainer.innerHTML = '';
+        promptText.textContent = `Ranking komplett! Die Macht ist stark in dir.`;
         restartBtn.classList.remove('hidden');
     }
 }
 
-function resetRankingBoard() {
-    for (let i = 1; i <= 5; i++) {
-        const slot = document.getElementById(`rank-${i}`);
-        slot.innerHTML = `<span class="rank-number">${i}.</span> <span class="placeholder-text">Wartet auf Auswahl...</span>`;
-        slot.classList.remove('filled');
-    }
-}
+// Event Listener für die Platzierungen (Ranking-Slots)
+slots.forEach(slot => {
+    slot.addEventListener('click', () => {
+        const rank = slot.dataset.rank;
+        
+        // Prüfen: Ist das Spiel noch nicht vorbei UND ist der Platz noch frei?
+        if (currentIndex < 5 && !filledRanks[rank]) {
+            const currentChar = activePool[currentIndex];
+            
+            // Slot befüllen (Hier kannst du entscheiden, ob am Ende der Name stehen soll. Ich habe ihn hier weggelassen, nur das Bild wird gezeigt).
+            slot.innerHTML = `
+                <span class="rank-number top-left">${rank}</span>
+                <img src="${currentChar.img}" alt="Star Wars Charakter" class="ranked-img">
+            `;
+            slot.classList.add('filled');
+            filledRanks[rank] = true; // Platz als belegt markieren
+            
+            // Nächsten Charakter vorbereiten
+            currentIndex++;
+            showNextCharacter();
+        }
+    });
+});
 
 // Event Listener für den Neustart-Button
 restartBtn.addEventListener('click', initGame);
