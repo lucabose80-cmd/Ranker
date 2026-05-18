@@ -2,36 +2,47 @@
 
 const patchNotes = [
     {
-        version: "v2.0",
-        title: "Server Heartbeat Update",
+        version: "v1.4",
+        title: "End-Screen & UI Overhaul",
         changes: [
-            "Echtes Online-System: Spieler verschwinden nach 45s Inaktivität.",
-            "Live-Games sind nun synchronisiert und tatsächlich zuschau-bar.",
-            "Ghost-Games Bereinigung im Admin-Panel eingebaut."
+            "Großes visuelles Upgrade für den End-Screen (Modernes Neon-Glow Design).",
+            "Das 1-10 Rating-System nutzt nun große, interaktive Buttons.",
+            "Updates-Menü überarbeitet: Neues Pop-up mit Versions-Badges und schicken Dark-Mode-Karten."
         ]
     },
     {
-        version: "v1.9",
-        title: "Admin Erweiterung",
+        version: "v1.3",
+        title: "The Reveal & Modularisierung",
         changes: [
-            "Admin kann nun User und sich selbst gezielt zurücksetzen."
-        ]
-    },
-    {
-        version: "v1.8",
-        title: "Developer Modus",
-        changes: [
-            "Neuer Entwickler-Modus im Admin-Bereich.",
-            "Manuelle Auswahl von 5 Charakteren zum Testen von Themes.",
-            "Fortschritt ist im Dev-Modus deaktiviert."
+            "Überraschungseffekt: Charakternamen (???) werden mit einer Animation erst am Ende des Spiels enthüllt.",
+            "Spieler können ihre fertige Ranking-Liste am Ende bewerten.",
+            "Code-Architektur verbessert: Changelog und Patch Notes wurden in eine eigene Datei ausgelagert."
         ]
     },
     {
         version: "v1.2",
-        title: "The Reveal Update",
+        title: "Sci-Fi Blind Ranking",
         changes: [
-            "Feature: Charakternamen werden am Ende des Spiels enthüllt.",
-            "Feature: Großes neues Rating-UI am Ende des Spiels (1-10)."
+            "Neues Sci-Fi Panel-Design in dunklen Blautönen.",
+            "Echtes 'Blind Ranking': Es wird immer nur ein Charakter gleichzeitig und ohne Namen gezeigt.",
+            "Spielsteuerung komplett überarbeitet: Die Auswahl erfolgt nun über dedizierte 1-5 Buttons im unteren Bereich."
+        ]
+    },
+    {
+        version: "v1.1",
+        title: "Star Wars Theme",
+        changes: [
+            "Theme-Wechsel: Das Spiel nutzt nun das Star Wars Universum.",
+            "Profilbilder für alle Charaktere hinzugefügt.",
+            "Drag-and-Drop Mechanik entfernt und durch ein intuitiveres, klickbasiertes System ersetzt."
+        ]
+    },
+    {
+        version: "v1.0",
+        title: "Initial Release",
+        changes: [
+            "Grundgerüst des Ranking-Spiels veröffentlicht.",
+            "Drag-and-Drop Mechanik mit 5 zufälligen Fantasy-Charakteren aus einem größeren Pool."
         ]
     }
 ];
