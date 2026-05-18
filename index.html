@@ -3,34 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Star Wars Blind Ranking</title>
+    <title>Star Wars Ranking</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="app-container">
-        <h1>Galactic Blind Ranking</h1>
-        
-        <!-- Bereich für das fertige Ranking (Oben Horizontal) -->
-        <div class="ranking-area">
+        <header>
+            <h1>STAR WARS RANKING</h1>
+            <p>Ordne 5 Charaktere blind ein. Wo landen sie?</p>
+        </header>
+
+        <div class="panel ranking-panel">
+            <h2>DEIN RANKING</h2>
             <div id="ranking-board" class="horizontal-board">
-                <!-- data-rank ist wichtig für unser JavaScript -->
-                <div class="rank-slot" data-rank="1"><span class="rank-number">1</span></div>
-                <div class="rank-slot" data-rank="2"><span class="rank-number">2</span></div>
-                <div class="rank-slot" data-rank="3"><span class="rank-number">3</span></div>
-                <div class="rank-slot" data-rank="4"><span class="rank-number">4</span></div>
-                <div class="rank-slot" data-rank="5"><span class="rank-number">5</span></div>
+                <div class="rank-column" id="slot-1">
+                    <div class="card-container">
+                        <span class="rank-number">1</span>
+                        <div class="card-content">
+                            <span class="placeholder-icon">👤</span>
+                        </div>
+                    </div>
+                    <div class="card-label">
+                        <span>???</span>
+                        <span>???</span>
+                    </div>
+                </div>
+                <div class="rank-column" id="slot-2">
+                    <div class="card-container">
+                        <span class="rank-number">2</span>
+                        <div class="card-content">
+                            <span class="placeholder-icon">👤</span>
+                        </div>
+                    </div>
+                    <div class="card-label">
+                        <span>???</span>
+                        <span>???</span>
+                    </div>
+                </div>
+                <div class="rank-column" id="slot-3">
+                    <div class="card-container">
+                        <span class="rank-number">3</span>
+                        <div class="card-content">
+                            <span class="placeholder-icon">👤</span>
+                        </div>
+                    </div>
+                    <div class="card-label">
+                        <span>???</span>
+                        <span>???</span>
+                    </div>
+                </div>
+                <div class="rank-column" id="slot-4">
+                    <div class="card-container">
+                        <span class="rank-number">4</span>
+                        <div class="card-content">
+                            <span class="placeholder-icon">👤</span>
+                        </div>
+                    </div>
+                    <div class="card-label">
+                        <span>???</span>
+                        <span>???</span>
+                    </div>
+                </div>
+                <div class="rank-column" id="slot-5">
+                    <div class="card-container">
+                        <span class="rank-number">5</span>
+                        <div class="card-content">
+                            <span class="placeholder-icon">👤</span>
+                        </div>
+                    </div>
+                    <div class="card-label">
+                        <span>???</span>
+                        <span>???</span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Bereich für die aktive Auswahl (Darunter, Einzeln) -->
-        <div class="selection-area">
-            <h2 id="current-prompt">Klicke oben auf einen freien Platz!</h2>
-            <div id="current-character-container">
-                <!-- Wird vom JavaScript mit nur einem Bild befüllt -->
+        <div class="panel selection-panel">
+            <h3 id="progress-text">CHARAKTER 1 / 5</h3>
+            
+            <div class="current-character-wrapper">
+                <div id="current-image-container">
+                    </div>
             </div>
+            
+            <h2 class="mystery-name">???</h2>
+            <p class="mystery-sub">???</p>
+            
+            <p class="prompt-text">AUF WELCHEN PLATZ?</p>
+            <div class="action-buttons">
+                <button class="rank-btn" data-rank="1">1</button>
+                <button class="rank-btn" data-rank="2">2</button>
+                <button class="rank-btn" data-rank="3">3</button>
+                <button class="rank-btn" data-rank="4">4</button>
+                <button class="rank-btn" data-rank="5">5</button>
+            </div>
+            
+            <button id="restart-btn" class="hidden">NEUES SPIEL</button>
         </div>
-        
-        <button id="restart-btn" class="hidden">Neues Spiel starten</button>
     </div>
 
     <script type="module" src="main.js"></script>
