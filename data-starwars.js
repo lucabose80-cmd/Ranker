@@ -64,3 +64,4 @@ export const starWarsCharacters = [
   { name: "Wat Tambor", img: "starwars.bilder/wattambor.jpg" },
   { name: "Poggle the Lesser", img: "starwars.bilder/poggle.jpg" },
   { name: "Nute Gunray", img: "starwars.bilder/nutegunray.jpg" }
+];
