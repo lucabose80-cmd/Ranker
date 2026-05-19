@@ -1,23 +1,9 @@
 // roadmap.js
 // Hier kannst du geplante Features für beide Modi verwalten.
-// Kategorien: "🔨 In Arbeit", "📅 Geplant", "💡 Ideen"
+// Kategorien: "📅 Geplant", "💡 Ideen"
 // Jedes Item hat: title (Name), desc (kurze Beschreibung)
 
 export const roadmapStarWars = [
-    {
-        category: "🔨 In Arbeit",
-        color: "#f39c12",
-        items: [
-            {
-                title: "Admin Panel Überarbeitung",
-                desc: "Das Admin Panel wird weiter stabilisiert und übersichtlicher gestaltet."
-            },
-            {
-                title: "Admin: Scoreboard & Historie getrennt",
-                desc: "Scoreboard und Historie sollen vollständig unabhängig voneinander zurückgesetzt werden können."
-            }
-        ]
-    },
     {
         category: "📅 Geplant",
         color: "#3b82f6",
@@ -51,20 +37,6 @@ export const roadmapStarWars = [
 ];
 
 export const roadmapWaifu = [
-    {
-        category: "🔨 In Arbeit",
-        color: "#f39c12",
-        items: [
-            {
-                title: "Admin Panel Überarbeitung",
-                desc: "Das Admin Panel wird weiter stabilisiert und übersichtlicher gestaltet."
-            },
-            {
-                title: "Admin: Scoreboard & Historie getrennt",
-                desc: "Scoreboard und Historie sollen vollständig unabhängig voneinander zurückgesetzt werden können."
-            }
-        ]
-    },
     {
         category: "📅 Geplant",
         color: "#ff2a9d",

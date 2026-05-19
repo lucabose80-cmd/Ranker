@@ -85,32 +85,56 @@ export function initCommunity() {
             const now = Date.now();
 
             snapshot.forEach(docSnap => {
-                const u = docSnap.data();
-                if(u.lastActive) {
-                    const isOnline = (now - u.lastActive.toMillis()) < 150000; // 2.5 Min Threshold (Heartbeat ist 60s)
+                try {
+                    const u = docSnap.data();
+                    let isOnline = false;
+
+                    // Der aktuell eingetragene User selbst ist immer online!
+                    if (u.username === user.username) {
+                        isOnline = true;
+                    } else if (u.lastActive) {
+                        let lastActiveMillis = 0;
+                        if (typeof u.lastActive.toMillis === 'function') {
+                            lastActiveMillis = u.lastActive.toMillis();
+                        } else if (u.lastActive.seconds) {
+                            lastActiveMillis = u.lastActive.seconds * 1000;
+                        } else {
+                            lastActiveMillis = new Date(u.lastActive).getTime();
+                        }
+
+                        if (!isNaN(lastActiveMillis)) {
+                            isOnline = (now - lastActiveMillis) < 180000; // 3 Minuten Threshold
+                        }
+                    }
+
                     if(isOnline) {
                         count++;
-                        const userAvatar = u.activeMode === 'starwars' ? u.avatarStarWars : u.avatarWaifu;
+                        const uMode = u.activeMode || 'starwars';
+                        const userAvatar = uMode === 'starwars' ? u.avatarStarWars : u.avatarWaifu;
                         const avatarHtml = userAvatar ? `<img src="${userAvatar}" class="mini-avatar">` : `<div class="mini-avatar" style="background:#444"></div>`;
                         
-                        const modeText = u.activeMode === 'starwars' ? 'SW' : 'Anime';
-                        const modeClass = u.activeMode === 'starwars' ? 'tag-sw' : 'tag-anime';
+                        const modeText = uMode === 'starwars' ? 'SW' : 'Anime';
+                        const modeClass = uMode === 'starwars' ? 'tag-sw' : 'tag-anime';
 
                         onlineList.innerHTML += `
                             <div class="online-user-card">
                                 <div class="online-indicator"></div>
                                 ${avatarHtml}
-                                <strong>${u.displayName}</strong>
+                                <strong>${u.displayName || u.username}</strong>
                                 <span class="chat-mode-tag ${modeClass}" style="margin-left:auto;">${modeText}</span>
                             </div>
                         `;
                     }
+                } catch(err) {
+                    console.error("Fehler beim Laden eines Users im Online-Tracker: ", err);
                 }
             });
             document.getElementById('online-count').textContent = count;
-        } catch(e) {}
+        } catch(e) {
+            console.error("Fehler beim Abrufen der Online-User: ", e);
+        }
     };
 
     updateOnlineTracker();
-    onlineInterval = setInterval(updateOnlineTracker, 60000);
+    onlineInterval = setInterval(updateOnlineTracker, 30000); // Schnelleres Polling (30s) für bessere UI-Reaktivität
 }

@@ -1,5 +1,15 @@
 export const patchNotesStarWars = [
     {
+        version: "v2.4",
+        title: "The Instant Speed & QoL Update",
+        changes: [
+            "Performance: Extrem schnelles Umschalten zwischen Historie und Scoreboard (0ms Latenz) durch Shared-Realtime-Caching im RAM.",
+            "Performance: Zirkelbezüge im Javascript vollständig entkoppelt für absolute Stabilität und reibungsfreie Anmeldung.",
+            "UI-Update: Der Spielername oben links in der Navigationsleiste wird nun deutlich größer und edler dargestellt.",
+            "Bugfix: Der Online-Tracker wurde stabilisiert (Verbindungsprobleme und Anzeigefehler der Spieleranzahl behoben)."
+        ]
+    },
+    {
         version: "v2.3",
         title: "The Spectator & Quality of Life Update",
         changes: [
