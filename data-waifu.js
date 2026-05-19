@@ -1,12 +1,19 @@
+// data-waifu.js
 export const waifuCharacters = [
-    { name: "Asuna", img: "https://placehold.co/150x150/ff9ff3/ffffff?text=Asuna" },
-    { name: "Rem", img: "https://placehold.co/150x150/54a0ff/ffffff?text=Rem" },
-    { name: "Mikasa", img: "https://placehold.co/150x150/576574/ffffff?text=Mikasa" },
-    { name: "Zero Two", img: "https://placehold.co/150x150/ff6b6b/ffffff?text=Zero+Two" },
-    { name: "Hinata", img: "https://placehold.co/150x150/5f27cd/ffffff?text=Hinata" },
-    { name: "Nezuko", img: "https://placehold.co/150x150/ff9f43/ffffff?text=Nezuko" },
-    { name: "Kurisu", img: "https://placehold.co/150x150/c8d6e5/000000?text=Kurisu" },
-    { name: "Saber", img: "https://placehold.co/150x150/0abde3/ffffff?text=Saber" },
-    { name: "Mai Sakurajima", img: "https://placehold.co/150x150/222f3e/ffffff?text=Mai" },
-    { name: "Megumin", img: "https://placehold.co/150x150/ee5253/ffffff?text=Megumin" }
+    { name: "Aqua", img: "anime.bilder/aqua.jpg" },
+    { name: "Asuna", img: "anime.bilder/asuna.jpg" },
+    { name: "C.C.", img: "anime.bilder/cc..jpg" }, // Beachte das doppelte '..jpg', da die Datei 'cc.' heißt
+    { name: "Erza", img: "anime.bilder/erza.jpg" },
+    { name: "Hinata", img: "anime.bilder/hinata.jpg" },
+    { name: "Kurisu", img: "anime.bilder/kurisu.jpg" },
+    { name: "Mikasa", img: "anime.bilder/mikasa.jpg" },
+    { name: "Nami", img: "anime.bilder/nami.jpg" },
+    { name: "Nezuko", img: "anime.bilder/nezuko.jpg" },
+    { name: "Rem", img: "anime.bilder/rem.jpg" },
+    { name: "Robin", img: "anime.bilder/robin.jpg" },
+    { name: "Rukia", img: "anime.bilder/rukia.jpg" },
+    { name: "Ryuko", img: "anime.bilder/ryuko.jpg" },
+    { name: "Saber", img: "anime.bilder/saber.jpg" },
+    { name: "Violet Evergarden", img: "anime.bilder/violet.jpg" },
+    { name: "Yor Forger", img: "anime.bilder/yor.jpg" }
 ];
