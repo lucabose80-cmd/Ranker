@@ -6,7 +6,7 @@ import { patchNotesWaifu } from './changelog-waifu.js';
 import { updateChangelogContent } from './changelog.js';
 import { initGame } from './game.js';
 import { renderHistory } from './history.js';
-import { renderScoreboard } from './scoreboard.js'; // NEU Importiert
+import { renderScoreboard } from './scoreboard.js';
 
 export let currentMode = 'starwars'; 
 export let activeCharacterDatabase = starWarsCharacters; 
@@ -39,7 +39,11 @@ export function toggleTheme() {
     
     initGame(); 
     
-    // Aktive Tabs updaten
-    if (document.getElementById('history-content').style.display === 'block') renderHistory();
-    if (document.getElementById('scoreboard-content').style.display === 'block') renderScoreboard(); // NEU
+    // Repariert: Wir prüfen, ob die Klasse 'hidden' fehlt, statt auf direkte Styles zu schauen
+    if (!document.getElementById('history-content').classList.contains('hidden')) {
+        renderHistory();
+    }
+    if (!document.getElementById('scoreboard-content').classList.contains('hidden')) {
+        renderScoreboard();
+    }
 }
