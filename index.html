@@ -1,188 +1,56 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ranking Game</title>
-    <link rel="stylesheet" href="style.css">
-    <link id="theme-stylesheet" rel="stylesheet" href="theme-starwars.css">
-</head>
-<body>
-    
-    <div id="auth-view" class="view-container">
-        <div class="panel auth-panel">
-            <h2>LOGIN</h2>
-            <p id="auth-feedback" class="prompt-text hidden"></p>
-            <input type="text" id="auth-username" placeholder="Benutzername" autocomplete="off">
-            <div class="password-wrapper">
-                <input type="password" id="auth-password" placeholder="Passwort">
-                <span id="toggle-password" class="eye-icon" title="Passwort anzeigen">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                </span>
+// admin.js
+import { db } from './firebase-config.js';
+import { collection, getDocs, doc, updateDoc, deleteDoc, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+export async function initAdminPanel() {
+    const list = document.getElementById('admin-user-list');
+    list.innerHTML = '<h3>Spielerverwaltung</h3>';
+
+    // 1. Spieler-Liste laden
+    const usersSnap = await getDocs(collection(db, "users"));
+    usersSnap.forEach(userDoc => {
+        const u = userDoc.data();
+        if (u.role === 'admin') return;
+
+        const card = document.createElement('div');
+        card.className = 'admin-user-card';
+        card.innerHTML = `
+            <span>${u.displayName}</span>
+            <div>
+                <button class="rank-btn" style="width:auto; font-size: 0.7rem;" id="reset-discovery-${userDoc.id}">Discovery Reset</button>
+                <button class="rank-btn" style="width:auto; font-size: 0.7rem; background:#ff4757; color:white;" id="delete-history-${userDoc.id}">History Reset</button>
             </div>
-            <div class="action-buttons auth-buttons">
-                <button id="login-btn" class="rank-btn auth-btn">Los geht's</button>
-            </div>
-        </div>
-    </div>
+        `;
+        list.appendChild(card);
 
-    <div id="admin-view" class="view-container hidden">
-        <div class="panel admin-panel">
-            <h2>ADMIN PANEL</h2>
-            <div id="admin-user-list" class="user-list"></div>
-            <button id="admin-logout-btn" class="rank-btn auth-btn">Logout</button>
-        </div>
-    </div>
+        // Discovery Reset
+        document.getElementById(`reset-discovery-${userDoc.id}`).onclick = async () => {
+            await updateDoc(doc(db, "users", userDoc.id), { discovered: [] });
+            alert("Discovery für " + u.displayName + " zurückgesetzt.");
+        };
 
-    <div id="game-view" class="view-container hidden">
-        
-        <div class="sticky-nav-container">
-            <nav class="game-nav">
-                <button class="nav-link active" data-target="game-main-content">SPIEL</button>
-                <button class="nav-link" data-target="live-content">LIVE</button>
-                <button class="nav-link" data-target="history-content">HISTORIE</button>
-                <button class="nav-link" data-target="scoreboard-content">SCOREBOARD</button>
-                <button class="nav-link" data-target="lexikon-content">LEXIKON</button>
-            </nav>
+        // History Reset (Löscht alle Einträge dieses Users aus der History)
+        document.getElementById(`delete-history-${userDoc.id}`).onclick = async () => {
+            const histSnap = await getDocs(collection(db, "history"));
+            histSnap.forEach(async (hDoc) => {
+                if (hDoc.data().username === u.username) await deleteDoc(doc(db, "history", hDoc.id));
+            });
+            alert("History für " + u.displayName + " gelöscht.");
+        };
+    });
 
-            <div class="top-bar">
-                <div id="profile-trigger" class="profile-trigger" title="Profil öffnen">
-                    <img id="topbar-avatar" class="mini-avatar hidden" src="" alt="Avatar">
-                    <span id="player-greeting" class="prompt-text"></span>
-                </div>
-            </div>
-            
-            <button id="changelog-open-btn" class="text-btn" style="position: absolute; top: 15px; right: 20px;">UPDATES</button>
-            <button id="logout-btn" class="text-btn logout-btn" style="position: absolute; top: 45px; right: 20px;">LOGOUT</button>
-        </div>
-
-        <div class="online-sidebar panel">
-            <h3 style="color: #3b82f6; font-size: 0.9rem; letter-spacing: 1px; margin-top: 0; margin-bottom: 15px;">ONLINE (<span id="online-count">0</span>)</h3>
-            <div id="online-users-list" class="online-list"></div>
-        </div>
-
-        <div class="main-scroll-content">
-            
-            <div id="game-main-content" class="tab-content app-container">
-                <header>
-                    <h1 id="main-title">STAR WARS RANKING</h1>
-                    <p>Ordne 5 Charaktere blind ein. Wo landen sie?</p>
-                </header>
-                <div class="panel ranking-panel">
-                    <h2>DEIN RANKING</h2>
-                    <div id="ranking-board" class="horizontal-board">
-                        <div class="rank-column" id="slot-1"><div class="card-container"><span class="rank-number">1</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
-                        <div class="rank-column" id="slot-2"><div class="card-container"><span class="rank-number">2</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
-                        <div class="rank-column" id="slot-3"><div class="card-container"><span class="rank-number">3</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
-                        <div class="rank-column" id="slot-4"><div class="card-container"><span class="rank-number">4</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
-                        <div class="rank-column" id="slot-5"><div class="card-container"><span class="rank-number">5</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
-                    </div>
-                </div>
-                <div class="panel selection-panel">
-                    <div id="active-game-area">
-                        <h3 id="progress-text">CHARAKTER 1 / 5</h3>
-                        <div class="current-character-wrapper"><div id="current-image-container"></div></div>
-                        <h2 class="mystery-name">???</h2>
-                        <div id="action-area">
-                            <p class="prompt-text">AUF WELCHEN PLATZ?</p>
-                            <div class="action-buttons">
-                                <button class="rank-btn" data-rank="1">1</button><button class="rank-btn" data-rank="2">2</button><button class="rank-btn" data-rank="3">3</button><button class="rank-btn" data-rank="4">4</button><button class="rank-btn" data-rank="5">5</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="end-screen-area" class="hidden">
-                        <h1 class="end-title">RANKING FERTIG!</h1>
-                        <p class="end-subtitle">Die Identitäten wurden aufgedeckt!</p>
-                        <p class="prompt-text rating-prompt">BEWERTE DEINE LISTE (1-10)</p>
-                        <div class="rating-buttons">
-                            <button class="rate-btn">1</button><button class="rate-btn">2</button><button class="rate-btn">3</button><button class="rate-btn">4</button><button class="rate-btn">5</button>
-                            <button class="rate-btn">6</button><button class="rate-btn">7</button><button class="rate-btn">8</button><button class="rate-btn">9</button><button class="rate-btn">10</button>
-                        </div>
-                        <p id="rating-feedback" class="hidden">Danke für deine Bewertung!</p>
-                        <button id="restart-btn">NEUES SPIEL</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="live-content" class="tab-content app-container hidden">
-                <div class="panel history-panel">
-                    <h2>LIVE SPIELE</h2>
-                    <p class="prompt-text">Schau anderen Spielern in Echtzeit zu</p>
-                    <div id="live-games-grid" class="live-grid"></div>
-                </div>
-            </div>
-
-            <div id="history-content" class="tab-content app-container hidden">
-                <div class="panel history-panel">
-                    <h2>GALAKTISCHE ARCHIVE</h2>
-                    <div id="history-list" class="history-list"></div>
-                </div>
-            </div>
-
-            <div id="scoreboard-content" class="tab-content app-container hidden">
-                <div class="panel history-panel">
-                    <h2>SCOREBOARD</h2>
-                    <div class="scoreboard-controls">
-                        <select id="scoreboard-user-filter">
-                            <option value="global">Global (Alle)</option>
-                        </select>
-                    </div>
-                    <div id="scoreboard-list" class="history-list"></div>
-                </div>
-            </div>
-
-            <div id="lexikon-content" class="tab-content app-container hidden">
-                <div class="panel history-panel">
-                    <h2>LEXIKON</h2>
-                    <div id="lexikon-grid" class="lexikon-grid"></div>
-                </div>
-            </div>
-
-        </div>
-
-        <div id="profile-overlay" class="profile-overlay hidden">
-            <div class="panel profile-panel">
-                <button id="close-profile-btn" class="close-overlay-btn">✕</button>
-                <h2>DEIN PROFIL</h2>
-                <div class="profile-layout">
-                    <div class="profile-settings">
-                        <p class="prompt-text">Name ändern</p>
-                        <input type="text" id="profile-displayname">
-                        <p class="prompt-text">Passwort ändern</p>
-                        <input type="password" id="profile-password" placeholder="Neues Passwort">
-                        <button id="save-profile-btn" class="rank-btn auth-btn">Speichern</button>
-                        <p id="profile-feedback" class="prompt-text hidden"></p>
-                    </div>
-                    <div class="profile-avatar-selection">
-                        <p class="prompt-text">Avatar wählen (Speichert sofort für dieses Universum)</p>
-                        <div id="avatar-grid" class="lexikon-grid"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="spectator-modal" class="profile-overlay hidden">
-            <div class="panel spectator-modal-panel">
-                <button id="close-spectator-btn" class="close-overlay-btn">✕</button>
-                <h2 id="spectator-title">Spieler schaut zu</h2>
-                <div id="spectator-board" class="horizontal-board spec-large-board"></div>
-            </div>
-        </div>
-
-        <button id="chat-toggle-btn" class="chat-toggle-btn">💬</button>
-        <div id="chat-widget" class="chat-widget hidden">
-            <div class="chat-header">
-                <strong>GLOBAL CHAT</strong>
-                <button id="close-chat-btn" class="text-btn" style="position:static; padding:0;">✕</button>
-            </div>
-            <div id="chat-messages" class="chat-messages"></div>
-            <div class="chat-input-area">
-                <input type="text" id="chat-input" placeholder="Nachricht..." autocomplete="off">
-                <button id="chat-send-btn" class="rank-btn">➤</button>
-            </div>
-        </div>
-
-    </div>
-    <script type="module" src="main.js"></script>
-</body>
-</html>
+    // 2. Chat-Verwaltung (Löschen)
+    list.innerHTML += '<h3>Chat-Nachrichten</h3>';
+    const chatSnap = await getDocs(query(collection(db, "chat"), orderBy("timestamp", "desc"), limit(20)));
+    chatSnap.forEach(chatDoc => {
+        const msg = chatDoc.data();
+        const row = document.createElement('div');
+        row.className = 'admin-user-card';
+        row.innerHTML = `<span>${msg.displayName}: ${msg.text}</span> <button class="rank-btn" style="width:auto; background:red; color:white;">X</button>`;
+        row.querySelector('button').onclick = async () => {
+            await deleteDoc(doc(db, "chat", chatDoc.id));
+            row.remove();
+        };
+        list.appendChild(row);
+    });
+}
