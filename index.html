@@ -41,6 +41,9 @@
                         <button id="admin-reset-global-history" class="rank-btn" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%;">Alle globalen Historien ausblenden (Reset)</button>
                         <button id="admin-reset-global-scoreboard" class="rank-btn" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%;">Alle globalen Scoreboards nullen (Reset)</button>
                     </div>
+
+                    <h3 style="color: #3b82f6; border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 30px;">VORSCHLÄGE MODERATION</h3>
+                    <div id="admin-suggestions-list" class="user-list" style="max-height: 400px; margin-bottom: 30px; display: flex; flex-direction: column; gap: 10px;"></div>
                 </div>
                 
                 <!-- Spalte 2: Chat Moderation -->
@@ -64,6 +67,7 @@
                 <button class="nav-link" data-target="history-content">HISTORIE</button>
                 <button class="nav-link" data-target="scoreboard-content">SCOREBOARD</button>
                 <button class="nav-link" data-target="lexikon-content">LEXIKON</button>
+                <button class="nav-link" data-target="suggestions-content">VORSCHLÄGE</button>
             </nav>
 
             <div class="top-bar">
@@ -172,6 +176,18 @@
                 <div class="panel history-panel">
                     <h2>LEXIKON</h2>
                     <div id="lexikon-grid" class="lexikon-grid"></div>
+                </div>
+            </div>
+
+            <div id="suggestions-content" class="tab-content app-container hidden">
+                <div class="panel history-panel">
+                    <h2>COMMUNITY VORSCHLÄGE</h2>
+                    <p class="prompt-text">Was wünschst du dir für das Spiel? (Features, Charaktere, etc.)</p>
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <input type="text" id="suggestion-input" placeholder="Dein Vorschlag..." style="flex: 1; padding: 12px; border-radius: 6px; background: rgba(0,0,0,0.2); border: 1px solid #333; color: white;" autocomplete="off" maxlength="150">
+                        <button id="suggestion-submit-btn" class="rank-btn" style="width: auto; padding: 0 20px;">Einreichen</button>
+                    </div>
+                    <div id="suggestions-list" class="history-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
                 </div>
             </div>
 

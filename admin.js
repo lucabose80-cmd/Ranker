@@ -5,6 +5,7 @@ import { collection, getDocs, deleteDoc, doc, updateDoc, setDoc, onSnapshot, que
 import { activeCharacterDatabase } from './theme.js';
 import { currentMode } from './mode-state.js';
 import { invalidateResetsCache } from './resets.js';
+import { initAdminSuggestions } from './suggestions.js';
 
 let chatAdminUnsubscribe = null;
 let listenersBound = false;
@@ -59,6 +60,7 @@ export async function initAdminPanel() {
     }
 
     await refreshAdminPanel();
+    initAdminSuggestions();
 }
 
 export async function refreshAdminPanel() {
