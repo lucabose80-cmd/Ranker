@@ -13,6 +13,27 @@ export async function renderScoreboard() {
     container.innerHTML = '<p class="prompt-text">Berechne Punkte...</p>';
 
     try {
+        // Reset-Einstellungen vom Server laden
+        let globalScoreboardResetSecs = 0;
+        try {
+            const serverDoc = await getDocs(query(collection(db, "server_settings")));
+            serverDoc.forEach(d => {
+                if(d.id === 'resets' && d.data()[`globalScoreboardReset_${currentMode}`]) {
+                    globalScoreboardResetSecs = d.data()[`globalScoreboardReset_${currentMode}`].seconds;
+                }
+            });
+        } catch(e) {}
+
+        // User Reset-Timestamps laden
+        let userResets = {};
+        try {
+            const usersSnap = await getDocs(collection(db, "users"));
+            usersSnap.forEach(d => {
+                const u = d.data();
+                if(u[`scoreboardResetAt_${currentMode}`]) userResets[u.username] = u[`scoreboardResetAt_${currentMode}`].seconds;
+            });
+        } catch(e) {}
+
         const q = query(collection(db, "history"), where("mode", "==", currentMode));
         const querySnapshot = await getDocs(q);
         
@@ -21,8 +42,14 @@ export async function renderScoreboard() {
 
         querySnapshot.forEach((doc) => {
             const data = doc.data();
-            games.push(data);
-            allUsers.add(data.username);
+            const gameSecs = data.timestamp ? data.timestamp.seconds : 0;
+            const personalResetSecs = userResets[data.username] || 0;
+
+            // Nur hinzufügen, wenn das Spiel nach dem globalen UND persönlichen Reset stattfand
+            if (gameSecs >= globalScoreboardResetSecs && gameSecs >= personalResetSecs) {
+                games.push(data);
+                allUsers.add(data.username);
+            }
         });
 
         if (games.length === 0) {

@@ -37,13 +37,40 @@ export async function renderHistory() {
     container.innerHTML = '<p class="prompt-text">Lade Archive...</p>';
 
     try {
-        // Wir filtern direkt nach dem currentMode
+        // Reset-Einstellungen vom Server laden
+        let globalHistoryResetSecs = 0;
+        try {
+            const serverDoc = await getDocs(query(collection(db, "server_settings")));
+            serverDoc.forEach(d => {
+                if(d.id === 'resets' && d.data()[`globalHistoryReset_${currentMode}`]) {
+                    globalHistoryResetSecs = d.data()[`globalHistoryReset_${currentMode}`].seconds;
+                }
+            });
+        } catch(e) {}
+
+        // User Reset-Timestamps laden
+        let userResets = {};
+        try {
+            const usersSnap = await getDocs(collection(db, "users"));
+            usersSnap.forEach(d => {
+                const u = d.data();
+                if(u[`historyResetAt_${currentMode}`]) userResets[u.username] = u[`historyResetAt_${currentMode}`].seconds;
+            });
+        } catch(e) {}
+
         const q = query(collection(db, "history"), where("mode", "==", currentMode));
         const querySnapshot = await getDocs(q);
         
         let games = [];
         querySnapshot.forEach((doc) => {
-            games.push(doc.data());
+            const data = doc.data();
+            const gameSecs = data.timestamp ? data.timestamp.seconds : 0;
+            const personalResetSecs = userResets[data.username] || 0;
+            
+            // Nur hinzufügen, wenn das Spiel nach dem globalen UND persönlichen Reset stattfand
+            if (gameSecs >= globalHistoryResetSecs && gameSecs >= personalResetSecs) {
+                games.push(data);
+            }
         });
 
         if (games.length === 0) {

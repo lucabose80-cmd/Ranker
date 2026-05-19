@@ -11,6 +11,7 @@ import { renderLexikon } from './lexikon.js';
 import { renderAvatarSelection, updateTopbarAvatarElement } from './profile.js';
 import { getCurrentUser, startPresenceHeartbeat } from './auth.js';
 import { initLiveSpectating } from './live.js';
+import { refreshAdminPanel } from './admin.js';
 
 export let currentMode = 'starwars'; 
 export let activeCharacterDatabase = starWarsCharacters; 
@@ -54,4 +55,5 @@ export function toggleTheme() {
     if (!document.getElementById('live-content').classList.contains('hidden')) initLiveSpectating();
 
     renderAvatarSelection();
+    refreshAdminPanel();
 }
