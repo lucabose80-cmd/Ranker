@@ -1,11 +1,25 @@
 export const patchNotesStarWars = [
     { 
+        version: "v2.0", 
+        title: "The Social Hub Update", 
+        changes: [
+            "Neues Feature: Live-Spectating! Schau anderen Spielern in Echtzeit beim Ranken zu (inklusive neuer Raster-Übersicht).",
+            "Neues Feature: Globaler Chat als schwebendes Widget. Spieler aus beiden Universen können nun miteinander schreiben (mit [SW] oder [Anime] Tags).",
+            "Neues Feature: Wer-ist-online-Sidebar hinzugefügt.",
+            "Neues Feature: Profil-System komplett überarbeitet. Es ist nun ein Overlay. Du kannst ab sofort deinen Anzeigenamen jederzeit ändern!",
+            "Neues Feature: Getrennte Avatare. Dein Profilbild passt sich nun automatisch an, je nachdem ob du Star Wars oder Anime spielst.",
+            "UI-Overhaul: Die Navigation bleibt nun beim Scrollen fest am oberen Bildschirmrand.",
+            "UI-Overhaul: Historie und Scoreboard nutzen nun ein übersichtliches 3-Spalten-Raster.",
+            "Quality of Life: Der Update-Knopf leuchtet nun golden auf, wenn es neue Patch Notes gibt!"
+        ] 
+    },
+    { 
         version: "v1.9", 
         title: "The Discovery Update", 
         changes: [
             "Neues Feature: Charakter-Entdeckungen hinzugefügt (Achievements).",
             "Visualisierung: Brandneue Charaktere pulsieren im Spiel magisch gold, wenn du sie das erste Mal siehst.",
-            "Lexikon-Glow: Im Lexikon siehst du nach Updates sofort anhand des goldenen Glanzes und eines ✨-Symbols, welche Charaktere neu hinzugefügt wurden und von dir noch unentdeckt sind."
+            "Lexikon-Glow: Im Lexikon siehst du anhand des goldenen Glanzes und eines ✨-Symbols, welche Charaktere noch unentdeckt sind."
         ] 
     },
     { 
@@ -31,55 +45,13 @@ export const patchNotesStarWars = [
         title: "The Archive Update", 
         changes: [
             "Globales History-System: Jedes Spiel wird nun dauerhaft in der Cloud gespeichert.",
-            "Neuer 'Historie' Tab: Siehe die Top-Rankings und Bewertungen aller Spieler live ein.",
-            "User Interface: Tab-Navigation eingeführt.",
-            "Quality of Life: Die Historie filtert nun automatisch nach dem aktuell gespielten Modus.",
-            "Design: Modus-Badges (Text) in der Historie entfernt für ein saubereres Layout.",
-            "Bugfix: Ansichts-Fehler behoben (Anmelde-Panel verschwindet korrekt).",
-            "Bugfix: Robuste Fehlerbehandlung (Try/Catch) für das Login-System eingeführt."
+            "Neuer 'Historie' Tab: Siehe die Top-Rankings und Bewertungen aller Spieler live ein."
         ] 
     },
-    { 
-        version: "v1.5", 
-        title: "The Multiverse Update", 
-        changes: [
-            "Backend: Firebase-Datenbank implementiert.",
-            "Intelligentes Login und Augen-Symbol für Passwörter hinzugefügt."
-        ] 
-    },
-    { 
-        version: "v1.4", 
-        title: "End-Screen & UI Overhaul", 
-        changes: [
-            "Visuelles Upgrade für den End-Screen."
-        ] 
-    },
-    { 
-        version: "v1.3", 
-        title: "The Reveal & Modularisierung", 
-        changes: [
-            "Charakternamen werden am Ende enthüllt."
-        ] 
-    },
-    { 
-        version: "v1.2", 
-        title: "Sci-Fi Blind Ranking", 
-        changes: [
-            "Es wird nur ein Charakter gleichzeitig gezeigt."
-        ] 
-    },
-    { 
-        version: "v1.1", 
-        title: "Star Wars Theme", 
-        changes: [
-            "Theme-Wechsel: Das Spiel nutzt nun das Star Wars Universum."
-        ] 
-    },
-    { 
-        version: "v1.0", 
-        title: "Initial Release", 
-        changes: [
-            "Grundgerüst des Ranking-Spiels veröffentlicht."
-        ] 
-    }
+    { version: "v1.5", title: "The Multiverse Update", changes: ["Backend: Firebase-Datenbank implementiert."] },
+    { version: "v1.4", title: "End-Screen & UI Overhaul", changes: ["Visuelles Upgrade für den End-Screen."] },
+    { version: "v1.3", title: "The Reveal & Modularisierung", changes: ["Charakternamen werden am Ende enthüllt."] },
+    { version: "v1.2", title: "Sci-Fi Blind Ranking", changes: ["Es wird nur ein Charakter gleichzeitig gezeigt."] },
+    { version: "v1.1", title: "Star Wars Theme", changes: ["Theme-Wechsel: Das Spiel nutzt nun das Star Wars Universum."] },
+    { version: "v1.0", title: "Initial Release", changes: ["Grundgerüst des Ranking-Spiels veröffentlicht."] }
 ];
