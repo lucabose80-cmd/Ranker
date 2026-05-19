@@ -2,7 +2,7 @@
 import { db } from './firebase-config.js';
 import { collection, onSnapshot, query, orderBy, limit, addDoc, Timestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { getCurrentUser } from './auth.js';
-import { currentMode } from './theme.js';
+import { currentMode } from './mode-state.js';
 
 let chatUnsubscribe = null;
 let onlineInterval = null;

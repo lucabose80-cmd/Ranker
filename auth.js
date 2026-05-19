@@ -1,7 +1,7 @@
 // auth.js
 import { db } from './firebase-config.js';
 import { doc, setDoc, getDocs, collection, query, where, updateDoc, arrayUnion, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-import { currentMode } from './theme.js';
+import { currentMode } from './mode-state.js';
 
 const CURRENT_USER_KEY = 'ranking_game_active_user';
 let heartbeatInterval;

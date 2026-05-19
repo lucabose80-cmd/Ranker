@@ -2,7 +2,8 @@
 import { logout, getCurrentUser } from './auth.js';
 import { db } from './firebase-config.js';
 import { collection, getDocs, deleteDoc, doc, updateDoc, setDoc, onSnapshot, query, orderBy, Timestamp, where } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-import { currentMode, activeCharacterDatabase } from './theme.js';
+import { activeCharacterDatabase } from './theme.js';
+import { currentMode } from './mode-state.js';
 import { invalidateResetsCache } from './resets.js';
 
 let chatAdminUnsubscribe = null;

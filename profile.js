@@ -1,6 +1,7 @@
 // profile.js
 import { updateUserProfile, getCurrentUser } from './auth.js';
-import { activeCharacterDatabase, currentMode } from './theme.js';
+import { activeCharacterDatabase } from './theme.js';
+import { currentMode } from './mode-state.js';
 
 export function renderAvatarSelection() {
     const user = getCurrentUser();

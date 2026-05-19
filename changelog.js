@@ -1,6 +1,6 @@
 // changelog.js
 import { getCurrentUser, markUpdatesAsRead } from './auth.js';
-import { currentMode } from './theme.js';
+import { currentMode } from './mode-state.js';
 import { roadmapStarWars, roadmapWaifu } from './roadmap.js';
 
 let activeLatestGroupKey = "";

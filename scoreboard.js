@@ -1,5 +1,5 @@
 // scoreboard.js
-import { currentMode } from './theme.js';
+import { currentMode } from './mode-state.js';
 import { getResets } from './resets.js';
 import { getCachedHistory } from './history.js';
 

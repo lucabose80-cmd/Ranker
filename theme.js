@@ -12,8 +12,8 @@ import { renderAvatarSelection, updateTopbarAvatarElement } from './profile.js';
 import { getCurrentUser, startPresenceHeartbeat } from './auth.js';
 import { initLiveSpectating } from './live.js';
 import { refreshAdminPanel } from './admin.js';
+import { currentMode, setCurrentMode } from './mode-state.js';
 
-export let currentMode = 'starwars'; 
 export let activeCharacterDatabase = starWarsCharacters; 
 
 export function toggleTheme() {
@@ -24,14 +24,14 @@ export function toggleTheme() {
     document.getElementById('scoreboard-user-filter').innerHTML = '<option value="global">Global (Alle)</option>';
 
     if (currentMode === 'starwars') {
-        currentMode = 'waifu';
+        setCurrentMode('waifu');
         activeCharacterDatabase = waifuCharacters;
         activeChangelogDatabase = patchNotesWaifu;
         mainTitle.textContent = "WAIFU RANKING";
         themeStylesheet.href = "theme-waifu.css"; 
         document.body.classList.add('waifu-theme');
     } else {
-        currentMode = 'starwars';
+        setCurrentMode('starwars');
         activeCharacterDatabase = starWarsCharacters;
         activeChangelogDatabase = patchNotesStarWars;
         mainTitle.textContent = "STAR WARS RANKING";

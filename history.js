@@ -2,7 +2,7 @@
 import { db } from './firebase-config.js';
 import { collection, addDoc, onSnapshot, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { getCurrentUser } from './auth.js';
-import { currentMode } from './theme.js';
+import { currentMode } from './mode-state.js';
 import { getResets } from './resets.js';
 
 let historyCache = [];
