@@ -31,7 +31,7 @@ async function bootApp() {
         setupAdminUI();
     } else {
         setupGameUI(currentUser);
-        startPresenceHeartbeat(); // Startet den Online-Status-Ping
+        startPresenceHeartbeat();
     }
     await initAuth(); 
 }
@@ -60,7 +60,12 @@ function setupAuthUI() {
     });
 }
 
-// Profil Overlay schließen
+// HIER WAR DER FEHLER: Die Funktion fehlte!
+function setupAdminUI() {
+    showView('admin-view');
+    initAdminPanel();
+}
+
 const closeProfileOverlay = () => {
     document.getElementById('profile-overlay').classList.add('hidden');
 };
@@ -71,10 +76,8 @@ function setupGameUI(user) {
     updateTopbarAvatarElement(user);
     document.getElementById('logout-btn').addEventListener('click', logout);
 
-    // Die Tabs des Spiels (ohne Community, ohne Profil)
     const tabs = ['game-main-content', 'live-content', 'history-content', 'scoreboard-content', 'lexikon-content'];
     
-    // Tab-Navigation mit erzwungenem Live-Reload bei JEDEM Klick
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', () => {
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -84,7 +87,6 @@ function setupGameUI(user) {
             const target = link.dataset.target;
             document.getElementById(target).classList.remove('hidden');
             
-            // SOFORTIGES ERZWUNGENES NEULADEN BEI TAB-KLICK
             if (target === 'history-content') renderHistory();
             if (target === 'scoreboard-content') renderScoreboard();
             if (target === 'lexikon-content') renderLexikon();
@@ -92,18 +94,14 @@ function setupGameUI(user) {
         });
     });
 
-    // Profil Overlay öffnen
     document.getElementById('profile-trigger').addEventListener('click', () => {
         document.getElementById('profile-overlay').classList.remove('hidden');
-        renderAvatarSelection(); // Baut die Bilder passend zum aktuellen Universum auf
+        renderAvatarSelection();
     });
     
     document.getElementById('close-profile-btn').addEventListener('click', closeProfileOverlay);
-
-    // Live-Zuschauer Modal schließen
     document.getElementById('close-spectator-btn').addEventListener('click', closeSpectatorModal);
 
-    // Chat Box Toggle
     const chatWidget = document.getElementById('chat-widget');
     document.getElementById('chat-toggle-btn').addEventListener('click', () => chatWidget.classList.toggle('hidden'));
     document.getElementById('close-chat-btn').addEventListener('click', () => chatWidget.classList.add('hidden'));
@@ -121,7 +119,6 @@ function setupGameUI(user) {
 
     document.getElementById('restart-btn').addEventListener('click', initGame);
     
-    // Tastenanschläge abfangen (Pfeiltaste = Moduswechsel, Esc = Profil / Zuschauen schließen)
     document.addEventListener('keydown', (e) => { 
         if (e.key === 'ArrowDown') { e.preventDefault(); toggleTheme(); }
         if (e.key === 'Escape') {
