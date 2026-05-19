@@ -31,7 +31,6 @@ export const starWarsCharacters = [
   { name: "Bo-Katan Kryze", img: "starwars.bilder/bokatan.jpg" },
   { name: "Count Dooku", img: "starwars.bilder/dooku.jpg" },
 
-  // Neue Charaktere ab hier
   { name: "Sabine Wren", img: "starwars.bilder/sabine.jpg" },
   { name: "Ezra Bridger", img: "starwars.bilder/ezra.jpg" },
   { name: "Hera Syndulla", img: "starwars.bilder/hera.jpg" },
@@ -50,5 +49,18 @@ export const starWarsCharacters = [
   { name: "Vice Admiral Holdo", img: "starwars.bilder/holdo.jpg" },
   { name: "Enfys Nest", img: "starwars.bilder/enfys.jpg" },
   { name: "Dryden Vos", img: "starwars.bilder/dryden.jpg" },
-  { name: "Qi'ra", img: "starwars.bilder/qira.jpg" }
-];
+  { name: "Qi'ra", img: "starwars.bilder/qira.jpg" },
+
+  // 5 Klone
+  { name: "Fives", img: "starwars.bilder/fives.jpg" },
+  { name: "Echo", img: "starwars.bilder/echo.jpg" },
+  { name: "Jesse", img: "starwars.bilder/jesse.jpg" },
+  { name: "Wolffe", img: "starwars.bilder/wolffe.jpg" },
+  { name: "Gregor", img: "starwars.bilder/gregor.jpg" },
+
+  // 5 Separatisten
+  { name: "General Grievous", img: "starwars.bilder/grievous.jpg" },
+  { name: "Asajj Ventress", img: "starwars.bilder/ventress.jpg" },
+  { name: "Wat Tambor", img: "starwars.bilder/wattambor.jpg" },
+  { name: "Poggle the Lesser", img: "starwars.bilder/poggle.jpg" },
+  { name: "Nute Gunray", img: "starwars.bilder/nutegunray.jpg" }
