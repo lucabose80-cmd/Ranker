@@ -1,5 +1,28 @@
 export const patchNotesStarWars = [
     { 
+        version: "v2.2.1", 
+        title: "Performance & Stabilitätsfixes", 
+        changes: [
+            "Bugfix: Globale Scoreboard- und Historien-Resets im Admin Panel funktionieren nun korrekt (Fehler durch falsche Dokument-ID behoben).",
+            "Optimierung: Der Heartbeat-Interval wurde auf 60 Sekunden erhöht, um Schreibvorgänge zu halbieren.",
+            "Optimierung: Die Online-Anzeige nutzt nun periodische Abfragen statt Echtzeit-Listener, was die Lesevorgänge drastisch reduziert.",
+            "Optimierung: Live-Spectating lädt nur noch aktive Spiele der letzten 2 Minuten aus der Cloud.",
+            "Optimierung: Abgeschlossene Spielrunden räumen ihr Live-Spiel-Dokument automatisch aus der Datenbank auf."
+        ] 
+    },
+    { 
+        version: "v2.2", 
+        title: "The Admin Overhaul Update", 
+        changes: [
+            "Neues Feature: Das Admin Panel zeigt jetzt farblich an, ob Daten vorhanden sind (Rot = Aktion möglich, Grün = Clean).",
+            "Neues Feature: Admin-Resets sind nun nach Universum getrennt – Star Wars und Anime können unabhängig voneinander zurückgesetzt werden.",
+            "Neues Feature: Discovery-Reset entfernt nur Charaktere des aktuell gewählten Universums, der andere Modus bleibt unberührt.",
+            "Neues Feature: Das Admin Panel zeigt oben immer an, für welchen Modus die Aktionen gelten.",
+            "Neues Feature: Chat-Moderation mit Einzellöschung pro Nachricht und 'Alles löschen'-Funktion hinzugefügt.",
+            "Neues Feature: Pro User können Discovery, Historie und Scoreboard nun getrennt voneinander zurückgesetzt werden."
+        ] 
+    },
+    { 
         version: "v2.1.1", 
         title: "Quality of Life & Bugfixes", 
         changes: [
