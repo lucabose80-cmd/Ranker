@@ -5,8 +5,7 @@ export function initChangelog() {
                 <span id="close-modal" class="close-btn">&times;</span>
                 <h2 class="updates-main-title">UPDATES & CHANGELOG</h2>
                 <hr class="updates-divider">
-                <div id="updates-list-container" class="updates-list">
-                    </div>
+                <div id="updates-list-container" class="updates-list"></div>
             </div>
         </div>
     `;

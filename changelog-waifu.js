@@ -1,11 +1,12 @@
-// changelog-waifu.js
 export const patchNotesWaifu = [
     { 
         version: "v1.1", 
-        title: "Visual Overhaul", 
+        title: "Visual Overhaul & Engine Upgrade", 
         changes: [
-            "Farbschema aktualisiert: Das Theme nutzt nun ein deutlich intensiveres, sattes Neon-Pink.",
-            "Glow-Effekte für Buttons und Texte an die neue Farbe angepasst."
+            "Farbschema aktualisiert: Das Theme nutzt nun ein sattes Neon-Pink (#ff2a9d).",
+            "Glow-Effekte für Buttons und Texte an die neue Farbe angepasst.",
+            "Architektur: Spiellogik in kleine, wartbare Module aufgeteilt.",
+            "Performance: Bilder-Preload integriert, um Ruckler bei der Charakteranzeige zu beheben."
         ] 
     },
     { 
@@ -14,7 +15,7 @@ export const patchNotesWaifu = [
         changes: [
             "Neuer versteckter Waifu-Modus integriert.", 
             "Eigenes Pink-Neon Theme hinzugefügt.", 
-            "10 neue Anime-Charaktere importiert."
+            "16 neue Anime-Charaktere importiert."
         ] 
     }
 ];
