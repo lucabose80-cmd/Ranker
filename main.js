@@ -11,12 +11,20 @@ import { renderHistory } from './history.js';
 const eyeOpenSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
 const eyeClosedSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
 
+// NEU: Helferfunktion, die garantiert, dass IMMER nur eine Ansicht sichtbar ist
+function showView(viewId) {
+    document.getElementById('auth-view').classList.add('hidden');
+    document.getElementById('admin-view').classList.add('hidden');
+    document.getElementById('game-view').classList.add('hidden');
+    
+    document.getElementById(viewId).classList.remove('hidden');
+}
+
 async function bootApp() {
     try {
-        // 1. Lokalen Benutzer prüfen (das geht sofort und ohne Internet)
         const currentUser = getCurrentUser();
 
-        // 2. SOFORT die Benutzeroberfläche verkabeln! (Verhindert "tote" Buttons)
+        // Zeigt nun sauber nur den jeweiligen Bereich
         if (!currentUser) {
             setupAuthUI();
         } else if (currentUser.role === 'admin') {
@@ -25,7 +33,6 @@ async function bootApp() {
             setupGameUI(currentUser);
         }
 
-        // 3. ERST JETZT Firebase im Hintergrund prüfen
         await initAuth(); 
 
     } catch (error) {
@@ -35,20 +42,18 @@ async function bootApp() {
 }
 
 function setupAuthUI() {
-    document.getElementById('auth-view').classList.remove('hidden');
+    showView('auth-view');
     
     const togglePasswordBtn = document.getElementById('toggle-password');
     const passwordInput = document.getElementById('auth-password');
     const loginBtn = document.getElementById('login-btn');
     
-    // Augen-Symbol klickbar machen
     togglePasswordBtn.addEventListener('click', () => {
         const isPass = passwordInput.type === 'password';
         passwordInput.type = isPass ? 'text' : 'password';
         togglePasswordBtn.innerHTML = isPass ? eyeClosedSVG : eyeOpenSVG;
     });
 
-    // Login-Button klickbar machen
     loginBtn.addEventListener('click', async () => {
         loginBtn.disabled = true;
         loginBtn.textContent = "Lädt...";
@@ -68,12 +73,12 @@ function setupAuthUI() {
 }
 
 function setupAdminUI() {
-    document.getElementById('admin-view').classList.remove('hidden');
+    showView('admin-view');
     initAdminPanel();
 }
 
 function setupGameUI(user) {
-    document.getElementById('game-view').classList.remove('hidden');
+    showView('game-view');
     document.getElementById('player-greeting').textContent = `Willkommen, ${user.username}!`;
     document.getElementById('logout-btn').addEventListener('click', logout);
 
@@ -111,5 +116,4 @@ function showAuthFeedback(msg, isSuccess) {
     feedback.classList.remove('hidden');
 }
 
-// Startschuss für die App
 bootApp();
