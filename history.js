@@ -1,6 +1,6 @@
 // history.js
 import { db } from './firebase-config.js';
-import { collection, addDoc, onSnapshot, query, where, limit, orderBy, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { collection, addDoc, onSnapshot, query, where, limit, orderBy, Timestamp, setDoc, doc, increment } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { getCurrentUser } from './auth.js';
 import { currentMode } from './mode-state.js';
 import { getResets } from './resets.js';
@@ -114,6 +114,32 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
             timestamp: Timestamp.now()
         });
         trackWrite(1);
+
+        // --- AGGREGATED SCOREBOARD SYSTEM ---
+        const ratingMulti = parseInt(rating) || 1;
+        let updates = {};
+
+        rankingData.forEach(item => {
+            const rank = parseInt(item.rank);
+            const basePoints = (count + 1) - rank; 
+            const totalPoints = basePoints * ratingMulti;
+            // Firesore Key safe machen
+            const safeName = item.name.replace(/[\.\/\[\]~#]/g, '_');
+            
+            updates[`characters.${safeName}.score`] = increment(totalPoints);
+            updates[`characters.${safeName}.name`] = item.name;
+            updates[`characters.${safeName}.img`] = item.img;
+        });
+        updates["lastUpdated"] = Timestamp.now();
+
+        // Update Global Score
+        await setDoc(doc(db, "scores", `${currentMode}_${gameType}_global`), updates, { merge: true });
+        trackWrite(1);
+
+        // Update Personal Score
+        await setDoc(doc(db, "scores", `${currentMode}_${gameType}_${user.username}`), updates, { merge: true });
+        trackWrite(1);
+
     } catch (e) {
         console.error("Fehler beim Speichern der Historie: ", e);
     }

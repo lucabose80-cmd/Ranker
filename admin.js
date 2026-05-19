@@ -41,6 +41,9 @@ export async function initAdminPanel() {
                     const adminUid = getCurrentUser()?.uid;
                     if (!adminUid) throw new Error('Kein Admin eingeloggt.');
                     await updateDoc(doc(db, "users", adminUid), obj);
+                    // LÖSCHE DIE AGGREGIERTEN DOKUMENTE FÜR GLOBAL
+                    await deleteDoc(doc(db, "scores", `${currentMode}_classic_global`));
+                    await deleteDoc(doc(db, "scores", `${currentMode}_advanced_global`));
                     invalidateAllCaches(); // Cache invalidieren
                     alert(`Globales Scoreboard für ${currentMode} zurückgesetzt.`);
                     refreshAdminPanel();
@@ -202,6 +205,9 @@ async function renderUserList() {
                 if(confirm(`Persönliches Scoreboard für ${currentMode} nullen?`)) {
                     const obj = {}; obj[`scoreboardResetAt_${currentMode}`] = Timestamp.now();
                     await updateDoc(userRef, obj);
+                    // LÖSCHE DIE AGGREGIERTEN DOKUMENTE FÜR DIESEN USER
+                    await deleteDoc(doc(db, "scores", `${currentMode}_classic_${userDoc.username}`));
+                    await deleteDoc(doc(db, "scores", `${currentMode}_advanced_${userDoc.username}`));
                     invalidateAllCaches(); // Cache invalidieren
                     refreshAdminPanel();
                 }

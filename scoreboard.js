@@ -2,6 +2,9 @@
 import { currentMode } from './mode-state.js';
 import { getResets } from './resets.js';
 import { getCachedHistory } from './history.js';
+import { db } from './firebase-config.js';
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { trackRead } from './tracker.js';
 
 let isFilterListenerAttached = false;
 
@@ -36,53 +39,28 @@ export async function renderScoreboard() {
     const selectedUser = filterSelect.value || 'global'; 
     const selectedType = typeSelect.value || 'classic';
 
-    const { data: historyCache, isLoaded } = getCachedHistory();
-
-    if (!isLoaded) {
-        container.innerHTML = '<p class="prompt-text">Berechne Punkte...</p>';
-        return;
-    }
+    container.innerHTML = '<p class="prompt-text">Lade Scoreboard...</p>';
 
     try {
-        let globalScoreboardResetSecs = 0;
-        let userResets = {};
         let displayNames = {};
+        let allKnownUsers = [];
         try {
-            const { adminResets, userResets: cachedUserResets } = await getResets();
-            globalScoreboardResetSecs = adminResets[`globalScoreboardReset_${currentMode}`] || 0;
-            
-            Object.keys(cachedUserResets).forEach(uname => {
-                userResets[uname] = cachedUserResets[uname][`scoreboardResetAt_${currentMode}`] || 0;
+            const { userResets: cachedUserResets } = await getResets();
+            allKnownUsers = Object.keys(cachedUserResets);
+            allKnownUsers.forEach(uname => {
                 displayNames[uname] = cachedUserResets[uname].displayName || uname;
             });
         } catch(e) {
             console.error("Fehler beim Laden der Resets:", e);
         }
 
-        let games = [];
-        let allUsers = new Set();
-
-        // Spiele lokal aus dem synchronisierten RAM-Cache filtern
-        historyCache.forEach((data) => {
-            const gameSecs = data.timestamp ? data.timestamp.seconds : 0;
-            const personalResetSecs = userResets[data.username] || 0;
-
-            // Zeitstempel-Reset checken
-            if (gameSecs > globalScoreboardResetSecs && gameSecs > personalResetSecs) {
-                // Spieltyp checken (Classic vs. Advanced)
-                const isGameAdvanced = data.gameType === 'advanced' || data.ranking.length > 5;
-                if (selectedType === 'advanced' && isGameAdvanced) {
-                    games.push(data);
-                    allUsers.add(data.username);
-                } else if (selectedType === 'classic' && !isGameAdvanced) {
-                    games.push(data);
-                    allUsers.add(data.username);
-                }
-            }
+        // Dropdown-Menü mit allen bekannten Usern befüllen
+        const sortedUsersList = allKnownUsers.sort((a, b) => {
+            const nameA = (displayNames[a] || a).toLowerCase();
+            const nameB = (displayNames[b] || b).toLowerCase();
+            return nameA.localeCompare(nameB);
         });
-
-        // Dropdown-Menü aktualisieren
-        const sortedUsersList = Array.from(allUsers).sort();
+        
         filterSelect.innerHTML = '<option value="global">Global (Alle Spieler)</option>';
         sortedUsersList.forEach(uname => {
             const option = document.createElement('option');
@@ -102,33 +80,18 @@ export async function renderScoreboard() {
             isFilterListenerAttached = true;
         }
 
-        if (games.length === 0) {
-            container.innerHTML = '<p class="prompt-text">Noch keine Daten für dieses Scoreboard vorhanden.</p>';
+        // Das extrem optimierte "Running Total" Fetching (EXAKT 1 READ)
+        const docRef = doc(db, "scores", `${currentMode}_${selectedType}_${selectedUser}`);
+        const docSnap = await getDoc(docRef);
+        trackRead(1);
+
+        if (!docSnap.exists() || !docSnap.data().characters) {
+            container.innerHTML = '<p class="prompt-text">Noch keine Daten für dieses Scoreboard vorhanden. Spiele ein Spiel, um den Anfang zu machen!</p>';
             return;
         }
 
-        // Punkte berechnen
-        let characterScores = {};
-        games.forEach(game => {
-            if (selectedUser !== 'global' && game.username !== selectedUser) return;
-
-            const ratingMulti = parseInt(game.rating) || 1;
-            const isGameAdvanced = game.gameType === 'advanced' || game.ranking.length > 5;
-            const maxRank = isGameAdvanced ? 10 : 5;
-
-            game.ranking.forEach(item => {
-                const rank = parseInt(item.rank);
-                const basePoints = (maxRank + 1) - rank; 
-                const totalPoints = basePoints * ratingMulti;
-
-                if (!characterScores[item.name]) {
-                    characterScores[item.name] = { name: item.name, img: item.img, score: 0 };
-                }
-                characterScores[item.name].score += totalPoints;
-            });
-        });
-
-        const sortedCharacters = Object.values(characterScores).sort((a, b) => b.score - a.score);
+        const charactersData = docSnap.data().characters;
+        const sortedCharacters = Object.values(charactersData).sort((a, b) => b.score - a.score);
 
         renderScoreboardHTML(sortedCharacters, container);
 
