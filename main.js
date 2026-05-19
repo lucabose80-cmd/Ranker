@@ -134,5 +134,10 @@ function setupGameUI(user) {
     document.getElementById('game-main-content').classList.remove('hidden');
     initGame();
 }
-
+// Füge das in deine main.js ein
+function setupAdminUI() {
+    showView('admin-view');
+    // Importiere hier ggf. deine initAdminPanel Funktion
+    initAdminPanel(); 
+}
 bootApp();
