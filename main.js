@@ -4,9 +4,12 @@ import { toggleTheme } from './theme.js';
 import { initRatingSystem } from './rating.js';
 import { initChangelog, updateChangelogContent } from './changelog.js';
 import { patchNotesStarWars } from './changelog-starwars.js';
-// Auth Import angepasst
 import { initAuth, loginOrRegister, logout, getCurrentUser } from './auth.js';
 import { initAdminPanel } from './admin.js';
+
+// SVG Icons für das Passwort-Feld
+const eyeOpenSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+const eyeClosedSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
 
 async function bootApp() {
     await initAuth(); 
@@ -17,11 +20,9 @@ async function bootApp() {
     const adminView = document.getElementById('admin-view');
 
     if (!currentUser) {
-        // Nicht eingeloggt -> Zeige Login
         authView.classList.remove('hidden');
         gameView.classList.add('hidden');
         
-        // NEU: Passwort-Auge Logik
         const togglePasswordBtn = document.getElementById('toggle-password');
         const passwordInput = document.getElementById('auth-password');
         
@@ -29,14 +30,13 @@ async function bootApp() {
             const currentType = passwordInput.getAttribute('type');
             if (currentType === 'password') {
                 passwordInput.setAttribute('type', 'text');
-                togglePasswordBtn.textContent = '🙈'; // Affe hält sich die Augen zu
+                togglePasswordBtn.innerHTML = eyeClosedSVG; // Geschlossenes Auge
             } else {
                 passwordInput.setAttribute('type', 'password');
-                togglePasswordBtn.textContent = '👁️'; // Normales Auge
+                togglePasswordBtn.innerHTML = eyeOpenSVG; // Offenes Auge
             }
         });
 
-        // NEU: Der kombinierte Button
         document.getElementById('login-btn').addEventListener('click', async () => {
             const usernameInput = document.getElementById('auth-username').value;
             const res = await loginOrRegister(usernameInput, passwordInput.value);
@@ -49,16 +49,13 @@ async function bootApp() {
         });
 
     } else if (currentUser.role === 'admin') {
-        // Admin eingeloggt -> Zeige Admin Panel
         authView.classList.add('hidden');
         adminView.classList.remove('hidden');
         await initAdminPanel();
 
     } else {
-        // Normaler Spieler eingeloggt -> Zeige Spiel
         authView.classList.add('hidden');
         gameView.classList.remove('hidden');
-        // Zeige den echten Benutzernamen (groß geschrieben durch CSS, aber intern sicher)
         document.getElementById('player-greeting').textContent = `Willkommen, ${currentUser.username}!`;
         document.getElementById('logout-btn').addEventListener('click', logout);
 

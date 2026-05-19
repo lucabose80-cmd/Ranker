@@ -80,7 +80,7 @@ input:focus { border-color: #3b82f6; outline: none; }
 
 .delete-user-btn { background-color: transparent; border: 1px solid #ff4757; color: #ff4757; padding: 5px 10px; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
 .delete-user-btn:hover { background-color: #ff4757; color: white; }
-/* --- NEU: Passwort Augen-Symbol --- */
+/* --- NEU: Passwort Augen-Symbol (SVG) --- */
 .password-wrapper { 
     position: relative; 
     width: 100%; 
@@ -88,8 +88,8 @@ input:focus { border-color: #3b82f6; outline: none; }
 }
 
 .password-wrapper input { 
-    margin-bottom: 0; /* Verhindert doppelten Abstand */
-    padding-right: 40px; /* Platz für das Auge lassen */
+    margin-bottom: 0; 
+    padding-right: 40px; 
 }
 
 .eye-icon { 
@@ -98,12 +98,18 @@ input:focus { border-color: #3b82f6; outline: none; }
     top: 50%; 
     transform: translateY(-50%); 
     cursor: pointer; 
-    opacity: 0.6; 
-    transition: opacity 0.2s; 
-    font-size: 1.2rem; 
-    user-select: none; /* Verhindert, dass man das Emoji blau markiert */
+    color: #888; /* Graue Farbe */
+    width: 20px; 
+    height: 20px;
+    transition: color 0.2s; 
 }
 
 .eye-icon:hover { 
-    opacity: 1; 
+    color: #fff; /* Wird weiß, wenn man drübergeht */
+}
+
+.eye-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
 }
