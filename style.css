@@ -161,7 +161,7 @@ input:focus { border-color: #3b82f6; outline: none; }
    ========================================================================== */
 .history-list { 
     display: grid !important; 
-    grid-template-columns: repeat(3, 1fr) !important; /* ERZWINGT JETZT 3 SPALTEN */
+    grid-template-columns: repeat(3, 1fr) !important; 
     gap: 15px !important; 
     margin-top: 20px; 
     max-height: 600px; 
@@ -171,12 +171,12 @@ input:focus { border-color: #3b82f6; outline: none; }
 }
 
 /* Fallback für mittlere Bildschirme/Tablets (Schaltet auf 2 Spalten) */
-@media (max-width: 850px) {
+@media (max-width: 950px) {
     .history-list { grid-template-columns: repeat(2, 1fr) !important; }
 }
 
 /* Fallback für kleine Smartphone Bildschirme (Schaltet auf 1 Spalte) */
-@media (max-width: 600px) {
+@media (max-width: 650px) {
     .history-list { grid-template-columns: 1fr !important; }
 }
 
@@ -269,6 +269,11 @@ body.waifu-theme .nav-link.active { color: #ff2a9d; border-bottom-color: #ff2a9d
 }
 body.waifu-theme .online-sidebar { border-color: #ff2a9d; box-shadow: 0 0 15px rgba(255, 42, 157, 0.2); }
 
+/* Ajustiert den Hauptinhalt, damit er auf großen Bildschirmen nicht hinter der Sidebar verschwindet */
+@media (min-width: 1250px) {
+    .main-scroll-content { margin-left: 260px; }
+}
+
 /* ==========================================================================
    PROFILE OVERLAY SYSTEM & AVATAR
    ========================================================================== */
@@ -353,5 +358,20 @@ body.waifu-theme .chat-msg.self .chat-msg-content { background: #ff2a9d; }
 }
 .tag-sw { background-color: #3b82f6 !important; box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); }
 .tag-anime { background-color: #ff2a9d !important; box-shadow: 0 0 5px rgba(255, 42, 157, 0.5); }
+
+/* ==========================================================================
+   TEXT GOLD GLOW (Für den Update Button)
+   ========================================================================== */
+.text-gold-glow {
+    color: #ffd700 !important;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.8) !important;
+    animation: textGoldPulse 2s infinite ease-in-out;
+}
+
+@keyframes textGoldPulse {
+    0% { text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); color: #ffd700; }
+    50% { text-shadow: 0 0 25px rgba(255, 215, 0, 1), 0 0 5px #ffffff; color: #ffffff; }
+    100% { text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); color: #ffd700; }
+}
 
 .hidden { display: none !important; }

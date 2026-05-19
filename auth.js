@@ -21,9 +21,12 @@ export async function loginOrRegister(usernameInput, password) {
             const user = userDoc.data();
             user.uid = userDoc.id;
             
-            // Abwärtskompatibilität für getrennte Avatare
             if (!user.avatarStarWars) user.avatarStarWars = user.avatar || "";
             if (!user.avatarWaifu) user.avatarWaifu = "";
+            
+            // NEU: Update-Tracker für bestehende User initialisieren
+            if (user.lastReadVersionStarWars === undefined) user.lastReadVersionStarWars = "";
+            if (user.lastReadVersionWaifu === undefined) user.lastReadVersionWaifu = "";
             
             if (user.password === password) {
                 localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
@@ -45,6 +48,8 @@ export async function loginOrRegister(usernameInput, password) {
                 discovered: [], 
                 avatarStarWars: "",
                 avatarWaifu: "",
+                lastReadVersionStarWars: "", // NEU
+                lastReadVersionWaifu: "",    // NEU
                 uid: newUid
             };
             
@@ -75,14 +80,9 @@ export async function updateUserProfile(newDisplayName, newPassword, newAvatarPa
         }
         
         if (newPassword) updates.password = newPassword;
-        
-        // Speicher-Logik getrennt nach Universum
         if (newAvatarPath !== undefined) {
-            if (currentMode === 'starwars') {
-                updates.avatarStarWars = newAvatarPath;
-            } else {
-                updates.avatarWaifu = newAvatarPath;
-            }
+            if (currentMode === 'starwars') updates.avatarStarWars = newAvatarPath;
+            else updates.avatarWaifu = newAvatarPath;
         }
         
         await updateDoc(doc(db, "users", user.uid), updates);
@@ -95,7 +95,6 @@ export async function updateUserProfile(newDisplayName, newPassword, newAvatarPa
     }
 }
 
-// Übermittelt den lastActive Timestamp und den aktuellen Modus (SW / Anime)
 export function startPresenceHeartbeat() {
     const user = getCurrentUser();
     if (!user) return;
@@ -104,7 +103,7 @@ export function startPresenceHeartbeat() {
         try { 
             await updateDoc(doc(db, "users", user.uid), { 
                 lastActive: Timestamp.now(),
-                activeMode: currentMode // Teilt der Cloud mit, in welchem Universum der Spieler ist
+                activeMode: currentMode 
             }); 
         } catch (e) {}
     };
@@ -122,6 +121,24 @@ export async function markCharacterAsDiscovered(charName) {
     user.discovered.push(charName);
     localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
     try { await updateDoc(doc(db, "users", user.uid), { discovered: arrayUnion(charName) }); } catch (e) {}
+}
+
+// NEU: Markiert Updates als gelesen
+export async function markUpdatesAsRead(mode, version) {
+    const user = getCurrentUser();
+    if (!user || user.role === 'admin') return;
+
+    const field = mode === 'starwars' ? 'lastReadVersionStarWars' : 'lastReadVersionWaifu';
+    if (user[field] === version) return; // Bereits gelesen
+
+    user[field] = version;
+    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
+
+    try {
+        const updateObj = {};
+        updateObj[field] = version;
+        await updateDoc(doc(db, "users", user.uid), updateObj);
+    } catch (e) {}
 }
 
 export function logout() {
