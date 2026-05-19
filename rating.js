@@ -6,9 +6,12 @@ export function initRatingSystem() {
 
     rateButtons.forEach(btn => {
         btn.addEventListener('click', () => {
-            if (btn.classList.contains('selected')) return; // Bereits gewählt
+            if (btn.classList.contains('selected') || btn.disabled) return; // Bereits gewählt oder deaktiviert
 
-            rateButtons.forEach(b => b.classList.remove('selected'));
+            rateButtons.forEach(b => {
+                b.classList.remove('selected');
+                b.disabled = true; // Alle Buttons deaktivieren, damit man nicht nochmal wählen kann
+            });
             btn.classList.add('selected');
             
             ratingFeedback.textContent = `Liste mit ${btn.textContent}/10 bewertet. Gespeichert!`;
@@ -21,6 +24,10 @@ export function initRatingSystem() {
 }
 
 export function resetRatingUI() {
-    document.querySelectorAll('.rate-btn').forEach(btn => btn.classList.remove('selected'));
+    const rateButtons = document.querySelectorAll('.rate-btn');
+    rateButtons.forEach(btn => {
+        btn.classList.remove('selected');
+        btn.disabled = false; // Für die nächste Runde wieder freigeben
+    });
     document.getElementById('rating-feedback').classList.add('hidden');
 }

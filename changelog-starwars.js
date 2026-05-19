@@ -1,4 +1,14 @@
 export const patchNotesStarWars = [
+    { 
+        version: "v2.1.1", 
+        title: "Quality of Life & Bugfixes", 
+        changes: [
+            "Bugfix: Behebung eines Fehlers, bei dem das Ranken und Bewerten blockiert wurde, falls die Cloud-Verbindung kurz hing.",
+            "UI-Update: Bereits genutzte Rang- und Bewertungs-Buttons werden nun sichtbar ausgegraut.",
+            "UI-Update: Leere Karten-Slots haben nun aufgeräumte, durchgezogene Ränder (gestrichelt entfernt).",
+            "UI-Update: Wenn ein Charakter platziert wird, leuchtet der Rahmen des Slots nun passend zur Themenfarbe im Neon-Look auf."
+        ] 
+    },
 	{ 
     version: "v2.1", 
     title: "The Expanded Galaxy Update", 

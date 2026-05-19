@@ -116,7 +116,7 @@ function setupGameUI(user) {
     initLiveSpectating();
 
     document.querySelectorAll('.rank-btn').forEach(btn => {
-        if (!btn.classList.contains('auth-btn')) btn.addEventListener('click', () => handleRankSelection(btn.dataset.rank, btn));
+        if (btn.dataset.rank) btn.addEventListener('click', () => handleRankSelection(btn.dataset.rank, btn));
     });
 
     document.getElementById('restart-btn').addEventListener('click', initGame);

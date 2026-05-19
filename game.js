@@ -80,12 +80,12 @@ export async function handleRankSelection(rank, buttonElement) {
     const user = getCurrentUser();
     if(user && user.role !== 'admin') {
         try {
-            await setDoc(doc(db, "live_games", user.username), {
+            setDoc(doc(db, "live_games", user.username), {
                 displayName: user.displayName || user.username,
                 avatar: user.avatar || '',
                 placedCharacters,
                 updatedAt: Timestamp.now()
-            });
+            }).catch(e => console.error("Live Broadcast Error:", e));
         } catch(e) {}
     }
 
