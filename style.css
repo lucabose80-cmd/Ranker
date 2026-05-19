@@ -767,3 +767,53 @@ body.waifu-theme .mode-toggle-btn.active {
 }
 
 .hidden { display: none !important; }
+
+/* Database Stats Tracker Panel */
+.db-tracker-panel {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    width: 140px;
+    background-color: #0b111e !important;
+    border: 2px solid #00d2ff !important;
+    border-radius: 12px;
+    padding: 10px 14px !important;
+    box-shadow: 0 0 15px rgba(0, 210, 255, 0.25);
+    z-index: 9999;
+    text-align: left;
+    transition: all 0.3s ease;
+}
+body.waifu-theme .db-tracker-panel {
+    border-color: #ff2a9d !important;
+    box-shadow: 0 0 15px rgba(255, 42, 157, 0.25);
+}
+.db-tracker-panel h3 {
+    font-size: 0.7rem !important;
+    color: #8892b0;
+    margin: 0 0 8px 0 !important;
+    letter-spacing: 1px;
+    text-align: center;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 5px;
+}
+.db-stat-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+    color: #cbd5e1;
+}
+.db-stat-row strong {
+    font-family: monospace;
+    font-size: 0.85rem;
+}
+#db-tracker-reads {
+    color: #38bdf8;
+}
+#db-tracker-writes {
+    color: #34d399;
+}
+body.waifu-theme #db-tracker-reads {
+    color: #ff2a9d;
+}

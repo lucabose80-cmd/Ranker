@@ -1,6 +1,7 @@
 // live.js
 import { db } from './firebase-config.js';
 import { collection, onSnapshot, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { trackRead } from './tracker.js';
 
 let liveUnsubscribe = null;
 let activeSpectatedUser = null;
@@ -15,6 +16,7 @@ export function initLiveSpectating() {
     const qLive = query(collection(db, "live_games"), where("updatedAt", ">", Timestamp.fromDate(twoMinutesAgo)));
     
     liveUnsubscribe = onSnapshot(qLive, (snapshot) => {
+        trackRead(snapshot.docChanges().filter(c => c.type !== 'removed').length);
         if (!grid) return;
         grid.innerHTML = '';
         const now = Date.now();

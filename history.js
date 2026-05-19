@@ -4,6 +4,7 @@ import { collection, addDoc, onSnapshot, query, where, limit, Timestamp } from "
 import { getCurrentUser } from './auth.js';
 import { currentMode } from './mode-state.js';
 import { getResets } from './resets.js';
+import { trackRead, trackWrite } from './tracker.js';
 
 let historyCache = [];
 let historyUnsubscribe = null;
@@ -24,6 +25,7 @@ export function initHistoryListener() {
     const q = query(collection(db, "history"), where("mode", "==", currentMode), limit(60));
     
     historyUnsubscribe = onSnapshot(q, (snapshot) => {
+        trackRead(snapshot.docChanges().filter(c => c.type !== 'removed').length);
         let games = [];
         snapshot.forEach((doc) => {
             games.push(doc.data());
@@ -92,6 +94,7 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
             pool: poolData,
             timestamp: Timestamp.now()
         });
+        trackWrite(1);
     } catch (e) {
         console.error("Fehler beim Speichern der Historie: ", e);
     }

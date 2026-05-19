@@ -3,6 +3,7 @@ import { db } from './firebase-config.js';
 import { collection, onSnapshot, query, orderBy, limit, addDoc, Timestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { getCurrentUser } from './auth.js';
 import { currentMode } from './mode-state.js';
+import { trackRead, trackWrite } from './tracker.js';
 
 let chatUnsubscribe = null;
 let onlineInterval = null;
@@ -20,6 +21,7 @@ export function initCommunity() {
     const qChat = query(collection(db, "chat"), orderBy("timestamp", "desc"), limit(50));
     
     chatUnsubscribe = onSnapshot(qChat, (snapshot) => {
+        trackRead(snapshot.docChanges().filter(c => c.type !== 'removed').length);
         const messages = [];
         snapshot.forEach(doc => messages.push(doc.data()));
         messages.reverse();
@@ -65,6 +67,7 @@ export function initCommunity() {
                 text: text,
                 timestamp: Timestamp.now()
             });
+            trackWrite(1);
         } catch(e) {}
     };
 
@@ -82,6 +85,7 @@ export function initCommunity() {
             const threeMinutesAgo = new Date(Date.now() - 180000);
             const qOnline = query(collection(db, "users"), where("lastActive", ">=", Timestamp.fromDate(threeMinutesAgo)));
             const snapshot = await getDocs(qOnline);
+            trackRead(snapshot.size);
             onlineList.innerHTML = '';
             let count = 0;
             const now = Date.now();

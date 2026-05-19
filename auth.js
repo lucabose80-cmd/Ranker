@@ -2,6 +2,7 @@
 import { db } from './firebase-config.js';
 import { doc, setDoc, getDocs, collection, query, where, updateDoc, arrayUnion, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { currentMode } from './mode-state.js';
+import { trackRead, trackWrite } from './tracker.js';
 
 const CURRENT_USER_KEY = 'ranking_game_active_user';
 let heartbeatInterval;
@@ -15,6 +16,7 @@ export async function loginOrRegister(usernameInput, password) {
         const safeName = usernameInput.trim();
         const q = query(collection(db, "users"), where("username", "==", safeName.toLowerCase()));
         const snap = await getDocs(q);
+        trackRead(snap.size);
         
         if (!snap.empty) {
             const userDoc = snap.docs[0];
@@ -54,6 +56,7 @@ export async function loginOrRegister(usernameInput, password) {
             };
             
             await setDoc(doc(db, "users", newUid), newUser);
+            trackWrite(1);
             localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(newUser));
             startPresenceHeartbeat();
             return { success: true, user: newUser, message: 'Account erstellt!' };
@@ -73,6 +76,7 @@ export async function updateUserProfile(newDisplayName, newPassword, newAvatarPa
         if (newDisplayName && newDisplayName.toLowerCase() !== user.username) {
             const q = query(collection(db, "users"), where("username", "==", newDisplayName.toLowerCase()));
             const snap = await getDocs(q);
+            trackRead(snap.size);
             if (!snap.empty) return { success: false, message: "Dieser Name ist bereits vergeben!" };
             
             updates.displayName = newDisplayName;
@@ -86,6 +90,7 @@ export async function updateUserProfile(newDisplayName, newPassword, newAvatarPa
         }
         
         await updateDoc(doc(db, "users", user.uid), updates);
+        trackWrite(1);
         
         const updatedUser = { ...user, ...updates };
         localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updatedUser));
@@ -105,6 +110,7 @@ export function startPresenceHeartbeat() {
                 lastActive: Timestamp.now(),
                 activeMode: currentMode 
             }); 
+            trackWrite(1); 
         } catch (e) {}
     };
     sendHeartbeat();
@@ -120,7 +126,10 @@ export async function markCharacterAsDiscovered(charName) {
 
     user.discovered.push(charName);
     localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
-    try { await updateDoc(doc(db, "users", user.uid), { discovered: arrayUnion(charName) }); } catch (e) {}
+    try { 
+        await updateDoc(doc(db, "users", user.uid), { discovered: arrayUnion(charName) }); 
+        trackWrite(1);
+    } catch (e) {}
 }
 
 // NEU: Markiert Updates als gelesen
@@ -138,6 +147,7 @@ export async function markUpdatesAsRead(mode, version) {
         const updateObj = {};
         updateObj[field] = version;
         await updateDoc(doc(db, "users", user.uid), updateObj);
+        trackWrite(1);
     } catch (e) {}
 }
 
