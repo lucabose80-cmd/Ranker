@@ -1,28 +1,29 @@
 // auth.js
 import { db } from './firebase-config.js';
 import { doc, setDoc, getDocs, collection, query, where, updateDoc, arrayUnion, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { currentMode } from './theme.js';
 
 const CURRENT_USER_KEY = 'ranking_game_active_user';
 let heartbeatInterval;
 
-export async function initAuth() {
-    // Admin Check ignoriert die UID-Logik der Einfachheit halber fürs Testen
-}
+export async function initAuth() {}
 
 export async function loginOrRegister(usernameInput, password) {
     if (!usernameInput || !password) return { success: false, message: 'Bitte alles ausfüllen.' };
     
     try {
         const safeName = usernameInput.trim();
-        // Suche, ob der Name schon existiert
         const q = query(collection(db, "users"), where("username", "==", safeName.toLowerCase()));
         const snap = await getDocs(q);
         
         if (!snap.empty) {
-            // LOGIN
             const userDoc = snap.docs[0];
             const user = userDoc.data();
-            user.uid = userDoc.id; // Die echte Datenbank-ID speichern
+            user.uid = userDoc.id;
+            
+            // Abwärtskompatibilität für getrennte Avatare
+            if (!user.avatarStarWars) user.avatarStarWars = user.avatar || "";
+            if (!user.avatarWaifu) user.avatarWaifu = "";
             
             if (user.password === password) {
                 localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
@@ -32,18 +33,18 @@ export async function loginOrRegister(usernameInput, password) {
                 return { success: false, message: 'Falsches Passwort.' };
             }
         } else {
-            // REGISTRIEREN (Erstellt eine einzigartige ID)
             const newUid = "user_" + Date.now().toString(36) + Math.random().toString(36).substring(2);
             const role = safeName.toLowerCase() === 'admin' ? 'admin' : 'player';
             
             const newUser = { 
-                username: safeName.toLowerCase(), // Wird intern kleingeschrieben für die Suche
-                displayName: safeName, // Zeigt Groß/Kleinschreibung
+                username: safeName.toLowerCase(),
+                displayName: safeName,
                 password, 
                 role, 
                 stats: { gamesPlayed: 0 }, 
                 discovered: [], 
-                avatar: "",
+                avatarStarWars: "",
+                avatarWaifu: "",
                 uid: newUid
             };
             
@@ -64,7 +65,6 @@ export async function updateUserProfile(newDisplayName, newPassword, newAvatarPa
     try {
         const updates = {};
         
-        // Prüfen, ob der neue Name schon jemand anderem gehört
         if (newDisplayName && newDisplayName.toLowerCase() !== user.username) {
             const q = query(collection(db, "users"), where("username", "==", newDisplayName.toLowerCase()));
             const snap = await getDocs(q);
@@ -75,7 +75,15 @@ export async function updateUserProfile(newDisplayName, newPassword, newAvatarPa
         }
         
         if (newPassword) updates.password = newPassword;
-        if (newAvatarPath !== undefined) updates.avatar = newAvatarPath;
+        
+        // Speicher-Logik getrennt nach Universum
+        if (newAvatarPath !== undefined) {
+            if (currentMode === 'starwars') {
+                updates.avatarStarWars = newAvatarPath;
+            } else {
+                updates.avatarWaifu = newAvatarPath;
+            }
+        }
         
         await updateDoc(doc(db, "users", user.uid), updates);
         
@@ -87,12 +95,18 @@ export async function updateUserProfile(newDisplayName, newPassword, newAvatarPa
     }
 }
 
+// Übermittelt den lastActive Timestamp und den aktuellen Modus (SW / Anime)
 export function startPresenceHeartbeat() {
     const user = getCurrentUser();
     if (!user) return;
     
     const sendHeartbeat = async () => {
-        try { await updateDoc(doc(db, "users", user.uid), { lastActive: Timestamp.now() }); } catch (e) {}
+        try { 
+            await updateDoc(doc(db, "users", user.uid), { 
+                lastActive: Timestamp.now(),
+                activeMode: currentMode // Teilt der Cloud mit, in welchem Universum der Spieler ist
+            }); 
+        } catch (e) {}
     };
     sendHeartbeat();
     if(heartbeatInterval) clearInterval(heartbeatInterval);

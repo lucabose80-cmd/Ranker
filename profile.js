@@ -1,8 +1,6 @@
 // profile.js
 import { updateUserProfile, getCurrentUser } from './auth.js';
-import { activeCharacterDatabase } from './theme.js';
-
-let selectedAvatarPath = "";
+import { activeCharacterDatabase, currentMode } from './theme.js';
 
 export function renderAvatarSelection() {
     const user = getCurrentUser();
@@ -10,49 +8,56 @@ export function renderAvatarSelection() {
     if (!grid || !user) return;
     
     grid.innerHTML = '';
-    selectedAvatarPath = user.avatar;
+    // Ziehe den passenden Avatar je nach Modus
+    const currentAvatar = currentMode === 'starwars' ? user.avatarStarWars : user.avatarWaifu;
 
-    // Nur Charaktere des aktiven Universums anzeigen
     const sortedChars = [...activeCharacterDatabase].sort((a,b) => a.name.localeCompare(b.name));
     
     sortedChars.forEach(char => {
         const card = document.createElement('div');
-        card.className = `lexikon-card avatar-card ${selectedAvatarPath === char.img ? 'selected' : ''}`;
+        card.className = `lexikon-card avatar-card ${currentAvatar === char.img ? 'selected' : ''}`;
         card.innerHTML = `<img src="${char.img}"><span>${char.name}</span>`;
         
-        card.addEventListener('click', () => {
+        card.addEventListener('click', async () => {
             document.querySelectorAll('.avatar-card').forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
-            selectedAvatarPath = char.img;
+            
+            const res = await updateUserProfile(user.displayName, null, char.img);
+            if(res.success) {
+                updateTopbarAvatarElement(res.user);
+            }
         });
         grid.appendChild(card);
     });
 }
 
+export function updateTopbarAvatarElement(user) {
+    const topAvatar = document.getElementById('topbar-avatar');
+    const avatarToUse = currentMode === 'starwars' ? user.avatarStarWars : user.avatarWaifu;
+    
+    if(avatarToUse) {
+        topAvatar.src = avatarToUse;
+        topAvatar.classList.remove('hidden');
+    } else {
+        topAvatar.classList.add('hidden');
+    }
+}
+
 export function initProfile() {
     const user = getCurrentUser();
     if(!user) return;
-
     document.getElementById('profile-displayname').value = user.displayName;
     renderAvatarSelection();
 
     document.getElementById('save-profile-btn').addEventListener('click', async () => {
         const newName = document.getElementById('profile-displayname').value;
         const newPass = document.getElementById('profile-password').value;
+        const res = await updateUserProfile(newName, newPass || null, undefined);
         
-        const res = await updateUserProfile(newName, newPass || null, selectedAvatarPath);
         const feedback = document.getElementById('profile-feedback');
         feedback.classList.remove('hidden');
-        if(res.success) {
-            feedback.textContent = "Profil erfolgreich aktualisiert!";
-            feedback.style.color = "#2ed573";
-            document.getElementById('player-greeting').textContent = res.user.displayName;
-            if(res.user.avatar) {
-                document.getElementById('topbar-avatar').src = res.user.avatar;
-            }
-        } else {
-            feedback.textContent = "Fehler: " + res.message;
-            feedback.style.color = "#ff4757";
-        }
+        feedback.textContent = res.success ? "Daten gespeichert!" : "Fehler: " + res.message;
+        feedback.style.color = res.success ? "#2ed573" : "#ff4757";
+        if(res.success) document.getElementById('player-greeting').textContent = newName;
     });
 }

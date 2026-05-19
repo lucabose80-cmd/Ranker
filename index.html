@@ -36,102 +36,135 @@
 
     <div id="game-view" class="view-container hidden">
         
-        <nav class="game-nav">
-            <button class="nav-link active" data-target="game-main-content">SPIEL</button>
-            <button class="nav-link" data-target="live-content">LIVE</button>
-            <button class="nav-link" data-target="history-content">HISTORIE</button>
-            <button class="nav-link" data-target="scoreboard-content">SCOREBOARD</button>
-            <button class="nav-link" data-target="lexikon-content">LEXIKON</button>
-            <button class="nav-link" data-target="community-content">COMMUNITY</button>
-        </nav>
+        <div class="sticky-nav-container">
+            <nav class="game-nav">
+                <button class="nav-link active" data-target="game-main-content">SPIEL</button>
+                <button class="nav-link" data-target="live-content">LIVE</button>
+                <button class="nav-link" data-target="history-content">HISTORIE</button>
+                <button class="nav-link" data-target="scoreboard-content">SCOREBOARD</button>
+                <button class="nav-link" data-target="lexikon-content">LEXIKON</button>
+            </nav>
 
-        <div class="top-bar">
-            <div id="profile-trigger" class="profile-trigger" title="Profil öffnen">
-                <img id="topbar-avatar" class="mini-avatar hidden" src="" alt="Avatar">
-                <span id="player-greeting" class="prompt-text"></span>
-            </div>
-            <button id="logout-btn" class="text-btn logout-btn">LOGOUT</button>
-        </div>
-        
-        <button id="changelog-open-btn" class="text-btn">UPDATES</button>
-
-        <div id="game-main-content" class="tab-content app-container">
-            <header>
-                <h1 id="main-title">STAR WARS RANKING</h1>
-                <p>Ordne 5 Charaktere blind ein. Wo landen sie?</p>
-            </header>
-            <div class="panel ranking-panel">
-                <h2>DEIN RANKING</h2>
-                <div id="ranking-board" class="horizontal-board">
-                    <div class="rank-column" id="slot-1"><div class="card-container"><span class="rank-number">1</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
-                    <div class="rank-column" id="slot-2"><div class="card-container"><span class="rank-number">2</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
-                    <div class="rank-column" id="slot-3"><div class="card-container"><span class="rank-number">3</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
-                    <div class="rank-column" id="slot-4"><div class="card-container"><span class="rank-number">4</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
-                    <div class="rank-column" id="slot-5"><div class="card-container"><span class="rank-number">5</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
+            <div class="top-bar">
+                <div id="profile-trigger" class="profile-trigger" title="Profil öffnen">
+                    <img id="topbar-avatar" class="mini-avatar hidden" src="" alt="Avatar">
+                    <span id="player-greeting" class="prompt-text"></span>
                 </div>
+                <button id="logout-btn" class="text-btn logout-btn">LOGOUT</button>
             </div>
-            <div class="panel selection-panel">
-                <div id="active-game-area">
-                    <h3 id="progress-text">CHARAKTER 1 / 5</h3>
-                    <div class="current-character-wrapper"><div id="current-image-container"></div></div>
-                    <h2 class="mystery-name">???</h2>
-                    <div id="action-area">
-                        <p class="prompt-text">AUF WELCHEN PLATZ?</p>
-                        <div class="action-buttons">
-                            <button class="rank-btn" data-rank="1">1</button><button class="rank-btn" data-rank="2">2</button><button class="rank-btn" data-rank="3">3</button><button class="rank-btn" data-rank="4">4</button><button class="rank-btn" data-rank="5">5</button>
+            <button id="changelog-open-btn" class="text-btn">UPDATES</button>
+        </div>
+
+        <div class="main-scroll-content">
+            
+            <div id="game-main-content" class="tab-content app-container">
+                <header>
+                    <h1 id="main-title">STAR WARS RANKING</h1>
+                    <p>Ordne 5 Charaktere blind ein. Wo landen sie?</p>
+                </header>
+                <div class="panel ranking-panel">
+                    <h2>DEIN RANKING</h2>
+                    <div id="ranking-board" class="horizontal-board">
+                        <div class="rank-column" id="slot-1"><div class="card-container"><span class="rank-number">1</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
+                        <div class="rank-column" id="slot-2"><div class="card-container"><span class="rank-number">2</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
+                        <div class="rank-column" id="slot-3"><div class="card-container"><span class="rank-number">3</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
+                        <div class="rank-column" id="slot-4"><div class="card-container"><span class="rank-number">4</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
+                        <div class="rank-column" id="slot-5"><div class="card-container"><span class="rank-number">5</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
+                    </div>
+                </div>
+                <div class="panel selection-panel">
+                    <div id="active-game-area">
+                        <h3 id="progress-text">CHARAKTER 1 / 5</h3>
+                        <div class="current-character-wrapper"><div id="current-image-container"></div></div>
+                        <h2 class="mystery-name">???</h2>
+                        <div id="action-area">
+                            <p class="prompt-text">AUF WELCHEN PLATZ?</p>
+                            <div class="action-buttons">
+                                <button class="rank-btn" data-rank="1">1</button><button class="rank-btn" data-rank="2">2</button><button class="rank-btn" data-rank="3">3</button><button class="rank-btn" data-rank="4">4</button><button class="rank-btn" data-rank="5">5</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div id="end-screen-area" class="hidden">
-                    <h1 class="end-title">RANKING FERTIG!</h1>
-                    <p class="end-subtitle">Die Identitäten wurden aufgedeckt!</p>
-                    <p class="prompt-text rating-prompt">BEWERTE DEINE LISTE (1-10)</p>
-                    <div class="rating-buttons">
-                        <button class="rate-btn">1</button><button class="rate-btn">2</button><button class="rate-btn">3</button><button class="rate-btn">4</button><button class="rate-btn">5</button>
-                        <button class="rate-btn">6</button><button class="rate-btn">7</button><button class="rate-btn">8</button><button class="rate-btn">9</button><button class="rate-btn">10</button>
+                    <div id="end-screen-area" class="hidden">
+                        <h1 class="end-title">RANKING FERTIG!</h1>
+                        <p class="end-subtitle">Die Identitäten wurden aufgedeckt!</p>
+                        <p class="prompt-text rating-prompt">BEWERTE DEINE LISTE (1-10)</p>
+                        <div class="rating-buttons">
+                            <button class="rate-btn">1</button><button class="rate-btn">2</button><button class="rate-btn">3</button><button class="rate-btn">4</button><button class="rate-btn">5</button>
+                            <button class="rate-btn">6</button><button class="rate-btn">7</button><button class="rate-btn">8</button><button class="rate-btn">9</button><button class="rate-btn">10</button>
+                        </div>
+                        <p id="rating-feedback" class="hidden">Danke für deine Bewertung!</p>
+                        <button id="restart-btn">NEUES SPIEL</button>
                     </div>
-                    <p id="rating-feedback" class="hidden">Danke für deine Bewertung!</p>
-                    <button id="restart-btn">NEUES SPIEL</button>
                 </div>
             </div>
-        </div>
 
-        <div id="live-content" class="tab-content app-container hidden">
-            <div class="panel history-panel">
-                <h2>LIVE SPIELE</h2>
-                <p class="prompt-text">Schau anderen Spielern in Echtzeit zu</p>
-                <div id="live-games-list" class="history-list"></div>
+            <div id="live-content" class="tab-content app-container hidden">
+                <div class="panel history-panel">
+                    <h2>LIVE SPIELE</h2>
+                    <p class="prompt-text">Schau anderen Spielern in Echtzeit zu</p>
+                    <div id="live-games-grid" class="live-grid"></div>
+                </div>
             </div>
-        </div>
 
-        <div id="history-content" class="tab-content app-container hidden"><div class="panel history-panel"><h2>GALAKTISCHE ARCHIVE</h2><div id="history-list" class="history-list"></div></div></div>
-        <div id="scoreboard-content" class="tab-content app-container hidden"><div class="panel history-panel"><h2>SCOREBOARD</h2><div class="scoreboard-controls"><select id="scoreboard-user-filter"><option value="global">Global (Alle)</option></select></div><div id="scoreboard-list" class="history-list"></div></div></div>
-        <div id="lexikon-content" class="tab-content app-container hidden"><div class="panel history-panel"><h2>LEXIKON</h2><div id="lexikon-grid" class="lexikon-grid"></div></div></div>
-
-        <div id="community-content" class="tab-content app-container hidden">
-            <div class="panel online-panel" style="max-width: 600px; margin: 0 auto; width: 100%;">
-                <h2>ONLINE (<span id="online-count">0</span>)</h2>
-                <div id="online-users-list" class="online-list"></div>
+            <div id="history-content" class="tab-content app-container hidden">
+                <div class="panel history-panel">
+                    <h2>GALAKTISCHE ARCHIVE</h2>
+                    <div id="history-list" class="history-list"></div>
+                </div>
             </div>
+
+            <div id="scoreboard-content" class="tab-content app-container hidden">
+                <div class="panel history-panel">
+                    <h2>SCOREBOARD</h2>
+                    <div class="scoreboard-controls">
+                        <select id="scoreboard-user-filter">
+                            <option value="global">Global (Alle)</option>
+                        </select>
+                    </div>
+                    <div id="scoreboard-list" class="history-list"></div>
+                </div>
+            </div>
+
+            <div id="lexikon-content" class="tab-content app-container hidden">
+                <div class="panel history-panel">
+                    <h2>LEXIKON</h2>
+                    <div id="lexikon-grid" class="lexikon-grid"></div>
+                </div>
+            </div>
+
         </div>
 
-        <div id="profile-content" class="tab-content app-container hidden">
+        <div id="profile-overlay" class="profile-overlay hidden">
             <div class="panel profile-panel">
+                <button id="close-profile-btn" class="close-overlay-btn">✕</button>
                 <h2>DEIN PROFIL</h2>
                 <div class="profile-layout">
                     <div class="profile-settings">
-                        <p class="prompt-text">Benutzername ändern</p>
+                        <p class="prompt-text">Name ändern</p>
                         <input type="text" id="profile-displayname">
                         <p class="prompt-text">Passwort ändern</p>
                         <input type="password" id="profile-password" placeholder="Neues Passwort">
                         <button id="save-profile-btn" class="rank-btn auth-btn">Speichern</button>
                         <p id="profile-feedback" class="prompt-text hidden"></p>
+                        
+                        <div class="profile-online-box">
+                            <h3>WER IST ONLINE? (<span id="online-count">0</span>)</h3>
+                            <div id="online-users-list" class="online-list"></div>
+                        </div>
                     </div>
                     <div class="profile-avatar-selection">
-                        <p class="prompt-text">Avatar auswählen (Zeigt nur aktuelles Universum)</p>
+                        <p class="prompt-text">Avatar wählen (Speichert sofort für dieses Universum)</p>
                         <div id="avatar-grid" class="lexikon-grid"></div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div id="spectator-modal" class="profile-overlay hidden">
+            <div class="panel spectator-modal-panel">
+                <button id="close-spectator-btn" class="close-overlay-btn">✕</button>
+                <h2 id="spectator-title">Spieler schaut zu</h2>
+                <div id="spectator-board" class="horizontal-board spec-large-board"></div>
             </div>
         </div>
 

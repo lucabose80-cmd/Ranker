@@ -9,9 +9,9 @@ import { initAdminPanel } from './admin.js';
 import { renderHistory } from './history.js';
 import { renderScoreboard } from './scoreboard.js';
 import { renderLexikon } from './lexikon.js';
-import { initProfile } from './profile.js';
+import { initProfile, renderAvatarSelection, updateTopbarAvatarElement } from './profile.js';
 import { initCommunity } from './community.js';
-import { initLiveSpectating } from './live.js'; // NEU
+import { initLiveSpectating, closeSpectatorModal } from './live.js';
 
 const eyeOpenSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
 const eyeClosedSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
@@ -31,7 +31,7 @@ async function bootApp() {
         setupAdminUI();
     } else {
         setupGameUI(currentUser);
-        startPresenceHeartbeat();
+        startPresenceHeartbeat(); // Startet den Online-Status-Ping
     }
     await initAuth(); 
 }
@@ -51,29 +51,30 @@ function setupAuthUI() {
     lBtn.addEventListener('click', async () => {
         lBtn.disabled = true; lBtn.textContent = "Lädt...";
         const res = await loginOrRegister(document.getElementById('auth-username').value, pInput.value);
-        lBtn.disabled = false; lBtn.textContent = "Los geht's";
         if (res.success) location.reload();
-        else showAuthFeedback(res.message, false);
+        else {
+            lBtn.disabled = false; lBtn.textContent = "Los geht's";
+            const f = document.getElementById('auth-feedback');
+            f.textContent = res.message; f.style.color = '#ff4757'; f.classList.remove('hidden');
+        }
     });
 }
 
-function setupAdminUI() {
-    showView('admin-view');
-    initAdminPanel();
-}
+// Profil Overlay schließen
+const closeProfileOverlay = () => {
+    document.getElementById('profile-overlay').classList.add('hidden');
+};
 
 function setupGameUI(user) {
     showView('game-view');
     document.getElementById('player-greeting').textContent = user.displayName;
-    if(user.avatar) {
-        const topA = document.getElementById('topbar-avatar');
-        topA.src = user.avatar; topA.classList.remove('hidden');
-    }
+    updateTopbarAvatarElement(user);
     document.getElementById('logout-btn').addEventListener('click', logout);
 
-    const tabs = ['game-main-content', 'live-content', 'history-content', 'scoreboard-content', 'lexikon-content', 'community-content', 'profile-content'];
+    // Die Tabs des Spiels (ohne Community, ohne Profil)
+    const tabs = ['game-main-content', 'live-content', 'history-content', 'scoreboard-content', 'lexikon-content'];
     
-    // Tab Logik
+    // Tab-Navigation mit erzwungenem Live-Reload bei JEDEM Klick
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', () => {
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -83,20 +84,26 @@ function setupGameUI(user) {
             const target = link.dataset.target;
             document.getElementById(target).classList.remove('hidden');
             
+            // SOFORTIGES ERZWUNGENES NEULADEN BEI TAB-KLICK
             if (target === 'history-content') renderHistory();
             if (target === 'scoreboard-content') renderScoreboard();
             if (target === 'lexikon-content') renderLexikon();
+            if (target === 'live-content') initLiveSpectating();
         });
     });
 
-    // Profil Klick Logik
+    // Profil Overlay öffnen
     document.getElementById('profile-trigger').addEventListener('click', () => {
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        tabs.forEach(t => document.getElementById(t).classList.add('hidden'));
-        document.getElementById('profile-content').classList.remove('hidden');
+        document.getElementById('profile-overlay').classList.remove('hidden');
+        renderAvatarSelection(); // Baut die Bilder passend zum aktuellen Universum auf
     });
+    
+    document.getElementById('close-profile-btn').addEventListener('click', closeProfileOverlay);
 
-    // Chat Toggle Logik
+    // Live-Zuschauer Modal schließen
+    document.getElementById('close-spectator-btn').addEventListener('click', closeSpectatorModal);
+
+    // Chat Box Toggle
     const chatWidget = document.getElementById('chat-widget');
     document.getElementById('chat-toggle-btn').addEventListener('click', () => chatWidget.classList.toggle('hidden'));
     document.getElementById('close-chat-btn').addEventListener('click', () => chatWidget.classList.add('hidden'));
@@ -106,23 +113,26 @@ function setupGameUI(user) {
     updateChangelogContent(patchNotesStarWars);
     initProfile();
     initCommunity();
-    initLiveSpectating(); // Startet Live Updates
+    initLiveSpectating();
 
     document.querySelectorAll('.rank-btn').forEach(btn => {
         if (!btn.classList.contains('auth-btn')) btn.addEventListener('click', () => handleRankSelection(btn.dataset.rank, btn));
     });
 
     document.getElementById('restart-btn').addEventListener('click', initGame);
-    document.addEventListener('keydown', (e) => { if (e.key === 'ArrowDown') { e.preventDefault(); toggleTheme(); } });
+    
+    // Tastenanschläge abfangen (Pfeiltaste = Moduswechsel, Esc = Profil / Zuschauen schließen)
+    document.addEventListener('keydown', (e) => { 
+        if (e.key === 'ArrowDown') { e.preventDefault(); toggleTheme(); }
+        if (e.key === 'Escape') {
+            closeProfileOverlay();
+            closeSpectatorModal();
+        }
+    });
 
     tabs.forEach(t => document.getElementById(t).classList.add('hidden'));
     document.getElementById('game-main-content').classList.remove('hidden');
     initGame();
-}
-
-function showAuthFeedback(msg, isSuccess) {
-    const f = document.getElementById('auth-feedback');
-    f.textContent = msg; f.style.color = isSuccess ? '#2ed573' : '#ff4757'; f.classList.remove('hidden'); 
 }
 
 bootApp();

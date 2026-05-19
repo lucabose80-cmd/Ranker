@@ -7,7 +7,7 @@ body {
     color: #ffffff;
     text-align: center;
     margin: 0;
-    padding: 30px 10px;
+    padding: 0; /* Padding entfernt, da wir jetzt ein Sticky-Nav haben */
 }
 
 .app-container {
@@ -95,25 +95,9 @@ header p {
     overflow: hidden;
 }
 
-.placeholder-icon { 
-    font-size: 2rem; 
-    color: #555; 
-}
-
-.card-content img { 
-    width: 100%; 
-    height: 100%; 
-    object-fit: cover; 
-}
-
-.card-label { 
-    margin-top: 10px; 
-    display: flex; 
-    flex-direction: column; 
-    color: #555; 
-    font-size: 0.8rem; 
-    gap: 2px; 
-}
+.placeholder-icon { font-size: 2rem; color: #555; }
+.card-content img { width: 100%; height: 100%; object-fit: cover; }
+.card-label { margin-top: 10px; display: flex; flex-direction: column; color: #555; font-size: 0.8rem; gap: 2px; }
 
 .revealed-name {
     color: #ffe81f !important; 
@@ -140,727 +124,191 @@ header p {
     justify-content: center;
 }
 
-.selection-panel h3 { 
-    color: #fff; 
-    font-size: 0.9rem; 
-    letter-spacing: 1px; 
-    margin-top: 0; 
-    margin-bottom: 20px; 
-}
-
-.current-character-wrapper { 
-    display: flex; 
-    justify-content: center; 
-    margin-bottom: 15px; 
-}
+.selection-panel h3 { color: #fff; font-size: 0.9rem; letter-spacing: 1px; margin-top: 0; margin-bottom: 20px; }
+.current-character-wrapper { display: flex; justify-content: center; margin-bottom: 15px; }
 
 #current-image-container {
-    width: 220px; 
-    height: 250px; 
-    border: 2px solid #3b82f6; 
-    border-radius: 8px;
+    width: 220px; height: 250px; 
+    border: 2px solid #3b82f6; border-radius: 8px;
     background-color: #000; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
+    display: flex; align-items: center; justify-content: center; 
     overflow: hidden;
 }
+#current-image-container img { width: 100%; height: 100%; object-fit: cover; }
 
-#current-image-container img { 
-    width: 100%; 
-    height: 100%; 
-    object-fit: cover; 
-}
-
-.mystery-name { 
-    margin: 5px 0 20px 0; 
-    font-size: 1.8rem !important; 
-}
-
-.prompt-text { 
-    color: #888; 
-    font-size: 0.8rem; 
-    letter-spacing: 1px; 
-    margin-bottom: 15px; 
-}
-
-.action-buttons { 
-    display: flex; 
-    justify-content: center; 
-    gap: 15px; 
-    margin-bottom: 10px; 
-}
+.mystery-name { margin: 5px 0 20px 0; font-size: 1.8rem !important; }
+.prompt-text { color: #888; font-size: 0.8rem; letter-spacing: 1px; margin-bottom: 15px; }
+.action-buttons { display: flex; justify-content: center; gap: 15px; margin-bottom: 10px; }
 
 .rank-btn {
-    background-color: transparent; 
-    color: #3b82f6; 
-    border: 2px solid #3b82f6; 
-    border-radius: 6px;
-    width: 50px; 
-    height: 50px; 
-    font-size: 1.2rem; 
-    font-weight: bold; 
-    cursor: pointer; 
-    transition: all 0.2s;
+    background-color: transparent; color: #3b82f6; 
+    border: 2px solid #3b82f6; border-radius: 6px;
+    width: 50px; height: 50px; 
+    font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: all 0.2s;
 }
-
-.rank-btn:hover:not(:disabled) { 
-    background-color: rgba(59, 130, 246, 0.2); 
-    box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); 
-}
-
-.rank-btn:disabled { 
-    border-color: #333; 
-    color: #333; 
-    cursor: not-allowed; 
-    background-color: transparent; 
-    box-shadow: none; 
-}
+.rank-btn:hover:not(:disabled) { background-color: rgba(59, 130, 246, 0.2); box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
+.rank-btn:disabled { border-color: #333; color: #333; cursor: not-allowed; background-color: transparent; box-shadow: none; }
 
 /* ==========================================================================
    END SCREEN & RATING
    ========================================================================== */
-.end-title {
-    color: #3b82f6; 
-    font-size: 2.8rem; 
-    margin: 0 0 10px 0;
-    text-shadow: 0 0 20px rgba(59, 130, 246, 0.8); 
-    letter-spacing: 1px; 
-    text-transform: uppercase;
-}
-
-.end-subtitle { 
-    color: #b2bec3; 
-    font-size: 1.1rem; 
-    margin-bottom: 40px; 
-}
-
-.rating-prompt { 
-    color: #555; 
-    margin-bottom: 15px; 
-    font-weight: bold; 
-}
-
-.rating-buttons { 
-    display: flex; 
-    justify-content: center; 
-    flex-wrap: wrap; 
-    gap: 10px; 
-    margin-bottom: 20px; 
-}
+.end-title { color: #3b82f6; font-size: 2.8rem; margin: 0 0 10px 0; text-shadow: 0 0 20px rgba(59, 130, 246, 0.8); letter-spacing: 1px; text-transform: uppercase; }
+.end-subtitle { color: #b2bec3; font-size: 1.1rem; margin-bottom: 40px; }
+.rating-prompt { color: #555; margin-bottom: 15px; font-weight: bold; }
+.rating-buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
 
 .rate-btn {
-    background-color: #0a0e17; 
-    color: #3b82f6; 
-    border: 2px solid #3b82f6; 
-    border-radius: 8px;
-    width: 45px; 
-    height: 45px; 
-    font-size: 1.1rem; 
-    font-weight: bold; 
-    cursor: pointer; 
-    transition: all 0.2s;
+    background-color: #0a0e17; color: #3b82f6; 
+    border: 2px solid #3b82f6; border-radius: 8px;
+    width: 45px; height: 45px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: all 0.2s;
     box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
 }
+.rate-btn:hover { background-color: rgba(59, 130, 246, 0.2); box-shadow: 0 0 15px rgba(59, 130, 246, 0.6); transform: translateY(-2px); }
+.rate-btn.selected { background-color: #3b82f6; color: #fff; box-shadow: 0 0 20px rgba(59, 130, 246, 0.8); }
 
-.rate-btn:hover { 
-    background-color: rgba(59, 130, 246, 0.2); 
-    box-shadow: 0 0 15px rgba(59, 130, 246, 0.6); 
-    transform: translateY(-2px); 
-}
-
-.rate-btn.selected { 
-    background-color: #3b82f6; 
-    color: #fff; 
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.8); 
-}
-
-#rating-feedback { 
-    color: #2ed573; 
-    font-size: 0.9rem; 
-    margin-bottom: 20px; 
-}
-
+#rating-feedback { color: #2ed573; font-size: 0.9rem; margin-bottom: 20px; }
 #restart-btn {
-    background-color: #3b82f6; 
-    color: #fff; 
-    border: none; 
-    padding: 12px 30px; 
-    font-size: 1rem;
-    font-weight: bold; 
-    border-radius: 6px; 
-    cursor: pointer; 
-    margin-top: 20px; 
-    letter-spacing: 1px;
+    background-color: #3b82f6; color: #fff; border: none; padding: 12px 30px; 
+    font-size: 1rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; letter-spacing: 1px;
 }
-
-#restart-btn:hover { 
-    background-color: #2563eb; 
-}
+#restart-btn:hover { background-color: #2563eb; }
 
 /* ==========================================================================
    CHANGELOG & MODALS
    ========================================================================== */
-.text-btn {
-    position: absolute; 
-    top: 20px; 
-    right: 20px; 
-    background: none; 
-    border: none;
-    color: #888; 
-    font-size: 0.9rem; 
-    letter-spacing: 1px; 
-    cursor: pointer; 
-    font-weight: bold;
-}
-
-.text-btn:hover { 
-    color: #fff; 
-    text-decoration: underline; 
-}
+.text-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #888; font-size: 0.9rem; letter-spacing: 1px; cursor: pointer; font-weight: bold; }
+.text-btn:hover { color: #fff; text-decoration: underline; }
 
 .modal {
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
-    background-color: rgba(0, 0, 0, 0.85);
-    z-index: 100; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    background-color: rgba(0, 0, 0, 0.85); z-index: 3000; 
+    display: flex; justify-content: center; align-items: center;
 }
-
 .updates-content {
-    background-color: #0f1219;
-    border: 2px solid #3b82f6; 
-    border-radius: 12px; 
-    padding: 30px 40px;
-    width: 90%; 
-    max-width: 600px; 
-    max-height: 80vh; 
-    overflow-y: auto;
-    position: relative; 
-    box-shadow: 0 0 30px rgba(59, 130, 246, 0.3); 
-    text-align: left;
+    background-color: #0f1219; border: 2px solid #3b82f6; border-radius: 12px; padding: 30px 40px;
+    width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; position: relative; box-shadow: 0 0 30px rgba(59, 130, 246, 0.3); text-align: left;
 }
+.updates-main-title { color: #fff; margin-top: 0; font-size: 1.5rem; text-align: center; letter-spacing: 2px; }
+.updates-divider { border: 0; height: 1px; background: #333; margin-bottom: 25px; }
+.close-btn { position: absolute; top: 15px; right: 20px; font-size: 2rem; color: #888; cursor: pointer; line-height: 1; }
+.close-btn:hover { color: #fff; }
 
-.updates-main-title { 
-    color: #fff; 
-    margin-top: 0; 
-    font-size: 1.5rem; 
-    text-align: center; 
-    letter-spacing: 2px; 
-}
-
-.updates-divider { 
-    border: 0; 
-    height: 1px; 
-    background: #333; 
-    margin-bottom: 25px; 
-}
-
-.close-btn { 
-    position: absolute; 
-    top: 15px; 
-    right: 20px; 
-    font-size: 2rem; 
-    color: #888; 
-    cursor: pointer; 
-    line-height: 1; 
-}
-
-.close-btn:hover { 
-    color: #fff; 
-}
-
-.update-card {
-    background-color: #1a1e29;
-    border-radius: 8px; 
-    padding: 20px; 
-    margin-bottom: 15px; 
-    border: 1px solid #2a3142;
-}
-
-.update-card-title { 
-    margin-top: 0; 
-    margin-bottom: 15px; 
-    color: #fff; 
-    font-size: 1.2rem; 
-    display: flex; 
-    align-items: center; 
-    gap: 10px; 
-}
-
-.version-badge {
-    background-color: #3b82f6; 
-    color: #fff; 
-    padding: 3px 8px;
-    border-radius: 5px; 
-    font-size: 0.9rem; 
-    font-weight: bold;
-}
-
-.update-card ul { 
-    color: #b2bec3; 
-    font-size: 0.95rem; 
-    padding-left: 20px; 
-    line-height: 1.6; 
-    margin: 0; 
-}
-
-.update-card li { 
-    margin-bottom: 5px; 
-}
+.update-card { background-color: #1a1e29; border-radius: 8px; padding: 20px; margin-bottom: 15px; border: 1px solid #2a3142; }
+.update-card-title { margin-top: 0; margin-bottom: 15px; color: #fff; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
+.version-badge { background-color: #3b82f6; color: #fff; padding: 3px 8px; border-radius: 5px; font-size: 0.9rem; font-weight: bold; }
+.update-card ul { color: #b2bec3; font-size: 0.95rem; padding-left: 20px; line-height: 1.6; margin: 0; }
+.update-card li { margin-bottom: 5px; }
 
 /* ==========================================================================
-   AUTH & ADMIN PANEL (Login, Registrierung)
+   AUTH & ADMIN PANEL
    ========================================================================== */
-.view-container { 
-    width: 100%; 
-    min-height: 100vh; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: center; 
-}
+.view-container { width: 100%; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.auth-panel, .admin-panel { width: 100%; max-width: 400px; padding: 40px; }
+.admin-panel { max-width: 600px; }
+input { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 6px; border: 2px solid #333; background-color: #111; color: #fff; font-size: 1rem; box-sizing: border-box; transition: border-color 0.3s; }
+input:focus { border-color: #3b82f6; outline: none; }
 
-.auth-panel, .admin-panel { 
-    width: 100%; 
-    max-width: 400px; 
-    padding: 40px; 
-}
+.password-wrapper { position: relative; width: 100%; margin-bottom: 20px; }
+.password-wrapper input { margin-bottom: 0; padding-right: 40px; }
+.eye-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #888; width: 20px; height: 20px; display: flex; align-items: center; }
+.eye-icon:hover { color: #fff; }
+.eye-icon svg { width: 100%; height: 100%; display: block; }
+.auth-buttons { display: flex; flex-direction: column; gap: 10px; }
+.auth-btn { width: 100%; height: 45px; border-radius: 6px; }
 
-.admin-panel { 
-    max-width: 600px; 
-}
-
-input { 
-    width: 100%; 
-    padding: 12px; 
-    margin-bottom: 20px; 
-    border-radius: 6px; 
-    border: 2px solid #333; 
-    background-color: #111; 
-    color: #fff; 
-    font-size: 1rem; 
-    box-sizing: border-box; 
-    transition: border-color 0.3s;
-}
-
-input:focus { 
-    border-color: #3b82f6; 
-    outline: none; 
-}
-
-/* Passwort Augen-Symbol (SVG) */
-.password-wrapper { 
-    position: relative; 
-    width: 100%; 
-    margin-bottom: 20px; 
-}
-
-.password-wrapper input { 
-    margin-bottom: 0; 
-    padding-right: 40px; 
-}
-
-.eye-icon { 
-    position: absolute; 
-    right: 12px; 
-    top: 50%; 
-    transform: translateY(-50%); 
-    cursor: pointer; 
-    color: #888; 
-    width: 20px; 
-    height: 20px;
-    transition: color 0.2s; 
-    display: flex;
-    align-items: center;
-}
-
-.eye-icon:hover { 
-    color: #fff; 
-}
-
-.eye-icon svg {
-    width: 100%;
-    height: 100%;
-    display: block;
-}
-
-.auth-buttons { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 10px; 
-}
-
-.auth-btn { 
-    width: 100%; 
-    height: 45px; 
-    border-radius: 6px; 
-}
-
-.top-bar { 
-    position: absolute; 
-    top: 20px; 
-    left: 20px; 
-    display: flex; 
-    gap: 20px; 
-    align-items: center; 
-}
-
-.logout-btn { 
-    position: relative; 
-    top: 0; 
-    right: 0; 
-    color: #ff6b6b; 
-}
-
-.logout-btn:hover { 
-    color: #ff4757; 
-}
+.top-bar { position: absolute; top: 20px; left: 20px; display: flex; gap: 20px; align-items: center; }
+.logout-btn { position: relative; top: 0; right: 0; color: #ff6b6b; }
+.logout-btn:hover { color: #ff4757; }
 
 /* Admin User List */
-.user-list { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 10px; 
-    margin-bottom: 30px; 
-    max-height: 400px; 
-    overflow-y: auto; 
-}
-
-.admin-user-card { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    padding: 15px; 
-    background-color: #1a1e29; 
-    border: 1px solid #2a3142; 
-    border-radius: 6px;
-}
-
-.role-badge { 
-    font-size: 0.7rem; 
-    padding: 3px 8px; 
-    border-radius: 4px; 
-    margin-left: 10px; 
-    text-transform: uppercase; 
-}
-
-.role-badge.admin { 
-    background-color: #ff4757; 
-    color: white; 
-}
-
-.role-badge.player { 
-    background-color: #3b82f6; 
-    color: white; 
-}
-
-.delete-user-btn { 
-    background-color: transparent; 
-    border: 1px solid #ff4757; 
-    color: #ff4757; 
-    padding: 5px 10px; 
-    border-radius: 4px; 
-    cursor: pointer; 
-    transition: all 0.2s; 
-}
-
-.delete-user-btn:hover { 
-    background-color: #ff4757; 
-    color: white; 
-}
+.user-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; max-height: 400px; overflow-y: auto; }
+.admin-user-card { display: flex; justify-content: space-between; align-items: center; padding: 15px; background-color: #1a1e29; border: 1px solid #2a3142; border-radius: 6px; }
+.role-badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; margin-left: 10px; text-transform: uppercase; }
+.role-badge.admin { background-color: #ff4757; color: white; }
+.role-badge.player { background-color: #3b82f6; color: white; }
 
 /* ==========================================================================
-   NAVIGATION & HISTORY (Historie)
+   NAVIGATION & HISTORY 
    ========================================================================== */
-.game-nav {
-    display: flex;
-    gap: 30px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #333;
-    padding: 0 20px;
-    justify-content: center;
-}
-
-.nav-link {
-    background: none;
-    border: none;
-    color: #888;
-    padding: 15px 25px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s;
-    border-bottom: 3px solid transparent;
-}
-
-.nav-link:hover { 
-    color: #fff; 
-}
-
-.nav-link.active {
-    color: #3b82f6;
-    border-bottom-color: #3b82f6;
-}
-
-.history-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-top: 20px;
-    max-height: 600px;
-    overflow-y: auto;
-    padding-right: 10px;
-}
-
-.history-card {
-    background-color: #11151f;
-    border: 1px solid #2a3142;
-    border-radius: 10px;
-    padding: 15px;
-    text-align: left;
-    transition: transform 0.2s;
-}
-
-.history-card:hover { 
-    transform: scale(1.01); 
-}
-
-.history-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 12px;
-    border-bottom: 1px solid #222;
-    padding-bottom: 8px;
-}
-
-.history-date { 
-    color: #555; 
-    font-size: 0.8rem; 
-}
-
-.history-images {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
-}
-
-.history-img-slot {
-    position: relative;
-    width: 60px;
-    height: 60px;
-    border-radius: 6px;
-    overflow: hidden;
-    border: 1px solid #333;
-}
-
-.history-img-slot img { 
-    width: 100%; 
-    height: 100%; 
-    object-fit: cover; 
-}
-
-.mini-rank {
-    position: absolute;
-    bottom: 2px;
-    right: 2px;
-    background: rgba(0,0,0,0.7);
-    color: #fff;
-    font-size: 0.6rem;
-    padding: 1px 4px;
-    border-radius: 3px;
-    font-weight: bold;
-}
-
-.history-footer {
-    display: flex;
-    justify-content: center; /* NEU: Zentriert das Rating, da Badge weg ist */
-    align-items: center;
-    font-size: 0.9rem;
-}
-
-/* history-mode-badge und Waifu-Override entfernt */
-
-.history-rating strong { 
-    color: #ffe81f; 
-}
+.history-list { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; max-height: 600px; overflow-y: auto; padding-right: 10px; }
+.history-card { background-color: #11151f; border: 1px solid #2a3142; border-radius: 10px; padding: 15px; text-align: left; transition: transform 0.2s; }
+.history-card:hover { transform: scale(1.01); }
+.history-header { display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid #222; padding-bottom: 8px; }
+.history-date { color: #555; font-size: 0.8rem; }
+.history-images { display: flex; gap: 8px; margin-bottom: 12px; }
+.history-img-slot { position: relative; width: 60px; height: 60px; border-radius: 6px; overflow: hidden; border: 1px solid #333; }
+.history-img-slot img { width: 100%; height: 100%; object-fit: cover; }
+.mini-rank { position: absolute; bottom: 2px; right: 2px; background: rgba(0,0,0,0.7); color: #fff; font-size: 0.6rem; padding: 1px 4px; border-radius: 3px; font-weight: bold; }
+.history-footer { display: flex; justify-content: center; align-items: center; font-size: 0.9rem; }
+.history-rating strong { color: #ffe81f; }
 
 /* ==========================================================================
-   WAIFU THEME ANPASSUNGEN (Historie)
+   SCOREBOARD STYLES
    ========================================================================== */
-body.waifu-theme .nav-link.active { 
-    color: #ff2a9d; 
-    border-bottom-color: #ff2a9d; 
-}
+.scoreboard-controls { margin-bottom: 20px; }
+#scoreboard-user-filter { background-color: #1a1e29; color: #fff; border: 2px solid #2a3142; padding: 10px 15px; border-radius: 6px; font-size: 1rem; cursor: pointer; outline: none; width: 250px; transition: border-color 0.2s; }
+#scoreboard-user-filter:focus { border-color: #3b82f6; }
 
-/* ==========================================================================
-   SCOREBOARD STYLES (NEU)
-   ========================================================================== */
-.scoreboard-controls {
-    margin-bottom: 20px;
-}
-
-#scoreboard-user-filter {
-    background-color: #1a1e29;
-    color: #fff;
-    border: 2px solid #2a3142;
-    padding: 10px 15px;
-    border-radius: 6px;
-    font-size: 1rem;
-    cursor: pointer;
-    outline: none;
-    width: 250px;
-    transition: border-color 0.2s;
-}
-
-#scoreboard-user-filter:focus {
-    border-color: #3b82f6;
-}
-
-.score-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #11151f;
-    border: 1px solid #2a3142;
-    border-radius: 10px;
-    padding: 10px 20px;
-    margin-bottom: 10px;
-}
-
-.score-rank {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #555;
-    width: 50px;
-    text-align: left;
-}
-
-.score-info {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    flex-grow: 1;
-    text-align: left;
-    font-weight: bold;
-    font-size: 1.1rem;
-}
-
-.score-info img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #333;
-}
-
-.score-points {
-    font-size: 1.4rem;
-    font-weight: bold;
-    color: #ffe81f;
-}
-
-.score-points span {
-    font-size: 0.8rem;
-    color: #888;
-}
-
+.score-card { display: flex; justify-content: space-between; align-items: center; background-color: #11151f; border: 1px solid #2a3142; border-radius: 10px; padding: 10px 20px; margin-bottom: 10px; }
+.score-rank { font-size: 1.5rem; font-weight: bold; color: #555; width: 50px; text-align: left; }
+.score-info { display: flex; align-items: center; gap: 15px; flex-grow: 1; text-align: left; font-weight: bold; font-size: 1.1rem; }
+.score-info img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #333; }
+.score-points { font-size: 1.4rem; font-weight: bold; color: #ffe81f; }
+.score-points span { font-size: 0.8rem; color: #888; }
 body.waifu-theme #scoreboard-user-filter:focus { border-color: #ff2a9d; }
 
 /* ==========================================================================
-   LEXIKON STYLES (Raster/Grid)
+   LEXIKON & GOLD GLOW
    ========================================================================== */
 .lexikon-grid {
-    display: grid;
-    /* Zwingt das Layout in ein Raster mit festen Mindestbreiten (ca. 3-4 Spalten je nach Bildschirm) */
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 20px;
-    margin-top: 25px;
-    max-height: 600px;
-    overflow-y: auto;
-    padding: 10px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 20px; margin-top: 25px; max-height: 600px; overflow-y: auto; padding: 10px;
 }
-
 .lexikon-card {
-    background-color: #11151f;
-    border: 2px solid #2a3142;
-    border-radius: 10px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: transform 0.2s, box-shadow 0.2s;
-    aspect-ratio: 1 / 1.25; /* Zwingt die Karte in ein festes, hochkantes Format */
+    background-color: #11151f; border: 2px solid #2a3142; border-radius: 10px; overflow: hidden;
+    display: flex; flex-direction: column; align-items: center; transition: transform 0.2s, box-shadow 0.2s; aspect-ratio: 1 / 1.25;
 }
+.lexikon-card:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4); border-color: #3b82f6; z-index: 2; }
+.lexikon-card img { width: 100%; height: 75%; object-fit: cover; border-bottom: 2px solid #2a3142; }
+.lexikon-card span { width: 100%; height: 25%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: bold; color: #fff; text-align: center; padding: 0 5px; box-sizing: border-box; }
+body.waifu-theme .lexikon-card:hover { box-shadow: 0 8px 20px rgba(255, 42, 157, 0.4); border-color: #ff2a9d; }
 
-.lexikon-card:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
-    border-color: #3b82f6;
-    z-index: 2;
-}
-
-.lexikon-card img {
-    width: 100%;
-    height: 75%; /* Das Bild nimmt exakt 3/4 der Karte ein */
-    object-fit: cover;
-    border-bottom: 2px solid #2a3142;
-}
-
-.lexikon-card span {
-    width: 100%;
-    height: 25%; /* Der Text bekommt das restliche Viertel */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.85rem;
-    font-weight: bold;
-    color: #fff;
-    text-align: center;
-    padding: 0 5px;
-    box-sizing: border-box;
-}
-
-/* Hover-Effekt für Waifu-Theme anpassen */
-body.waifu-theme .lexikon-card:hover {
-    box-shadow: 0 8px 20px rgba(255, 42, 157, 0.4);
-    border-color: #ff2a9d;
-}
+.gold-glow { border-color: #ffd700 !important; box-shadow: 0 0 15px rgba(255, 215, 0, 0.6) !important; animation: goldPulse 2s infinite ease-in-out; }
+@keyframes goldPulse { 0% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); border-color: #ffd700; } 50% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.9); border-color: #ffffff; } 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); border-color: #ffd700; } }
 
 /* ==========================================================================
-   GOLD GLOW MECHANIK (NEU)
+   STICKY NAV & FIXIERTES MENU LAYOUT (v2.0)
    ========================================================================== */
-.gold-glow {
-    border-color: #ffd700 !important;
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.6) !important;
-    animation: goldPulse 2s infinite ease-in-out;
+.sticky-nav-container {
+    position: fixed; top: 0; left: 0; width: 100%; background-color: #050505; z-index: 1000;
+    padding: 15px 0 10px 0; border-bottom: 2px solid #3b82f6; box-shadow: 0 4px 20px rgba(0,0,0,0.8);
 }
+body.waifu-theme .sticky-nav-container { border-bottom-color: #ff2a9d; }
 
-@keyframes goldPulse {
-    0% {
-        box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-        border-color: #ffd700;
-    }
-    50% {
-        box-shadow: 0 0 25px rgba(255, 215, 0, 0.9);
-        border-color: #ffffff; /* Kurzes Aufblitzen */
-    }
-    100% {
-        box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-        border-color: #ffd700;
-    }
-}
+.game-nav { display: flex; justify-content: center; gap: 15px; margin-bottom: 10px; }
+.nav-link { background: none; border: none; color: #888; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: all 0.3s; border-bottom: 3px solid transparent; width: 140px; text-align: center; padding: 10px 0; }
+.nav-link:hover { color: #fff; }
+.nav-link.active { color: #3b82f6; border-bottom-color: #3b82f6; }
+body.waifu-theme .nav-link.active { color: #ff2a9d; border-bottom-color: #ff2a9d; }
+
+.main-scroll-content { margin-top: 150px; padding-bottom: 100px; }
 
 /* ==========================================================================
-   PROFIL, COMMUNITY & LIVE STYLES (NEU)
+   PROFILE OVERLAY SYSTEM & AVATAR
    ========================================================================== */
 .mini-avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid #3b82f6; }
 body.waifu-theme .mini-avatar { border-color: #ff2a9d; }
+.profile-trigger { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 5px 10px; border-radius: 8px; transition: background 0.2s; }
+.profile-trigger:hover { background: rgba(255,255,255,0.1); }
+
+.profile-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85); z-index: 2000;
+    display: flex; justify-content: center; align-items: center;
+}
+.profile-panel { width: 95%; max-width: 850px; position: relative; max-height: 90vh; overflow-y: auto; }
+.close-overlay-btn { position: absolute; top: 15px; right: 20px; font-size: 1.8rem; background: none; border: none; color: #888; cursor: pointer; }
+.close-overlay-btn:hover { color: #fff; }
 
 .profile-layout { display: flex; gap: 30px; text-align: left; }
 .profile-settings { flex: 1; }
@@ -869,111 +317,70 @@ body.waifu-theme .mini-avatar { border-color: #ff2a9d; }
 .avatar-card:hover { opacity: 1; }
 .avatar-card.selected { opacity: 1; border-color: #ffe81f; box-shadow: 0 0 15px rgba(255, 232, 31, 0.5); }
 
-.community-layout { display: flex; gap: 20px; height: 500px; }
-.online-panel { flex: 1; display: flex; flex-direction: column; }
-.chat-panel { flex: 2; display: flex; flex-direction: column; }
+.profile-online-box { margin-top: 25px; border-top: 1px solid #333; padding-top: 15px; }
+.profile-online-box h3 { font-size: 0.9rem; color: #888; margin-bottom: 15px; letter-spacing: 1px; }
 
-.online-list { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-.online-user-card { display: flex; align-items: center; gap: 10px; background: #11151f; padding: 10px; border-radius: 8px; border: 1px solid #2a3142; }
-.online-indicator { width: 10px; height: 10px; background-color: #2ed573; border-radius: 50%; box-shadow: 0 0 8px #2ed573; }
+/* ==========================================================================
+   LIVE GAMES GRID LAYOUT & SPECTATOR MODE
+   ========================================================================== */
+.live-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; margin-top: 20px; }
+.live-grid-card { background-color: #11151f; border: 1px solid #2a3142; border-radius: 10px; padding: 15px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.live-card-user { display: flex; align-items: center; gap: 10px; font-size: 1rem; width: 100%; justify-content: center; }
+.live-board-mini { display: flex; gap: 5px; margin-top: 10px; }
+.live-slot-mini { width: 40px; height: 50px; border: 1px dashed #555; border-radius: 4px; overflow: hidden; }
+.live-slot-mini img { width: 100%; height: 100%; object-fit: cover; }
+.spec-btn { width: 100%; height: 35px; font-size: 0.9rem; cursor: pointer; margin-top: 5px; }
 
-.chat-messages { flex-grow: 1; overflow-y: auto; background: #0a0e17; border: 1px inset #222; border-radius: 6px; padding: 15px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
+.spectator-modal-panel { width: 90%; max-width: 750px; padding: 40px 20px; position: relative; }
+.spec-large-board .card-content { height: 180px; width: 130px; }
+
+/* ==========================================================================
+   CHAT WIDGET & TAGS (KORRIGIERT)
+   ========================================================================== */
+.chat-toggle-btn {
+    position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%;
+    background: #3b82f6; color: white; font-size: 1.5rem; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    cursor: pointer; z-index: 1000; transition: transform 0.2s;
+}
+.chat-toggle-btn:hover { transform: scale(1.1); }
+body.waifu-theme .chat-toggle-btn { background: #ff2a9d; }
+
+.chat-widget {
+    position: fixed; bottom: 100px; right: 30px; width: 350px; height: 500px;
+    background: #0a0e17; border: 2px solid #3b82f6; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    display: flex; flex-direction: column; z-index: 999;
+}
+body.waifu-theme .chat-widget { border-color: #ff2a9d; }
+
+.chat-header { background: #1c2331; padding: 15px; border-top-left-radius: 10px; border-top-right-radius: 10px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3b82f6; }
+body.waifu-theme .chat-header { border-bottom-color: #ff2a9d; }
+
+.chat-messages { flex-grow: 1; overflow-y: auto; background: #0a0e17; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
 .chat-msg { display: flex; gap: 10px; text-align: left; }
 .chat-msg img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
 .chat-msg-content { background: #1c2331; padding: 8px 12px; border-radius: 12px; border-top-left-radius: 0; max-width: 80%; }
 .chat-msg.self { flex-direction: row-reverse; }
 .chat-msg.self .chat-msg-content { background: #3b82f6; border-top-left-radius: 12px; border-top-right-radius: 0; }
 body.waifu-theme .chat-msg.self .chat-msg-content { background: #ff2a9d; }
-.chat-username { font-size: 0.7rem; color: #888; display: block; margin-bottom: 3px; font-weight: bold; }
-.chat-msg.self .chat-username { color: #ddd; text-align: right; }
-.chat-input-area { display: flex; gap: 10px; }
+
+.chat-input-area { display: flex; gap: 10px; padding: 10px; background: #1c2331; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; }
 .chat-input-area input { margin-bottom: 0; }
 #chat-send-btn { width: 60px; height: auto; }
 
-/* Live Games */
-.live-board-mini { display: flex; gap: 5px; margin-top: 10px; }
-.live-slot-mini { width: 40px; height: 50px; border: 1px dashed #555; border-radius: 4px; overflow: hidden; }
-.live-slot-mini img { width: 100%; height: 100%; object-fit: cover; }
+/* Tags Korrekturen */
+.chat-username { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: #888; margin-bottom: 4px; font-weight: bold; }
+.chat-msg.self .chat-username { justify-content: flex-start; flex-direction: row-reverse; }
+.online-list { display: flex; flex-direction: column; gap: 10px; max-height: 250px; overflow-y: auto; }
+.online-user-card { display: flex; align-items: center; gap: 12px; background: #11151f; padding: 10px 15px; border-radius: 8px; border: 1px solid #2a3142; box-sizing: border-box; width: 100%; }
+.online-indicator { width: 10px; height: 10px; background-color: #2ed573; border-radius: 50%; box-shadow: 0 0 8px #2ed573; }
 
-/* ==========================================================================
-   FLOATING CHAT & PROFILE (NEU)
-   ========================================================================== */
-.profile-trigger {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    padding: 5px 10px;
-    border-radius: 8px;
-    transition: background 0.2s;
+.chat-mode-tag {
+    font-size: 0.65rem; font-weight: bold; padding: 2px 6px; border-radius: 4px;
+    color: #ffffff !important; text-transform: uppercase; letter-spacing: 0.5px;
+    display: inline-block; line-height: 1.2;
 }
-.profile-trigger:hover { background: rgba(255,255,255,0.1); }
+.tag-sw { background-color: #3b82f6 !important; box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); }
+.tag-anime { background-color: #ff2a9d !important; box-shadow: 0 0 5px rgba(255, 42, 157, 0.5); }
 
-/* Chat Toggle Button */
-.chat-toggle-btn {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: #3b82f6;
-    color: white;
-    font-size: 1.5rem;
-    border: none;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-    cursor: pointer;
-    z-index: 1000;
-    transition: transform 0.2s;
-}
-.chat-toggle-btn:hover { transform: scale(1.1); }
-body.waifu-theme .chat-toggle-btn { background: #ff2a9d; }
-
-/* Chat Popup Fenster */
-.chat-widget {
-    position: fixed;
-    bottom: 100px;
-    right: 30px;
-    width: 350px;
-    height: 500px;
-    background: #0a0e17;
-    border: 2px solid #3b82f6;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-    display: flex;
-    flex-direction: column;
-    z-index: 999;
-}
-body.waifu-theme .chat-widget { border-color: #ff2a9d; }
-
-.chat-header {
-    background: #1c2331;
-    padding: 15px;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #3b82f6;
-}
-body.waifu-theme .chat-header { border-bottom-color: #ff2a9d; }
-
-.chat-widget .chat-messages {
-    flex-grow: 1;
-    border: none;
-    margin: 0;
-    border-radius: 0;
-}
-.chat-widget .chat-input-area {
-    padding: 10px;
-    background: #1c2331;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
-
-/* ==========================================================================
-   UTILITY KLASSEN
-   ========================================================================== */
-.hidden { 
-    display: none !important; 
-}
+/* Utility */
+.hidden { display: none !important; }

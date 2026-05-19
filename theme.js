@@ -8,7 +8,9 @@ import { initGame } from './game.js';
 import { renderHistory } from './history.js';
 import { renderScoreboard } from './scoreboard.js';
 import { renderLexikon } from './lexikon.js';
-import { renderAvatarSelection } from './profile.js'; // NEU Importiert für das Profil
+import { renderAvatarSelection, updateTopbarAvatarElement } from './profile.js';
+import { getCurrentUser, startPresenceHeartbeat } from './auth.js';
+import { initLiveSpectating } from './live.js';
 
 export let currentMode = 'starwars'; 
 export let activeCharacterDatabase = starWarsCharacters; 
@@ -18,8 +20,7 @@ export function toggleTheme() {
     const themeStylesheet = document.getElementById('theme-stylesheet');
     let activeChangelogDatabase;
 
-    // Filter-Dropdown bei Moduswechsel leeren, damit es sich neu aufbaut
-    document.getElementById('scoreboard-user-filter').innerHTML = '<option value="global">Global (Alle Spieler)</option>';
+    document.getElementById('scoreboard-user-filter').innerHTML = '<option value="global">Global (Alle)</option>';
 
     if (currentMode === 'starwars') {
         currentMode = 'waifu';
@@ -38,20 +39,19 @@ export function toggleTheme() {
     }
     
     updateChangelogContent(activeChangelogDatabase);
-    
     initGame(); 
     
-    // Live-Update der aktuellen Ansichten, falls sie gerade offen sind
-    if (!document.getElementById('history-content').classList.contains('hidden')) {
-        renderHistory();
-    }
-    if (!document.getElementById('scoreboard-content').classList.contains('hidden')) {
-        renderScoreboard();
-    }
-    if (!document.getElementById('lexikon-content').classList.contains('hidden')) {
-        renderLexikon();
+    // Ändert das Profilbild oben links sofort passend zum neuen Modus ab!
+    const user = getCurrentUser();
+    if(user) {
+        updateTopbarAvatarElement(user);
+        startPresenceHeartbeat(); // Schickt den neuen Modus-Tag sofort an die Cloud
     }
 
-    // NEU: Avatar-Auswahl im Profil (versteckt) sofort auf das neue Universum updaten
+    if (!document.getElementById('history-content').classList.contains('hidden')) renderHistory();
+    if (!document.getElementById('scoreboard-content').classList.contains('hidden')) renderScoreboard();
+    if (!document.getElementById('lexikon-content').classList.contains('hidden')) renderLexikon();
+    if (!document.getElementById('live-content').classList.contains('hidden')) initLiveSpectating();
+
     renderAvatarSelection();
 }

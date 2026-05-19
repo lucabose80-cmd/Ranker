@@ -3,15 +3,16 @@ import { db } from './firebase-config.js';
 import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { currentMode } from './theme.js';
 
+let isFilterListenerAttached = false;
+
 export async function renderScoreboard() {
     const container = document.getElementById('scoreboard-list');
     const filterSelect = document.getElementById('scoreboard-user-filter');
-    const selectedUser = filterSelect.value; // "global" oder ein bestimmter Username
+    const selectedUser = filterSelect.value; 
 
     container.innerHTML = '<p class="prompt-text">Berechne Punkte...</p>';
 
     try {
-        // Alle Spiele des aktuellen Modus holen
         const q = query(collection(db, "history"), where("mode", "==", currentMode));
         const querySnapshot = await getDocs(q);
         
@@ -29,35 +30,36 @@ export async function renderScoreboard() {
             return;
         }
 
-        // Dropdown-Menü aktualisieren (nur beim ersten Laden oder wenn es leer ist)
-        if (filterSelect.options.length <= 1) {
-            const currentSelection = filterSelect.value;
-            filterSelect.innerHTML = '<option value="global">Global (Alle Spieler)</option>';
-            
-            Array.from(allUsers).sort().forEach(user => {
-                const option = document.createElement('option');
-                option.value = user;
-                option.textContent = `Spieler: ${user}`;
-                filterSelect.appendChild(option);
+        // Dropdown-Menü aktualisieren
+        const currentSelection = filterSelect.value;
+        filterSelect.innerHTML = '<option value="global">Global (Alle Spieler)</option>';
+        
+        Array.from(allUsers).sort().forEach(user => {
+            const option = document.createElement('option');
+            option.value = user;
+            option.textContent = `Spieler: ${user}`;
+            filterSelect.appendChild(option);
+        });
+        filterSelect.value = currentSelection;
+
+        // KUGELSICHERER FIX: Der Eventlistener wird direkt hier verankert
+        if (!isFilterListenerAttached) {
+            filterSelect.addEventListener('change', () => {
+                renderScoreboard();
             });
-            // Alte Auswahl wiederherstellen
-            if (Array.from(filterSelect.options).some(opt => opt.value === currentSelection)) {
-                filterSelect.value = currentSelection;
-            }
+            isFilterListenerAttached = true;
         }
 
         // Punkte berechnen
         let characterScores = {};
 
         games.forEach(game => {
-            // Wenn nicht global und nicht der gewählte Spieler, überspringen
             if (selectedUser !== 'global' && game.username !== selectedUser) return;
 
             const ratingMulti = parseInt(game.rating) || 1;
 
             game.ranking.forEach(item => {
                 const rank = parseInt(item.rank);
-                // Platz 1 = 5 Pkt, Platz 2 = 4 Pkt, etc.
                 const basePoints = 6 - rank; 
                 const totalPoints = basePoints * ratingMulti;
 
@@ -68,7 +70,6 @@ export async function renderScoreboard() {
             });
         });
 
-        // In Array umwandeln und absteigend sortieren
         const sortedCharacters = Object.values(characterScores).sort((a, b) => b.score - a.score);
 
         if (sortedCharacters.length === 0) {
@@ -76,7 +77,6 @@ export async function renderScoreboard() {
             return;
         }
 
-        // UI rendern
         container.innerHTML = "";
         sortedCharacters.forEach((char, index) => {
             const card = document.createElement('div');
