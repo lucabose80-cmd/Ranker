@@ -2,6 +2,7 @@
 import { db } from './firebase-config.js';
 import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { currentMode } from './theme.js';
+import { getResets } from './resets.js';
 
 let isFilterListenerAttached = false;
 
@@ -13,23 +14,20 @@ export async function renderScoreboard() {
     container.innerHTML = '<p class="prompt-text">Berechne Punkte...</p>';
 
     try {
-        // Reset-Einstellungen vom Server (admin user) und User laden
+        // Reset-Einstellungen aus dem Cache laden
         let globalScoreboardResetSecs = 0;
         let userResets = {};
         try {
-            const usersSnap = await getDocs(collection(db, "users"));
-            usersSnap.forEach(d => {
-                const u = d.data();
-                if (u.role === 'admin') {
-                    if (u[`globalScoreboardReset_${currentMode}`]) {
-                        globalScoreboardResetSecs = u[`globalScoreboardReset_${currentMode}`].seconds;
-                    }
-                }
-                if (u[`scoreboardResetAt_${currentMode}`]) {
-                    userResets[u.username] = u[`scoreboardResetAt_${currentMode}`].seconds;
-                }
+            const { adminResets, userResets: cachedUserResets } = await getResets();
+            globalScoreboardResetSecs = adminResets[`globalScoreboardReset_${currentMode}`] || 0;
+            
+            // Formatieren, damit userResets[username] direkt den scoreboardResetAt_... Wert liefert
+            Object.keys(cachedUserResets).forEach(uname => {
+                userResets[uname] = cachedUserResets[uname][`scoreboardResetAt_${currentMode}`] || 0;
             });
-        } catch(e) {}
+        } catch(e) {
+            console.error("Fehler beim Laden der Resets aus dem Cache:", e);
+        }
 
         const q = query(collection(db, "history"), where("mode", "==", currentMode));
         const querySnapshot = await getDocs(q);

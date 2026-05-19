@@ -3,6 +3,7 @@ import { db } from './firebase-config.js';
 import { collection, addDoc, getDocs, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { getCurrentUser } from './auth.js';
 import { currentMode } from './theme.js';
+import { getResets } from './resets.js';
 
 // Speichert ein fertiges Spiel in der Cloud
 export async function saveGameToHistory(placedCharacters, rating, pool) {
@@ -41,23 +42,21 @@ export async function renderHistory() {
     container.innerHTML = '<p class="prompt-text">Lade Archive...</p>';
 
     try {
-        // Reset-Einstellungen vom Server (admin user) und User laden
+        // Reset-Einstellungen aus dem Cache laden
         let globalHistoryResetSecs = 0;
         let userResets = {};
+        
         try {
-            const usersSnap = await getDocs(collection(db, "users"));
-            usersSnap.forEach(d => {
-                const u = d.data();
-                if (u.role === 'admin') {
-                    if (u[`globalHistoryReset_${currentMode}`]) {
-                        globalHistoryResetSecs = u[`globalHistoryReset_${currentMode}`].seconds;
-                    }
-                }
-                if (u[`historyResetAt_${currentMode}`]) {
-                    userResets[u.username] = u[`historyResetAt_${currentMode}`].seconds;
-                }
+            const { adminResets, userResets: cachedUserResets } = await getResets();
+            globalHistoryResetSecs = adminResets[`globalHistoryReset_${currentMode}`] || 0;
+            
+            // Formatieren, damit userResets[username] direkt den historyResetAt_... Wert liefert
+            Object.keys(cachedUserResets).forEach(uname => {
+                userResets[uname] = cachedUserResets[uname][`historyResetAt_${currentMode}`] || 0;
             });
-        } catch(e) {}
+        } catch(e) {
+            console.error("Fehler beim Laden der Resets aus dem Cache:", e);
+        }
 
         const q = query(collection(db, "history"), where("mode", "==", currentMode));
         const querySnapshot = await getDocs(q);
