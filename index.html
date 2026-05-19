@@ -142,6 +142,12 @@
             <div id="history-content" class="tab-content app-container hidden">
                 <div class="panel history-panel">
                     <h2>GALAKTISCHE ARCHIVE</h2>
+                    <div class="history-controls">
+                        <select id="history-type-filter">
+                            <option value="classic">Klassisch (5er)</option>
+                            <option value="advanced">Advanced (10er)</option>
+                        </select>
+                    </div>
                     <div id="history-list" class="history-list"></div>
                 </div>
             </div>
@@ -149,11 +155,11 @@
             <div id="scoreboard-content" class="tab-content app-container hidden">
                 <div class="panel history-panel">
                     <h2>SCOREBOARD</h2>
-                    <div class="scoreboard-controls" style="display: flex; gap: 10px; margin-bottom: 20px;">
-                        <select id="scoreboard-user-filter" style="flex: 1;">
+                    <div class="scoreboard-controls">
+                        <select id="scoreboard-user-filter">
                             <option value="global">Global (Alle)</option>
                         </select>
-                        <select id="scoreboard-type-filter" style="flex: 1;">
+                        <select id="scoreboard-type-filter">
                             <option value="classic">Klassisch (5er)</option>
                             <option value="advanced">Advanced (10er)</option>
                         </select>

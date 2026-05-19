@@ -155,9 +155,20 @@ function renderHistoryHTML(games, container, displayNames) {
     });
 }
 
+let isHistoryFilterListenerAttached = false;
+
 // Holt die gefilterten Spiele aus dem lokalen Echtzeit-Cache und rendert sie instant
 export async function renderHistory() {
     const container = document.getElementById('history-list');
+    const typeSelect = document.getElementById('history-type-filter');
+    const selectedType = typeSelect ? typeSelect.value : 'classic';
+
+    if (typeSelect && !isHistoryFilterListenerAttached) {
+        typeSelect.addEventListener('change', () => {
+            renderHistory();
+        });
+        isHistoryFilterListenerAttached = true;
+    }
     
     if (!isFirstLoadComplete) {
         container.innerHTML = '<p class="prompt-text">Verbinde mit Archiven...</p>';
@@ -181,14 +192,19 @@ export async function renderHistory() {
             console.error("Fehler beim Laden der Resets:", e);
         }
 
-        // Filtern nach Resets aus dem RAM-Cache
+        // Filtern nach Resets und Spieltyp aus dem RAM-Cache
         let filteredGames = [];
         historyCache.forEach((game) => {
             const gameSecs = game.timestamp ? game.timestamp.seconds : 0;
             const personalResetSecs = userResets[game.username] || 0;
             
             if (gameSecs > globalHistoryResetSecs && gameSecs > personalResetSecs) {
-                filteredGames.push(game);
+                const isGameAdvanced = game.gameType === 'advanced' || game.ranking.length > 5;
+                if (selectedType === 'advanced' && isGameAdvanced) {
+                    filteredGames.push(game);
+                } else if (selectedType === 'classic' && !isGameAdvanced) {
+                    filteredGames.push(game);
+                }
             }
         });
 

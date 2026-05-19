@@ -245,16 +245,44 @@ body.waifu-theme .history-card:hover, body.waifu-theme .score-card:hover { borde
 .history-footer { display: flex; justify-content: center; align-items: center; font-size: 0.9rem; margin-top: 10px; }
 .history-rating strong { color: #ffe81f; }
 
-.scoreboard-controls { margin-bottom: 20px; }
-#scoreboard-user-filter { background-color: #1a1e29; color: #fff; border: 2px solid #2a3142; padding: 10px 15px; border-radius: 6px; font-size: 1rem; cursor: pointer; outline: none; width: 250px; transition: border-color 0.2s; }
-#scoreboard-user-filter:focus { border-color: #3b82f6; }
+.scoreboard-controls,
+.history-controls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    justify-content: center;
+}
+.scoreboard-controls select,
+.history-controls select {
+    background-color: #1a1e29;
+    color: #fff;
+    border: 2px solid #2a3142;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 1.05rem;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s ease;
+    flex: 1;
+    max-width: 300px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+.scoreboard-controls select:focus,
+.history-controls select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+}
+body.waifu-theme .scoreboard-controls select:focus,
+body.waifu-theme .history-controls select:focus {
+    border-color: #ff2a9d;
+    box-shadow: 0 0 10px rgba(255, 42, 157, 0.4);
+}
 
 .score-rank { font-size: 1.5rem; font-weight: bold; color: #555; width: 50px; text-align: left; margin-bottom: 10px; }
 .score-info { display: flex; align-items: center; gap: 15px; flex-grow: 1; text-align: left; font-weight: bold; font-size: 1.1rem; margin-bottom: 15px; }
 .score-info img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #333; }
 .score-points { font-size: 1.4rem; font-weight: bold; color: #ffe81f; text-align: right; border-top: 1px solid #222; padding-top: 10px; }
 .score-points span { font-size: 0.8rem; color: #888; }
-body.waifu-theme #scoreboard-user-filter:focus { border-color: #ff2a9d; }
 
 /* ==========================================================================
    LEXIKON & GOLD GLOW
