@@ -115,6 +115,12 @@ function setupGameUI(user) {
     initCommunity();
     initLiveSpectating();
 
+    // Hintergrund-Prefetching für instantane Tab-Wechsel
+    setTimeout(() => {
+        renderHistory();
+        renderScoreboard();
+    }, 500);
+
     document.querySelectorAll('.rank-btn').forEach(btn => {
         if (btn.dataset.rank) btn.addEventListener('click', () => handleRankSelection(btn.dataset.rank, btn));
     });

@@ -4,9 +4,17 @@ import { db } from './firebase-config.js';
 import { collection, getDocs, deleteDoc, doc, updateDoc, setDoc, onSnapshot, query, orderBy, Timestamp, where } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { currentMode, activeCharacterDatabase } from './theme.js';
 import { invalidateResetsCache } from './resets.js';
+import { invalidateHistoryCache } from './history.js';
+import { invalidateScoreboardCache } from './scoreboard.js';
 
 let chatAdminUnsubscribe = null;
 let listenersBound = false;
+
+function invalidateAllCaches() {
+    invalidateResetsCache();
+    invalidateHistoryCache();
+    invalidateScoreboardCache();
+}
 
 export async function initAdminPanel() {
     if(!listenersBound) {
@@ -20,7 +28,7 @@ export async function initAdminPanel() {
                     const adminUid = getCurrentUser()?.uid;
                     if (!adminUid) throw new Error('Kein Admin eingeloggt.');
                     await updateDoc(doc(db, "users", adminUid), obj);
-                    invalidateResetsCache(); // Cache invalidieren
+                    invalidateAllCaches(); // Cache invalidieren
                     alert(`Globale Historie für ${currentMode} zurückgesetzt.`);
                     refreshAdminPanel();
                 } catch(e) { console.error(e); alert(`Fehler beim Zurücksetzen: ${e.message}`); }
@@ -35,7 +43,7 @@ export async function initAdminPanel() {
                     const adminUid = getCurrentUser()?.uid;
                     if (!adminUid) throw new Error('Kein Admin eingeloggt.');
                     await updateDoc(doc(db, "users", adminUid), obj);
-                    invalidateResetsCache(); // Cache invalidieren
+                    invalidateAllCaches(); // Cache invalidieren
                     alert(`Globales Scoreboard für ${currentMode} zurückgesetzt.`);
                     refreshAdminPanel();
                 } catch(e) { console.error(e); alert(`Fehler beim Zurücksetzen: ${e.message}`); }
@@ -163,7 +171,7 @@ async function renderUserList() {
             const uid = e.target.dataset.id;
             if (confirm(`Account wirklich komplett löschen?`)) {
                 await deleteDoc(doc(db, "users", uid));
-                invalidateResetsCache(); // Cache invalidieren
+                invalidateAllCaches(); // Cache invalidieren
                 renderUserList();
             }
         });
@@ -181,21 +189,21 @@ async function renderUserList() {
                     const oldDisc = userDoc.discovered || [];
                     const newDisc = oldDisc.filter(n => !charNames.includes(n));
                     await updateDoc(userRef, { discovered: newDisc });
-                    invalidateResetsCache(); // Cache invalidieren
+                    invalidateAllCaches(); // Cache invalidieren
                     refreshAdminPanel();
                 }
             } else if (action === 'history') {
                 if(confirm(`Persönliche Historie für ${currentMode} ausblenden?`)) {
                     const obj = {}; obj[`historyResetAt_${currentMode}`] = Timestamp.now();
                     await updateDoc(userRef, obj);
-                    invalidateResetsCache(); // Cache invalidieren
+                    invalidateAllCaches(); // Cache invalidieren
                     refreshAdminPanel();
                 }
             } else if (action === 'scoreboard') {
                 if(confirm(`Persönliches Scoreboard für ${currentMode} nullen?`)) {
                     const obj = {}; obj[`scoreboardResetAt_${currentMode}`] = Timestamp.now();
                     await updateDoc(userRef, obj);
-                    invalidateResetsCache(); // Cache invalidieren
+                    invalidateAllCaches(); // Cache invalidieren
                     refreshAdminPanel();
                 }
             }
