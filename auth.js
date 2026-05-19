@@ -115,7 +115,7 @@ export function startPresenceHeartbeat() {
     };
     sendHeartbeat();
     if(heartbeatInterval) clearInterval(heartbeatInterval);
-    heartbeatInterval = setInterval(sendHeartbeat, 60000);
+    heartbeatInterval = setInterval(sendHeartbeat, 180000); // Nur noch alle 3 Minuten pingen (spart 66% der Writes)
 }
 
 export async function markCharacterAsDiscovered(charName) {

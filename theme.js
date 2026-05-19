@@ -6,12 +6,12 @@ import { patchNotesWaifu } from './changelog-waifu.js';
 import { updateChangelogContent } from './changelog.js';
 import { initGame } from './game.js';
 import { initAdvancedGame } from './game-advanced.js';
-import { renderHistory, initHistoryListener } from './history.js';
+import { renderHistory, initHistoryListener, stopHistoryListener } from './history.js';
 import { renderScoreboard } from './scoreboard.js';
 import { renderLexikon } from './lexikon.js';
 import { renderAvatarSelection, updateTopbarAvatarElement } from './profile.js';
 import { getCurrentUser, startPresenceHeartbeat } from './auth.js';
-import { initLiveSpectating } from './live.js';
+import { initLiveSpectating, stopLiveSpectating } from './live.js';
 import { refreshAdminPanel } from './admin.js';
 import { currentMode, setCurrentMode, currentGameType } from './mode-state.js';
 
@@ -41,7 +41,22 @@ export function toggleTheme() {
     }
     
     updateChangelogContent(activeChangelogDatabase);
-    initHistoryListener(); // Listener auf das neue Universum umschalten
+    
+    const isHistoryVisible = !document.getElementById('history-content').classList.contains('hidden');
+    const isScoreboardVisible = !document.getElementById('scoreboard-content').classList.contains('hidden');
+    const isLiveVisible = !document.getElementById('live-content').classList.contains('hidden');
+
+    if (isHistoryVisible || isScoreboardVisible) {
+        initHistoryListener(true);
+    } else {
+        stopHistoryListener();
+    }
+
+    if (isLiveVisible) {
+        initLiveSpectating(true);
+    } else {
+        stopLiveSpectating();
+    }
     
     if (currentGameType === 'advanced') {
         initAdvancedGame();
@@ -56,10 +71,10 @@ export function toggleTheme() {
         startPresenceHeartbeat(); // Schickt den neuen Modus-Tag sofort an die Cloud
     }
 
-    if (!document.getElementById('history-content').classList.contains('hidden')) renderHistory();
-    if (!document.getElementById('scoreboard-content').classList.contains('hidden')) renderScoreboard();
+    if (isHistoryVisible) renderHistory();
+    if (isScoreboardVisible) renderScoreboard();
     if (!document.getElementById('lexikon-content').classList.contains('hidden')) renderLexikon();
-    if (!document.getElementById('live-content').classList.contains('hidden')) initLiveSpectating();
+    // Live-Spectating wird oben bereits initialisiert falls sichtbar
 
     renderAvatarSelection();
     refreshAdminPanel();

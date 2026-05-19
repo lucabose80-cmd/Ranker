@@ -18,7 +18,7 @@ export function initCommunity() {
     const sendBtn = document.getElementById('chat-send-btn');
 
     if(chatUnsubscribe) chatUnsubscribe();
-    const qChat = query(collection(db, "chat"), orderBy("timestamp", "desc"), limit(50));
+    const qChat = query(collection(db, "chat"), orderBy("timestamp", "desc"), limit(25));
     
     chatUnsubscribe = onSnapshot(qChat, (snapshot) => {
         trackRead(snapshot.docChanges().filter(c => c.type !== 'removed').length);
@@ -82,8 +82,8 @@ export function initCommunity() {
         if(!onlineList) return;
         
         try {
-            const threeMinutesAgo = new Date(Date.now() - 180000);
-            const qOnline = query(collection(db, "users"), where("lastActive", ">=", Timestamp.fromDate(threeMinutesAgo)));
+            const sevenMinutesAgo = new Date(Date.now() - 420000);
+            const qOnline = query(collection(db, "users"), where("lastActive", ">=", Timestamp.fromDate(sevenMinutesAgo)));
             const snapshot = await getDocs(qOnline);
             trackRead(snapshot.size);
             onlineList.innerHTML = '';
@@ -125,7 +125,7 @@ export function initCommunity() {
                         }
 
                         if (!isNaN(lastActiveMillis)) {
-                            isOnline = (now - lastActiveMillis) < 180000; // 3 Minuten Threshold
+                            isOnline = (now - lastActiveMillis) < 420000; // 7 Minuten Threshold (passend zum 3-Minuten-Heartbeat)
                         }
                     }
 
@@ -158,5 +158,5 @@ export function initCommunity() {
     };
 
     updateOnlineTracker();
-    onlineInterval = setInterval(updateOnlineTracker, 60000); // Polling (60s) für drastisch reduzierte Firestore-Reads
+    onlineInterval = setInterval(updateOnlineTracker, 120000); // Polling (120s) spart noch einmal 50% der Reads!
 }

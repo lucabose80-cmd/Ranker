@@ -7,12 +7,12 @@ import { initChangelog, updateChangelogContent } from './changelog.js';
 import { patchNotesStarWars } from './changelog-starwars.js';
 import { initAuth, loginOrRegister, logout, getCurrentUser, startPresenceHeartbeat } from './auth.js';
 import { initAdminPanel } from './admin.js';
-import { renderHistory, initHistoryListener } from './history.js';
+import { renderHistory, initHistoryListener, stopHistoryListener } from './history.js';
 import { renderScoreboard } from './scoreboard.js';
 import { renderLexikon } from './lexikon.js';
 import { initProfile, renderAvatarSelection, updateTopbarAvatarElement } from './profile.js';
 import { initCommunity } from './community.js';
-import { initLiveSpectating, closeSpectatorModal } from './live.js';
+import { initLiveSpectating, closeSpectatorModal, stopLiveSpectating } from './live.js';
 import { currentGameType, setCurrentGameType } from './mode-state.js';
 import { initTrackerUI } from './tracker.js';
 
@@ -87,6 +87,14 @@ function setupGameUI(user) {
             const target = link.dataset.target;
             document.getElementById(target).classList.remove('hidden');
             
+            // Inaktive Hörer abbestellen, um Hintergrund-Reads zu eliminieren!
+            if (target !== 'history-content' && target !== 'scoreboard-content') {
+                stopHistoryListener();
+            }
+            if (target !== 'live-content') {
+                stopLiveSpectating();
+            }
+
             // SOFORTIGES ERZWUNGENES NEULADEN BEI TAB-KLICK
             if (target === 'history-content') {
                 initHistoryListener();

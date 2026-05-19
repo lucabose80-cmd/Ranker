@@ -74,6 +74,15 @@ export function initHistoryListener(force = false) {
         console.error("Fehler im History-Listener:", error);
     });
 }
+
+// Beendet den Echtzeit-Sync für die Historie, um Reads im Hintergrund zu sparen
+export function stopHistoryListener() {
+    if (historyUnsubscribe) {
+        historyUnsubscribe();
+        historyUnsubscribe = null;
+        currentListenerMode = null;
+    }
+}
 // Speichert ein fertiges Spiel in der Cloud
 export async function saveGameToHistory(placedCharacters, rating, pool, gameType = 'classic') {
     const user = getCurrentUser();

@@ -81,6 +81,15 @@ export function initLiveSpectating(force = false) {
     });
 }
 
+// Beendet den Echtzeit-Sync für Live-Spiele, um Reads im Hintergrund zu sparen
+export function stopLiveSpectating() {
+    if (liveUnsubscribe) {
+        liveUnsubscribe();
+        liveUnsubscribe = null;
+        currentLiveMode = null;
+    }
+}
+
 function openSpectatorModal(username, data) {
     activeSpectatedUser = username;
     document.getElementById('spectator-modal').classList.remove('hidden');
