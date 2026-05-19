@@ -12,41 +12,50 @@ const eyeOpenSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" s
 const eyeClosedSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
 
 async function bootApp() {
-    // Warten auf Firebase, aber wenn es fehlschlägt, läuft die App trotzdem weiter
-    await initAuth(); 
-    
-    const currentUser = getCurrentUser();
+    try {
+        // 1. Lokalen Benutzer prüfen (das geht sofort und ohne Internet)
+        const currentUser = getCurrentUser();
 
-    if (!currentUser) {
-        setupAuthUI();
-    } else if (currentUser.role === 'admin') {
-        setupAdminUI();
-    } else {
-        setupGameUI(currentUser);
+        // 2. SOFORT die Benutzeroberfläche verkabeln! (Verhindert "tote" Buttons)
+        if (!currentUser) {
+            setupAuthUI();
+        } else if (currentUser.role === 'admin') {
+            setupAdminUI();
+        } else {
+            setupGameUI(currentUser);
+        }
+
+        // 3. ERST JETZT Firebase im Hintergrund prüfen
+        await initAuth(); 
+
+    } catch (error) {
+        console.error("Kritischer Fehler beim App-Start:", error);
+        showAuthFeedback("Systemfehler: Konnte nicht mit der Datenbank verbinden.", false);
     }
 }
 
 function setupAuthUI() {
     document.getElementById('auth-view').classList.remove('hidden');
+    
     const togglePasswordBtn = document.getElementById('toggle-password');
     const passwordInput = document.getElementById('auth-password');
     const loginBtn = document.getElementById('login-btn');
     
+    // Augen-Symbol klickbar machen
     togglePasswordBtn.addEventListener('click', () => {
         const isPass = passwordInput.type === 'password';
         passwordInput.type = isPass ? 'text' : 'password';
         togglePasswordBtn.innerHTML = isPass ? eyeClosedSVG : eyeOpenSVG;
     });
 
+    // Login-Button klickbar machen
     loginBtn.addEventListener('click', async () => {
-        // Button kurzzeitig deaktivieren und Text ändern
         loginBtn.disabled = true;
         loginBtn.textContent = "Lädt...";
         
         const usernameInput = document.getElementById('auth-username').value;
         const res = await loginOrRegister(usernameInput, passwordInput.value);
         
-        // Button wieder aktivieren
         loginBtn.disabled = false;
         loginBtn.textContent = "Los geht's";
 
@@ -102,5 +111,5 @@ function showAuthFeedback(msg, isSuccess) {
     feedback.classList.remove('hidden');
 }
 
-// App starten
+// Startschuss für die App
 bootApp();
