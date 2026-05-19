@@ -699,6 +699,80 @@ body.waifu-theme .nav-link.active {
 }
 
 /* ==========================================================================
+   SCOREBOARD STYLES (NEU)
+   ========================================================================== */
+.scoreboard-controls {
+    margin-bottom: 20px;
+}
+
+#scoreboard-user-filter {
+    background-color: #1a1e29;
+    color: #fff;
+    border: 2px solid #2a3142;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    outline: none;
+    width: 250px;
+    transition: border-color 0.2s;
+}
+
+#scoreboard-user-filter:focus {
+    border-color: #3b82f6;
+}
+
+.score-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #11151f;
+    border: 1px solid #2a3142;
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+}
+
+.score-rank {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #555;
+    width: 50px;
+    text-align: left;
+}
+
+.score-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-grow: 1;
+    text-align: left;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.score-info img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #333;
+}
+
+.score-points {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #ffe81f;
+}
+
+.score-points span {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+body.waifu-theme #scoreboard-user-filter:focus { border-color: #ff2a9d; }
+
+/* ==========================================================================
    UTILITY KLASSEN
    ========================================================================== */
 .hidden { 

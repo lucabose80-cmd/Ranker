@@ -39,9 +39,11 @@
     </div>
 
     <div id="game-view" class="view-container hidden">
+        
         <nav class="game-nav">
             <button class="nav-link active" data-target="game-main-content">SPIEL</button>
             <button class="nav-link" data-target="history-content">HISTORIE</button>
+            <button class="nav-link" data-target="scoreboard-content">SCOREBOARD</button>
         </nav>
 
         <div class="top-bar">
@@ -106,6 +108,18 @@
                 <h2>GALAKTISCHE ARCHIVE</h2>
                 <p class="prompt-text">Die letzten Spiele aller Zeitreisenden</p>
                 <div id="history-list" class="history-list"></div>
+            </div>
+        </div>
+
+        <div id="scoreboard-content" class="tab-content app-container hidden">
+            <div class="panel history-panel">
+                <h2>SCOREBOARD</h2>
+                <div class="scoreboard-controls">
+                    <select id="scoreboard-user-filter">
+                        <option value="global">Global (Alle Spieler)</option>
+                    </select>
+                </div>
+                <div id="scoreboard-list" class="history-list"></div>
             </div>
         </div>
     </div>

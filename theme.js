@@ -6,6 +6,7 @@ import { patchNotesWaifu } from './changelog-waifu.js';
 import { updateChangelogContent } from './changelog.js';
 import { initGame } from './game.js';
 import { renderHistory } from './history.js';
+import { renderScoreboard } from './scoreboard.js'; // NEU Importiert
 
 export let currentMode = 'starwars'; 
 export let activeCharacterDatabase = starWarsCharacters; 
@@ -15,13 +16,16 @@ export function toggleTheme() {
     const themeStylesheet = document.getElementById('theme-stylesheet');
     let activeChangelogDatabase;
 
+    // Filter-Dropdown bei Moduswechsel leeren, damit es sich neu aufbaut
+    document.getElementById('scoreboard-user-filter').innerHTML = '<option value="global">Global (Alle Spieler)</option>';
+
     if (currentMode === 'starwars') {
         currentMode = 'waifu';
         activeCharacterDatabase = waifuCharacters;
         activeChangelogDatabase = patchNotesWaifu;
         mainTitle.textContent = "WAIFU RANKING";
         themeStylesheet.href = "theme-waifu.css"; 
-        document.body.classList.add('waifu-theme'); // Wichtig fürs CSS
+        document.body.classList.add('waifu-theme');
     } else {
         currentMode = 'starwars';
         activeCharacterDatabase = starWarsCharacters;
@@ -33,12 +37,9 @@ export function toggleTheme() {
     
     updateChangelogContent(activeChangelogDatabase);
     
-    // Spiel im Hintergrund neustarten
     initGame(); 
     
-    // NEU: Wenn der Spieler den Historie-Tab offen hat und den Modus wechselt,
-    // lädt die Historie sofort die Einträge des neuen Modus!
-    if (!document.getElementById('history-content').classList.contains('hidden')) {
-        renderHistory();
-    }
+    // Aktive Tabs updaten
+    if (document.getElementById('history-content').style.display === 'block') renderHistory();
+    if (document.getElementById('scoreboard-content').style.display === 'block') renderScoreboard(); // NEU
 }
