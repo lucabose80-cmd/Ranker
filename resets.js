@@ -33,6 +33,7 @@ export async function getResets(force = false) {
             }
             
             userResets[u.username] = {
+                displayName: u.displayName || u.username,
                 historyResetAt_starwars: u.historyResetAt_starwars?.seconds || 0,
                 historyResetAt_waifu: u.historyResetAt_waifu?.seconds || 0,
                 scoreboardResetAt_starwars: u.scoreboardResetAt_starwars?.seconds || 0,

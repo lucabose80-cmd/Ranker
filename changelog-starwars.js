@@ -6,6 +6,7 @@ export const patchNotesStarWars = [
             "Performance: Extrem schnelles Umschalten zwischen Historie und Scoreboard (0ms Latenz) durch Shared-Realtime-Caching im RAM.",
             "Performance: Zirkelbezüge im Javascript vollständig entkoppelt für absolute Stabilität und reibungsfreie Anmeldung.",
             "UI-Update: Der Spielername oben links in der Navigationsleiste wird nun deutlich größer und edler dargestellt.",
+            "UI-Update: In der Historie und dem Scoreboard-Filter werden jetzt die echten Anzeigenamen (korrekte Groß-/Kleinschreibung) angezeigt.",
             "Bugfix: Der Online-Tracker wurde stabilisiert (Verbindungsprobleme und Anzeigefehler der Spieleranzahl behoben)."
         ]
     },

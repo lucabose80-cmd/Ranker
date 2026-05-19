@@ -82,6 +82,7 @@ export async function saveGameToHistory(placedCharacters, rating, pool) {
     try {
         await addDoc(collection(db, "history"), {
             username: user.username,
+            displayName: user.displayName || user.username,
             mode: currentMode,
             rating: rating,
             ranking: rankingData,
@@ -94,7 +95,7 @@ export async function saveGameToHistory(placedCharacters, rating, pool) {
 }
 
 // Hilfsfunktion zum Rendern der HTML Karten
-function renderHistoryHTML(games, container) {
+function renderHistoryHTML(games, container, displayNames) {
     if (games.length === 0) {
         container.innerHTML = '<p class="prompt-text">Noch keine Spiele in diesem Modus aufgezeichnet.</p>';
         return;
@@ -125,9 +126,11 @@ function renderHistoryHTML(games, container) {
             </div>
         ` : '';
 
+        const displayNameToUse = displayNames[game.username] || game.displayName || game.username;
+
         card.innerHTML = `
             <div class="history-header">
-                <strong>${game.username}</strong>
+                <strong>${displayNameToUse}</strong>
                 <span class="history-date">${date}</span>
             </div>
             <div class="history-images">
@@ -159,6 +162,7 @@ export async function renderHistory() {
     try {
         let globalHistoryResetSecs = 0;
         let userResets = {};
+        let displayNames = {};
         
         try {
             const { adminResets, userResets: cachedUserResets } = await getResets();
@@ -166,6 +170,7 @@ export async function renderHistory() {
             
             Object.keys(cachedUserResets).forEach(uname => {
                 userResets[uname] = cachedUserResets[uname][`historyResetAt_${currentMode}`] || 0;
+                displayNames[uname] = cachedUserResets[uname].displayName || uname;
             });
         } catch(e) {
             console.error("Fehler beim Laden der Resets:", e);
@@ -185,7 +190,7 @@ export async function renderHistory() {
         // Zeige maximal die 20 neuesten an (bereits sortiert)
         const limitGames = filteredGames.slice(0, 20);
 
-        renderHistoryHTML(limitGames, container);
+        renderHistoryHTML(limitGames, container, displayNames);
     } catch (error) {
         console.error("Fehler beim Rendern der Historie:", error);
         container.innerHTML = '<p class="prompt-text" style="color: #ff4757;">Fehler beim Laden der Historie.</p>';

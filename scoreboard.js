@@ -43,12 +43,14 @@ export async function renderScoreboard() {
     try {
         let globalScoreboardResetSecs = 0;
         let userResets = {};
+        let displayNames = {};
         try {
             const { adminResets, userResets: cachedUserResets } = await getResets();
             globalScoreboardResetSecs = adminResets[`globalScoreboardReset_${currentMode}`] || 0;
             
             Object.keys(cachedUserResets).forEach(uname => {
                 userResets[uname] = cachedUserResets[uname][`scoreboardResetAt_${currentMode}`] || 0;
+                displayNames[uname] = cachedUserResets[uname].displayName || uname;
             });
         } catch(e) {
             console.error("Fehler beim Laden der Resets:", e);
@@ -71,10 +73,10 @@ export async function renderScoreboard() {
         // Dropdown-Menü aktualisieren
         const sortedUsersList = Array.from(allUsers).sort();
         filterSelect.innerHTML = '<option value="global">Global (Alle Spieler)</option>';
-        sortedUsersList.forEach(user => {
+        sortedUsersList.forEach(uname => {
             const option = document.createElement('option');
-            option.value = user;
-            option.textContent = `Spieler: ${user}`;
+            option.value = uname;
+            option.textContent = `Spieler: ${displayNames[uname] || uname}`;
             filterSelect.appendChild(option);
         });
         filterSelect.value = selectedUser;
