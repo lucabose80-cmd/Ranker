@@ -3,11 +3,10 @@ export const patchNotesStarWars = [
         version: "v2.0", 
         title: "The Social Hub Update", 
         changes: [
-            "Neues Feature: Live-Spectating! Schau anderen Spielern in Echtzeit beim Ranken zu (inklusive neuer Raster-Übersicht).",
-            "Neues Feature: Globaler Chat als schwebendes Widget. Spieler aus beiden Universen können nun miteinander schreiben (mit [SW] oder [Anime] Tags).",
+            "Neues Feature: Live-Spectating! Schau anderen Spielern in Echtzeit beim Ranken zu.",
+            "Neues Feature: Globaler Chat als schwebendes Widget, um dich mit anderen Spielern auszutauschen.",
             "Neues Feature: Wer-ist-online-Sidebar hinzugefügt.",
-            "Neues Feature: Profil-System komplett überarbeitet. Es ist nun ein Overlay. Du kannst ab sofort deinen Anzeigenamen jederzeit ändern!",
-            "Neues Feature: Getrennte Avatare. Dein Profilbild passt sich nun automatisch an, je nachdem ob du Star Wars oder Anime spielst.",
+            "Neues Feature: Profil-System überarbeitet. Es ist nun ein Overlay, in dem du deinen Anzeigenamen jederzeit ändern kannst.",
             "UI-Overhaul: Die Navigation bleibt nun beim Scrollen fest am oberen Bildschirmrand.",
             "UI-Overhaul: Historie und Scoreboard nutzen nun ein übersichtliches 3-Spalten-Raster.",
             "Quality of Life: Der Update-Knopf leuchtet nun golden auf, wenn es neue Patch Notes gibt!"
