@@ -2,7 +2,7 @@
 import { initGame, handleRankSelection } from './game.js';
 import { toggleTheme } from './theme.js';
 import { initRatingSystem } from './rating.js';
-import { initChangelog, updateChangelogContent } from './changelog.js';
+import { initChangelog, switchChangelog } from './changelog.js'; // Beide importieren!
 import { patchNotesStarWars } from './changelog-starwars.js';
 import { initAuth, loginOrRegister, logout, getCurrentUser, startPresenceHeartbeat } from './auth.js';
 import { initAdminPanel } from './admin.js';

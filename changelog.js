@@ -2,13 +2,12 @@
 import { patchNotesStarWars } from './changelog-starwars.js';
 import { futureIdeas } from './roadmap.js';
 
-// WICHTIG: Das 'export' vor der Funktion ist notwendig!
-export function updateChangelogContent(data) {
-    const container = document.getElementById('changelog-content');
-    if (!container) return;
-    // ... dein Code zum Befüllen
+// Diese Funktion wird von main.js importiert
+export function initChangelog() {
+    console.log("Changelog initialisiert");
 }
 
+// Diese Funktion wird vom HTML-Button aufgerufen
 export function switchChangelog(tab) {
     const container = document.getElementById('changelog-content');
     if (!container) return;
