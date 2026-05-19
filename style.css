@@ -122,4 +122,595 @@ header p {
     animation: textGlow 1s ease-in-out;
 }
 
-@
+@keyframes textGlow {
+    0% { opacity: 0; transform: translateY(-5px); text-shadow: 0 0 0px #ffe81f; }
+    100% { opacity: 1; transform: translateY(0); text-shadow: 0 0 10px #ffe81f; }
+}
+
+/* ==========================================================================
+   AKTUELLE AUSWAHL (Unterer Bereich)
+   ========================================================================== */
+.selection-panel { 
+    max-width: 600px; 
+    margin: 0 auto; 
+    width: 100%; 
+    min-height: 400px; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center;
+}
+
+.selection-panel h3 { 
+    color: #fff; 
+    font-size: 0.9rem; 
+    letter-spacing: 1px; 
+    margin-top: 0; 
+    margin-bottom: 20px; 
+}
+
+.current-character-wrapper { 
+    display: flex; 
+    justify-content: center; 
+    margin-bottom: 15px; 
+}
+
+#current-image-container {
+    width: 220px; 
+    height: 250px; 
+    border: 2px solid #3b82f6; 
+    border-radius: 8px;
+    background-color: #000; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    overflow: hidden;
+}
+
+#current-image-container img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+}
+
+.mystery-name { 
+    margin: 5px 0 20px 0; 
+    font-size: 1.8rem !important; 
+}
+
+.prompt-text { 
+    color: #888; 
+    font-size: 0.8rem; 
+    letter-spacing: 1px; 
+    margin-bottom: 15px; 
+}
+
+.action-buttons { 
+    display: flex; 
+    justify-content: center; 
+    gap: 15px; 
+    margin-bottom: 10px; 
+}
+
+.rank-btn {
+    background-color: transparent; 
+    color: #3b82f6; 
+    border: 2px solid #3b82f6; 
+    border-radius: 6px;
+    width: 50px; 
+    height: 50px; 
+    font-size: 1.2rem; 
+    font-weight: bold; 
+    cursor: pointer; 
+    transition: all 0.2s;
+}
+
+.rank-btn:hover:not(:disabled) { 
+    background-color: rgba(59, 130, 246, 0.2); 
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); 
+}
+
+.rank-btn:disabled { 
+    border-color: #333; 
+    color: #333; 
+    cursor: not-allowed; 
+    background-color: transparent; 
+    box-shadow: none; 
+}
+
+/* ==========================================================================
+   END SCREEN & RATING
+   ========================================================================== */
+.end-title {
+    color: #3b82f6; 
+    font-size: 2.8rem; 
+    margin: 0 0 10px 0;
+    text-shadow: 0 0 20px rgba(59, 130, 246, 0.8); 
+    letter-spacing: 1px; 
+    text-transform: uppercase;
+}
+
+.end-subtitle { 
+    color: #b2bec3; 
+    font-size: 1.1rem; 
+    margin-bottom: 40px; 
+}
+
+.rating-prompt { 
+    color: #555; 
+    margin-bottom: 15px; 
+    font-weight: bold; 
+}
+
+.rating-buttons { 
+    display: flex; 
+    justify-content: center; 
+    flex-wrap: wrap; 
+    gap: 10px; 
+    margin-bottom: 20px; 
+}
+
+.rate-btn {
+    background-color: #0a0e17; 
+    color: #3b82f6; 
+    border: 2px solid #3b82f6; 
+    border-radius: 8px;
+    width: 45px; 
+    height: 45px; 
+    font-size: 1.1rem; 
+    font-weight: bold; 
+    cursor: pointer; 
+    transition: all 0.2s;
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
+}
+
+.rate-btn:hover { 
+    background-color: rgba(59, 130, 246, 0.2); 
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.6); 
+    transform: translateY(-2px); 
+}
+
+.rate-btn.selected { 
+    background-color: #3b82f6; 
+    color: #fff; 
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.8); 
+}
+
+#rating-feedback { 
+    color: #2ed573; 
+    font-size: 0.9rem; 
+    margin-bottom: 20px; 
+}
+
+#restart-btn {
+    background-color: #3b82f6; 
+    color: #fff; 
+    border: none; 
+    padding: 12px 30px; 
+    font-size: 1rem;
+    font-weight: bold; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    margin-top: 20px; 
+    letter-spacing: 1px;
+}
+
+#restart-btn:hover { 
+    background-color: #2563eb; 
+}
+
+/* ==========================================================================
+   CHANGELOG & MODALS
+   ========================================================================== */
+.text-btn {
+    position: absolute; 
+    top: 20px; 
+    right: 20px; 
+    background: none; 
+    border: none;
+    color: #888; 
+    font-size: 0.9rem; 
+    letter-spacing: 1px; 
+    cursor: pointer; 
+    font-weight: bold;
+}
+
+.text-btn:hover { 
+    color: #fff; 
+    text-decoration: underline; 
+}
+
+.modal {
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background-color: rgba(0, 0, 0, 0.85);
+    z-index: 100; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+}
+
+.updates-content {
+    background-color: #0f1219;
+    border: 2px solid #3b82f6; 
+    border-radius: 12px; 
+    padding: 30px 40px;
+    width: 90%; 
+    max-width: 600px; 
+    max-height: 80vh; 
+    overflow-y: auto;
+    position: relative; 
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.3); 
+    text-align: left;
+}
+
+.updates-main-title { 
+    color: #fff; 
+    margin-top: 0; 
+    font-size: 1.5rem; 
+    text-align: center; 
+    letter-spacing: 2px; 
+}
+
+.updates-divider { 
+    border: 0; 
+    height: 1px; 
+    background: #333; 
+    margin-bottom: 25px; 
+}
+
+.close-btn { 
+    position: absolute; 
+    top: 15px; 
+    right: 20px; 
+    font-size: 2rem; 
+    color: #888; 
+    cursor: pointer; 
+    line-height: 1; 
+}
+
+.close-btn:hover { 
+    color: #fff; 
+}
+
+.update-card {
+    background-color: #1a1e29;
+    border-radius: 8px; 
+    padding: 20px; 
+    margin-bottom: 15px; 
+    border: 1px solid #2a3142;
+}
+
+.update-card-title { 
+    margin-top: 0; 
+    margin-bottom: 15px; 
+    color: #fff; 
+    font-size: 1.2rem; 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+}
+
+.version-badge {
+    background-color: #3b82f6; 
+    color: #fff; 
+    padding: 3px 8px;
+    border-radius: 5px; 
+    font-size: 0.9rem; 
+    font-weight: bold;
+}
+
+.update-card ul { 
+    color: #b2bec3; 
+    font-size: 0.95rem; 
+    padding-left: 20px; 
+    line-height: 1.6; 
+    margin: 0; 
+}
+
+.update-card li { 
+    margin-bottom: 5px; 
+}
+
+/* ==========================================================================
+   AUTH & ADMIN PANEL (Login, Registrierung)
+   ========================================================================== */
+.view-container { 
+    width: 100%; 
+    min-height: 100vh; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+}
+
+.auth-panel, .admin-panel { 
+    width: 100%; 
+    max-width: 400px; 
+    padding: 40px; 
+}
+
+.admin-panel { 
+    max-width: 600px; 
+}
+
+input { 
+    width: 100%; 
+    padding: 12px; 
+    margin-bottom: 20px; 
+    border-radius: 6px; 
+    border: 2px solid #333; 
+    background-color: #111; 
+    color: #fff; 
+    font-size: 1rem; 
+    box-sizing: border-box; 
+    transition: border-color 0.3s;
+}
+
+input:focus { 
+    border-color: #3b82f6; 
+    outline: none; 
+}
+
+/* Passwort Augen-Symbol (SVG) */
+.password-wrapper { 
+    position: relative; 
+    width: 100%; 
+    margin-bottom: 20px; 
+}
+
+.password-wrapper input { 
+    margin-bottom: 0; 
+    padding-right: 40px; 
+}
+
+.eye-icon { 
+    position: absolute; 
+    right: 12px; 
+    top: 50%; 
+    transform: translateY(-50%); 
+    cursor: pointer; 
+    color: #888; 
+    width: 20px; 
+    height: 20px;
+    transition: color 0.2s; 
+    display: flex;
+    align-items: center;
+}
+
+.eye-icon:hover { 
+    color: #fff; 
+}
+
+.eye-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.auth-buttons { 
+    display: flex; /* WICHTIG: Das hat vorher gefehlt! */
+    flex-direction: column; 
+    gap: 10px; 
+}
+
+.auth-btn { 
+    width: 100%; 
+    height: 45px; 
+    border-radius: 6px; 
+}
+
+.top-bar { 
+    position: absolute; 
+    top: 20px; 
+    left: 20px; 
+    display: flex; 
+    gap: 20px; 
+    align-items: center; 
+}
+
+.logout-btn { 
+    position: relative; 
+    top: 0; 
+    right: 0; 
+    color: #ff6b6b; 
+}
+
+.logout-btn:hover { 
+    color: #ff4757; 
+}
+
+/* Admin User List */
+.user-list { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 10px; 
+    margin-bottom: 30px; 
+    max-height: 400px; 
+    overflow-y: auto; 
+}
+
+.admin-user-card { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 15px; 
+    background-color: #1a1e29; 
+    border: 1px solid #2a3142; 
+    border-radius: 6px;
+}
+
+.role-badge { 
+    font-size: 0.7rem; 
+    padding: 3px 8px; 
+    border-radius: 4px; 
+    margin-left: 10px; 
+    text-transform: uppercase; 
+}
+
+.role-badge.admin { 
+    background-color: #ff4757; 
+    color: white; 
+}
+
+.role-badge.player { 
+    background-color: #3b82f6; 
+    color: white; 
+}
+
+.delete-user-btn { 
+    background-color: transparent; 
+    border: 1px solid #ff4757; 
+    color: #ff4757; 
+    padding: 5px 10px; 
+    border-radius: 4px; 
+    cursor: pointer; 
+    transition: all 0.2s; 
+}
+
+.delete-user-btn:hover { 
+    background-color: #ff4757; 
+    color: white; 
+}
+
+/* ==========================================================================
+   NAVIGATION & HISTORY (Historie)
+   ========================================================================== */
+.game-nav {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #333;
+    padding: 0 20px;
+    justify-content: center;
+}
+
+.nav-link {
+    background: none;
+    border: none;
+    color: #888;
+    padding: 15px 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-bottom: 3px solid transparent;
+}
+
+.nav-link:hover { 
+    color: #fff; 
+}
+
+.nav-link.active {
+    color: #3b82f6;
+    border-bottom-color: #3b82f6;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+    max-height: 600px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.history-card {
+    background-color: #11151f;
+    border: 1px solid #2a3142;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: left;
+    transition: transform 0.2s;
+}
+
+.history-card:hover { 
+    transform: scale(1.01); 
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #222;
+    padding-bottom: 8px;
+}
+
+.history-date { 
+    color: #555; 
+    font-size: 0.8rem; 
+}
+
+.history-images {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.history-img-slot {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #333;
+}
+
+.history-img-slot img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+}
+
+.mini-rank {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    font-size: 0.6rem;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.history-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.history-mode-badge {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: #3b82f6;
+    color: #fff;
+}
+
+.history-rating strong { 
+    color: #ffe81f; 
+}
+
+/* ==========================================================================
+   WAIFU THEME ANPASSUNGEN (Historie)
+   ========================================================================== */
+body.waifu-theme .nav-link.active { 
+    color: #ff2a9d; 
+    border-bottom-color: #ff2a9d; 
+}
+
+body.waifu-theme .history-mode-badge { 
+    background: #ff2a9d; 
+}
+
+/* ==========================================================================
+   UTILITY KLASSEN
+   ========================================================================== */
+.hidden { 
+    display: none !important; 
+}
