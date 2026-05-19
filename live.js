@@ -2,11 +2,17 @@
 import { db } from './firebase-config.js';
 import { collection, onSnapshot, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { trackRead } from './tracker.js';
+import { currentMode } from './mode-state.js';
 
 let liveUnsubscribe = null;
 let activeSpectatedUser = null;
+let currentLiveMode = null;
 
-export function initLiveSpectating() {
+export function initLiveSpectating(force = false) {
+    if (!force && liveUnsubscribe && currentLiveMode === currentMode) {
+        return;
+    }
+    currentLiveMode = currentMode;
     if(liveUnsubscribe) liveUnsubscribe();
     
     const grid = document.getElementById('live-games-grid');

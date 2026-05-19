@@ -1,5 +1,4 @@
 // tracker.js
-import { currentMode } from './mode-state.js';
 
 let sessionReads = parseInt(localStorage.getItem('db_reads') || '0');
 let sessionWrites = parseInt(localStorage.getItem('db_writes') || '0');

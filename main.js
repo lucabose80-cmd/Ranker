@@ -88,8 +88,14 @@ function setupGameUI(user) {
             document.getElementById(target).classList.remove('hidden');
             
             // SOFORTIGES ERZWUNGENES NEULADEN BEI TAB-KLICK
-            if (target === 'history-content') renderHistory();
-            if (target === 'scoreboard-content') renderScoreboard();
+            if (target === 'history-content') {
+                initHistoryListener();
+                renderHistory();
+            }
+            if (target === 'scoreboard-content') {
+                initHistoryListener();
+                renderScoreboard();
+            }
             if (target === 'lexikon-content') renderLexikon();
             if (target === 'live-content') initLiveSpectating();
         });
@@ -138,8 +144,6 @@ function setupGameUI(user) {
     updateChangelogContent(patchNotesStarWars);
     initProfile();
     initCommunity();
-    initHistoryListener(); // Startet den Echtzeit-Sync für Historie & Scoreboard
-    initLiveSpectating();
     initTrackerUI();
 
     document.getElementById('restart-btn').addEventListener('click', () => {

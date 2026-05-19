@@ -15,8 +15,14 @@ export function getCachedHistory() {
     return { data: historyCache, isLoaded: isFirstLoadComplete };
 }
 
+let currentListenerMode = null;
+
 // Startet den Echtzeit-Sync für den aktuellen Modus
-export function initHistoryListener() {
+export function initHistoryListener(force = false) {
+    if (!force && historyUnsubscribe && currentListenerMode === currentMode) {
+        return;
+    }
+    currentListenerMode = currentMode;
     if (historyUnsubscribe) {
         historyUnsubscribe();
     }
