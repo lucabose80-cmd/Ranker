@@ -29,7 +29,7 @@ export function initHistoryListener(force = false) {
     isFirstLoadComplete = false;
 
     // Wir sortieren nach timestamp desc, filtern mode lokal, um zusammengesetzte Indizes zu umgehen
-    const q = query(collection(db, "history"), orderBy("timestamp", "desc"), limit(45));
+    const q = query(collection(db, "history"), orderBy("timestamp", "desc"), limit(24));
     
     historyUnsubscribe = onSnapshot(q, (snapshot) => {
         trackRead(snapshot.docChanges().filter(c => c.type !== 'removed').length);

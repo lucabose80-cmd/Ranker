@@ -87,13 +87,9 @@ function setupGameUI(user) {
             const target = link.dataset.target;
             document.getElementById(target).classList.remove('hidden');
             
-            // Inaktive Hörer abbestellen, um Hintergrund-Reads zu eliminieren!
-            if (target !== 'history-content' && target !== 'scoreboard-content') {
-                stopHistoryListener();
-            }
-            if (target !== 'live-content') {
-                stopLiveSpectating();
-            }
+            // Inaktive Hörer werden absichtlich NICHT mehr abbestellt! 
+            // Wenn der Tab-Wechsel stattfindet, bleibt der Listener im Hintergrund aktiv.
+            // Dadurch nutzt Firebase den lokalen Cache und löst beim erneuten Öffnen 0 (NULL) Reads aus!
 
             // SOFORTIGES ERZWUNGENES NEULADEN BEI TAB-KLICK
             if (target === 'history-content') {
