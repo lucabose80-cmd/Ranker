@@ -1,5 +1,14 @@
 export const patchNotesStarWars = [
     { 
+        version: "v1.8", 
+        title: "The Archives Expanded", 
+        changes: [
+            "Neues Feature: Lexikon-Tab hinzugefügt.",
+            "Visualisierung: Eine Übersicht aller Charaktere des aktuellen Universums (Alphabetisch sortiert).",
+            "Design: Lexikon passt sich nahtlos an das gewählte Theme an."
+        ] 
+    },
+    { 
         version: "v1.7", 
         title: "The Leaderboard Update", 
         changes: [
@@ -21,10 +30,47 @@ export const patchNotesStarWars = [
             "Bugfix: Robuste Fehlerbehandlung (Try/Catch) für das Login-System eingeführt."
         ] 
     },
-    { version: "v1.5", title: "The Multiverse Update", changes: ["Backend: Firebase-Datenbank implementiert."] },
-    { version: "v1.4", title: "End-Screen & UI Overhaul", changes: ["Visuelles Upgrade für den End-Screen."] },
-    { version: "v1.3", title: "The Reveal & Modularisierung", changes: ["Charakternamen werden am Ende enthüllt."] },
-    { version: "v1.2", title: "Sci-Fi Blind Ranking", changes: ["Es wird nur ein Charakter gleichzeitig gezeigt."] },
-    { version: "v1.1", title: "Star Wars Theme", changes: ["Theme-Wechsel: Das Spiel nutzt nun das Star Wars Universum."] },
-    { version: "v1.0", title: "Initial Release", changes: ["Grundgerüst des Ranking-Spiels veröffentlicht."] }
+    { 
+        version: "v1.5", 
+        title: "The Multiverse Update", 
+        changes: [
+            "Backend: Firebase-Datenbank implementiert.",
+            "Intelligentes Login und Augen-Symbol für Passwörter hinzugefügt."
+        ] 
+    },
+    { 
+        version: "v1.4", 
+        title: "End-Screen & UI Overhaul", 
+        changes: [
+            "Visuelles Upgrade für den End-Screen."
+        ] 
+    },
+    { 
+        version: "v1.3", 
+        title: "The Reveal & Modularisierung", 
+        changes: [
+            "Charakternamen werden am Ende enthüllt."
+        ] 
+    },
+    { 
+        version: "v1.2", 
+        title: "Sci-Fi Blind Ranking", 
+        changes: [
+            "Es wird nur ein Charakter gleichzeitig gezeigt."
+        ] 
+    },
+    { 
+        version: "v1.1", 
+        title: "Star Wars Theme", 
+        changes: [
+            "Theme-Wechsel: Das Spiel nutzt nun das Star Wars Universum."
+        ] 
+    },
+    { 
+        version: "v1.0", 
+        title: "Initial Release", 
+        changes: [
+            "Grundgerüst des Ranking-Spiels veröffentlicht."
+        ] 
+    }
 ];

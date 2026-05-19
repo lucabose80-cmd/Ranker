@@ -7,6 +7,7 @@ import { updateChangelogContent } from './changelog.js';
 import { initGame } from './game.js';
 import { renderHistory } from './history.js';
 import { renderScoreboard } from './scoreboard.js';
+import { renderLexikon } from './lexikon.js'; // NEU Importiert
 
 export let currentMode = 'starwars'; 
 export let activeCharacterDatabase = starWarsCharacters; 
@@ -16,7 +17,6 @@ export function toggleTheme() {
     const themeStylesheet = document.getElementById('theme-stylesheet');
     let activeChangelogDatabase;
 
-    // Filter-Dropdown bei Moduswechsel leeren, damit es sich neu aufbaut
     document.getElementById('scoreboard-user-filter').innerHTML = '<option value="global">Global (Alle Spieler)</option>';
 
     if (currentMode === 'starwars') {
@@ -39,11 +39,15 @@ export function toggleTheme() {
     
     initGame(); 
     
-    // Repariert: Wir prüfen, ob die Klasse 'hidden' fehlt, statt auf direkte Styles zu schauen
+    // Live-Update der aktuellen Ansicht
     if (!document.getElementById('history-content').classList.contains('hidden')) {
         renderHistory();
     }
     if (!document.getElementById('scoreboard-content').classList.contains('hidden')) {
         renderScoreboard();
+    }
+    // NEU: Lexikon aktualisieren bei Theme-Wechsel
+    if (!document.getElementById('lexikon-content').classList.contains('hidden')) {
+        renderLexikon();
     }
 }

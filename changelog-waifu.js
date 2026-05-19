@@ -1,5 +1,14 @@
 export const patchNotesWaifu = [
     { 
+        version: "v1.4", 
+        title: "The Encyclopedia", 
+        changes: [
+            "Neues Feature: Lexikon-Tab hinzugefügt.",
+            "Visualisierung: Eine Übersicht aller Waifus im aktuellen Modus (Alphabetisch sortiert).",
+            "Design: Schicke Neon-Pink Hover-Effekte für die Charakter-Karten."
+        ] 
+    },
+    { 
         version: "v1.3", 
         title: "The Ranking Meta", 
         changes: [
@@ -20,6 +29,18 @@ export const patchNotesWaifu = [
             "Bugfix: Ansichts-Fehler behoben (Anmelde-Panel verschwindet korrekt)."
         ] 
     },
-    { version: "v1.1", title: "Visual Overhaul & Engine Upgrade", changes: ["Farbschema aktualisiert: Sattes Neon-Pink (#ff2a9d)."] },
-    { version: "v1.0", title: "Anime Modus Release", changes: ["Neuer Waifu-Modus integriert."] }
+    { 
+        version: "v1.1", 
+        title: "Visual Overhaul & Engine Upgrade", 
+        changes: [
+            "Farbschema aktualisiert: Sattes Neon-Pink (#ff2a9d)."
+        ] 
+    },
+    { 
+        version: "v1.0", 
+        title: "Anime Modus Release", 
+        changes: [
+            "Neuer Waifu-Modus integriert."
+        ] 
+    }
 ];

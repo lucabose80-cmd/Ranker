@@ -8,11 +8,11 @@ import { initAuth, loginOrRegister, logout, getCurrentUser } from './auth.js';
 import { initAdminPanel } from './admin.js';
 import { renderHistory } from './history.js';
 import { renderScoreboard } from './scoreboard.js';
+import { renderLexikon } from './lexikon.js'; // NEU Importiert
 
 const eyeOpenSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
 const eyeClosedSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
 
-// SAUBERER FIX: Nur Klassen umschalten, keine direkten Styles!
 function showView(viewId) {
     document.getElementById('auth-view').classList.add('hidden');
     document.getElementById('admin-view').classList.add('hidden');
@@ -82,21 +82,22 @@ function setupGameUI(user) {
     document.getElementById('player-greeting').textContent = `Willkommen, ${user.username}!`;
     document.getElementById('logout-btn').addEventListener('click', logout);
 
-    // Tab-Navigation inkl. Scoreboard (Repariert)
+    // Tab-Navigation inkl. Lexikon
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', () => {
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             
-            // Nutzt wieder die .hidden Klasse für die Tabs!
             document.getElementById('game-main-content').classList.add('hidden');
             document.getElementById('history-content').classList.add('hidden');
             document.getElementById('scoreboard-content').classList.add('hidden');
+            document.getElementById('lexikon-content').classList.add('hidden'); // NEU
             
             link.classList.add('active');
             document.getElementById(link.dataset.target).classList.remove('hidden');
             
             if (link.dataset.target === 'history-content') renderHistory();
             if (link.dataset.target === 'scoreboard-content') renderScoreboard();
+            if (link.dataset.target === 'lexikon-content') renderLexikon(); // NEU
         });
     });
 
@@ -117,10 +118,10 @@ function setupGameUI(user) {
     document.getElementById('restart-btn').addEventListener('click', initGame);
     document.addEventListener('keydown', (e) => { if (e.key === 'ArrowDown') { e.preventDefault(); toggleTheme(); } });
 
-    // Initialen Tab sauber setzen
     document.getElementById('game-main-content').classList.remove('hidden');
     document.getElementById('history-content').classList.add('hidden');
     document.getElementById('scoreboard-content').classList.add('hidden');
+    document.getElementById('lexikon-content').classList.add('hidden');
     
     initGame();
 }
