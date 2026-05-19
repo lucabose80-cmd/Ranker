@@ -4,6 +4,8 @@ import { shuffleArray, preloadImages } from './utils.js';
 import { resetRatingUI } from './rating.js';
 import { saveGameToHistory } from './history.js';
 import { getCurrentUser, markCharacterAsDiscovered } from './auth.js'; // NEU importiert
+import { doc, setDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { db } from './firebase-config.js';
 
 export let activePool = []; 
 export let currentIndex = 0;
@@ -66,13 +68,27 @@ export function revealNames() {
     }
 }
 
-export function handleRankSelection(rank, buttonElement) {
+export async function handleRankSelection(rank, buttonElement) {
     const currentChar = activePool[currentIndex];
     document.querySelector(`#slot-${rank} .card-content`).innerHTML = `<img src="${currentChar.img}" alt="Ranked">`;
     placedCharacters[rank] = currentChar;
     
     buttonElement.disabled = true;
     currentIndex++;
+    
+    // NEU: Live Broadcast an die Cloud!
+    const user = getCurrentUser();
+    if(user && user.role !== 'admin') {
+        try {
+            await setDoc(doc(db, "live_games", user.username), {
+                displayName: user.displayName || user.username,
+                avatar: user.avatar || '',
+                placedCharacters,
+                updatedAt: Timestamp.now()
+            });
+        } catch(e) {}
+    }
+
     showNextCharacter();
 }
 

@@ -857,6 +857,45 @@ body.waifu-theme .lexikon-card:hover {
 }
 
 /* ==========================================================================
+   PROFIL, COMMUNITY & LIVE STYLES (NEU)
+   ========================================================================== */
+.mini-avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid #3b82f6; }
+body.waifu-theme .mini-avatar { border-color: #ff2a9d; }
+
+.profile-layout { display: flex; gap: 30px; text-align: left; }
+.profile-settings { flex: 1; }
+.profile-avatar-selection { flex: 2; border-left: 1px solid #333; padding-left: 20px; }
+.avatar-card { cursor: pointer; opacity: 0.6; }
+.avatar-card:hover { opacity: 1; }
+.avatar-card.selected { opacity: 1; border-color: #ffe81f; box-shadow: 0 0 15px rgba(255, 232, 31, 0.5); }
+
+.community-layout { display: flex; gap: 20px; height: 500px; }
+.online-panel { flex: 1; display: flex; flex-direction: column; }
+.chat-panel { flex: 2; display: flex; flex-direction: column; }
+
+.online-list { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+.online-user-card { display: flex; align-items: center; gap: 10px; background: #11151f; padding: 10px; border-radius: 8px; border: 1px solid #2a3142; }
+.online-indicator { width: 10px; height: 10px; background-color: #2ed573; border-radius: 50%; box-shadow: 0 0 8px #2ed573; }
+
+.chat-messages { flex-grow: 1; overflow-y: auto; background: #0a0e17; border: 1px inset #222; border-radius: 6px; padding: 15px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
+.chat-msg { display: flex; gap: 10px; text-align: left; }
+.chat-msg img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
+.chat-msg-content { background: #1c2331; padding: 8px 12px; border-radius: 12px; border-top-left-radius: 0; max-width: 80%; }
+.chat-msg.self { flex-direction: row-reverse; }
+.chat-msg.self .chat-msg-content { background: #3b82f6; border-top-left-radius: 12px; border-top-right-radius: 0; }
+body.waifu-theme .chat-msg.self .chat-msg-content { background: #ff2a9d; }
+.chat-username { font-size: 0.7rem; color: #888; display: block; margin-bottom: 3px; font-weight: bold; }
+.chat-msg.self .chat-username { color: #ddd; text-align: right; }
+.chat-input-area { display: flex; gap: 10px; }
+.chat-input-area input { margin-bottom: 0; }
+#chat-send-btn { width: 60px; height: auto; }
+
+/* Live Games */
+.live-board-mini { display: flex; gap: 5px; margin-top: 10px; }
+.live-slot-mini { width: 40px; height: 50px; border: 1px dashed #555; border-radius: 4px; overflow: hidden; }
+.live-slot-mini img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ==========================================================================
    UTILITY KLASSEN
    ========================================================================== */
 .hidden { 

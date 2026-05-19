@@ -1,16 +1,14 @@
 // auth.js
 import { db } from './firebase-config.js';
-import { doc, setDoc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { doc, setDoc, getDoc, updateDoc, arrayUnion, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 const CURRENT_USER_KEY = 'ranking_game_active_user';
+let heartbeatInterval;
 
 export async function initAuth() {
     try {
-        const adminRef = doc(db, "users", "admin");
-        await setDoc(adminRef, { username: 'admin', password: '123', role: 'admin' }, { merge: true });
-    } catch (error) {
-        console.error("Firebase Init Fehler:", error);
-    }
+        await setDoc(doc(db, "users", "admin"), { username: 'admin', password: '123', role: 'admin' }, { merge: true });
+    } catch (e) {}
 }
 
 export async function loginOrRegister(username, password) {
@@ -23,55 +21,78 @@ export async function loginOrRegister(username, password) {
         
         if (userSnap.exists()) {
             const user = userSnap.data();
-            // Fallback: Falls ein alter Account noch keine Entdeckungen-Liste hat
             if (!user.discovered) user.discovered = [];
+            if (!user.displayName) user.displayName = user.username;
+            if (!user.avatar) user.avatar = "";
             
             if (user.password === password) {
                 localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
+                startPresenceHeartbeat(); // Online markieren
                 return { success: true, user, message: 'Erfolgreich eingeloggt.' };
             } else {
                 return { success: false, message: 'Falsches Passwort.' };
             }
         } else {
             const role = safeUsername === 'admin' ? 'admin' : 'player';
-            // Neue Accounts starten mit einem leeren Entdeckt-Array []
-            const newUser = { username: safeUsername, password, role, stats: { gamesPlayed: 0 }, discovered: [] };
+            const newUser = { username: safeUsername, displayName: safeUsername, password, role, stats: { gamesPlayed: 0 }, discovered: [], avatar: "" };
             
             await setDoc(userRef, newUser);
             localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(newUser));
-            
-            return { success: true, user: newUser, message: 'Account neu erstellt und eingeloggt!' };
+            startPresenceHeartbeat();
+            return { success: true, user: newUser, message: 'Account erstellt!' };
         }
     } catch (error) {
-        console.error("Login Fehler:", error);
-        return { success: false, message: `Datenbank-Fehler: ${error.message}` };
+        return { success: false, message: `Fehler: ${error.message}` };
     }
 }
 
-// NEU: Markiert einen Charakter live in der Cloud und lokal als "entdeckt"
+// NEU: Profil-Daten aktualisieren
+export async function updateUserProfile(newDisplayName, newPassword, newAvatarPath) {
+    const user = getCurrentUser();
+    if(!user) return {success: false};
+    
+    try {
+        const updates = {};
+        if (newDisplayName) updates.displayName = newDisplayName;
+        if (newPassword) updates.password = newPassword;
+        if (newAvatarPath !== undefined) updates.avatar = newAvatarPath;
+        
+        await updateDoc(doc(db, "users", user.username), updates);
+        
+        const updatedUser = { ...user, ...updates };
+        localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updatedUser));
+        return { success: true, user: updatedUser };
+    } catch (e) {
+        return { success: false, message: e.message };
+    }
+}
+
+// NEU: Sagt der Cloud alle 30 Sekunden "Ich bin noch da!"
+export function startPresenceHeartbeat() {
+    const user = getCurrentUser();
+    if (!user) return;
+    
+    const sendHeartbeat = async () => {
+        try { await updateDoc(doc(db, "users", user.username), { lastActive: Timestamp.now() }); } catch (e) {}
+    };
+    sendHeartbeat();
+    if(heartbeatInterval) clearInterval(heartbeatInterval);
+    heartbeatInterval = setInterval(sendHeartbeat, 30000);
+}
+
 export async function markCharacterAsDiscovered(charName) {
     const user = getCurrentUser();
     if (!user || user.role === 'admin') return;
-
     if (!user.discovered) user.discovered = [];
-    if (user.discovered.includes(charName)) return; // Bereits entdeckt, nichts tun
+    if (user.discovered.includes(charName)) return;
 
-    // 1. Lokal im Browser speichern (für sofortiges Feedback ohne Ladezeit)
     user.discovered.push(charName);
     localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
-
-    // 2. Live in die Firebase Cloud spiegeln
-    try {
-        const userRef = doc(db, "users", user.username);
-        await updateDoc(userRef, {
-            discovered: arrayUnion(charName) // Fügt das Element ohne Duplikate hinzu
-        });
-    } catch (e) {
-        console.error("Fehler beim Cloud-Speichern der Entdeckung:", e);
-    }
+    try { await updateDoc(doc(db, "users", user.username), { discovered: arrayUnion(charName) }); } catch (e) {}
 }
 
 export function logout() {
+    if(heartbeatInterval) clearInterval(heartbeatInterval);
     localStorage.removeItem(CURRENT_USER_KEY);
     location.reload(); 
 }
