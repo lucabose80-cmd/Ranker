@@ -3,14 +3,14 @@ import { db } from './firebase-config.js';
 import { collection, onSnapshot, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 let liveUnsubscribe = null;
-let activeSpectatedUser = null; // Speichert, wen man gerade vergrößert anschaut
+let activeSpectatedUser = null;
 
 export function initLiveSpectating() {
     if(liveUnsubscribe) liveUnsubscribe();
     
     const grid = document.getElementById('live-games-grid');
     
-    // Nur Spiele der letzten 2 Minuten abrufen
+    // Nur Spiele der letzten 2 Minuten abrufen (= nur aktive Ranking-Phasen)
     const twoMinutesAgo = new Date(Date.now() - 120000);
     const qLive = query(collection(db, "live_games"), where("updatedAt", ">", Timestamp.fromDate(twoMinutesAgo)));
     
@@ -28,6 +28,7 @@ export function initLiveSpectating() {
                 activeGames++;
                 const avatarImg = data.avatar ? `<img src="${data.avatar}" class="mini-avatar">` : '';
                 
+                // Mini-Board (platzierte Charaktere)
                 let slotsHtml = '';
                 for(let i = 1; i <= 5; i++) {
                     const char = data.placedCharacters[i];
@@ -36,25 +37,28 @@ export function initLiveSpectating() {
                     </div>`;
                 }
 
-                // Erstellt eine klickbare Karte fürs Raster
+                // Fortschritts-Anzeige
+                const placed = Object.values(data.placedCharacters).filter(Boolean).length;
+                const progressHtml = `<div class="live-progress-bar"><div class="live-progress-fill" style="width: ${(placed/5)*100}%"></div></div>`;
+
                 const card = document.createElement('div');
                 card.className = 'live-grid-card';
                 card.innerHTML = `
                     <div class="live-card-user">
                         ${avatarImg} <strong>${data.displayName}</strong>
+                        <span class="live-placed-count">${placed}/5</span>
                     </div>
+                    ${progressHtml}
                     <div class="live-board-mini">${slotsHtml}</div>
                     <button class="rank-btn spec-btn">Zuschauen</button>
                 `;
                 
-                // Klick auf "Zuschauen" öffnet die Großansicht
                 card.querySelector('.spec-btn').addEventListener('click', () => {
                     openSpectatorModal(username, data);
                 });
 
                 grid.appendChild(card);
 
-                // Wenn man diesen Spieler gerade aktiv vergrößert hat, update das Modal live!
                 if (activeSpectatedUser === username) {
                     updateSpectatorModalContent(data);
                 }
@@ -79,10 +83,11 @@ export function closeSpectatorModal() {
 }
 
 function updateSpectatorModalContent(data) {
-    document.getElementById('spectator-title').textContent = `LIVE: ${data.displayName} schaut zu`;
+    document.getElementById('spectator-title').textContent = `LIVE: ${data.displayName} rankt gerade`;
     const board = document.getElementById('spectator-board');
     board.innerHTML = '';
 
+    // Ranking-Board (platzierte Charaktere)
     for (let i = 1; i <= 5; i++) {
         const char = data.placedCharacters[i];
         board.innerHTML += `
@@ -96,5 +101,32 @@ function updateSpectatorModalContent(data) {
                 <div class="card-label"><span>${char ? char.name : '???'}</span></div>
             </div>
         `;
+    }
+
+    // Aktuelle Auswahl (Pool) – Erscheinungsreihenfolge der Charaktere
+    const poolContainer = document.getElementById('spectator-pool');
+    if (poolContainer && data.pool && data.pool.length > 0) {
+        const currentIdx = data.currentIndex || 0;
+        poolContainer.classList.remove('hidden');
+        poolContainer.innerHTML = `
+            <h4 class="spectator-pool-title">Aktuelle Auswahl (Erscheinungsreihenfolge)</h4>
+            <div class="spectator-pool-grid">
+                ${data.pool.map((char, idx) => {
+                    let stateClass = '';
+                    if (idx < currentIdx) stateClass = 'pool-placed';
+                    else if (idx === currentIdx) stateClass = 'pool-current';
+                    else stateClass = 'pool-upcoming';
+                    return `
+                        <div class="spectator-pool-item ${stateClass}" title="${char.name}">
+                            <img src="${char.img}">
+                            <span>${char.name}</span>
+                            <div class="pool-order-badge">${idx + 1}</div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    } else if (poolContainer) {
+        poolContainer.classList.add('hidden');
     }
 }

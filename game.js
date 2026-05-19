@@ -3,7 +3,7 @@ import { activeCharacterDatabase } from './theme.js';
 import { shuffleArray, preloadImages } from './utils.js';
 import { resetRatingUI } from './rating.js';
 import { saveGameToHistory } from './history.js';
-import { getCurrentUser, markCharacterAsDiscovered } from './auth.js'; // NEU importiert
+import { getCurrentUser, markCharacterAsDiscovered } from './auth.js';
 import { doc, setDoc, Timestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { db } from './firebase-config.js';
 
@@ -17,11 +17,10 @@ export function initGame() {
     
     document.getElementById('end-screen-area').classList.add('hidden');
     document.getElementById('active-game-area').classList.remove('hidden');
-    // Alten Glow beim Neustart entfernen
     document.getElementById('current-image-container').classList.remove('gold-glow');
     resetRatingUI();
     
-    // Live Game Dokument aufräumen
+    // Live Game Dokument aufräumen beim Neustart
     const user = getCurrentUser();
     if(user && user.role !== 'admin') {
         deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
@@ -48,18 +47,23 @@ export function showNextCharacter() {
         
         imgContainer.innerHTML = `<img src="${currentChar.img}" alt="Charakter Bild">`;
         
-        // NEU: Gold-Glow prüfen, wenn der Charakter brandneu für den User ist
         const user = getCurrentUser();
         const discoveredList = user && user.discovered ? user.discovered : [];
         
         if (user && user.role !== 'admin' && !discoveredList.includes(currentChar.name)) {
             imgContainer.classList.add('gold-glow');
-            markCharacterAsDiscovered(currentChar.name); // Sofort als entdeckt markieren
+            markCharacterAsDiscovered(currentChar.name);
         } else {
             imgContainer.classList.remove('gold-glow');
         }
 
     } else {
+        // Alle 5 platziert → Bewertungsphase beginnt → Live-Dokument löschen!
+        const user = getCurrentUser();
+        if(user && user.role !== 'admin') {
+            deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
+        }
+
         document.getElementById('active-game-area').classList.add('hidden');
         revealNames();
         document.getElementById('end-screen-area').classList.remove('hidden');
@@ -82,7 +86,7 @@ export async function handleRankSelection(rank, buttonElement) {
     buttonElement.disabled = true;
     currentIndex++;
     
-    // NEU: Live Broadcast an die Cloud!
+    // Live Broadcast mit Pool-Info für Zuschauer
     const user = getCurrentUser();
     if(user && user.role !== 'admin') {
         try {
@@ -90,6 +94,8 @@ export async function handleRankSelection(rank, buttonElement) {
                 displayName: user.displayName || user.username,
                 avatar: user.avatar || '',
                 placedCharacters,
+                pool: activePool,          // Die 5 Charaktere der Runde (Erscheinungsreihenfolge)
+                currentIndex: currentIndex, // Welcher Charakter als nächstes kommt
                 updatedAt: Timestamp.now()
             }).catch(e => console.error("Live Broadcast Error:", e));
         } catch(e) {}
@@ -99,5 +105,6 @@ export async function handleRankSelection(rank, buttonElement) {
 }
 
 export function submitFinalRating(value) {
-    saveGameToHistory(placedCharacters, value);
+    // Übergabe des Pools, damit die Erscheinungsreihenfolge in der Historie gespeichert wird
+    saveGameToHistory(placedCharacters, value, activePool);
 }

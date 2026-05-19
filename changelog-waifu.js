@@ -1,4 +1,14 @@
 export const patchNotesWaifu = [
+    {
+        version: "v1.8",
+        title: "The Spectator & Quality of Life Update",
+        changes: [
+            "Neues Feature: Die Reihenfolge, in der die Waifus erschienen sind, wird jetzt in der Historie übersichtlich dargestellt.",
+            "Neues Feature: Beim Live-Zuschauen siehst du nun den kompletten Waifu-Auswahlpool der Person inklusive des aktuellen Status (platziert, aktuell, kommend).",
+            "Optimierung: Live-Spiele werden nun ausschließlich während des eigentlichen Rankens übertragen und nach Abschluss oder Abbruch sofort bereinigt.",
+            "UI-Update: Scrollbalken in allen Rastern (Historie, Scoreboard, Live-Spiele, Lexikon, Chat) wurden ausgeblendet, um das Interface noch edler wirken zu lassen."
+        ]
+    },
     { 
         version: "v1.7.1", 
         title: "Performance & Stabilitätsfixes", 

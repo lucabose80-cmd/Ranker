@@ -5,7 +5,7 @@ import { getCurrentUser } from './auth.js';
 import { currentMode } from './theme.js';
 
 // Speichert ein fertiges Spiel in der Cloud
-export async function saveGameToHistory(placedCharacters, rating) {
+export async function saveGameToHistory(placedCharacters, rating, pool) {
     const user = getCurrentUser();
     if (!user) return;
 
@@ -18,12 +18,16 @@ export async function saveGameToHistory(placedCharacters, rating) {
         });
     }
 
+    // Erscheinungsreihenfolge speichern
+    const poolData = pool ? pool.map((c, idx) => ({ order: idx + 1, name: c.name, img: c.img })) : [];
+
     try {
         await addDoc(collection(db, "history"), {
             username: user.username,
             mode: currentMode,
             rating: rating,
             ranking: rankingData,
+            pool: poolData,
             timestamp: Timestamp.now()
         });
     } catch (e) {
@@ -85,6 +89,22 @@ export async function renderHistory() {
             
             const card = document.createElement('div');
             card.className = `history-card ${game.mode}-card`;
+
+            // Erscheinungsreihenfolge (Pool) – nur wenn vorhanden
+            const poolHtml = (game.pool && game.pool.length > 0) ? `
+                <div class="history-pool">
+                    <span class="history-pool-label">Erschienen in:</span>
+                    <div class="history-pool-slots">
+                        ${game.pool.map(item => `
+                            <div class="history-pool-slot" title="${item.order}. ${item.name}">
+                                <img src="${item.img}">
+                                <span class="pool-order">${item.order}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : '';
+
             card.innerHTML = `
                 <div class="history-header">
                     <strong>${game.username}</strong>
@@ -98,6 +118,7 @@ export async function renderHistory() {
                         </div>
                     `).join('')}
                 </div>
+                ${poolHtml}
                 <div class="history-footer">
                     <span class="history-rating">Bewertung: <strong>${game.rating}/10</strong></span>
                 </div>
