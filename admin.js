@@ -1,5 +1,5 @@
 // admin.js
-import { logout } from './auth.js';
+import { logout, getCurrentUser } from './auth.js';
 import { db } from './firebase-config.js';
 import { collection, getDocs, deleteDoc, doc, updateDoc, setDoc, onSnapshot, query, orderBy, Timestamp, where } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { currentMode, activeCharacterDatabase } from './theme.js';
@@ -16,10 +16,12 @@ export async function initAdminPanel() {
                 const field = `globalHistoryReset_${currentMode}`;
                 const obj = {}; obj[field] = Timestamp.now();
                 try {
-                    await updateDoc(doc(db, "users", "admin"), obj);
+                    const adminUid = getCurrentUser()?.uid;
+                    if (!adminUid) throw new Error('Kein Admin eingeloggt.');
+                    await updateDoc(doc(db, "users", adminUid), obj);
                     alert(`Globale Historie für ${currentMode} zurückgesetzt.`);
                     refreshAdminPanel();
-                } catch(e) { console.error(e); alert("Fehler beim Zurücksetzen!"); }
+                } catch(e) { console.error(e); alert(`Fehler beim Zurücksetzen: ${e.message}`); }
             }
         });
 
@@ -28,10 +30,12 @@ export async function initAdminPanel() {
                 const field = `globalScoreboardReset_${currentMode}`;
                 const obj = {}; obj[field] = Timestamp.now();
                 try {
-                    await updateDoc(doc(db, "users", "admin"), obj);
+                    const adminUid = getCurrentUser()?.uid;
+                    if (!adminUid) throw new Error('Kein Admin eingeloggt.');
+                    await updateDoc(doc(db, "users", adminUid), obj);
                     alert(`Globales Scoreboard für ${currentMode} zurückgesetzt.`);
                     refreshAdminPanel();
-                } catch(e) { console.error(e); alert("Fehler beim Zurücksetzen!"); }
+                } catch(e) { console.error(e); alert(`Fehler beim Zurücksetzen: ${e.message}`); }
             }
         });
 
@@ -75,10 +79,10 @@ async function renderUserList() {
         users.push(data);
     });
     
-    // Globale Resets aus dem "admin" User auslesen
+    // Globale Resets aus dem Admin User auslesen (suche nach role === 'admin')
     let globalHistReset = 0;
     let globalScoreReset = 0;
-    const adminUser = users.find(u => u.username === 'admin' || u.id === 'admin');
+    const adminUser = users.find(u => u.role === 'admin');
     if (adminUser) {
         if(adminUser[`globalHistoryReset_${currentMode}`]) globalHistReset = adminUser[`globalHistoryReset_${currentMode}`].seconds;
         if(adminUser[`globalScoreboardReset_${currentMode}`]) globalScoreReset = adminUser[`globalScoreboardReset_${currentMode}`].seconds;

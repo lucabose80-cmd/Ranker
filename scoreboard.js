@@ -20,7 +20,7 @@ export async function renderScoreboard() {
             const usersSnap = await getDocs(collection(db, "users"));
             usersSnap.forEach(d => {
                 const u = d.data();
-                if (u.username === 'admin' || d.id === 'admin') {
+                if (u.role === 'admin') {
                     if (u[`globalScoreboardReset_${currentMode}`]) {
                         globalScoreboardResetSecs = u[`globalScoreboardReset_${currentMode}`].seconds;
                     }

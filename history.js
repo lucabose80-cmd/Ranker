@@ -44,7 +44,7 @@ export async function renderHistory() {
             const usersSnap = await getDocs(collection(db, "users"));
             usersSnap.forEach(d => {
                 const u = d.data();
-                if (u.username === 'admin' || d.id === 'admin') {
+                if (u.role === 'admin') {
                     if (u[`globalHistoryReset_${currentMode}`]) {
                         globalHistoryResetSecs = u[`globalHistoryReset_${currentMode}`].seconds;
                     }
