@@ -1,4 +1,4 @@
-iimport { db } from './firebase-config.js';
+import { db } from './firebase-config.js';
 import { collection, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { logout } from './auth.js';
 
@@ -7,7 +7,6 @@ export async function initAdminPanel() {
     if (!list) return;
     list.innerHTML = '<h3>Spielerverwaltung</h3>';
 
-    // Logout-Button Event
     document.getElementById('admin-logout-btn').onclick = logout;
 
     const usersSnap = await getDocs(collection(db, "users"));
@@ -24,7 +23,6 @@ export async function initAdminPanel() {
         
         const btnContainer = document.createElement('div');
         
-        // DISCOVERY KNOPF
         const resBtn = document.createElement('button');
         resBtn.textContent = "Discovery Reset";
         resBtn.style.cssText = "background: #ff4757; color: white; border: none; padding: 5px; cursor: pointer; margin-right:5px; border-radius: 4px;";
@@ -35,7 +33,6 @@ export async function initAdminPanel() {
             setTimeout(() => { resBtn.style.background = "#ff4757"; resBtn.textContent = "Discovery Reset"; }, 2000);
         };
 
-        // HISTORY KNOPF
         const delBtn = document.createElement('button');
         delBtn.textContent = "History Reset";
         delBtn.style.cssText = "background: #ff4757; color: white; border: none; padding: 5px; cursor: pointer; border-radius: 4px;";
