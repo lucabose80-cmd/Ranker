@@ -6,7 +6,8 @@ export const patchNotesWaifu = [
             "Farbschema aktualisiert: Das Theme nutzt nun ein sattes Neon-Pink (#ff2a9d).",
             "Glow-Effekte für Buttons und Texte an die neue Farbe angepasst.",
             "Architektur: Spiellogik in kleine, wartbare Module aufgeteilt.",
-            "Performance: Bilder-Preload integriert, um Ruckler bei der Charakteranzeige zu beheben."
+            "Performance: Bilder-Preload integriert, um Ruckler bei der Charakteranzeige zu beheben.",
+            "Backend: Echtes Firebase-Datenbank-System für globale Logins, Registrierungen und ein live Admin-Panel eingeführt."
         ] 
     },
     { 

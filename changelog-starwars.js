@@ -6,7 +6,8 @@ export const patchNotesStarWars = [
             "Geheimes Feature hinzugefügt: Mit der Pfeiltaste (Runter) kann in ein alternatives Anime-Universum gewechselt werden.",
             "Modulares Theme-System integriert, um zukünftig weitere Universen zu unterstützen.",
             "Architektur: Spiellogik in kleine, wartbare Module aufgeteilt (game.js, rating.js, etc.).",
-            "Performance: Bilder-Preload integriert, um Ruckler bei der Charakteranzeige zu beheben."
+            "Performance: Bilder-Preload integriert, um Ruckler bei der Charakteranzeige zu beheben.",
+            "Backend: Echtes Firebase-Datenbank-System für globale Logins, Registrierungen und ein live Admin-Panel eingeführt."
         ] 
     },
     { version: "v1.4", title: "End-Screen & UI Overhaul", changes: ["Großes visuelles Upgrade für den End-Screen.", "Das 1-10 Rating-System nutzt nun große, interaktive Buttons.", "Updates-Menü überarbeitet: Neues Pop-up mit Versions-Badges."] },

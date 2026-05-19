@@ -8,57 +8,84 @@
     <link id="theme-stylesheet" rel="stylesheet" href="theme-starwars.css">
 </head>
 <body>
-    <button id="changelog-open-btn" class="text-btn">UPDATES</button>
-
-    <div class="app-container">
-        <header>
-            <h1 id="main-title">STAR WARS RANKING</h1>
-            <p>Ordne 5 Charaktere blind ein. Wo landen sie?</p>
-        </header>
-
-        <div class="panel ranking-panel">
-            <h2>DEIN RANKING</h2>
-            <div id="ranking-board" class="horizontal-board">
-                <div class="rank-column" id="slot-1"><div class="card-container"><span class="rank-number">1</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
-                <div class="rank-column" id="slot-2"><div class="card-container"><span class="rank-number">2</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
-                <div class="rank-column" id="slot-3"><div class="card-container"><span class="rank-number">3</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
-                <div class="rank-column" id="slot-4"><div class="card-container"><span class="rank-number">4</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
-                <div class="rank-column" id="slot-5"><div class="card-container"><span class="rank-number">5</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
+    
+    <div id="auth-view" class="view-container">
+        <div class="panel auth-panel">
+            <h2>LOGIN</h2>
+            <p id="auth-feedback" class="prompt-text hidden"></p>
+            <input type="text" id="auth-username" placeholder="Benutzername" autocomplete="off">
+            <input type="password" id="auth-password" placeholder="Passwort">
+            <div class="action-buttons auth-buttons">
+                <button id="login-btn" class="rank-btn auth-btn">Einloggen</button>
+                <button id="register-btn" class="rank-btn auth-btn">Registrieren</button>
             </div>
         </div>
+    </div>
 
-        <div class="panel selection-panel">
-            <div id="active-game-area">
-                <h3 id="progress-text">CHARAKTER 1 / 5</h3>
-                <div class="current-character-wrapper">
-                    <div id="current-image-container"></div>
-                </div>
-                <h2 class="mystery-name">???</h2>
-                
-                <div id="action-area">
-                    <p class="prompt-text">AUF WELCHEN PLATZ?</p>
-                    <div class="action-buttons">
-                        <button class="rank-btn" data-rank="1">1</button>
-                        <button class="rank-btn" data-rank="2">2</button>
-                        <button class="rank-btn" data-rank="3">3</button>
-                        <button class="rank-btn" data-rank="4">4</button>
-                        <button class="rank-btn" data-rank="5">5</button>
-                    </div>
+    <div id="admin-view" class="view-container hidden">
+        <div class="panel admin-panel">
+            <h2>ADMIN PANEL</h2>
+            <p class="prompt-text">Account Verwaltung</p>
+            <div id="admin-user-list" class="user-list"></div>
+            <button id="admin-logout-btn" class="rank-btn auth-btn">Logout</button>
+        </div>
+    </div>
+
+    <div id="game-view" class="view-container hidden">
+        <div class="top-bar">
+            <span id="player-greeting" class="prompt-text"></span>
+            <button id="logout-btn" class="text-btn logout-btn">LOGOUT</button>
+        </div>
+        
+        <button id="changelog-open-btn" class="text-btn">UPDATES</button>
+
+        <div class="app-container">
+            <header>
+                <h1 id="main-title">STAR WARS RANKING</h1>
+                <p>Ordne 5 Charaktere blind ein. Wo landen sie?</p>
+            </header>
+
+            <div class="panel ranking-panel">
+                <h2>DEIN RANKING</h2>
+                <div id="ranking-board" class="horizontal-board">
+                    <div class="rank-column" id="slot-1"><div class="card-container"><span class="rank-number">1</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
+                    <div class="rank-column" id="slot-2"><div class="card-container"><span class="rank-number">2</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
+                    <div class="rank-column" id="slot-3"><div class="card-container"><span class="rank-number">3</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
+                    <div class="rank-column" id="slot-4"><div class="card-container"><span class="rank-number">4</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
+                    <div class="rank-column" id="slot-5"><div class="card-container"><span class="rank-number">5</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
                 </div>
             </div>
 
-            <div id="end-screen-area" class="hidden">
-                <h1 class="end-title">RANKING FERTIG!</h1>
-                <p class="end-subtitle">Die Identitäten wurden aufgedeckt!</p>
-                
-                <p class="prompt-text rating-prompt">BEWERTE DEINE LISTE (1-10)</p>
-                <div class="rating-buttons">
-                    <button class="rate-btn">1</button><button class="rate-btn">2</button><button class="rate-btn">3</button><button class="rate-btn">4</button><button class="rate-btn">5</button>
-                    <button class="rate-btn">6</button><button class="rate-btn">7</button><button class="rate-btn">8</button><button class="rate-btn">9</button><button class="rate-btn">10</button>
+            <div class="panel selection-panel">
+                <div id="active-game-area">
+                    <h3 id="progress-text">CHARAKTER 1 / 5</h3>
+                    <div class="current-character-wrapper">
+                        <div id="current-image-container"></div>
+                    </div>
+                    <h2 class="mystery-name">???</h2>
+                    <div id="action-area">
+                        <p class="prompt-text">AUF WELCHEN PLATZ?</p>
+                        <div class="action-buttons">
+                            <button class="rank-btn" data-rank="1">1</button>
+                            <button class="rank-btn" data-rank="2">2</button>
+                            <button class="rank-btn" data-rank="3">3</button>
+                            <button class="rank-btn" data-rank="4">4</button>
+                            <button class="rank-btn" data-rank="5">5</button>
+                        </div>
+                    </div>
                 </div>
-                <p id="rating-feedback" class="hidden">Danke für deine Bewertung!</p>
-                
-                <button id="restart-btn">NEUES SPIEL</button>
+
+                <div id="end-screen-area" class="hidden">
+                    <h1 class="end-title">RANKING FERTIG!</h1>
+                    <p class="end-subtitle">Die Identitäten wurden aufgedeckt!</p>
+                    <p class="prompt-text rating-prompt">BEWERTE DEINE LISTE (1-10)</p>
+                    <div class="rating-buttons">
+                        <button class="rate-btn">1</button><button class="rate-btn">2</button><button class="rate-btn">3</button><button class="rate-btn">4</button><button class="rate-btn">5</button>
+                        <button class="rate-btn">6</button><button class="rate-btn">7</button><button class="rate-btn">8</button><button class="rate-btn">9</button><button class="rate-btn">10</button>
+                    </div>
+                    <p id="rating-feedback" class="hidden">Danke für deine Bewertung!</p>
+                    <button id="restart-btn">NEUES SPIEL</button>
+                </div>
             </div>
         </div>
     </div>
