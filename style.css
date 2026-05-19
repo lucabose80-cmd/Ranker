@@ -833,6 +833,30 @@ body.waifu-theme .lexikon-card:hover {
 }
 
 /* ==========================================================================
+   GOLD GLOW MECHANIK (NEU)
+   ========================================================================== */
+.gold-glow {
+    border-color: #ffd700 !important;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.6) !important;
+    animation: goldPulse 2s infinite ease-in-out;
+}
+
+@keyframes goldPulse {
+    0% {
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        border-color: #ffd700;
+    }
+    50% {
+        box-shadow: 0 0 25px rgba(255, 215, 0, 0.9);
+        border-color: #ffffff; /* Kurzes Aufblitzen */
+    }
+    100% {
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        border-color: #ffd700;
+    }
+}
+
+/* ==========================================================================
    UTILITY KLASSEN
    ========================================================================== */
 .hidden { 

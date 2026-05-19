@@ -1,5 +1,14 @@
 export const patchNotesWaifu = [
     { 
+        version: "v1.5", 
+        title: "New Encounters", 
+        changes: [
+            "Neues Feature: Charakter-Entdeckungen hinzugefügt (Achievements).",
+            "Visualisierung: Brandneue Waifus pulsieren im Spiel magisch gold, wenn du sie das erste Mal siehst.",
+            "Lexikon-Glow: Im Lexikon siehst du nach Updates sofort anhand des goldenen Glanzes und eines ✨-Symbols, welche Waifus neu hinzugefügt wurden und von dir noch unentdeckt sind."
+        ] 
+    },
+    { 
         version: "v1.4", 
         title: "The Encyclopedia", 
         changes: [

@@ -1,17 +1,15 @@
-/// auth.js
+// auth.js
 import { db } from './firebase-config.js';
-import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { doc, setDoc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 const CURRENT_USER_KEY = 'ranking_game_active_user';
 
 export async function initAuth() {
     try {
         const adminRef = doc(db, "users", "admin");
-        // Wir aktualisieren den Admin bei jedem Start, um sicherzugehen, dass das Passwort "123" ist!
         await setDoc(adminRef, { username: 'admin', password: '123', role: 'admin' }, { merge: true });
     } catch (error) {
-        console.error("Firebase Init Fehler (Admin konnte nicht geprüft werden):", error);
-        // Wir lassen die App trotzdem weiterlaufen!
+        console.error("Firebase Init Fehler:", error);
     }
 }
 
@@ -25,6 +23,9 @@ export async function loginOrRegister(username, password) {
         
         if (userSnap.exists()) {
             const user = userSnap.data();
+            // Fallback: Falls ein alter Account noch keine Entdeckungen-Liste hat
+            if (!user.discovered) user.discovered = [];
+            
             if (user.password === password) {
                 localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
                 return { success: true, user, message: 'Erfolgreich eingeloggt.' };
@@ -33,7 +34,8 @@ export async function loginOrRegister(username, password) {
             }
         } else {
             const role = safeUsername === 'admin' ? 'admin' : 'player';
-            const newUser = { username: safeUsername, password, role, stats: { gamesPlayed: 0 } };
+            // Neue Accounts starten mit einem leeren Entdeckt-Array []
+            const newUser = { username: safeUsername, password, role, stats: { gamesPlayed: 0 }, discovered: [] };
             
             await setDoc(userRef, newUser);
             localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(newUser));
@@ -42,8 +44,30 @@ export async function loginOrRegister(username, password) {
         }
     } catch (error) {
         console.error("Login Fehler:", error);
-        // Gibt den echten Firebase-Fehler an die Benutzeroberfläche weiter!
         return { success: false, message: `Datenbank-Fehler: ${error.message}` };
+    }
+}
+
+// NEU: Markiert einen Charakter live in der Cloud und lokal als "entdeckt"
+export async function markCharacterAsDiscovered(charName) {
+    const user = getCurrentUser();
+    if (!user || user.role === 'admin') return;
+
+    if (!user.discovered) user.discovered = [];
+    if (user.discovered.includes(charName)) return; // Bereits entdeckt, nichts tun
+
+    // 1. Lokal im Browser speichern (für sofortiges Feedback ohne Ladezeit)
+    user.discovered.push(charName);
+    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
+
+    // 2. Live in die Firebase Cloud spiegeln
+    try {
+        const userRef = doc(db, "users", user.username);
+        await updateDoc(userRef, {
+            discovered: arrayUnion(charName) // Fügt das Element ohne Duplikate hinzu
+        });
+    } catch (e) {
+        console.error("Fehler beim Cloud-Speichern der Entdeckung:", e);
     }
 }
 

@@ -1,9 +1,11 @@
+// game.js
 import { activeCharacterDatabase } from './theme.js';
 import { shuffleArray, preloadImages } from './utils.js';
 import { resetRatingUI } from './rating.js';
 import { saveGameToHistory } from './history.js';
+import { getCurrentUser, markCharacterAsDiscovered } from './auth.js'; // NEU importiert
 
-export let activePool = []; // Export für History
+export let activePool = []; 
 export let currentIndex = 0;
 export let placedCharacters = { 1: null, 2: null, 3: null, 4: null, 5: null };
 
@@ -13,6 +15,8 @@ export function initGame() {
     
     document.getElementById('end-screen-area').classList.add('hidden');
     document.getElementById('active-game-area').classList.remove('hidden');
+    // Alten Glow beim Neustart entfernen
+    document.getElementById('current-image-container').classList.remove('gold-glow');
     resetRatingUI();
     
     document.querySelectorAll('.rank-btn').forEach(btn => btn.disabled = false);
@@ -32,7 +36,21 @@ export function showNextCharacter() {
     if (currentIndex < 5) {
         document.getElementById('progress-text').textContent = `CHARAKTER ${currentIndex + 1} / 5`;
         const currentChar = activePool[currentIndex];
-        document.getElementById('current-image-container').innerHTML = `<img src="${currentChar.img}" alt="Charakter Bild">`;
+        const imgContainer = document.getElementById('current-image-container');
+        
+        imgContainer.innerHTML = `<img src="${currentChar.img}" alt="Charakter Bild">`;
+        
+        // NEU: Gold-Glow prüfen, wenn der Charakter brandneu für den User ist
+        const user = getCurrentUser();
+        const discoveredList = user && user.discovered ? user.discovered : [];
+        
+        if (user && user.role !== 'admin' && !discoveredList.includes(currentChar.name)) {
+            imgContainer.classList.add('gold-glow');
+            markCharacterAsDiscovered(currentChar.name); // Sofort als entdeckt markieren
+        } else {
+            imgContainer.classList.remove('gold-glow');
+        }
+
     } else {
         document.getElementById('active-game-area').classList.add('hidden');
         revealNames();
@@ -58,7 +76,6 @@ export function handleRankSelection(rank, buttonElement) {
     showNextCharacter();
 }
 
-// Wird von rating.js aufgerufen
 export function submitFinalRating(value) {
     saveGameToHistory(placedCharacters, value);
 }

@@ -1,5 +1,14 @@
 export const patchNotesStarWars = [
     { 
+        version: "v1.9", 
+        title: "The Discovery Update", 
+        changes: [
+            "Neues Feature: Charakter-Entdeckungen hinzugefügt (Achievements).",
+            "Visualisierung: Brandneue Charaktere pulsieren im Spiel magisch gold, wenn du sie das erste Mal siehst.",
+            "Lexikon-Glow: Im Lexikon siehst du nach Updates sofort anhand des goldenen Glanzes und eines ✨-Symbols, welche Charaktere neu hinzugefügt wurden und von dir noch unentdeckt sind."
+        ] 
+    },
+    { 
         version: "v1.8", 
         title: "The Archives Expanded", 
         changes: [
