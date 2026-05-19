@@ -2,14 +2,17 @@
 import { patchNotesStarWars } from './changelog-starwars.js';
 import { futureIdeas } from './roadmap.js';
 
-export function initChangelog() {
-    // Falls du Initialisierungs-Logik für das Modal hast, kommt sie hier rein
+// WICHTIG: Das 'export' vor der Funktion ist notwendig!
+export function updateChangelogContent(data) {
+    const container = document.getElementById('changelog-content');
+    if (!container) return;
+    // ... dein Code zum Befüllen
 }
 
 export function switchChangelog(tab) {
     const container = document.getElementById('changelog-content');
     if (!container) return;
-    container.innerHTML = ''; 
+    container.innerHTML = '';
 
     if (tab === 'roadmap') {
         container.innerHTML = '<h3>Geplante Features</h3>';
