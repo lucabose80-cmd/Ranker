@@ -34,10 +34,10 @@ export async function saveGameToHistory(placedCharacters, rating) {
 // Holt nur die Spiele des aktuellen Modus aus der Cloud
 export async function renderHistory() {
     const container = document.getElementById('history-list');
-    container.innerHTML = '<p class="prompt-text">Lade galaktische Archive...</p>';
+    container.innerHTML = '<p class="prompt-text">Lade Archive...</p>';
 
     try {
-        // NEU: Wir filtern direkt nach dem currentMode ("starwars" oder "waifu")
+        // Wir filtern direkt nach dem currentMode
         const q = query(collection(db, "history"), where("mode", "==", currentMode));
         const querySnapshot = await getDocs(q);
         
@@ -51,8 +51,7 @@ export async function renderHistory() {
             return;
         }
 
-        // NEU: Wir sortieren die Spiele lokal nach dem neuesten Zeitstempel, 
-        // um komplexe Firebase-Index-Fehler zu vermeiden!
+        // Wir sortieren die Spiele lokal
         games.sort((a, b) => b.timestamp.seconds - a.timestamp.seconds);
         games = games.slice(0, 20); // Zeige maximal die 20 neuesten an
 
@@ -76,7 +75,6 @@ export async function renderHistory() {
                     `).join('')}
                 </div>
                 <div class="history-footer">
-                    <span class="history-mode-badge">${game.mode.toUpperCase()}</span>
                     <span class="history-rating">Bewertung: <strong>${game.rating}/10</strong></span>
                 </div>
             `;

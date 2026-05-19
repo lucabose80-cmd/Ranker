@@ -491,7 +491,7 @@ input:focus {
 }
 
 .auth-buttons { 
-    display: flex; /* WICHTIG: Das hat vorher gefehlt! */
+    display: flex; 
     flex-direction: column; 
     gap: 10px; 
 }
@@ -679,18 +679,12 @@ input:focus {
 
 .history-footer {
     display: flex;
-    justify-content: space-between;
+    justify-content: center; /* NEU: Zentriert das Rating, da Badge weg ist */
     align-items: center;
     font-size: 0.9rem;
 }
 
-.history-mode-badge {
-    font-size: 0.7rem;
-    padding: 2px 6px;
-    border-radius: 4px;
-    background: #3b82f6;
-    color: #fff;
-}
+/* history-mode-badge und Waifu-Override entfernt */
 
 .history-rating strong { 
     color: #ffe81f; 
@@ -702,10 +696,6 @@ input:focus {
 body.waifu-theme .nav-link.active { 
     color: #ff2a9d; 
     border-bottom-color: #ff2a9d; 
-}
-
-body.waifu-theme .history-mode-badge { 
-    background: #ff2a9d; 
 }
 
 /* ==========================================================================
