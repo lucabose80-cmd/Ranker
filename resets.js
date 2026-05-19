@@ -6,10 +6,11 @@ let cacheAdminResets = null;
 let cacheUserResets = null;
 let cacheTimestamp = 0;
 
-// Holt alle Resets (global und persönlich) mit einem 60-Sekunden-Cache
+// Holt alle Resets (global und persönlich) mit einem 12-Stunden-Cache, um massive Reads zu verhindern
 export async function getResets(force = false) {
     const now = Date.now();
-    if (!force && cacheAdminResets && cacheUserResets && (now - cacheTimestamp < 60000)) {
+    // 12 Stunden Cache (43200000 ms) statt 60 Sekunden, um die 30 Reads pro Ladevorgang zu fixen
+    if (!force && cacheAdminResets && cacheUserResets && (now - cacheTimestamp < 43200000)) {
         return { adminResets: cacheAdminResets, userResets: cacheUserResets };
     }
 
