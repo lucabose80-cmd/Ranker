@@ -1,3 +1,5 @@
+// main.js
+
 import { starWarsCharacters } from './data-starwars.js';
 import { waifuCharacters } from './data-waifu.js';
 import { patchNotesStarWars } from './changelog-starwars.js';
@@ -22,6 +24,16 @@ const rateButtons = document.querySelectorAll('.rate-btn');
 const ratingFeedback = document.getElementById('rating-feedback');
 const mainTitle = document.getElementById('main-title'); 
 const themeStylesheet = document.getElementById('theme-stylesheet'); 
+
+// --- NEU: Preload Funktion ---
+// Lädt die Bilder unsichtbar in den Speicher des Browsers
+function preloadImages(characters) {
+    characters.forEach(char => {
+        const img = new Image();
+        img.src = char.img;
+    });
+}
+// -----------------------------
 
 document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowDown') {
@@ -67,6 +79,9 @@ function initGame() {
     const shuffled = [...activeCharacterDatabase].sort(() => 0.5 - Math.random());
     activePool = shuffled.slice(0, 5);
     
+    // --- NEU: Bilder sofort vorladen, nachdem die 5 Charaktere gezogen wurden ---
+    preloadImages(activePool);
+    
     showNextCharacter();
 }
 
@@ -74,6 +89,8 @@ function showNextCharacter() {
     if (currentIndex < 5) {
         progressText.textContent = `CHARAKTER ${currentIndex + 1} / 5`;
         const currentChar = activePool[currentIndex];
+        
+        // Da das Bild jetzt im Cache ist, taucht es hier komplett ohne Ruckler auf!
         imgContainer.innerHTML = `<img src="${currentChar.img}" alt="Charakter Bild">`;
     } else {
         activeGameArea.classList.add('hidden');
