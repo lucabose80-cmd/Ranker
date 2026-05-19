@@ -50,6 +50,5 @@ export const starWarsCharacters = [
   { name: "Vice Admiral Holdo", img: "starwars.bilder/holdo.jpg" },
   { name: "Enfys Nest", img: "starwars.bilder/enfys.jpg" },
   { name: "Dryden Vos", img: "starwars.bilder/dryden.jpg" },
-  { name: "Qi'ra", img: "starwars.bilder/qira.jpg" },
-  { name: "Beilert Valance", img: "starwars.bilder/valance.jpg" }
+  { name: "Qi'ra", img: "starwars.bilder/qira.jpg" }
 ];
