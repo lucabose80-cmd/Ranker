@@ -79,7 +79,9 @@ export function initCommunity() {
         if(!onlineList) return;
         
         try {
-            const snapshot = await getDocs(collection(db, "users"));
+            const threeMinutesAgo = new Date(Date.now() - 180000);
+            const qOnline = query(collection(db, "users"), where("lastActive", ">=", Timestamp.fromDate(threeMinutesAgo)));
+            const snapshot = await getDocs(qOnline);
             onlineList.innerHTML = '';
             let count = 0;
             const now = Date.now();
@@ -136,5 +138,5 @@ export function initCommunity() {
     };
 
     updateOnlineTracker();
-    onlineInterval = setInterval(updateOnlineTracker, 30000); // Schnelleres Polling (30s) für bessere UI-Reaktivität
+    onlineInterval = setInterval(updateOnlineTracker, 60000); // Polling (60s) für drastisch reduzierte Firestore-Reads
 }

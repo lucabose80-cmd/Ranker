@@ -1,6 +1,6 @@
 // history.js
 import { db } from './firebase-config.js';
-import { collection, addDoc, onSnapshot, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { collection, addDoc, onSnapshot, query, where, limit, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { getCurrentUser } from './auth.js';
 import { currentMode } from './mode-state.js';
 import { getResets } from './resets.js';
@@ -21,7 +21,7 @@ export function initHistoryListener() {
     }
     isFirstLoadComplete = false;
 
-    const q = query(collection(db, "history"), where("mode", "==", currentMode));
+    const q = query(collection(db, "history"), where("mode", "==", currentMode), limit(60));
     
     historyUnsubscribe = onSnapshot(q, (snapshot) => {
         let games = [];
