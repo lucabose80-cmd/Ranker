@@ -3,6 +3,7 @@ import { starWarsCharacters } from './data-starwars.js';
 import { waifuCharacters } from './data-waifu.js';
 import { patchNotesStarWars } from './changelog-starwars.js';
 import { patchNotesWaifu } from './changelog-waifu.js';
+import { updateChangelogContent } from './changelog.js';
 import { initGame } from './game.js';
 import { renderHistory } from './history.js';
 import { renderScoreboard } from './scoreboard.js';
