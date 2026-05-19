@@ -737,7 +737,7 @@ body.waifu-theme .mode-toggle-btn.active {
 }
 .advanced-history-card .history-img-slot {
     max-width: 36px !important;
-    flex: 1 0 18% !important; /* 5 pro Reihe */
+    flex: 0 0 18% !important; /* Erzwingt exakt 5 pro Reihe */
 }
 .advanced-history-card .history-pool-slots {
     flex-wrap: wrap !important;
@@ -747,6 +747,7 @@ body.waifu-theme .mode-toggle-btn.active {
 .advanced-history-card .history-pool-slot {
     width: 24px !important;
     height: 30px !important;
+    flex: 0 0 18% !important; /* Erzwingt exakt 5 pro Reihe */
 }
 .advanced-history-card .pool-order {
     font-size: 0.5rem !important;
