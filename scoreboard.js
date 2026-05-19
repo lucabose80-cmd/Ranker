@@ -31,7 +31,10 @@ function renderScoreboardHTML(sortedCharacters, container) {
 export async function renderScoreboard() {
     const container = document.getElementById('scoreboard-list');
     const filterSelect = document.getElementById('scoreboard-user-filter');
-    const selectedUser = filterSelect.value; 
+    const typeSelect = document.getElementById('scoreboard-type-filter');
+    
+    const selectedUser = filterSelect.value || 'global'; 
+    const selectedType = typeSelect.value || 'classic';
 
     const { data: historyCache, isLoaded } = getCachedHistory();
 
@@ -64,9 +67,17 @@ export async function renderScoreboard() {
             const gameSecs = data.timestamp ? data.timestamp.seconds : 0;
             const personalResetSecs = userResets[data.username] || 0;
 
+            // Zeitstempel-Reset checken
             if (gameSecs > globalScoreboardResetSecs && gameSecs > personalResetSecs) {
-                games.push(data);
-                allUsers.add(data.username);
+                // Spieltyp checken (Classic vs. Advanced)
+                const isGameAdvanced = data.gameType === 'advanced' || data.ranking.length > 5;
+                if (selectedType === 'advanced' && isGameAdvanced) {
+                    games.push(data);
+                    allUsers.add(data.username);
+                } else if (selectedType === 'classic' && !isGameAdvanced) {
+                    games.push(data);
+                    allUsers.add(data.username);
+                }
             }
         });
 
@@ -85,11 +96,14 @@ export async function renderScoreboard() {
             filterSelect.addEventListener('change', () => {
                 renderScoreboard();
             });
+            typeSelect.addEventListener('change', () => {
+                renderScoreboard();
+            });
             isFilterListenerAttached = true;
         }
 
         if (games.length === 0) {
-            container.innerHTML = '<p class="prompt-text">Noch keine Daten für ein Scoreboard vorhanden.</p>';
+            container.innerHTML = '<p class="prompt-text">Noch keine Daten für dieses Scoreboard vorhanden.</p>';
             return;
         }
 
@@ -99,10 +113,12 @@ export async function renderScoreboard() {
             if (selectedUser !== 'global' && game.username !== selectedUser) return;
 
             const ratingMulti = parseInt(game.rating) || 1;
+            const isGameAdvanced = game.gameType === 'advanced' || game.ranking.length > 5;
+            const maxRank = isGameAdvanced ? 10 : 5;
 
             game.ranking.forEach(item => {
                 const rank = parseInt(item.rank);
-                const basePoints = 6 - rank; 
+                const basePoints = (maxRank + 1) - rank; 
                 const totalPoints = basePoints * ratingMulti;
 
                 if (!characterScores[item.name]) {

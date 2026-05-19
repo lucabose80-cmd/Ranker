@@ -87,16 +87,18 @@
             <div id="game-main-content" class="tab-content app-container">
                 <header>
                     <h1 id="main-title">STAR WARS RANKING</h1>
-                    <p>Ordne 5 Charaktere blind ein. Wo landen sie?</p>
+                    <p id="game-subtitle">Ordne 5 Charaktere blind ein. Wo landen sie?</p>
                 </header>
+                
+                <div class="mode-selector">
+                    <button id="mode-classic-btn" class="mode-toggle-btn active">Klassisch (5 Slots)</button>
+                    <button id="mode-advanced-btn" class="mode-toggle-btn">Advanced (10 Slots)</button>
+                </div>
+
                 <div class="panel ranking-panel">
                     <h2>DEIN RANKING</h2>
                     <div id="ranking-board" class="horizontal-board">
-                        <div class="rank-column" id="slot-1"><div class="card-container"><span class="rank-number">1</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
-                        <div class="rank-column" id="slot-2"><div class="card-container"><span class="rank-number">2</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
-                        <div class="rank-column" id="slot-3"><div class="card-container"><span class="rank-number">3</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
-                        <div class="rank-column" id="slot-4"><div class="card-container"><span class="rank-number">4</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
-                        <div class="rank-column" id="slot-5"><div class="card-container"><span class="rank-number">5</span><div class="card-content"><span class="placeholder-icon">👤</span></div></div><div class="card-label"><span>???</span></div></div>
+                        <!-- Wird dynamisch befüllt -->
                     </div>
                 </div>
                 <div class="panel selection-panel">
@@ -105,9 +107,13 @@
                         <div class="current-character-wrapper"><div id="current-image-container"></div></div>
                         <h2 class="mystery-name">???</h2>
                         <div id="action-area">
-                            <p class="prompt-text">AUF WELCHEN PLATZ?</p>
-                            <div class="action-buttons">
-                                <button class="rank-btn" data-rank="1">1</button><button class="rank-btn" data-rank="2">2</button><button class="rank-btn" data-rank="3">3</button><button class="rank-btn" data-rank="4">4</button><button class="rank-btn" data-rank="5">5</button>
+                            <p id="action-prompt" class="prompt-text">AUF WELCHEN PLATZ?</p>
+                            <div class="action-buttons" id="rank-buttons-container">
+                                <!-- Wird dynamisch befüllt -->
+                            </div>
+                            <div id="joker-area" class="hidden">
+                                <p class="prompt-text" style="color: #ffd700; font-size: 1rem; font-weight: bold; margin-bottom: 20px;">🃏 JOKER-PHASE AKTIV:<br>Klicke auf zwei Karten oben, um sie miteinander zu tauschen.</p>
+                                <button id="joker-skip-btn" class="rank-btn" style="width: auto; padding: 0 25px; height: 45px; font-size: 0.95rem; border-color: #ffd700; color: #ffd700; transition: all 0.2s;">Fertig / Ohne Joker fortfahren</button>
                             </div>
                         </div>
                     </div>
@@ -143,9 +149,13 @@
             <div id="scoreboard-content" class="tab-content app-container hidden">
                 <div class="panel history-panel">
                     <h2>SCOREBOARD</h2>
-                    <div class="scoreboard-controls">
-                        <select id="scoreboard-user-filter">
+                    <div class="scoreboard-controls" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <select id="scoreboard-user-filter" style="flex: 1;">
                             <option value="global">Global (Alle)</option>
+                        </select>
+                        <select id="scoreboard-type-filter" style="flex: 1;">
+                            <option value="classic">Klassisch (5er)</option>
+                            <option value="advanced">Advanced (10er)</option>
                         </select>
                     </div>
                     <div id="scoreboard-list" class="history-list"></div>

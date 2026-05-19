@@ -13,10 +13,6 @@ export const roadmapStarWars = [
                 desc: "Direkte 1v1-Bracket-Kämpfe zwischen Charakteren. Wer setzt sich durch?"
             },
             {
-                title: "Advanced-Modus",
-                desc: "Erweiterte Spieloptionen mit komplexeren Ranking-Regeln und mehr Charakteren pro Runde."
-            },
-            {
                 title: "Koop-Modus",
                 desc: "Gemeinsam mit anderen Spielern ranken – ein Ranking, das alle zusammen erstellen."
             },
@@ -44,10 +40,6 @@ export const roadmapWaifu = [
             {
                 title: "Versus-Modus",
                 desc: "Direkte 1v1-Bracket-Kämpfe zwischen Waifus. Wer gewinnt dein Herz?"
-            },
-            {
-                title: "Advanced-Modus",
-                desc: "Erweiterte Spieloptionen mit komplexeren Ranking-Regeln und mehr Charakteren pro Runde."
             },
             {
                 title: "Koop-Modus",

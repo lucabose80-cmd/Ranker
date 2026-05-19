@@ -1,4 +1,6 @@
 import { submitFinalRating } from './game.js';
+import { submitAdvancedFinalRating } from './game-advanced.js';
+import { currentGameType } from './mode-state.js';
 
 export function initRatingSystem() {
     const rateButtons = document.querySelectorAll('.rate-btn');
@@ -6,11 +8,11 @@ export function initRatingSystem() {
 
     rateButtons.forEach(btn => {
         btn.addEventListener('click', () => {
-            if (btn.classList.contains('selected') || btn.disabled) return; // Bereits gewählt oder deaktiviert
+            if (btn.classList.contains('selected') || btn.disabled) return;
 
             rateButtons.forEach(b => {
                 b.classList.remove('selected');
-                b.disabled = true; // Alle Buttons deaktivieren, damit man nicht nochmal wählen kann
+                b.disabled = true;
             });
             btn.classList.add('selected');
             
@@ -18,7 +20,11 @@ export function initRatingSystem() {
             ratingFeedback.classList.remove('hidden');
 
             // Speichern in Firebase
-            submitFinalRating(parseInt(btn.textContent));
+            if (currentGameType === 'advanced') {
+                submitAdvancedFinalRating(parseInt(btn.textContent));
+            } else {
+                submitFinalRating(parseInt(btn.textContent));
+            }
         });
     });
 }
@@ -27,7 +33,7 @@ export function resetRatingUI() {
     const rateButtons = document.querySelectorAll('.rate-btn');
     rateButtons.forEach(btn => {
         btn.classList.remove('selected');
-        btn.disabled = false; // Für die nächste Runde wieder freigeben
+        btn.disabled = false;
     });
     document.getElementById('rating-feedback').classList.add('hidden');
 }

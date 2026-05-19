@@ -1,5 +1,16 @@
 export const patchNotesWaifu = [
     {
+        version: "v2.0",
+        title: "The Advanced Mode & Joker Update",
+        changes: [
+            "Neues Feature: Advanced-Modus (10 Slots statt 5) spielbar für noch tieferes und komplexeres Ranking.",
+            "Neues Feature: Joker-Phase am Ende des Advanced-Modus – tausche einmalig zwei beliebige Karten durch Anklicken, um dein Ranking zu perfektionieren.",
+            "UI-Update: Scoreboard-Filter erweitert! Du kannst jetzt getrennt nach 'Klassisch (5er)' und 'Advanced (10er)' Scoreboards filtern.",
+            "UI-Update: Historienkarten passen sich dynamisch an 10 Slots an und sind mit einem gelben 'ADV' Badge gekennzeichnet.",
+            "QoL: Modus-Auswahl direkt im Spiel-Tab ermöglicht nahtloses Switchen per Klick."
+        ]
+    },
+    {
         version: "v1.9",
         title: "The Instant Speed & QoL Update",
         changes: [

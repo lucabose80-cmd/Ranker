@@ -6,6 +6,7 @@ import { saveGameToHistory } from './history.js';
 import { getCurrentUser, markCharacterAsDiscovered } from './auth.js';
 import { doc, setDoc, Timestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { db } from './firebase-config.js';
+import { currentMode } from './mode-state.js';
 
 export let activePool = []; 
 export let currentIndex = 0;
@@ -15,23 +16,53 @@ export function initGame() {
     currentIndex = 0;
     placedCharacters = { 1: null, 2: null, 3: null, 4: null, 5: null };
     
+    // Board zurücksetzen und Slots generieren
+    const board = document.getElementById('ranking-board');
+    board.className = "horizontal-board";
+    board.innerHTML = "";
+    for (let i = 1; i <= 5; i++) {
+        board.innerHTML += `
+            <div class="rank-column" id="slot-${i}">
+                <div class="card-container">
+                    <span class="rank-number">${i}</span>
+                    <div class="card-content">
+                        <span class="placeholder-icon">👤</span>
+                    </div>
+                </div>
+                <div class="card-label"><span>???</span></div>
+            </div>
+        `;
+    }
+
+    // Buttons generieren
+    const btnContainer = document.getElementById('rank-buttons-container');
+    btnContainer.innerHTML = "";
+    for (let i = 1; i <= 5; i++) {
+        const btn = document.createElement('button');
+        btn.className = "rank-btn";
+        btn.setAttribute('data-rank', i);
+        btn.textContent = i;
+        btn.addEventListener('click', () => handleRankSelection(i, btn));
+        btnContainer.appendChild(btn);
+    }
+    
     document.getElementById('end-screen-area').classList.add('hidden');
     document.getElementById('active-game-area').classList.remove('hidden');
     document.getElementById('current-image-container').classList.remove('gold-glow');
+    document.getElementById('joker-area').classList.add('hidden');
+    
+    // Elemente wieder einblenden, falls sie durch Joker-Phase ausgeblendet wurden
+    document.getElementById('current-image-container').parentNode.classList.remove('hidden');
+    document.querySelector('.mystery-name').classList.remove('hidden');
+    document.getElementById('action-prompt').classList.remove('hidden');
+    document.getElementById('rank-buttons-container').classList.remove('hidden');
+    
     resetRatingUI();
     
     // Live Game Dokument aufräumen beim Neustart
     const user = getCurrentUser();
     if(user && user.role !== 'admin') {
         deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
-    }
-    
-    document.querySelectorAll('.rank-btn').forEach(btn => btn.disabled = false);
-    for (let i = 1; i <= 5; i++) {
-        document.querySelector(`#slot-${i} .card-content`).innerHTML = '<span class="placeholder-icon">👤</span>';
-        const labelSpan = document.querySelector(`#slot-${i} .card-label span`);
-        labelSpan.textContent = '???';
-        labelSpan.classList.remove('revealed-name');
     }
     
     activePool = shuffleArray(activeCharacterDatabase).slice(0, 5);
@@ -58,7 +89,7 @@ export function showNextCharacter() {
         }
 
     } else {
-        // Alle 5 platziert → Bewertungsphase beginnt → Live-Dokument löschen!
+        // Alle 5 platziert → Live-Dokument löschen
         const user = getCurrentUser();
         if(user && user.role !== 'admin') {
             deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
@@ -94,9 +125,10 @@ export async function handleRankSelection(rank, buttonElement) {
                 displayName: user.displayName || user.username,
                 avatar: user.avatar || '',
                 placedCharacters,
-                pool: activePool,          // Die 5 Charaktere der Runde (Erscheinungsreihenfolge)
-                currentIndex: currentIndex, // Welcher Charakter als nächstes kommt
-                updatedAt: Timestamp.now()
+                pool: activePool,
+                currentIndex: currentIndex,
+                updatedAt: Timestamp.now(),
+                gameType: 'classic'
             }).catch(e => console.error("Live Broadcast Error:", e));
         } catch(e) {}
     }
@@ -105,6 +137,5 @@ export async function handleRankSelection(rank, buttonElement) {
 }
 
 export function submitFinalRating(value) {
-    // Übergabe des Pools, damit die Erscheinungsreihenfolge in der Historie gespeichert wird
-    saveGameToHistory(placedCharacters, value, activePool);
+    saveGameToHistory(placedCharacters, value, activePool, 'classic');
 }

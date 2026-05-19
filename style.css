@@ -638,4 +638,78 @@ body.waifu-theme .chat-msg.self .chat-msg-content { background: #ff2a9d; }
     100% { text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); color: #ffd700; }
 }
 
+/* ==========================================================================
+   ADVANCED GAME MODE & JOKER
+   ========================================================================== */
+.mode-selector {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+}
+.mode-toggle-btn {
+    background: transparent;
+    color: #888;
+    border: 2px solid #2a3142;
+    padding: 8px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+}
+.mode-toggle-btn:hover {
+    color: #fff;
+    border-color: #3b82f6;
+}
+body.waifu-theme .mode-toggle-btn:hover {
+    border-color: #ff2a9d;
+}
+.mode-toggle-btn.active {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+}
+body.waifu-theme .mode-toggle-btn.active {
+    background: #ff2a9d;
+    border-color: #ff2a9d;
+    box-shadow: 0 0 10px rgba(255, 42, 157, 0.4);
+}
+
+.advanced-board .rank-column {
+    width: 105px !important;
+}
+.advanced-board .card-content {
+    height: 115px !important;
+}
+.advanced-board .rank-number {
+    font-size: 0.95rem !important;
+}
+
+/* Joker Selection indicator */
+.joker-selectable {
+    cursor: pointer !important;
+    position: relative;
+}
+.joker-selectable:hover .card-content {
+    border-color: #ffd700 !important;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5) !important;
+}
+.joker-selected .card-content {
+    border-color: #ffd700 !important;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8) !important;
+    transform: scale(1.05);
+}
+
+.advanced-history-card .history-images {
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+    justify-content: center !important;
+}
+.advanced-history-card .history-img-slot {
+    max-width: 36px !important;
+    flex: 1 0 18% !important; /* 5 pro Reihe */
+}
+
 .hidden { display: none !important; }

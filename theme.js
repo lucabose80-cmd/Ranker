@@ -5,6 +5,7 @@ import { patchNotesStarWars } from './changelog-starwars.js';
 import { patchNotesWaifu } from './changelog-waifu.js';
 import { updateChangelogContent } from './changelog.js';
 import { initGame } from './game.js';
+import { initAdvancedGame } from './game-advanced.js';
 import { renderHistory, initHistoryListener } from './history.js';
 import { renderScoreboard } from './scoreboard.js';
 import { renderLexikon } from './lexikon.js';
@@ -12,7 +13,7 @@ import { renderAvatarSelection, updateTopbarAvatarElement } from './profile.js';
 import { getCurrentUser, startPresenceHeartbeat } from './auth.js';
 import { initLiveSpectating } from './live.js';
 import { refreshAdminPanel } from './admin.js';
-import { currentMode, setCurrentMode } from './mode-state.js';
+import { currentMode, setCurrentMode, currentGameType } from './mode-state.js';
 
 export let activeCharacterDatabase = starWarsCharacters; 
 
@@ -41,7 +42,12 @@ export function toggleTheme() {
     
     updateChangelogContent(activeChangelogDatabase);
     initHistoryListener(); // Listener auf das neue Universum umschalten
-    initGame(); 
+    
+    if (currentGameType === 'advanced') {
+        initAdvancedGame();
+    } else {
+        initGame(); 
+    }
     
     // Ändert das Profilbild oben links sofort passend zum neuen Modus ab!
     const user = getCurrentUser();

@@ -62,19 +62,21 @@ export function initHistoryListener() {
         console.error("Fehler im History-Listener:", error);
     });
 }
-
 // Speichert ein fertiges Spiel in der Cloud
-export async function saveGameToHistory(placedCharacters, rating, pool) {
+export async function saveGameToHistory(placedCharacters, rating, pool, gameType = 'classic') {
     const user = getCurrentUser();
     if (!user) return;
 
     const rankingData = [];
-    for (let i = 1; i <= 5; i++) {
-        rankingData.push({
-            rank: i,
-            name: placedCharacters[i].name,
-            img: placedCharacters[i].img
-        });
+    const count = gameType === 'advanced' ? 10 : 5;
+    for (let i = 1; i <= count; i++) {
+        if (placedCharacters[i]) {
+            rankingData.push({
+                rank: i,
+                name: placedCharacters[i].name,
+                img: placedCharacters[i].img
+            });
+        }
     }
 
     const poolData = pool ? pool.map((c, idx) => ({ order: idx + 1, name: c.name, img: c.img })) : [];
@@ -84,6 +86,7 @@ export async function saveGameToHistory(placedCharacters, rating, pool) {
             username: user.username,
             displayName: user.displayName || user.username,
             mode: currentMode,
+            gameType: gameType,
             rating: rating,
             ranking: rankingData,
             pool: poolData,
@@ -110,7 +113,8 @@ function renderHistoryHTML(games, container, displayNames) {
         const date = dateObj.toLocaleString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
         
         const card = document.createElement('div');
-        card.className = `history-card ${game.mode}-card`;
+        const isAdvanced = game.gameType === 'advanced' || game.ranking.length > 5;
+        card.className = `history-card ${game.mode}-card ${isAdvanced ? 'advanced-history-card' : ''}`;
 
         const poolHtml = (game.pool && game.pool.length > 0) ? `
             <div class="history-pool">
@@ -127,10 +131,11 @@ function renderHistoryHTML(games, container, displayNames) {
         ` : '';
 
         const displayNameToUse = displayNames[game.username] || game.displayName || game.username;
+        const modeBadge = isAdvanced ? '<span class="version-badge" style="background:#ffd700; color:#000; font-size:0.6rem; padding:1px 4px; margin-left:5px; border-radius:3px; font-weight:bold;">ADV</span>' : '';
 
         card.innerHTML = `
             <div class="history-header">
-                <strong>${displayNameToUse}</strong>
+                <strong>${displayNameToUse}${modeBadge}</strong>
                 <span class="history-date">${date}</span>
             </div>
             <div class="history-images">
