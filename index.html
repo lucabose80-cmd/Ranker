@@ -50,9 +50,15 @@
                     <img id="topbar-avatar" class="mini-avatar hidden" src="" alt="Avatar">
                     <span id="player-greeting" class="prompt-text"></span>
                 </div>
-                <button id="logout-btn" class="text-btn logout-btn">LOGOUT</button>
             </div>
-            <button id="changelog-open-btn" class="text-btn">UPDATES</button>
+            
+            <button id="changelog-open-btn" class="text-btn" style="position: absolute; top: 15px; right: 20px;">UPDATES</button>
+            <button id="logout-btn" class="text-btn logout-btn" style="position: absolute; top: 45px; right: 20px;">LOGOUT</button>
+        </div>
+
+        <div class="online-sidebar panel">
+            <h3 style="color: #3b82f6; font-size: 0.9rem; letter-spacing: 1px; margin-top: 0; margin-bottom: 15px;">ONLINE (<span id="online-count">0</span>)</h3>
+            <div id="online-users-list" class="online-list"></div>
         </div>
 
         <div class="main-scroll-content">
@@ -146,11 +152,6 @@
                         <input type="password" id="profile-password" placeholder="Neues Passwort">
                         <button id="save-profile-btn" class="rank-btn auth-btn">Speichern</button>
                         <p id="profile-feedback" class="prompt-text hidden"></p>
-                        
-                        <div class="profile-online-box">
-                            <h3>WER IST ONLINE? (<span id="online-count">0</span>)</h3>
-                            <div id="online-users-list" class="online-list"></div>
-                        </div>
                     </div>
                     <div class="profile-avatar-selection">
                         <p class="prompt-text">Avatar wählen (Speichert sofort für dieses Universum)</p>
