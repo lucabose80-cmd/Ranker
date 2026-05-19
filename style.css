@@ -773,53 +773,62 @@ body.waifu-theme .nav-link.active {
 body.waifu-theme #scoreboard-user-filter:focus { border-color: #ff2a9d; }
 
 /* ==========================================================================
-   LEXIKON STYLES (NEU)
+   LEXIKON STYLES (Raster/Grid)
    ========================================================================== */
 .lexikon-grid {
     display: grid;
-    /* Erstellt automatisch so viele Spalten wie Platz haben (mind. 120px breit) */
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 15px;
-    margin-top: 20px;
+    /* Zwingt das Layout in ein Raster mit festen Mindestbreiten (ca. 3-4 Spalten je nach Bildschirm) */
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 20px;
+    margin-top: 25px;
     max-height: 600px;
     overflow-y: auto;
-    padding-right: 10px;
+    padding: 10px;
 }
 
 .lexikon-card {
     background-color: #11151f;
-    border: 1px solid #2a3142;
-    border-radius: 8px;
+    border: 2px solid #2a3142;
+    border-radius: 10px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
     transition: transform 0.2s, box-shadow 0.2s;
+    aspect-ratio: 1 / 1.25; /* Zwingt die Karte in ein festes, hochkantes Format */
 }
 
 .lexikon-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
     border-color: #3b82f6;
+    z-index: 2;
 }
 
 .lexikon-card img {
     width: 100%;
-    height: 120px;
+    height: 75%; /* Das Bild nimmt exakt 3/4 der Karte ein */
     object-fit: cover;
-    border-bottom: 1px solid #2a3142;
+    border-bottom: 2px solid #2a3142;
 }
 
 .lexikon-card span {
-    padding: 10px 5px;
+    width: 100%;
+    height: 25%; /* Der Text bekommt das restliche Viertel */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 0.85rem;
     font-weight: bold;
     color: #fff;
     text-align: center;
+    padding: 0 5px;
+    box-sizing: border-box;
 }
 
+/* Hover-Effekt für Waifu-Theme anpassen */
 body.waifu-theme .lexikon-card:hover {
-    box-shadow: 0 5px 15px rgba(255, 42, 157, 0.3);
+    box-shadow: 0 8px 20px rgba(255, 42, 157, 0.4);
     border-color: #ff2a9d;
 }
 
