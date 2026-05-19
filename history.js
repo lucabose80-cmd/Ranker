@@ -1,14 +1,66 @@
 // history.js
 import { db } from './firebase-config.js';
-import { collection, addDoc, getDocs, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { collection, addDoc, onSnapshot, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { getCurrentUser } from './auth.js';
 import { currentMode } from './theme.js';
 import { getResets } from './resets.js';
 
-let historyCache = {};
+let historyCache = [];
+let historyUnsubscribe = null;
+let isFirstLoadComplete = false;
 
-export function invalidateHistoryCache() {
-    historyCache = {};
+// Gibt die aktuell gecachten Historien-Daten zurück
+export function getCachedHistory() {
+    return { data: historyCache, isLoaded: isFirstLoadComplete };
+}
+
+// Startet den Echtzeit-Sync für den aktuellen Modus
+export function initHistoryListener() {
+    if (historyUnsubscribe) {
+        historyUnsubscribe();
+    }
+    isFirstLoadComplete = false;
+
+    const q = query(collection(db, "history"), where("mode", "==", currentMode));
+    
+    historyUnsubscribe = onSnapshot(q, (snapshot) => {
+        let games = [];
+        snapshot.forEach((doc) => {
+            games.push(doc.data());
+        });
+
+        // Lokal sortieren nach Timestamp absteigend
+        games.sort((a, b) => {
+            const secondsA = a.timestamp ? a.timestamp.seconds : 0;
+            const secondsB = b.timestamp ? b.timestamp.seconds : 0;
+            return secondsB - secondsA;
+        });
+
+        historyCache = games;
+        isFirstLoadComplete = true;
+
+        // Falls die Tabs offen sind, triggern wir ein sofortiges re-rendering
+        const historyContainer = document.getElementById('history-list');
+        if (historyContainer && !document.getElementById('history-content').classList.contains('hidden')) {
+            renderHistory();
+        }
+
+        // Scoreboard ebenfalls live aktualisieren falls offen
+        const scoreboardContainer = document.getElementById('scoreboard-list');
+        if (scoreboardContainer && !document.getElementById('scoreboard-content').classList.contains('hidden')) {
+            // Import dynamisch oder wir verlassen uns darauf, dass renderScoreboard global importiert wird.
+            // Um Zirkelbezüge zu vermeiden, rufen wir das Event oder die Render-Funktion auf.
+            const filterSelect = document.getElementById('scoreboard-user-filter');
+            if (filterSelect) {
+                // Wir werfen ein Custom-Event oder rufen es auf, falls im Window-Scope registriert.
+                // Noch einfacher: Wir dispatchen ein Event oder triggern ein Rerender über das UI.
+                const event = new Event('change');
+                filterSelect.dispatchEvent(event);
+            }
+        }
+    }, (error) => {
+        console.error("Fehler im History-Listener:", error);
+    });
 }
 
 // Speichert ein fertiges Spiel in der Cloud
@@ -36,8 +88,6 @@ export async function saveGameToHistory(placedCharacters, rating, pool) {
             pool: poolData,
             timestamp: Timestamp.now()
         });
-        // Nach dem Speichern den Cache für diesen Modus invalidieren, damit er neu geladen wird
-        invalidateHistoryCache();
     } catch (e) {
         console.error("Fehler beim Speichern der Historie: ", e);
     }
@@ -52,7 +102,6 @@ function renderHistoryHTML(games, container) {
 
     container.innerHTML = "";
     games.forEach((game) => {
-        // Timestamp in Millisekunden umrechnen
         const dateObj = game.timestamp && typeof game.timestamp.toDate === 'function' 
             ? game.timestamp.toDate() 
             : new Date(game.timestamp.seconds * 1000);
@@ -98,21 +147,13 @@ function renderHistoryHTML(games, container) {
     });
 }
 
-// Holt nur die Spiele des aktuellen Modus aus der Cloud (mit RAM-Cache)
+// Holt die gefilterten Spiele aus dem lokalen Echtzeit-Cache und rendert sie instant
 export async function renderHistory() {
     const container = document.getElementById('history-list');
-    const now = Date.now();
-    const cached = historyCache[currentMode];
-
-    // Stale-While-Revalidate: Sofortige Anzeige falls im Cache vorhanden
-    if (cached) {
-        renderHistoryHTML(cached.data, container);
-        // Wenn der Cache jünger als 15 Sekunden ist, laden wir nicht neu
-        if (now - cached.timestamp < 15000) {
-            return;
-        }
-    } else {
-        container.innerHTML = '<p class="prompt-text">Lade Archive...</p>';
+    
+    if (!isFirstLoadComplete) {
+        container.innerHTML = '<p class="prompt-text">Verbinde mit Archiven...</p>';
+        return;
     }
 
     try {
@@ -130,36 +171,23 @@ export async function renderHistory() {
             console.error("Fehler beim Laden der Resets:", e);
         }
 
-        const q = query(collection(db, "history"), where("mode", "==", currentMode));
-        const querySnapshot = await getDocs(q);
-        
-        let games = [];
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const gameSecs = data.timestamp ? data.timestamp.seconds : 0;
-            const personalResetSecs = userResets[data.username] || 0;
+        // Filtern nach Resets aus dem RAM-Cache
+        let filteredGames = [];
+        historyCache.forEach((game) => {
+            const gameSecs = game.timestamp ? game.timestamp.seconds : 0;
+            const personalResetSecs = userResets[game.username] || 0;
             
             if (gameSecs > globalHistoryResetSecs && gameSecs > personalResetSecs) {
-                games.push(data);
+                filteredGames.push(game);
             }
         });
 
-        // Sortierung und Limitierung lokal
-        games.sort((a, b) => b.timestamp.seconds - a.timestamp.seconds);
-        games = games.slice(0, 20);
+        // Zeige maximal die 20 neuesten an (bereits sortiert)
+        const limitGames = filteredGames.slice(0, 20);
 
-        // Im Cache ablegen
-        historyCache[currentMode] = {
-            data: games,
-            timestamp: Date.now()
-        };
-
-        // UI aktualisieren (weicher Übergang statt Ladebildschirm)
-        renderHistoryHTML(games, container);
+        renderHistoryHTML(limitGames, container);
     } catch (error) {
-        console.error("Fehler beim Laden der Historie:", error);
-        if (!cached) {
-            container.innerHTML = '<p class="prompt-text" style="color: #ff4757;">Fehler beim Laden der Historie.</p>';
-        }
+        console.error("Fehler beim Rendern der Historie:", error);
+        container.innerHTML = '<p class="prompt-text" style="color: #ff4757;">Fehler beim Laden der Historie.</p>';
     }
 }

@@ -5,7 +5,7 @@ import { patchNotesStarWars } from './changelog-starwars.js';
 import { patchNotesWaifu } from './changelog-waifu.js';
 import { updateChangelogContent } from './changelog.js';
 import { initGame } from './game.js';
-import { renderHistory } from './history.js';
+import { renderHistory, initHistoryListener } from './history.js';
 import { renderScoreboard } from './scoreboard.js';
 import { renderLexikon } from './lexikon.js';
 import { renderAvatarSelection, updateTopbarAvatarElement } from './profile.js';
@@ -40,6 +40,7 @@ export function toggleTheme() {
     }
     
     updateChangelogContent(activeChangelogDatabase);
+    initHistoryListener(); // Listener auf das neue Universum umschalten
     initGame(); 
     
     // Ändert das Profilbild oben links sofort passend zum neuen Modus ab!

@@ -6,7 +6,7 @@ import { initChangelog, updateChangelogContent } from './changelog.js';
 import { patchNotesStarWars } from './changelog-starwars.js';
 import { initAuth, loginOrRegister, logout, getCurrentUser, startPresenceHeartbeat } from './auth.js';
 import { initAdminPanel } from './admin.js';
-import { renderHistory } from './history.js';
+import { renderHistory, initHistoryListener } from './history.js';
 import { renderScoreboard } from './scoreboard.js';
 import { renderLexikon } from './lexikon.js';
 import { initProfile, renderAvatarSelection, updateTopbarAvatarElement } from './profile.js';
@@ -113,13 +113,8 @@ function setupGameUI(user) {
     updateChangelogContent(patchNotesStarWars);
     initProfile();
     initCommunity();
+    initHistoryListener(); // Startet den Echtzeit-Sync für Historie & Scoreboard
     initLiveSpectating();
-
-    // Hintergrund-Prefetching für instantane Tab-Wechsel
-    setTimeout(() => {
-        renderHistory();
-        renderScoreboard();
-    }, 500);
 
     document.querySelectorAll('.rank-btn').forEach(btn => {
         if (btn.dataset.rank) btn.addEventListener('click', () => handleRankSelection(btn.dataset.rank, btn));

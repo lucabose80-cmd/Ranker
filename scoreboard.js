@@ -1,15 +1,9 @@
 // scoreboard.js
-import { db } from './firebase-config.js';
-import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { currentMode } from './theme.js';
 import { getResets } from './resets.js';
+import { getCachedHistory } from './history.js';
 
 let isFilterListenerAttached = false;
-let scoreboardCache = {};
-
-export function invalidateScoreboardCache() {
-    scoreboardCache = {};
-}
 
 // Hilfsfunktion zum Rendern der berechneten Scoreboard-Karten
 function renderScoreboardHTML(sortedCharacters, container) {
@@ -38,41 +32,12 @@ export async function renderScoreboard() {
     const container = document.getElementById('scoreboard-list');
     const filterSelect = document.getElementById('scoreboard-user-filter');
     const selectedUser = filterSelect.value; 
-    const now = Date.now();
 
-    // Cache-Key setzt sich aus Modus und Filter zusammen (z.B. "starwars_global")
-    const cacheKey = `${currentMode}_${selectedUser}`;
-    const cached = scoreboardCache[cacheKey];
+    const { data: historyCache, isLoaded } = getCachedHistory();
 
-    // Stale-While-Revalidate: Sofort rendern falls gecached
-    if (cached) {
-        // Dropdown befüllen
-        filterSelect.innerHTML = '<option value="global">Global (Alle Spieler)</option>';
-        cached.allUsers.forEach(user => {
-            const option = document.createElement('option');
-            option.value = user;
-            option.textContent = `Spieler: ${user}`;
-            filterSelect.appendChild(option);
-        });
-        filterSelect.value = selectedUser;
-
-        // Scoreboard rendern
-        renderScoreboardHTML(cached.sortedCharacters, container);
-
-        // Klick-Listener für Filter anheften
-        if (!isFilterListenerAttached) {
-            filterSelect.addEventListener('change', () => {
-                renderScoreboard();
-            });
-            isFilterListenerAttached = true;
-        }
-
-        // Wenn Cache jünger als 15 Sek, sind wir fertig!
-        if (now - cached.timestamp < 15000) {
-            return;
-        }
-    } else {
+    if (!isLoaded) {
         container.innerHTML = '<p class="prompt-text">Berechne Punkte...</p>';
+        return;
     }
 
     try {
@@ -89,14 +54,11 @@ export async function renderScoreboard() {
             console.error("Fehler beim Laden der Resets:", e);
         }
 
-        const q = query(collection(db, "history"), where("mode", "==", currentMode));
-        const querySnapshot = await getDocs(q);
-        
         let games = [];
         let allUsers = new Set();
 
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
+        // Spiele lokal aus dem synchronisierten RAM-Cache filtern
+        historyCache.forEach((data) => {
             const gameSecs = data.timestamp ? data.timestamp.seconds : 0;
             const personalResetSecs = userResets[data.username] || 0;
 
@@ -126,12 +88,6 @@ export async function renderScoreboard() {
 
         if (games.length === 0) {
             container.innerHTML = '<p class="prompt-text">Noch keine Daten für ein Scoreboard vorhanden.</p>';
-            // Cache leeren für diesen Zustand
-            scoreboardCache[cacheKey] = {
-                sortedCharacters: [],
-                allUsers: sortedUsersList,
-                timestamp: Date.now()
-            };
             return;
         }
 
@@ -156,19 +112,10 @@ export async function renderScoreboard() {
 
         const sortedCharacters = Object.values(characterScores).sort((a, b) => b.score - a.score);
 
-        // Im Cache ablegen
-        scoreboardCache[cacheKey] = {
-            sortedCharacters,
-            allUsers: sortedUsersList,
-            timestamp: Date.now()
-        };
-
         renderScoreboardHTML(sortedCharacters, container);
 
     } catch (error) {
         console.error("Fehler beim Laden des Scoreboards:", error);
-        if (!cached) {
-            container.innerHTML = '<p class="prompt-text" style="color: #ff4757;">Fehler beim Laden der Daten.</p>';
-        }
+        container.innerHTML = '<p class="prompt-text" style="color: #ff4757;">Fehler beim Laden der Daten.</p>';
     }
 }
