@@ -151,8 +151,69 @@ function renderHistoryHTML(games, container, displayNames) {
                 <span class="history-rating">Bewertung: <strong>${game.rating}/10</strong></span>
             </div>
         `;
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', () => {
+            openArchiveDetailModal(game);
+        });
         container.appendChild(card);
     });
+}
+
+function openArchiveDetailModal(game) {
+    const isAdvanced = game.gameType === 'advanced' || game.ranking.length > 5;
+    const maxSlots = isAdvanced ? 10 : 5;
+    
+    const modal = document.getElementById('spectator-modal');
+    if (!modal) return;
+    
+    document.getElementById('spectator-title').textContent = `ARCHIV: ${game.displayName || game.username}s Ranking (${isAdvanced ? 'Advanced' : 'Klassisch'})`;
+    const board = document.getElementById('spectator-board');
+    board.innerHTML = '';
+    
+    if (isAdvanced) {
+        board.className = 'horizontal-board advanced-board';
+    } else {
+        board.className = 'horizontal-board';
+    }
+
+    // Ranking-Board
+    for (let i = 1; i <= maxSlots; i++) {
+        const item = game.ranking.find(r => r.rank === i);
+        board.innerHTML += `
+            <div class="rank-column">
+                <div class="card-container">
+                    <span class="rank-number">${i}</span>
+                    <div class="card-content" style="border-style: ${item ? 'solid' : 'dashed'}">
+                        ${item ? `<img src="${item.img}">` : '<span class="placeholder-icon">👤</span>'}
+                    </div>
+                </div>
+                <div class="card-label"><span>${item ? item.name : '???'}</span></div>
+            </div>
+        `;
+    }
+
+    // Pool anzeigen (Reihenfolge)
+    const poolContainer = document.getElementById('spectator-pool');
+    if (poolContainer && game.pool && game.pool.length > 0) {
+        poolContainer.classList.remove('hidden');
+        const sortedPool = [...game.pool].sort((a, b) => a.order - b.order);
+        poolContainer.innerHTML = `
+            <h4 class="spectator-pool-title">Erscheinungsreihenfolge</h4>
+            <div class="spectator-pool-grid">
+                ${sortedPool.map((char) => `
+                    <div class="spectator-pool-item pool-placed" title="${char.name}">
+                        <img src="${char.img}">
+                        <span>${char.name}</span>
+                        <div class="pool-order-badge">${char.order}</div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    } else if (poolContainer) {
+        poolContainer.classList.add('hidden');
+    }
+
+    modal.classList.remove('hidden');
 }
 
 let isHistoryFilterListenerAttached = false;

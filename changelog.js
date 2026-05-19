@@ -5,6 +5,7 @@ import { roadmapStarWars, roadmapWaifu } from './roadmap.js';
 
 let activeLatestGroupKey = "";
 let isModalInitialized = false;
+let latestVersionString = "";
 
 // Extrahiert den Gruppen-Key aus einer Versionsnummer (z.B. "v2.2.1" -> "v2.2")
 function getGroupKey(version) {
@@ -81,7 +82,9 @@ export function initChangelog() {
         btn.addEventListener('click', () => {
             document.getElementById('changelog-modal').classList.remove('hidden');
             btn.classList.remove('text-gold-glow');
-            markUpdatesAsRead(currentMode, activeLatestGroupKey);
+            if (latestVersionString) {
+                markUpdatesAsRead(currentMode, latestVersionString);
+            }
         });
         isModalInitialized = true;
     }
@@ -94,6 +97,7 @@ export function updateChangelogContent(changelogData) {
 
     const grouped = groupVersions(changelogData);
     activeLatestGroupKey = grouped[0]?.key || "";
+    latestVersionString = changelogData[0]?.version || "";
 
     // --- Patch Notes rendern ---
     patchPanel.innerHTML = grouped.map((group, idx) => {
@@ -170,10 +174,8 @@ export function updateChangelogContent(changelogData) {
     if (user && user.role !== 'admin') {
         const field = currentMode === 'starwars' ? 'lastReadVersionStarWars' : 'lastReadVersionWaifu';
         const lastRead = user[field] || '';
-        // Rückwärtskompatibilität: auch volle Versionen (v2.2.1) korrekt vergleichen
-        const lastReadGroup = lastRead.includes('.') ? getGroupKey(lastRead) : lastRead;
 
-        if (lastReadGroup !== activeLatestGroupKey) {
+        if (lastRead !== latestVersionString) {
             btn.classList.add('text-gold-glow');
         } else {
             btn.classList.remove('text-gold-glow');
