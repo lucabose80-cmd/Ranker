@@ -7,7 +7,7 @@ export const patchNotesStarWars = [
         "Vielfalt: Von den Klonkriegen bis hin zum Outer Rim – entdecke neue Legenden und bereichere deine Rankings.",
         "Balancing: Die neuen Charaktere wurden vollständig in das Lexikon und das Achievement-System integriert."
     ] 
-}
+},
     { 
         version: "v2.0", 
         title: "The Social Hub Update", 
