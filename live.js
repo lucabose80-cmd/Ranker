@@ -29,8 +29,10 @@ export function initLiveSpectating() {
                 const avatarImg = data.avatar ? `<img src="${data.avatar}" class="mini-avatar">` : '';
                 
                 // Mini-Board (platzierte Charaktere)
+                const isAdvanced = data.gameType === 'advanced';
+                const maxSlots = isAdvanced ? 10 : 5;
                 let slotsHtml = '';
-                for(let i = 1; i <= 5; i++) {
+                for(let i = 1; i <= maxSlots; i++) {
                     const char = data.placedCharacters[i];
                     slotsHtml += `<div class="live-slot-mini" style="background:${char ? 'transparent' : '#111'}">
                         ${char ? `<img src="${char.img}">` : ''}
@@ -39,17 +41,17 @@ export function initLiveSpectating() {
 
                 // Fortschritts-Anzeige
                 const placed = Object.values(data.placedCharacters).filter(Boolean).length;
-                const progressHtml = `<div class="live-progress-bar"><div class="live-progress-fill" style="width: ${(placed/5)*100}%"></div></div>`;
+                const progressHtml = `<div class="live-progress-bar"><div class="live-progress-fill" style="width: ${(placed/maxSlots)*100}%"></div></div>`;
 
                 const card = document.createElement('div');
-                card.className = 'live-grid-card';
+                card.className = `live-grid-card ${isAdvanced ? 'advanced-live-card' : ''}`;
                 card.innerHTML = `
                     <div class="live-card-user">
-                        ${avatarImg} <strong>${data.displayName}</strong>
-                        <span class="live-placed-count">${placed}/5</span>
+                        ${avatarImg} <strong>${data.displayName}</strong> ${isAdvanced ? '<span class="chat-mode-tag tag-sw" style="font-size:0.55rem; padding:1px 4px; margin-left:5px; background-color:#ffe81f !important; color:#000 !important; box-shadow:none; vertical-align:middle;">ADV</span>' : ''}
+                        <span class="live-placed-count">${placed}/${maxSlots}</span>
                     </div>
                     ${progressHtml}
-                    <div class="live-board-mini">${slotsHtml}</div>
+                    <div class="live-board-mini ${isAdvanced ? 'advanced-board-mini' : ''}">${slotsHtml}</div>
                     <button class="rank-btn spec-btn">Zuschauen</button>
                 `;
                 
@@ -83,12 +85,21 @@ export function closeSpectatorModal() {
 }
 
 function updateSpectatorModalContent(data) {
-    document.getElementById('spectator-title').textContent = `LIVE: ${data.displayName} rankt gerade`;
+    const isAdvanced = data.gameType === 'advanced';
+    const maxSlots = isAdvanced ? 10 : 5;
+    
+    document.getElementById('spectator-title').textContent = `LIVE: ${data.displayName} rankt gerade (${isAdvanced ? 'Advanced' : 'Klassisch'})`;
     const board = document.getElementById('spectator-board');
     board.innerHTML = '';
+    
+    if (isAdvanced) {
+        board.className = 'horizontal-board advanced-board';
+    } else {
+        board.className = 'horizontal-board';
+    }
 
     // Ranking-Board (platzierte Charaktere)
-    for (let i = 1; i <= 5; i++) {
+    for (let i = 1; i <= maxSlots; i++) {
         const char = data.placedCharacters[i];
         board.innerHTML += `
             <div class="rank-column">

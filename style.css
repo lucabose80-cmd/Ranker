@@ -198,7 +198,7 @@ input:focus { border-color: #3b82f6; outline: none; }
    ========================================================================== */
 .history-list { 
     display: grid !important; 
-    grid-template-columns: repeat(3, 1fr) !important; 
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important; 
     gap: 15px !important; 
     margin-top: 20px; 
     max-height: 600px; 
@@ -209,7 +209,7 @@ input:focus { border-color: #3b82f6; outline: none; }
 
 /* Fallback für mittlere Bildschirme/Tablets (Schaltet auf 2 Spalten) */
 @media (max-width: 950px) {
-    .history-list { grid-template-columns: repeat(2, 1fr) !important; }
+    .history-list { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
 }
 
 /* Fallback für kleine Smartphone Bildschirme (Schaltet auf 1 Spalte) */
@@ -738,6 +738,31 @@ body.waifu-theme .mode-toggle-btn.active {
 .advanced-history-card .history-img-slot {
     max-width: 36px !important;
     flex: 1 0 18% !important; /* 5 pro Reihe */
+}
+.advanced-history-card .history-pool-slots {
+    flex-wrap: wrap !important;
+    gap: 3px !important;
+    justify-content: center !important;
+}
+.advanced-history-card .history-pool-slot {
+    width: 24px !important;
+    height: 30px !important;
+}
+.advanced-history-card .pool-order {
+    font-size: 0.5rem !important;
+    padding: 0px 2px !important;
+}
+
+/* Advanced Spectator Live Mini Board */
+.live-board-mini.advanced-board-mini {
+    flex-wrap: wrap;
+    max-width: 220px;
+    margin: 5px auto;
+    gap: 4px;
+}
+.live-board-mini.advanced-board-mini .live-slot-mini {
+    width: 36px;
+    height: 45px;
 }
 
 .hidden { display: none !important; }

@@ -1,5 +1,13 @@
 export const patchNotesWaifu = [
     {
+        version: "v2.0.1",
+        title: "The Advanced Fix & History Grid Update",
+        changes: [
+            "Bugfix (Advanced Modus): Beim Zuschauen (Live-Spectating) eines Advanced-Spiels werden nun alle 10 Slots korrekt dargestellt.",
+            "Bugfix (Historie): Die 10-Slot-Historienkarten wurden optimiert (Pool-Slots schrumpfen und brechen um), sodass das 3x3 Raster ohne horizontalen Scrollbalken sauber nach unten fließt."
+        ]
+    },
+    {
         version: "v2.0",
         title: "The Advanced Mode & Joker Update",
         changes: [
