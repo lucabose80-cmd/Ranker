@@ -90,15 +90,31 @@ export function initCommunity() {
             let count = 0;
             const now = Date.now();
 
+            // 1. Der aktuell eingetragene User selbst ist immer online und steht ganz oben!
+            const uMode = currentMode;
+            const userAvatar = uMode === 'starwars' ? user.avatarStarWars : user.avatarWaifu;
+            const avatarHtml = userAvatar ? `<img src="${userAvatar}" class="mini-avatar">` : `<div class="mini-avatar" style="background:#444"></div>`;
+            const modeText = uMode === 'starwars' ? 'SW' : 'Anime';
+            const modeClass = uMode === 'starwars' ? 'tag-sw' : 'tag-anime';
+
+            onlineList.innerHTML += `
+                <div class="online-user-card">
+                    <div class="online-indicator"></div>
+                    ${avatarHtml}
+                    <strong>${user.displayName || user.username} (Du)</strong>
+                    <span class="chat-mode-tag ${modeClass}" style="margin-left:auto;">${modeText}</span>
+                </div>
+            `;
+            count++;
+
+            // 2. Andere User hinzufügen, die aktiv sind
             snapshot.forEach(docSnap => {
                 try {
                     const u = docSnap.data();
-                    let isOnline = false;
+                    if (u.username === user.username) return; // Duplikate des aktuellen Users vermeiden
 
-                    // Der aktuell eingetragene User selbst ist immer online!
-                    if (u.username === user.username) {
-                        isOnline = true;
-                    } else if (u.lastActive) {
+                    let isOnline = false;
+                    if (u.lastActive) {
                         let lastActiveMillis = 0;
                         if (typeof u.lastActive.toMillis === 'function') {
                             lastActiveMillis = u.lastActive.toMillis();
@@ -115,19 +131,19 @@ export function initCommunity() {
 
                     if(isOnline) {
                         count++;
-                        const uMode = u.activeMode || 'starwars';
-                        const userAvatar = uMode === 'starwars' ? u.avatarStarWars : u.avatarWaifu;
-                        const avatarHtml = userAvatar ? `<img src="${userAvatar}" class="mini-avatar">` : `<div class="mini-avatar" style="background:#444"></div>`;
+                        const otherMode = u.activeMode || 'starwars';
+                        const otherAvatar = otherMode === 'starwars' ? u.avatarStarWars : u.avatarWaifu;
+                        const otherAvatarHtml = otherAvatar ? `<img src="${otherAvatar}" class="mini-avatar">` : `<div class="mini-avatar" style="background:#444"></div>`;
                         
-                        const modeText = uMode === 'starwars' ? 'SW' : 'Anime';
-                        const modeClass = uMode === 'starwars' ? 'tag-sw' : 'tag-anime';
+                        const otherModeText = otherMode === 'starwars' ? 'SW' : 'Anime';
+                        const otherModeClass = otherMode === 'starwars' ? 'tag-sw' : 'tag-anime';
 
                         onlineList.innerHTML += `
                             <div class="online-user-card">
                                 <div class="online-indicator"></div>
-                                ${avatarHtml}
+                                ${otherAvatarHtml}
                                 <strong>${u.displayName || u.username}</strong>
-                                <span class="chat-mode-tag ${modeClass}" style="margin-left:auto;">${modeText}</span>
+                                <span class="chat-mode-tag ${otherModeClass}" style="margin-left:auto;">${otherModeText}</span>
                             </div>
                         `;
                     }

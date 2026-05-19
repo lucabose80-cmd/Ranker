@@ -1,6 +1,6 @@
 // history.js
 import { db } from './firebase-config.js';
-import { collection, addDoc, onSnapshot, query, where, limit, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { collection, addDoc, onSnapshot, query, where, limit, orderBy, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { getCurrentUser } from './auth.js';
 import { currentMode } from './mode-state.js';
 import { getResets } from './resets.js';
@@ -28,13 +28,17 @@ export function initHistoryListener(force = false) {
     }
     isFirstLoadComplete = false;
 
-    const q = query(collection(db, "history"), where("mode", "==", currentMode), limit(60));
+    // Wir sortieren nach timestamp desc, filtern mode lokal, um zusammengesetzte Indizes zu umgehen
+    const q = query(collection(db, "history"), orderBy("timestamp", "desc"), limit(45));
     
     historyUnsubscribe = onSnapshot(q, (snapshot) => {
         trackRead(snapshot.docChanges().filter(c => c.type !== 'removed').length);
         let games = [];
         snapshot.forEach((doc) => {
-            games.push(doc.data());
+            const data = doc.data();
+            if (data.mode === currentMode) {
+                games.push(data);
+            }
         });
 
         // Lokal sortieren nach Timestamp absteigend
@@ -278,8 +282,8 @@ export async function renderHistory() {
             }
         });
 
-        // Zeige maximal die 20 neuesten an (bereits sortiert)
-        const limitGames = filteredGames.slice(0, 20);
+        // Zeige maximal die 12 neuesten an (bereits sortiert)
+        const limitGames = filteredGames.slice(0, 12);
 
         renderHistoryHTML(limitGames, container, displayNames);
     } catch (error) {
