@@ -4,7 +4,7 @@ import { shuffleArray, preloadImages } from './utils.js';
 import { resetRatingUI } from './rating.js';
 import { saveGameToHistory } from './history.js';
 import { getCurrentUser, markCharacterAsDiscovered } from './auth.js'; // NEU importiert
-import { doc, setDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { doc, setDoc, Timestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { db } from './firebase-config.js';
 
 export let activePool = []; 
@@ -20,6 +20,12 @@ export function initGame() {
     // Alten Glow beim Neustart entfernen
     document.getElementById('current-image-container').classList.remove('gold-glow');
     resetRatingUI();
+    
+    // Live Game Dokument aufräumen
+    const user = getCurrentUser();
+    if(user && user.role !== 'admin') {
+        deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
+    }
     
     document.querySelectorAll('.rank-btn').forEach(btn => btn.disabled = false);
     for (let i = 1; i <= 5; i++) {

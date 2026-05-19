@@ -1,6 +1,6 @@
 // live.js
 import { db } from './firebase-config.js';
-import { collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { collection, onSnapshot, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 let liveUnsubscribe = null;
 let activeSpectatedUser = null; // Speichert, wen man gerade vergrößert anschaut
@@ -10,7 +10,11 @@ export function initLiveSpectating() {
     
     const grid = document.getElementById('live-games-grid');
     
-    liveUnsubscribe = onSnapshot(collection(db, "live_games"), (snapshot) => {
+    // Nur Spiele der letzten 2 Minuten abrufen
+    const twoMinutesAgo = new Date(Date.now() - 120000);
+    const qLive = query(collection(db, "live_games"), where("updatedAt", ">", Timestamp.fromDate(twoMinutesAgo)));
+    
+    liveUnsubscribe = onSnapshot(qLive, (snapshot) => {
         if (!grid) return;
         grid.innerHTML = '';
         const now = Date.now();

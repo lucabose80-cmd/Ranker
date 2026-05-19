@@ -109,7 +109,7 @@ export function startPresenceHeartbeat() {
     };
     sendHeartbeat();
     if(heartbeatInterval) clearInterval(heartbeatInterval);
-    heartbeatInterval = setInterval(sendHeartbeat, 30000);
+    heartbeatInterval = setInterval(sendHeartbeat, 60000);
 }
 
 export async function markCharacterAsDiscovered(charName) {

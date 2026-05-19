@@ -1,11 +1,11 @@
 // community.js
 import { db } from './firebase-config.js';
-import { collection, onSnapshot, query, orderBy, limit, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { collection, onSnapshot, query, orderBy, limit, addDoc, Timestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { getCurrentUser } from './auth.js';
 import { currentMode } from './theme.js';
 
 let chatUnsubscribe = null;
-let onlineUnsubscribe = null;
+let onlineInterval = null;
 
 export function initCommunity() {
     const user = getCurrentUser();
@@ -71,38 +71,46 @@ export function initCommunity() {
     sendBtn.onclick = sendMessage;
     input.onkeypress = (e) => { if(e.key === 'Enter') sendMessage(); };
 
-    // 2. Online Tracker (Unter dem Profil platziert)
-    if(onlineUnsubscribe) onlineUnsubscribe();
-    onlineUnsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
+    // 2. Online Tracker (Unter dem Profil platziert, alle 60s abfragen statt Echtzeit-Snapshot)
+    if(onlineInterval) clearInterval(onlineInterval);
+    
+    const updateOnlineTracker = async () => {
         const onlineList = document.getElementById('online-users-list');
         if(!onlineList) return;
-        onlineList.innerHTML = '';
-        let count = 0;
-        const now = Date.now();
+        
+        try {
+            const snapshot = await getDocs(collection(db, "users"));
+            onlineList.innerHTML = '';
+            let count = 0;
+            const now = Date.now();
 
-        snapshot.forEach(docSnap => {
-            const u = docSnap.data();
-            if(u.lastActive) {
-                const isOnline = (now - u.lastActive.toMillis()) < 60000; 
-                if(isOnline) {
-                    count++;
-                    const userAvatar = u.activeMode === 'starwars' ? u.avatarStarWars : u.avatarWaifu;
-                    const avatarHtml = userAvatar ? `<img src="${userAvatar}" class="mini-avatar">` : `<div class="mini-avatar" style="background:#444"></div>`;
-                    
-                    const modeText = u.activeMode === 'starwars' ? 'SW' : 'Anime';
-                    const modeClass = u.activeMode === 'starwars' ? 'tag-sw' : 'tag-anime';
+            snapshot.forEach(docSnap => {
+                const u = docSnap.data();
+                if(u.lastActive) {
+                    const isOnline = (now - u.lastActive.toMillis()) < 150000; // 2.5 Min Threshold (Heartbeat ist 60s)
+                    if(isOnline) {
+                        count++;
+                        const userAvatar = u.activeMode === 'starwars' ? u.avatarStarWars : u.avatarWaifu;
+                        const avatarHtml = userAvatar ? `<img src="${userAvatar}" class="mini-avatar">` : `<div class="mini-avatar" style="background:#444"></div>`;
+                        
+                        const modeText = u.activeMode === 'starwars' ? 'SW' : 'Anime';
+                        const modeClass = u.activeMode === 'starwars' ? 'tag-sw' : 'tag-anime';
 
-                    onlineList.innerHTML += `
-                        <div class="online-user-card">
-                            <div class="online-indicator"></div>
-                            ${avatarHtml}
-                            <strong>${u.displayName}</strong>
-                            <span class="chat-mode-tag ${modeClass}" style="margin-left:auto;">${modeText}</span>
-                        </div>
-                    `;
+                        onlineList.innerHTML += `
+                            <div class="online-user-card">
+                                <div class="online-indicator"></div>
+                                ${avatarHtml}
+                                <strong>${u.displayName}</strong>
+                                <span class="chat-mode-tag ${modeClass}" style="margin-left:auto;">${modeText}</span>
+                            </div>
+                        `;
+                    }
                 }
-            }
-        });
-        document.getElementById('online-count').textContent = count;
-    });
+            });
+            document.getElementById('online-count').textContent = count;
+        } catch(e) {}
+    };
+
+    updateOnlineTracker();
+    onlineInterval = setInterval(updateOnlineTracker, 60000);
 }
