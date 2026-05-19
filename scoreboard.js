@@ -1,7 +1,7 @@
 // scoreboard.js
 import { currentMode } from './mode-state.js';
 import { getResets } from './resets.js';
-import { getCachedHistory } from './history.js';
+import { getCachedHistory, initHistoryListener } from './history.js';
 
 let isFilterListenerAttached = false;
 
@@ -28,13 +28,17 @@ function renderScoreboardHTML(sortedCharacters, container) {
     });
 }
 
-export async function renderScoreboard() {
+export async function renderScoreboard(triggerListener = true) {
     const container = document.getElementById('scoreboard-list');
     const filterSelect = document.getElementById('scoreboard-user-filter');
     const typeSelect = document.getElementById('scoreboard-type-filter');
     
     const selectedUser = filterSelect.value || 'global'; 
     const selectedType = typeSelect.value || 'classic';
+
+    if (triggerListener) {
+        initHistoryListener(false, { type: selectedType, user: selectedUser });
+    }
 
     const { data: historyCache, isLoaded } = getCachedHistory();
 
@@ -47,11 +51,13 @@ export async function renderScoreboard() {
         let globalScoreboardResetSecs = 0;
         let userResets = {};
         let displayNames = {};
+        let allKnownUsers = [];
         try {
             const { adminResets, userResets: cachedUserResets } = await getResets();
             globalScoreboardResetSecs = adminResets[`globalScoreboardReset_${currentMode}`] || 0;
             
-            Object.keys(cachedUserResets).forEach(uname => {
+            allKnownUsers = Object.keys(cachedUserResets);
+            allKnownUsers.forEach(uname => {
                 userResets[uname] = cachedUserResets[uname][`scoreboardResetAt_${currentMode}`] || 0;
                 displayNames[uname] = cachedUserResets[uname].displayName || uname;
             });
@@ -60,29 +66,25 @@ export async function renderScoreboard() {
         }
 
         let games = [];
-        let allUsers = new Set();
 
-        // Spiele lokal aus dem synchronisierten RAM-Cache filtern
         historyCache.forEach((data) => {
             const gameSecs = data.timestamp ? data.timestamp.seconds : 0;
             const personalResetSecs = userResets[data.username] || 0;
 
             // Zeitstempel-Reset checken
             if (gameSecs > globalScoreboardResetSecs && gameSecs > personalResetSecs) {
-                // Spieltyp checken (Classic vs. Advanced)
-                const isGameAdvanced = data.gameType === 'advanced' || data.ranking.length > 5;
-                if (selectedType === 'advanced' && isGameAdvanced) {
-                    games.push(data);
-                    allUsers.add(data.username);
-                } else if (selectedType === 'classic' && !isGameAdvanced) {
-                    games.push(data);
-                    allUsers.add(data.username);
-                }
+                // Da wir in initHistoryListener bereits filtern, können wir sie direkt nutzen
+                games.push(data);
             }
         });
 
-        // Dropdown-Menü aktualisieren
-        const sortedUsersList = Array.from(allUsers).sort();
+        // Dropdown-Menü aktualisieren (mit allen bekannten Spielern, nicht nur denen aus den letzten 12 Spielen)
+        const sortedUsersList = allKnownUsers.sort((a, b) => {
+            // Sortiere nach displayName
+            const nameA = (displayNames[a] || a).toLowerCase();
+            const nameB = (displayNames[b] || b).toLowerCase();
+            return nameA.localeCompare(nameB);
+        });
         filterSelect.innerHTML = '<option value="global">Global (Alle Spieler)</option>';
         sortedUsersList.forEach(uname => {
             const option = document.createElement('option');
@@ -94,10 +96,18 @@ export async function renderScoreboard() {
 
         if (!isFilterListenerAttached) {
             filterSelect.addEventListener('change', () => {
-                renderScoreboard();
+                renderScoreboard(true);
             });
             typeSelect.addEventListener('change', () => {
-                renderScoreboard();
+                renderScoreboard(true);
+            });
+            
+            // Reagiert auf automatische Live-Updates aus history.js
+            document.addEventListener('history-updated', () => {
+                const scoreboardContainer = document.getElementById('scoreboard-list');
+                if (scoreboardContainer && !document.getElementById('scoreboard-content').classList.contains('hidden')) {
+                    renderScoreboard(false);
+                }
             });
             isFilterListenerAttached = true;
         }

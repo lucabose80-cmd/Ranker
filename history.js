@@ -15,30 +15,71 @@ export function getCachedHistory() {
     return { data: historyCache, isLoaded: isFirstLoadComplete };
 }
 
-let currentListenerMode = null;
+let currentListenerKey = null;
 
 // Startet den Echtzeit-Sync für den aktuellen Modus
-export function initHistoryListener(force = false) {
-    if (!force && historyUnsubscribe && currentListenerMode === currentMode) {
+export function initHistoryListener(force = false, filters = null) {
+    let type = 'classic';
+    let user = 'global';
+
+    if (filters) {
+        type = filters.type || 'classic';
+        user = filters.user || 'global';
+    } else {
+        const isHistoryActive = document.getElementById('history-content') && !document.getElementById('history-content').classList.contains('hidden');
+        const isScoreboardActive = document.getElementById('scoreboard-content') && !document.getElementById('scoreboard-content').classList.contains('hidden');
+
+        if (isHistoryActive) {
+            const typeSelect = document.getElementById('history-type-filter');
+            type = typeSelect ? typeSelect.value : 'classic';
+        } else if (isScoreboardActive) {
+            const typeSelect = document.getElementById('scoreboard-type-filter');
+            type = typeSelect ? typeSelect.value : 'classic';
+            const userSelect = document.getElementById('scoreboard-user-filter');
+            user = userSelect ? userSelect.value : 'global';
+        }
+    }
+
+    const listenerKey = `${currentMode}_${type}_${user}`;
+
+    if (!force && historyUnsubscribe && currentListenerKey === listenerKey) {
         return;
     }
-    currentListenerMode = currentMode;
+    currentListenerKey = listenerKey;
     if (historyUnsubscribe) {
         historyUnsubscribe();
     }
     isFirstLoadComplete = false;
 
-    // Wir sortieren nach timestamp desc, filtern mode lokal, um zusammengesetzte Indizes zu umgehen
-    const q = query(collection(db, "history"), orderBy("timestamp", "desc"), limit(24));
+    // Dynamische Query um Reads drastisch zu sparen
+    let constraints = [
+        collection(db, "history"),
+        where("mode", "==", currentMode)
+    ];
+
+    if (type === 'advanced') {
+        constraints.push(where("gameType", "==", "advanced"));
+    } else {
+        // Fallback für alte Einträge und Classic. Wenn alte kein gameType haben, werden sie hier nicht gefunden,
+        // daher wäre es besser, gameType explicit abzufragen. Bei alten Daten hilft ggf. ein Fallback, 
+        // aber für echte Optimierung müssen wir "where" nutzen.
+        constraints.push(where("gameType", "==", "classic"));
+    }
+
+    if (user !== 'global') {
+        constraints.push(where("username", "==", user));
+    }
+
+    constraints.push(orderBy("timestamp", "desc"));
+    constraints.push(limit(12));
+
+    const q = query(...constraints);
     
     historyUnsubscribe = onSnapshot(q, (snapshot) => {
         trackRead(snapshot.docChanges().filter(c => c.type !== 'removed').length);
         let games = [];
         snapshot.forEach((doc) => {
-            const data = doc.data();
-            if (data.mode === currentMode) {
-                games.push(data);
-            }
+            games.push(doc.data());
         });
 
         // Lokal sortieren nach Timestamp absteigend
@@ -54,33 +95,26 @@ export function initHistoryListener(force = false) {
         // Falls die Tabs offen sind, triggern wir ein sofortiges re-rendering
         const historyContainer = document.getElementById('history-list');
         if (historyContainer && !document.getElementById('history-content').classList.contains('hidden')) {
-            renderHistory();
+            renderHistory(false);
         }
 
         // Scoreboard ebenfalls live aktualisieren falls offen
         const scoreboardContainer = document.getElementById('scoreboard-list');
         if (scoreboardContainer && !document.getElementById('scoreboard-content').classList.contains('hidden')) {
-            // Import dynamisch oder wir verlassen uns darauf, dass renderScoreboard global importiert wird.
-            // Um Zirkelbezüge zu vermeiden, rufen wir das Event oder die Render-Funktion auf.
-            const filterSelect = document.getElementById('scoreboard-user-filter');
-            if (filterSelect) {
-                // Wir werfen ein Custom-Event oder rufen es auf, falls im Window-Scope registriert.
-                // Noch einfacher: Wir dispatchen ein Event oder triggern ein Rerender über das UI.
-                const event = new Event('change');
-                filterSelect.dispatchEvent(event);
-            }
+            // Wir feuern kein Change-Event mehr, sondern updaten es direkt
+            // Um zirkuläre Imports zu vermeiden nutzen wir ein Event auf document
+            document.dispatchEvent(new Event('history-updated'));
         }
     }, (error) => {
-        console.error("Fehler im History-Listener:", error);
+        console.error("Fehler im History-Listener (Fehlt ggf. ein Firebase Index?):", error);
     });
 }
 
-// Beendet den Echtzeit-Sync für die Historie, um Reads im Hintergrund zu sparen
 export function stopHistoryListener() {
     if (historyUnsubscribe) {
         historyUnsubscribe();
         historyUnsubscribe = null;
-        currentListenerMode = null;
+        currentListenerKey = null;
     }
 }
 // Speichert ein fertiges Spiel in der Cloud
@@ -241,14 +275,18 @@ function openArchiveDetailModal(game) {
 let isHistoryFilterListenerAttached = false;
 
 // Holt die gefilterten Spiele aus dem lokalen Echtzeit-Cache und rendert sie instant
-export async function renderHistory() {
+export async function renderHistory(triggerListener = true) {
     const container = document.getElementById('history-list');
     const typeSelect = document.getElementById('history-type-filter');
     const selectedType = typeSelect ? typeSelect.value : 'classic';
 
+    if (triggerListener) {
+        initHistoryListener(false, { type: selectedType, user: 'global' });
+    }
+
     if (typeSelect && !isHistoryFilterListenerAttached) {
         typeSelect.addEventListener('change', () => {
-            renderHistory();
+            renderHistory(true);
         });
         isHistoryFilterListenerAttached = true;
     }
@@ -276,22 +314,19 @@ export async function renderHistory() {
         }
 
         // Filtern nach Resets und Spieltyp aus dem RAM-Cache
+        // (Da wir in der DB filtern, sind hier eigentlich nur die passenden drin, aber Resets checken wir lokal)
         let filteredGames = [];
         historyCache.forEach((game) => {
             const gameSecs = game.timestamp ? game.timestamp.seconds : 0;
             const personalResetSecs = userResets[game.username] || 0;
             
             if (gameSecs > globalHistoryResetSecs && gameSecs > personalResetSecs) {
-                const isGameAdvanced = game.gameType === 'advanced' || game.ranking.length > 5;
-                if (selectedType === 'advanced' && isGameAdvanced) {
-                    filteredGames.push(game);
-                } else if (selectedType === 'classic' && !isGameAdvanced) {
-                    filteredGames.push(game);
-                }
+                // Wir haben gameType schon via DB gefiltert, wir fügen es direkt hinzu
+                filteredGames.push(game);
             }
         });
 
-        // Zeige maximal die 12 neuesten an (bereits sortiert)
+        // Maximal die 12 neuesten
         const limitGames = filteredGames.slice(0, 12);
 
         renderHistoryHTML(limitGames, container, displayNames);
