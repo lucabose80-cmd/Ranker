@@ -1,20 +1,31 @@
-header h1 { color: #ff9ff3; text-shadow: 0 0 10px rgba(255, 159, 243, 0.4); }
-.panel { border-color: #ff9ff3; box-shadow: 0 0 15px rgba(255, 159, 243, 0.2); }
-.panel h2 { color: #ff9ff3; }
+/* Das extrem grelle Pink aus deinem Bild */
+header h1 { color: #ff2a9d; text-shadow: 0 0 10px rgba(255, 42, 157, 0.4); }
+.panel { border-color: #ff2a9d; box-shadow: 0 0 15px rgba(255, 42, 157, 0.2); }
+.panel h2 { color: #ff2a9d; }
 
-#current-image-container { border-color: #ff9ff3; box-shadow: 0 0 15px rgba(255, 159, 243, 0.3); }
+#current-image-container { border-color: #ff2a9d; box-shadow: 0 0 15px rgba(255, 42, 157, 0.3); }
 
-.rank-btn { color: #ff9ff3; border-color: #ff9ff3; }
-.rank-btn:hover:not(:disabled) { background-color: rgba(255, 159, 243, 0.2); box-shadow: 0 0 10px rgba(255, 159, 243, 0.5); }
+.rank-btn { color: #ff2a9d; border-color: #ff2a9d; }
+.rank-btn:hover:not(:disabled) { background-color: rgba(255, 42, 157, 0.2); box-shadow: 0 0 10px rgba(255, 42, 157, 0.5); }
 
-.end-title { color: #ff9ff3; text-shadow: 0 0 20px rgba(255, 159, 243, 0.8); }
+.end-title { color: #ff2a9d; text-shadow: 0 0 20px rgba(255, 42, 157, 0.8); }
 
-.rate-btn { color: #ff9ff3; border-color: #ff9ff3; box-shadow: 0 0 5px rgba(255, 159, 243, 0.3); }
-.rate-btn:hover { background-color: rgba(255, 159, 243, 0.2); box-shadow: 0 0 15px rgba(255, 159, 243, 0.6); }
-.rate-btn.selected { background-color: #ff9ff3; box-shadow: 0 0 20px rgba(255, 159, 243, 0.8); }
+.rate-btn { color: #ff2a9d; border-color: #ff2a9d; box-shadow: 0 0 5px rgba(255, 42, 157, 0.3); }
+.rate-btn:hover { background-color: rgba(255, 42, 157, 0.2); box-shadow: 0 0 15px rgba(255, 42, 157, 0.6); }
+.rate-btn.selected { background-color: #ff2a9d; box-shadow: 0 0 20px rgba(255, 42, 157, 0.8); }
 
-#restart-btn { background-color: #f368e0; }
-#restart-btn:hover { background-color: #ff9ff3; }
+#restart-btn { background-color: #d6187b; }
+#restart-btn:hover { background-color: #ff2a9d; }
 
-.updates-content { border-color: #ff9ff3; box-shadow: 0 0 30px rgba(255, 159, 243, 0.3); }
-.version-badge { background-color: #f368e0; }
+.updates-content { border-color: #ff2a9d; box-shadow: 0 0 30px rgba(255, 42, 157, 0.3); }
+.version-badge { background-color: #ff2a9d; }
+
+.revealed-name {
+    color: #ff2a9d !important;
+    animation: textGlowWaifu 1s ease-in-out;
+}
+
+@keyframes textGlowWaifu {
+    0% { opacity: 0; transform: translateY(-5px); text-shadow: 0 0 0px #ff2a9d; }
+    100% { opacity: 1; transform: translateY(0); text-shadow: 0 0 10px #ff2a9d; }
+}
