@@ -1,12 +1,16 @@
 // admin.js
 import { db } from './firebase-config.js';
 import { collection, getDocs, doc, updateDoc, deleteDoc, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { logout } from './auth.js';
 
 export async function initAdminPanel() {
     const list = document.getElementById('admin-user-list');
     list.innerHTML = '<h3>Spielerverwaltung</h3>';
 
-    // 1. Spieler-Liste laden
+    // 1. Admin Logout Logik
+    document.getElementById('admin-logout-btn').onclick = logout;
+
+    // 2. Spieler-Liste laden
     const usersSnap = await getDocs(collection(db, "users"));
     usersSnap.forEach(userDoc => {
         const u = userDoc.data();
@@ -17,20 +21,20 @@ export async function initAdminPanel() {
         card.innerHTML = `
             <span>${u.displayName}</span>
             <div>
-                <button class="rank-btn" style="width:auto; font-size: 0.7rem;" id="reset-discovery-${userDoc.id}">Discovery Reset</button>
-                <button class="rank-btn" style="width:auto; font-size: 0.7rem; background:#ff4757; color:white;" id="delete-history-${userDoc.id}">History Reset</button>
+                <button class="rank-btn" id="res-d-${userDoc.id}" style="width:auto; font-size: 0.6rem;">Discovery Reset</button>
+                <button class="rank-btn" id="del-h-${userDoc.id}" style="width:auto; font-size: 0.6rem; background:#ff4757; color:white;">History Reset</button>
             </div>
         `;
         list.appendChild(card);
 
         // Discovery Reset
-        document.getElementById(`reset-discovery-${userDoc.id}`).onclick = async () => {
+        document.getElementById(`res-d-${userDoc.id}`).onclick = async () => {
             await updateDoc(doc(db, "users", userDoc.id), { discovered: [] });
             alert("Discovery für " + u.displayName + " zurückgesetzt.");
         };
 
-        // History Reset (Löscht alle Einträge dieses Users aus der History)
-        document.getElementById(`delete-history-${userDoc.id}`).onclick = async () => {
+        // History Reset
+        document.getElementById(`del-h-${userDoc.id}`).onclick = async () => {
             const histSnap = await getDocs(collection(db, "history"));
             histSnap.forEach(async (hDoc) => {
                 if (hDoc.data().username === u.username) await deleteDoc(doc(db, "history", hDoc.id));
@@ -39,14 +43,14 @@ export async function initAdminPanel() {
         };
     });
 
-    // 2. Chat-Verwaltung (Löschen)
+    // 3. Chat-Verwaltung
     list.innerHTML += '<h3>Chat-Nachrichten</h3>';
-    const chatSnap = await getDocs(query(collection(db, "chat"), orderBy("timestamp", "desc"), limit(20)));
+    const chatSnap = await getDocs(query(collection(db, "chat"), orderBy("timestamp", "desc"), limit(10)));
     chatSnap.forEach(chatDoc => {
         const msg = chatDoc.data();
         const row = document.createElement('div');
         row.className = 'admin-user-card';
-        row.innerHTML = `<span>${msg.displayName}: ${msg.text}</span> <button class="rank-btn" style="width:auto; background:red; color:white;">X</button>`;
+        row.innerHTML = `<span>${msg.displayName}: ${msg.text}</span> <button class="rank-btn" style="width:30px; height:30px; background:red; color:white;">X</button>`;
         row.querySelector('button').onclick = async () => {
             await deleteDoc(doc(db, "chat", chatDoc.id));
             row.remove();
