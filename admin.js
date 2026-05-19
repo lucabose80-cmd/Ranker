@@ -4,6 +4,7 @@ import { logout } from './auth.js';
 
 export async function initAdminPanel() {
     const list = document.getElementById('admin-user-list');
+    if (!list) return;
     list.innerHTML = '<h3>Spielerverwaltung</h3>';
 
     document.getElementById('admin-logout-btn').onclick = logout;
@@ -18,42 +19,25 @@ export async function initAdminPanel() {
         card.innerHTML = `
             <span>${u.displayName}</span>
             <div>
-                <button class="rank-btn" id="res-d-${userDoc.id}" style="width:auto; font-size: 0.6rem; background: #ff4757;">Discovery Reset</button>
-                <button class="rank-btn" id="del-h-${userDoc.id}" style="width:auto; font-size: 0.6rem; background: #ff4757;">History Reset</button>
+                <button id="res-d-${userDoc.id}" style="padding:5px; cursor:pointer;">Discovery Reset</button>
+                <button id="del-h-${userDoc.id}" style="padding:5px; cursor:pointer; background:#ff4757; color:white;">History Reset</button>
             </div>
         `;
         list.appendChild(card);
 
-        // Discovery Reset mit grünem Feedback
-        document.getElementById(`res-d-${userDoc.id}`).onclick = async (e) => {
+        document.getElementById(`res-d-${userDoc.id}`).onclick = async () => {
             await updateDoc(doc(db, "users", userDoc.id), { discovered: [] });
-            triggerSuccessFeedback(e.target);
+            alert("Discovery reset für " + u.displayName);
         };
 
-        // History Reset mit grünem Feedback
-        document.getElementById(`del-h-${userDoc.id}`).onclick = async (e) => {
+        document.getElementById(`del-h-${userDoc.id}`).onclick = async () => {
             const histSnap = await getDocs(collection(db, "history"));
             const batch = [];
             histSnap.forEach((hDoc) => {
                 if (hDoc.data().username === u.username) batch.push(deleteDoc(doc(db, "history", hDoc.id)));
             });
             await Promise.all(batch);
-            triggerSuccessFeedback(e.target);
+            alert("History gelöscht für " + u.displayName);
         };
     });
-
-    list.innerHTML += '<h3>Chat-Nachrichten</h3>';
-    // ... (Chat Logik bleibt gleich)
-}
-
-// Hilfsfunktion für das grüne Feedback
-function triggerSuccessFeedback(button) {
-    const originalColor = button.style.background;
-    button.style.background = "#2ed573"; // Grün bei Erfolg
-    button.textContent = "Erledigt!";
-    
-    setTimeout(() => {
-        button.style.background = originalColor; // Zurück zu Rot
-        button.textContent = button.id.includes('res-d') ? "Discovery Reset" : "History Reset";
-    }, 2000);
 }
