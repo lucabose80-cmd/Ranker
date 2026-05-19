@@ -1,17 +1,21 @@
+import { submitFinalRating } from './game.js';
+
 export function initRatingSystem() {
     const rateButtons = document.querySelectorAll('.rate-btn');
     const ratingFeedback = document.getElementById('rating-feedback');
 
     rateButtons.forEach(btn => {
         btn.addEventListener('click', () => {
-            // Erstmal alle deselektieren
+            if (btn.classList.contains('selected')) return; // Bereits gewählt
+
             rateButtons.forEach(b => b.classList.remove('selected'));
-            // Gewählten Button markieren
             btn.classList.add('selected');
             
-            // Feedback anzeigen
-            ratingFeedback.textContent = `Du hast deine Liste mit ${btn.textContent}/10 bewertet. Danke!`;
+            ratingFeedback.textContent = `Liste mit ${btn.textContent}/10 bewertet. Gespeichert!`;
             ratingFeedback.classList.remove('hidden');
+
+            // Speichern in Firebase
+            submitFinalRating(parseInt(btn.textContent));
         });
     });
 }

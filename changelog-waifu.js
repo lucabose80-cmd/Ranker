@@ -1,17 +1,23 @@
 // changelog-waifu.js
 export const patchNotesWaifu = [
+   { 
+        version: "v1.2", 
+        title: "Archive & Memories", 
+        changes: [
+            "Globales History-System: Deine Waifu-Rankings werden nun für die Nachwelt gespeichert.",
+            "Neuer 'Historie' Tab: Vergleiche deinen Geschmack mit dem Rest der Welt.",
+            "Design: Das Tab-System passt sich dem Pink-Neon Theme an."
+        ] 
+    },
     { 
         version: "v1.1", 
         title: "Visual Overhaul & Engine Upgrade", 
         changes: [
-            "Farbschema aktualisiert: Das Theme nutzt nun ein sattes Neon-Pink (#ff2a9d).",
-            "Architektur: Spiellogik in kleine, wartbare Module aufgeteilt.",
-            "Performance: Bilder-Preload integriert, um Ruckler bei der Charakteranzeige zu beheben.",
-            "Backend: Firebase-Datenbank für globale Logins und ein Live Admin-Panel eingeführt.",
-            "Quality of Life: Intelligentes Login-System erstellt Accounts automatisch, wenn sie noch nicht existieren.",
-            "Quality of Life: Augen-Symbol zum Anzeigen/Verbergen des Passworts hinzugefügt."
+            "Farbschema aktualisiert: Sattes Neon-Pink (#ff2a9d).",
+            "Performance: Bilder-Preload integriert.",
+            "Backend: Firebase-Integration für Cloud-Daten."
         ] 
-    },
+    }
     { 
         version: "v1.0", 
         title: "Anime Modus Release", 

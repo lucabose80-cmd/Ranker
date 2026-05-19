@@ -14,7 +14,6 @@
             <h2>LOGIN</h2>
             <p id="auth-feedback" class="prompt-text hidden"></p>
             <input type="text" id="auth-username" placeholder="Benutzername" autocomplete="off">
-            
             <div class="password-wrapper">
                 <input type="password" id="auth-password" placeholder="Passwort">
                 <span id="toggle-password" class="eye-icon" title="Passwort anzeigen">
@@ -24,7 +23,6 @@
                     </svg>
                 </span>
             </div>
-            
             <div class="action-buttons auth-buttons">
                 <button id="login-btn" class="rank-btn auth-btn">Los geht's</button>
             </div>
@@ -41,6 +39,11 @@
     </div>
 
     <div id="game-view" class="view-container hidden">
+        <nav class="game-nav">
+            <button class="nav-link active" data-target="game-main-content">SPIEL</button>
+            <button class="nav-link" data-target="history-content">HISTORIE</button>
+        </nav>
+
         <div class="top-bar">
             <span id="player-greeting" class="prompt-text"></span>
             <button id="logout-btn" class="text-btn logout-btn">LOGOUT</button>
@@ -48,7 +51,7 @@
         
         <button id="changelog-open-btn" class="text-btn">UPDATES</button>
 
-        <div class="app-container">
+        <div id="game-main-content" class="tab-content app-container">
             <header>
                 <h1 id="main-title">STAR WARS RANKING</h1>
                 <p>Ordne 5 Charaktere blind ein. Wo landen sie?</p>
@@ -95,6 +98,14 @@
                     <p id="rating-feedback" class="hidden">Danke für deine Bewertung!</p>
                     <button id="restart-btn">NEUES SPIEL</button>
                 </div>
+            </div>
+        </div>
+
+        <div id="history-content" class="tab-content app-container hidden">
+            <div class="panel history-panel">
+                <h2>GALAKTISCHE ARCHIVE</h2>
+                <p class="prompt-text">Die letzten Spiele aller Zeitreisenden</p>
+                <div id="history-list" class="history-list"></div>
             </div>
         </div>
     </div>

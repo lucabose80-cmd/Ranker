@@ -1,17 +1,21 @@
 // changelog-starwars.js
 export const patchNotesStarWars = [
     { 
+        version: "v1.6", 
+        title: "The Archive Update", 
+        changes: [
+            "Globales History-System: Jedes Spiel wird nun dauerhaft in der Cloud gespeichert.",
+            "Neuer 'Historie' Tab: Siehe die Top-Rankings und Bewertungen aller Spieler live ein.",
+            "User Interface: Tab-Navigation eingeführt, um nahtlos zwischen Spiel und Archiv zu wechseln."
+        ] 
+    },
+    { 
         version: "v1.5", 
         title: "The Multiverse Update", 
         changes: [
-            "Geheimes Feature hinzugefügt: Mit der Pfeiltaste (Runter) kann in ein alternatives Anime-Universum gewechselt werden.",
-            "Modulares Theme-System integriert, um zukünftig weitere Universen zu unterstützen.",
-            "Performance: Bilder-Preload integriert, um Ruckler bei der Charakteranzeige zu beheben.",
-            "Backend: Firebase-Datenbank für globale Logins und ein Live Admin-Panel eingeführt.",
-            "Quality of Life: Intelligentes Login-System erstellt Accounts automatisch, wenn sie noch nicht existieren.",
-            "Quality of Life: Augen-Symbol zum Anzeigen/Verbergen des Passworts hinzugefügt."
-        ] 
-    },
+            "Backend: Echtes Firebase-System für globale Logins implementiert.",
+            "Quality of Life: Intelligentes Login und Augen-Symbol für Passwörter hinzugefügt."
+        ]
     { version: "v1.4", title: "End-Screen & UI Overhaul", changes: ["Großes visuelles Upgrade für den End-Screen."] },
     { version: "v1.3", title: "The Reveal & Modularisierung", changes: ["Überraschungseffekt: Charakternamen werden erst am Ende enthüllt."] },
     { version: "v1.2", title: "Sci-Fi Blind Ranking", changes: ["Echtes 'Blind Ranking': Es wird immer nur ein Charakter gleichzeitig gezeigt."] },

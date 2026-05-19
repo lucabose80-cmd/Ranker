@@ -113,3 +113,114 @@ input:focus { border-color: #3b82f6; outline: none; }
     height: 100%;
     display: block;
 }
+/* ... Bestehende Styles beibehalten ... */
+
+/* --- NEU: Navigation Tabs --- */
+.game-nav {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #333;
+    padding: 0 20px;
+    justify-content: center;
+}
+
+.nav-link {
+    background: none;
+    border: none;
+    color: #888;
+    padding: 15px 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-bottom: 3px solid transparent;
+}
+
+.nav-link:hover { color: #fff; }
+.nav-link.active {
+    color: #3b82f6;
+    border-bottom-color: #3b82f6;
+}
+
+/* --- NEU: Historie Liste & Karten --- */
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+    max-height: 600px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.history-card {
+    background-color: #11151f;
+    border: 1px solid #2a3142;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: left;
+    transition: transform 0.2s;
+}
+
+.history-card:hover { transform: scale(1.01); }
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #222;
+    padding-bottom: 8px;
+}
+
+.history-date { color: #555; font-size: 0.8rem; }
+
+.history-images {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.history-img-slot {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #333;
+}
+
+.history-img-slot img { width: 100%; height: 100%; object-fit: cover; }
+
+.mini-rank {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    font-size: 0.6rem;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.history-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.history-mode-badge {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: #3b82f6;
+    color: #fff;
+}
+
+.history-rating strong { color: #ffe81f; }
+
+/* Waifu Theme Anpassung für Historie */
+body.waifu-theme .nav-link.active { color: #ff2a9d; border-bottom-color: #ff2a9d; }
+body.waifu-theme .history-mode-badge { background: #ff2a9d; }
