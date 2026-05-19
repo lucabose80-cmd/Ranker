@@ -4,44 +4,44 @@ import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/
 
 const CURRENT_USER_KEY = 'ranking_game_active_user';
 
-// Prüft in der Cloud, ob der Admin existiert, falls nicht -> erstellen
 export async function initAuth() {
     const adminRef = doc(db, "users", "admin");
     const adminSnap = await getDoc(adminRef);
-    
     if (!adminSnap.exists()) {
         await setDoc(adminRef, { username: 'admin', password: '123', role: 'admin' });
     }
 }
 
-export async function register(username, password) {
+// NEU: Die kombinierte Login & Registrierungs-Funktion
+export async function loginOrRegister(username, password) {
     if (!username || !password) return { success: false, message: 'Bitte alles ausfüllen.' };
     
-    const userRef = doc(db, "users", username);
+    // Wir wandeln den Namen sofort in Kleinbuchstaben um (verhindert Bugs mit "Admin" vs "admin")
+    const safeUsername = username.toLowerCase().trim();
+    
+    const userRef = doc(db, "users", safeUsername);
     const userSnap = await getDoc(userRef);
     
     if (userSnap.exists()) {
-        return { success: false, message: 'Benutzername existiert bereits.' };
-    }
-
-    // Neuen Nutzer in Firestore anlegen
-    await setDoc(userRef, { username, password, role: 'player', stats: { gamesPlayed: 0 } });
-    return { success: true, message: 'Erfolgreich registriert! Bitte einloggen.' };
-}
-
-export async function login(username, password) {
-    const userRef = doc(db, "users", username);
-    const userSnap = await getDoc(userRef);
-    
-    if (userSnap.exists()) {
+        // 1. Account existiert bereits -> Passwort prüfen!
         const user = userSnap.data();
         if (user.password === password) {
-            // Sitzung lokal speichern
             localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
-            return { success: true, user };
+            return { success: true, user, message: 'Erfolgreich eingeloggt.' };
+        } else {
+            return { success: false, message: 'Falsches Passwort.' };
         }
+    } else {
+        // 2. Account existiert noch nicht -> Wir erstellen ihn direkt!
+        // Extra Sicherheit: Falls "admin" gelöscht wurde, erstellen wir ihn hier mit Admin-Rechten neu
+        const role = safeUsername === 'admin' ? 'admin' : 'player';
+        const newUser = { username: safeUsername, password, role, stats: { gamesPlayed: 0 } };
+        
+        await setDoc(userRef, newUser);
+        localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(newUser));
+        
+        return { success: true, user: newUser, message: 'Account neu erstellt und eingeloggt!' };
     }
-    return { success: false, message: 'Falscher Name oder Passwort.' };
 }
 
 export function logout() {

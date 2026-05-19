@@ -4,12 +4,12 @@ import { toggleTheme } from './theme.js';
 import { initRatingSystem } from './rating.js';
 import { initChangelog, updateChangelogContent } from './changelog.js';
 import { patchNotesStarWars } from './changelog-starwars.js';
-import { initAuth, register, login, logout, getCurrentUser } from './auth.js';
+// Auth Import angepasst
+import { initAuth, loginOrRegister, logout, getCurrentUser } from './auth.js';
 import { initAdminPanel } from './admin.js';
 
-// --- APP START (Asynchron wegen Datenbank-Check) ---
 async function bootApp() {
-    await initAuth(); // Wartet auf Firebase
+    await initAuth(); 
     const currentUser = getCurrentUser();
 
     const authView = document.getElementById('auth-view');
@@ -21,15 +21,31 @@ async function bootApp() {
         authView.classList.remove('hidden');
         gameView.classList.add('hidden');
         
-        document.getElementById('register-btn').addEventListener('click', async () => {
-            const res = await register(document.getElementById('auth-username').value, document.getElementById('auth-password').value);
-            showAuthFeedback(res.message, res.success);
+        // NEU: Passwort-Auge Logik
+        const togglePasswordBtn = document.getElementById('toggle-password');
+        const passwordInput = document.getElementById('auth-password');
+        
+        togglePasswordBtn.addEventListener('click', () => {
+            const currentType = passwordInput.getAttribute('type');
+            if (currentType === 'password') {
+                passwordInput.setAttribute('type', 'text');
+                togglePasswordBtn.textContent = '🙈'; // Affe hält sich die Augen zu
+            } else {
+                passwordInput.setAttribute('type', 'password');
+                togglePasswordBtn.textContent = '👁️'; // Normales Auge
+            }
         });
 
+        // NEU: Der kombinierte Button
         document.getElementById('login-btn').addEventListener('click', async () => {
-            const res = await login(document.getElementById('auth-username').value, document.getElementById('auth-password').value);
-            if (res.success) location.reload(); 
-            else showAuthFeedback(res.message, false);
+            const usernameInput = document.getElementById('auth-username').value;
+            const res = await loginOrRegister(usernameInput, passwordInput.value);
+            
+            if (res.success) {
+                location.reload(); 
+            } else {
+                showAuthFeedback(res.message, false);
+            }
         });
 
     } else if (currentUser.role === 'admin') {
@@ -42,6 +58,7 @@ async function bootApp() {
         // Normaler Spieler eingeloggt -> Zeige Spiel
         authView.classList.add('hidden');
         gameView.classList.remove('hidden');
+        // Zeige den echten Benutzernamen (groß geschrieben durch CSS, aber intern sicher)
         document.getElementById('player-greeting').textContent = `Willkommen, ${currentUser.username}!`;
         document.getElementById('logout-btn').addEventListener('click', logout);
 
@@ -75,5 +92,4 @@ function showAuthFeedback(msg, isSuccess) {
     feedback.classList.remove('hidden');
 }
 
-// Startet die App!
 bootApp();
