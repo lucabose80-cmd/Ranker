@@ -157,11 +157,11 @@ input:focus { border-color: #3b82f6; outline: none; }
 .role-badge.player { background-color: #3b82f6; color: white; }
 
 /* ==========================================================================
-   ERZWUNGENES RASTER FÜR HISTORY & SCOREBOARD
+   ERZWUNGENES RASTER FÜR HISTORY & SCOREBOARD (3 SPALTEN)
    ========================================================================== */
 .history-list { 
     display: grid !important; 
-    grid-template-columns: repeat(2, 1fr) !important; /* ERZWINGT 2 SPALTEN */
+    grid-template-columns: repeat(3, 1fr) !important; /* ERZWINGT JETZT 3 SPALTEN */
     gap: 15px !important; 
     margin-top: 20px; 
     max-height: 600px; 
@@ -170,7 +170,12 @@ input:focus { border-color: #3b82f6; outline: none; }
     align-items: stretch; 
 }
 
-/* Fallback für kleine Smartphone Bildschirme */
+/* Fallback für mittlere Bildschirme/Tablets (Schaltet auf 2 Spalten) */
+@media (max-width: 850px) {
+    .history-list { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+/* Fallback für kleine Smartphone Bildschirme (Schaltet auf 1 Spalte) */
 @media (max-width: 600px) {
     .history-list { grid-template-columns: 1fr !important; }
 }
@@ -190,7 +195,7 @@ body.waifu-theme .history-card:hover, body.waifu-theme .score-card:hover { borde
 .history-images { display: flex; gap: 5px; margin-bottom: 12px; justify-content: center; }
 .history-img-slot { 
     position: relative; 
-    flex: 1; /* Macht die Bilder flexibel, damit sie in 2 Spalten passen */
+    flex: 1; 
     max-width: 45px; 
     aspect-ratio: 1 / 1.2; 
     border-radius: 4px; 
