@@ -1,24 +1,23 @@
 // profile.js
 import { updateUserProfile, getCurrentUser } from './auth.js';
-import { starWarsCharacters } from './data-starwars.js';
-import { waifuCharacters } from './data-waifu.js';
+import { activeCharacterDatabase } from './theme.js';
 
-export function initProfile() {
+let selectedAvatarPath = "";
+
+export function renderAvatarSelection() {
     const user = getCurrentUser();
-    if(!user) return;
-
-    document.getElementById('profile-displayname').value = user.displayName || user.username;
-    
-    // Grid mit allen Charakteren beider Universen füllen
     const grid = document.getElementById('avatar-grid');
-    grid.innerHTML = '';
-    const allChars = [...starWarsCharacters, ...waifuCharacters].sort((a,b) => a.name.localeCompare(b.name));
+    if (!grid || !user) return;
     
-    let selectedAvatarPath = user.avatar;
+    grid.innerHTML = '';
+    selectedAvatarPath = user.avatar;
 
-    allChars.forEach(char => {
+    // Nur Charaktere des aktiven Universums anzeigen
+    const sortedChars = [...activeCharacterDatabase].sort((a,b) => a.name.localeCompare(b.name));
+    
+    sortedChars.forEach(char => {
         const card = document.createElement('div');
-        card.className = `lexikon-card avatar-card ${user.avatar === char.img ? 'selected' : ''}`;
+        card.className = `lexikon-card avatar-card ${selectedAvatarPath === char.img ? 'selected' : ''}`;
         card.innerHTML = `<img src="${char.img}"><span>${char.name}</span>`;
         
         card.addEventListener('click', () => {
@@ -28,6 +27,14 @@ export function initProfile() {
         });
         grid.appendChild(card);
     });
+}
+
+export function initProfile() {
+    const user = getCurrentUser();
+    if(!user) return;
+
+    document.getElementById('profile-displayname').value = user.displayName;
+    renderAvatarSelection();
 
     document.getElementById('save-profile-btn').addEventListener('click', async () => {
         const newName = document.getElementById('profile-displayname').value;
@@ -39,12 +46,9 @@ export function initProfile() {
         if(res.success) {
             feedback.textContent = "Profil erfolgreich aktualisiert!";
             feedback.style.color = "#2ed573";
-            // Header-Update
-            document.getElementById('player-greeting').textContent = `Willkommen, ${res.user.displayName}!`;
+            document.getElementById('player-greeting').textContent = res.user.displayName;
             if(res.user.avatar) {
-                const topAvatar = document.getElementById('topbar-avatar');
-                topAvatar.src = res.user.avatar;
-                topAvatar.classList.remove('hidden');
+                document.getElementById('topbar-avatar').src = res.user.avatar;
             }
         } else {
             feedback.textContent = "Fehler: " + res.message;

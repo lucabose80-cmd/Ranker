@@ -896,6 +896,82 @@ body.waifu-theme .chat-msg.self .chat-msg-content { background: #ff2a9d; }
 .live-slot-mini img { width: 100%; height: 100%; object-fit: cover; }
 
 /* ==========================================================================
+   FLOATING CHAT & PROFILE (NEU)
+   ========================================================================== */
+.profile-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+.profile-trigger:hover { background: rgba(255,255,255,0.1); }
+
+/* Chat Toggle Button */
+.chat-toggle-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #3b82f6;
+    color: white;
+    font-size: 1.5rem;
+    border: none;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    cursor: pointer;
+    z-index: 1000;
+    transition: transform 0.2s;
+}
+.chat-toggle-btn:hover { transform: scale(1.1); }
+body.waifu-theme .chat-toggle-btn { background: #ff2a9d; }
+
+/* Chat Popup Fenster */
+.chat-widget {
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    width: 350px;
+    height: 500px;
+    background: #0a0e17;
+    border: 2px solid #3b82f6;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    display: flex;
+    flex-direction: column;
+    z-index: 999;
+}
+body.waifu-theme .chat-widget { border-color: #ff2a9d; }
+
+.chat-header {
+    background: #1c2331;
+    padding: 15px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #3b82f6;
+}
+body.waifu-theme .chat-header { border-bottom-color: #ff2a9d; }
+
+.chat-widget .chat-messages {
+    flex-grow: 1;
+    border: none;
+    margin: 0;
+    border-radius: 0;
+}
+.chat-widget .chat-input-area {
+    padding: 10px;
+    background: #1c2331;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+/* ==========================================================================
    UTILITY KLASSEN
    ========================================================================== */
 .hidden { 
