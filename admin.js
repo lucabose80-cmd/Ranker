@@ -4,16 +4,12 @@ import { db } from './firebase-config.js';
 import { collection, getDocs, deleteDoc, doc, updateDoc, setDoc, onSnapshot, query, orderBy, Timestamp, where } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { currentMode, activeCharacterDatabase } from './theme.js';
 import { invalidateResetsCache } from './resets.js';
-import { invalidateHistoryCache } from './history.js';
-import { invalidateScoreboardCache } from './scoreboard.js';
 
 let chatAdminUnsubscribe = null;
 let listenersBound = false;
 
 function invalidateAllCaches() {
     invalidateResetsCache();
-    invalidateHistoryCache();
-    invalidateScoreboardCache();
 }
 
 export async function initAdminPanel() {
