@@ -1,4 +1,13 @@
 export const patchNotesStarWars = [
+	{ 
+    version: "v2.1", 
+    title: "The Expanded Galaxy Update", 
+    changes: [
+        "Inhalts-Erweiterung: Das Archiv wurde massiv aufgestockt! 20 neue Charaktere aus dem gesamten Star Wars Universum wurden hinzugefügt.",
+        "Vielfalt: Von den Klonkriegen bis hin zum Outer Rim – entdecke neue Legenden und bereichere deine Rankings.",
+        "Balancing: Die neuen Charaktere wurden vollständig in das Lexikon und das Achievement-System integriert."
+    ] 
+}
     { 
         version: "v2.0", 
         title: "The Social Hub Update", 

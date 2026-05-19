@@ -1,6 +1,6 @@
 // data-starwars.js
 export const starWarsCharacters = [
-    { name: "Captain Rex", img: "starwars.bilder/Captain_Rex.jpg" }, // Mit Unterstrich wie im Screenshot
+    { name: "Captain Rex", img: "starwars.bilder/Captain_Rex.jpg" },
     { name: "Luke Skywalker", img: "starwars.bilder/luke.jpg" },
     { name: "Darth Vader", img: "starwars.bilder/vader.jpg" },
     { name: "Han Solo", img: "starwars.bilder/han.jpg" },
@@ -9,5 +9,26 @@ export const starWarsCharacters = [
     { name: "Obi-Wan Kenobi", img: "starwars.bilder/obiwan.jpg" },
     { name: "Chewbacca", img: "starwars.bilder/chewbacca.jpg" },
     { name: "R2-D2", img: "starwars.bilder/r2d2.jpg" },
-    { name: "Boba Fett", img: "starwars.bilder/boba.jpg" }
+    { name: "Boba Fett", img: "starwars.bilder/boba.jpg" },
+    // Neue Charaktere
+    { name: "Anakin Skywalker", img: "starwars.bilder/anakin.jpg" },
+    { name: "Padmé Amidala", img: "starwars.bilder/padme.jpg" },
+    { name: "Qui-Gon Jinn", img: "starwars.bilder/quigon.jpg" },
+    { name: "Mace Windu", img: "starwars.bilder/mace.jpg" },
+    { name: "Darth Maul", img: "starwars.bilder/maul.jpg" },
+    { name: "Ahsoka Tano", img: "starwars.bilder/ahsoka.jpg" },
+    { name: "Emperor Palpatine", img: "starwars.bilder/palpatine.jpg" },
+    { name: "Lando Calrissian", img: "starwars.bilder/lando.jpg" },
+    { name: "C-3PO", img: "starwars.bilder/c3po.jpg" },
+    { name: "Kylo Ren", img: "starwars.bilder/kyloren.jpg" },
+    { name: "Rey Skywalker", img: "starwars.bilder/rey.jpg" },
+    { name: "Finn", img: "starwars.bilder/finn.jpg" },
+    { name: "Poe Dameron", img: "starwars.bilder/poe.jpg" },
+    { name: "Grand Admiral Thrawn", img: "starwars.bilder/thrawn.jpg" },
+    { name: "Jyn Erso", img: "starwars.bilder/jyn.jpg" },
+    { name: "Cassian Andor", img: "starwars.bilder/cassian.jpg" },
+    { name: "Din Djarin", img: "starwars.bilder/mandalorian.jpg" },
+    { name: "Grogu", img: "starwars.bilder/grogu.jpg" },
+    { name: "Bo-Katan Kryze", img: "starwars.bilder/bokatan.jpg" },
+    { name: "Count Dooku", img: "starwars.bilder/dooku.jpg" }
 ];
