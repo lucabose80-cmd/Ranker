@@ -13,24 +13,21 @@ export async function renderScoreboard() {
     container.innerHTML = '<p class="prompt-text">Berechne Punkte...</p>';
 
     try {
-        // Reset-Einstellungen vom Server laden
+        // Reset-Einstellungen vom Server (admin user) und User laden
         let globalScoreboardResetSecs = 0;
-        try {
-            const serverDoc = await getDocs(query(collection(db, "server_settings")));
-            serverDoc.forEach(d => {
-                if(d.id === 'resets' && d.data()[`globalScoreboardReset_${currentMode}`]) {
-                    globalScoreboardResetSecs = d.data()[`globalScoreboardReset_${currentMode}`].seconds;
-                }
-            });
-        } catch(e) {}
-
-        // User Reset-Timestamps laden
         let userResets = {};
         try {
             const usersSnap = await getDocs(collection(db, "users"));
             usersSnap.forEach(d => {
                 const u = d.data();
-                if(u[`scoreboardResetAt_${currentMode}`]) userResets[u.username] = u[`scoreboardResetAt_${currentMode}`].seconds;
+                if (u.username === 'admin' || d.id === 'admin') {
+                    if (u[`globalScoreboardReset_${currentMode}`]) {
+                        globalScoreboardResetSecs = u[`globalScoreboardReset_${currentMode}`].seconds;
+                    }
+                }
+                if (u[`scoreboardResetAt_${currentMode}`]) {
+                    userResets[u.username] = u[`scoreboardResetAt_${currentMode}`].seconds;
+                }
             });
         } catch(e) {}
 
@@ -46,7 +43,7 @@ export async function renderScoreboard() {
             const personalResetSecs = userResets[data.username] || 0;
 
             // Nur hinzufügen, wenn das Spiel nach dem globalen UND persönlichen Reset stattfand
-            if (gameSecs >= globalScoreboardResetSecs && gameSecs >= personalResetSecs) {
+            if (gameSecs > globalScoreboardResetSecs && gameSecs > personalResetSecs) {
                 games.push(data);
                 allUsers.add(data.username);
             }

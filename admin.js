@@ -15,9 +15,11 @@ export async function initAdminPanel() {
             if(confirm(`Bist du sicher? Alle bisherigen Historien im Modus ${currentMode} werden für das Frontend unsichtbar.`)) {
                 const field = `globalHistoryReset_${currentMode}`;
                 const obj = {}; obj[field] = Timestamp.now();
-                await setDoc(doc(db, "server_settings", "resets"), obj, { merge: true });
-                alert(`Globale Historie für ${currentMode} zurückgesetzt.`);
-                refreshAdminPanel();
+                try {
+                    await updateDoc(doc(db, "users", "admin"), obj);
+                    alert(`Globale Historie für ${currentMode} zurückgesetzt.`);
+                    refreshAdminPanel();
+                } catch(e) { console.error(e); alert("Fehler beim Zurücksetzen!"); }
             }
         });
 
@@ -25,9 +27,11 @@ export async function initAdminPanel() {
             if(confirm(`Bist du sicher? Alle Scoreboards im Modus ${currentMode} werden für das Frontend auf 0 gesetzt.`)) {
                 const field = `globalScoreboardReset_${currentMode}`;
                 const obj = {}; obj[field] = Timestamp.now();
-                await setDoc(doc(db, "server_settings", "resets"), obj, { merge: true });
-                alert(`Globales Scoreboard für ${currentMode} zurückgesetzt.`);
-                refreshAdminPanel();
+                try {
+                    await updateDoc(doc(db, "users", "admin"), obj);
+                    alert(`Globales Scoreboard für ${currentMode} zurückgesetzt.`);
+                    refreshAdminPanel();
+                } catch(e) { console.error(e); alert("Fehler beim Zurücksetzen!"); }
             }
         });
 
@@ -62,21 +66,25 @@ async function renderUserList() {
     const userList = document.getElementById('admin-user-list');
     if(!userList) return;
     
-    // 1. Resets abrufen
+    // 3. User laden
+    const querySnapshot = await getDocs(collection(db, "users"));
+    let users = [];
+    querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        data.id = doc.id;
+        users.push(data);
+    });
+    
+    // Globale Resets aus dem "admin" User auslesen
     let globalHistReset = 0;
     let globalScoreReset = 0;
-    try {
-        const serverDoc = await getDocs(query(collection(db, "server_settings")));
-        serverDoc.forEach(d => {
-            if(d.id === 'resets') {
-                const data = d.data();
-                if(data[`globalHistoryReset_${currentMode}`]) globalHistReset = data[`globalHistoryReset_${currentMode}`].seconds;
-                if(data[`globalScoreboardReset_${currentMode}`]) globalScoreReset = data[`globalScoreboardReset_${currentMode}`].seconds;
-            }
-        });
-    } catch(e) {}
+    const adminUser = users.find(u => u.username === 'admin' || u.id === 'admin');
+    if (adminUser) {
+        if(adminUser[`globalHistoryReset_${currentMode}`]) globalHistReset = adminUser[`globalHistoryReset_${currentMode}`].seconds;
+        if(adminUser[`globalScoreboardReset_${currentMode}`]) globalScoreReset = adminUser[`globalScoreboardReset_${currentMode}`].seconds;
+    }
 
-    // 2. History für den aktuellen Modus abrufen
+    // History für den aktuellen Modus abrufen
     let userHasHistory = {};
     let globalHasHistory = false;
     let globalHasScore = false;
@@ -94,15 +102,6 @@ async function renderUserList() {
         });
     } catch(e) {}
 
-    // 3. User laden
-    const querySnapshot = await getDocs(collection(db, "users"));
-    let users = [];
-    querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        data.id = doc.id;
-        users.push(data);
-    });
-    
     users.sort((a,b) => a.username.localeCompare(b.username));
     const charNames = activeCharacterDatabase.map(c => c.name);
 
@@ -115,13 +114,13 @@ async function renderUserList() {
         // History Status
         const personalHistReset = user[`historyResetAt_${currentMode}`] ? user[`historyResetAt_${currentMode}`].seconds : 0;
         const gamesHist = userHasHistory[user.username] || [];
-        const hasActiveHist = gamesHist.some(s => s >= globalHistReset && s >= personalHistReset);
+        const hasActiveHist = gamesHist.some(s => s > globalHistReset && s > personalHistReset);
         const histColor = hasActiveHist ? '#ff4757' : '#2ed573';
         if(hasActiveHist) globalHasHistory = true;
 
         // Scoreboard Status
         const personalScoreReset = user[`scoreboardResetAt_${currentMode}`] ? user[`scoreboardResetAt_${currentMode}`].seconds : 0;
-        const hasActiveScore = gamesHist.some(s => s >= globalScoreReset && s >= personalScoreReset);
+        const hasActiveScore = gamesHist.some(s => s > globalScoreReset && s > personalScoreReset);
         const scoreColor = hasActiveScore ? '#ff4757' : '#2ed573';
         if(hasActiveScore) globalHasScore = true;
 
