@@ -1,3 +1,4 @@
+// main.js
 import { initGame, handleRankSelection } from './game.js';
 import { toggleTheme } from './theme.js';
 import { initRatingSystem } from './rating.js';
@@ -11,7 +12,9 @@ const eyeOpenSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" s
 const eyeClosedSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
 
 async function bootApp() {
+    // Warten auf Firebase, aber wenn es fehlschlägt, läuft die App trotzdem weiter
     await initAuth(); 
+    
     const currentUser = getCurrentUser();
 
     if (!currentUser) {
@@ -27,6 +30,7 @@ function setupAuthUI() {
     document.getElementById('auth-view').classList.remove('hidden');
     const togglePasswordBtn = document.getElementById('toggle-password');
     const passwordInput = document.getElementById('auth-password');
+    const loginBtn = document.getElementById('login-btn');
     
     togglePasswordBtn.addEventListener('click', () => {
         const isPass = passwordInput.type === 'password';
@@ -34,10 +38,23 @@ function setupAuthUI() {
         togglePasswordBtn.innerHTML = isPass ? eyeClosedSVG : eyeOpenSVG;
     });
 
-    document.getElementById('login-btn').addEventListener('click', async () => {
-        const res = await loginOrRegister(document.getElementById('auth-username').value, passwordInput.value);
-        if (res.success) location.reload();
-        else showAuthFeedback(res.message, false);
+    loginBtn.addEventListener('click', async () => {
+        // Button kurzzeitig deaktivieren und Text ändern
+        loginBtn.disabled = true;
+        loginBtn.textContent = "Lädt...";
+        
+        const usernameInput = document.getElementById('auth-username').value;
+        const res = await loginOrRegister(usernameInput, passwordInput.value);
+        
+        // Button wieder aktivieren
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Los geht's";
+
+        if (res.success) {
+            location.reload();
+        } else {
+            showAuthFeedback(res.message, false);
+        }
     });
 }
 
@@ -51,7 +68,6 @@ function setupGameUI(user) {
     document.getElementById('player-greeting').textContent = `Willkommen, ${user.username}!`;
     document.getElementById('logout-btn').addEventListener('click', logout);
 
-    // Tab Navigation
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', () => {
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -86,4 +102,5 @@ function showAuthFeedback(msg, isSuccess) {
     feedback.classList.remove('hidden');
 }
 
+// App starten
 bootApp();
