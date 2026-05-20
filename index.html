@@ -182,7 +182,13 @@
             <div id="suggestions-content" class="tab-content app-container hidden">
                 <div class="panel history-panel">
                     <h2>COMMUNITY VORSCHLÄGE</h2>
-                    <p class="prompt-text">Was wünschst du dir für das Spiel? (Features, Charaktere, etc.)</p>
+                    <div class="history-controls">
+                        <select id="suggestion-type-filter">
+                            <option value="feature">Features & Allgemeines</option>
+                            <option value="character">Neue Charaktere</option>
+                        </select>
+                    </div>
+                    <p class="prompt-text">Was wünschst du dir für das Spiel?</p>
                     <div style="display: flex; gap: 10px; margin-bottom: 20px;">
                         <input type="text" id="suggestion-input" placeholder="Dein Vorschlag..." style="flex: 1; padding: 12px; border-radius: 6px; background: rgba(0,0,0,0.2); border: 1px solid #333; color: white;" autocomplete="off" maxlength="150">
                         <button id="suggestion-submit-btn" class="rank-btn" style="width: auto; padding: 0 20px;">Einreichen</button>

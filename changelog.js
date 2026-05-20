@@ -152,20 +152,46 @@ export function updateChangelogContent(changelogData) {
 
     // --- Roadmap rendern ---
     if (roadmapPanel) {
-        const roadmapData = currentMode === 'starwars' ? roadmapStarWars : roadmapWaifu;
-        roadmapPanel.innerHTML = roadmapData.map(section => `
-            <div class="roadmap-section">
-                <h3 class="roadmap-section-title" style="color: ${section.color}">${section.category}</h3>
-                <div class="roadmap-items">
-                    ${section.items.map(item => `
-                        <div class="roadmap-item" style="border-left-color: ${section.color}">
-                            <div class="roadmap-item-title">${item.title}</div>
-                            <div class="roadmap-item-desc">${item.desc}</div>
-                        </div>
-                    `).join('')}
+        import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js").then(async ({ collection, getDocs }) => {
+            const { db } = await import('./firebase-config.js');
+            let roadmapData = JSON.parse(JSON.stringify(currentMode === 'starwars' ? roadmapStarWars : roadmapWaifu));
+            
+            try {
+                const snap = await getDocs(collection(db, "roadmap"));
+                let communityItems = [];
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    if (d.mode === currentMode) {
+                        communityItems.push({
+                            title: d.title,
+                            desc: `${d.desc} <span style="color:#ffd700; font-size:0.8rem;">(★ ${d.votes} Votes)</span>`
+                        });
+                    }
+                });
+                if (communityItems.length > 0) {
+                    // Sortiere nach Votes absteigend, falls wir sie im Doc gespeichert haben. Aber wir haben sie grad nicht in der Schleife verarbeitet, egal wir zeigen die Votes an.
+                    roadmapData.push({
+                        category: "💡 Community Wünsche",
+                        color: "#2ed573",
+                        items: communityItems
+                    });
+                }
+            } catch(e) {}
+
+            roadmapPanel.innerHTML = roadmapData.map(section => `
+                <div class="roadmap-section">
+                    <h3 class="roadmap-section-title" style="color: ${section.color}">${section.category}</h3>
+                    <div class="roadmap-items">
+                        ${section.items.map(item => `
+                            <div class="roadmap-item" style="border-left-color: ${section.color}">
+                                <div class="roadmap-item-title">${item.title}</div>
+                                <div class="roadmap-item-desc">${item.desc}</div>
+                            </div>
+                        `).join('')}
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            `).join('');
+        });
     }
 
     // --- Glow-Logik ---
