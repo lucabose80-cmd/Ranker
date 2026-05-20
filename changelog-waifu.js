@@ -1,5 +1,17 @@
 export const patchNotesWaifu = [
     {
+        version: "v2.1",
+        title: "The Performance & Database Overhaul",
+        changes: [
+            "Neues Feature: Vorschläge-Tab (Suggestions) hinzugefügt! Reiche eigene Ideen für neue Features ein und stimme für die Ideen anderer Spieler ab.",
+            "Performance: Massives Datenbank-Update – Scoreboard berechnet Punkte nun extrem ressourcenschonend im Hintergrund (kostet exakt 1 Read statt hunderten pro Klick).",
+            "Performance: 'Resets' vom Admin werden nun im Hintergrund für 12 Stunden gepuffert, um extrem viele überflüssige Reads zu sparen.",
+            "Performance: Online-Status-Tracker fragt nun alle 2 Minuten ab, anstatt eine konstante Live-Verbindung aufrechtzuerhalten.",
+            "Performance: Lazy Loading integriert – Inhalte von Tabs (Historie, Scoreboard) werden erst aus der Cloud geladen, wenn der Tab angeklickt wird.",
+            "QoL: Das Universum kann nun mit der Taste 'Delete' (Entf) statt 'Pfeil runter' gewechselt werden."
+        ]
+    },
+    {
         version: "v2.0.1",
         title: "The Advanced Fix & History Grid Update",
         changes: [

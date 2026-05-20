@@ -163,9 +163,9 @@ function setupGameUI(user) {
         }
     });
     
-    // Tastenanschläge abfangen (Pfeiltaste = Moduswechsel, Esc = Profil / Zuschauen schließen)
+    // Tastenanschläge abfangen (Entf = Moduswechsel, Esc = Profil / Zuschauen schließen)
     document.addEventListener('keydown', (e) => { 
-        if (e.key === 'ArrowDown') { e.preventDefault(); toggleTheme(); }
+        if (e.key === 'Delete') { e.preventDefault(); toggleTheme(); }
         if (e.key === 'Escape') {
             closeProfileOverlay();
             closeSpectatorModal();
