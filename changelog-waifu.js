@@ -1,10 +1,10 @@
 export const patchNotesWaifu = [
     {
         version: "v2.2.1",
-        title: "UI Polishing & Bugfixes",
+        title: "UI Polishing & Hotfixes",
         changes: [
             "UI-Update: Das gesamte Voting-System nutzt nun dynamische Haken (✓), die beim Abstimmen kräftig grün aufleuchten.",
-            "Bugfix: Ein Fehler wurde behoben, durch den Bilder bei Charakter-Updates nicht korrekt aus der Datenbank geladen wurden."
+            "Hotfix: Ein Fehler wurde behoben, durch den Bilder bei Charakter-Updates nicht korrekt aus der Datenbank geladen wurden."
         ]
     },
     {
@@ -31,8 +31,8 @@ export const patchNotesWaifu = [
         version: "v2.0.1",
         title: "The Advanced Fix & History Grid Update",
         changes: [
-            "Bugfix (Advanced Modus): Beim Zuschauen (Live-Spectating) eines Advanced-Spiels werden nun alle 10 Slots korrekt dargestellt.",
-            "Bugfix (Historie): Die 10-Slot-Historienkarten wurden optimiert (Pool-Slots schrumpfen und brechen um), sodass das 3x3 Raster ohne horizontalen Scrollbalken sauber nach unten fließt."
+            "Hotfix (Advanced Modus): Beim Zuschauen (Live-Spectating) eines Advanced-Spiels werden nun alle 10 Slots korrekt dargestellt.",
+            "Hotfix (Historie): Die 10-Slot-Historienkarten wurden optimiert (Pool-Slots schrumpfen und brechen um), sodass das 3x3 Raster ohne horizontalen Scrollbalken sauber nach unten fließt."
         ]
     },
     {
@@ -47,14 +47,20 @@ export const patchNotesWaifu = [
         ]
     },
     {
+        version: "v1.9.1",
+        title: "Tracker Hotfix",
+        changes: [
+            "Hotfix: Der Online-Tracker wurde stabilisiert (Verbindungsprobleme und Anzeigefehler der Spieleranzahl behoben)."
+        ]
+    },
+    {
         version: "v1.9",
         title: "The Instant Speed & QoL Update",
         changes: [
             "Performance: Extrem schnelles Umschalten zwischen Historie und Scoreboard (0ms Latenz) durch Shared-Realtime-Caching im RAM.",
             "Performance: Zirkelbezüge im Javascript vollständig entkoppelt für absolute Stabilität und reibungsfreie Anmeldung.",
             "UI-Update: Der Spielername oben links in der Navigationsleiste wird nun deutlich größer und edler dargestellt.",
-            "UI-Update: In der Historie und dem Scoreboard-Filter werden jetzt die echten Anzeigenamen (korrekte Groß-/Kleinschreibung) angezeigt.",
-            "Bugfix: Der Online-Tracker wurde stabilisiert (Verbindungsprobleme und Anzeigefehler der Spieleranzahl behoben)."
+            "UI-Update: In der Historie und dem Scoreboard-Filter werden jetzt die echten Anzeigenamen (korrekte Groß-/Kleinschreibung) angezeigt."
         ]
     },
     {
@@ -71,7 +77,7 @@ export const patchNotesWaifu = [
         version: "v1.7.1", 
         title: "Performance & Stabilitätsfixes", 
         changes: [
-            "Bugfix: Globale Scoreboard- und Historien-Resets im Admin Panel funktionieren nun korrekt (Fehler durch falsche Dokument-ID behoben).",
+            "Hotfix: Globale Scoreboard- und Historien-Resets im Admin Panel funktionieren nun korrekt (Fehler durch falsche Dokument-ID behoben).",
             "Optimierung: Der Heartbeat-Interval wurde auf 60 Sekunden erhöht, um Schreibvorgänge zu halbieren.",
             "Optimierung: Die Online-Anzeige nutzt nun periodische Abfragen statt Echtzeit-Listener, was die Lesevorgänge drastisch reduziert.",
             "Optimierung: Live-Spectating lädt nur noch aktive Spiele der letzten 2 Minuten aus der Cloud.",
@@ -92,9 +98,9 @@ export const patchNotesWaifu = [
     },
     { 
         version: "v1.6.1", 
-        title: "Quality of Life & Bugfixes", 
+        title: "Quality of Life & Hotfixes", 
         changes: [
-            "Bugfix: Behebung eines Fehlers, bei dem das Ranken und Bewerten blockiert wurde, falls die Cloud-Verbindung kurz hing.",
+            "Hotfix: Behebung eines Fehlers, bei dem das Ranken und Bewerten blockiert wurde, falls die Cloud-Verbindung kurz hing.",
             "UI-Update: Bereits genutzte Rang- und Bewertungs-Buttons werden nun sichtbar ausgegraut.",
             "UI-Update: Leere Karten-Slots haben nun aufgeräumte, durchgezogene Ränder (gestrichelt entfernt).",
             "UI-Update: Wenn eine Waifu platziert wird, leuchtet der Rahmen des Slots nun passend zur Themenfarbe im Neon-Look auf."
