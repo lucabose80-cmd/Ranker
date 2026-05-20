@@ -44,7 +44,7 @@ export function initSuggestions() {
 
     const submitBtn = document.getElementById('suggestion-submit-btn');
     if (submitBtn && !submitBtn.dataset.listenerAttached) {
-        submitBtn.addEventListener('click', async () => {
+        const handleNormalSubmit = async () => {
             const input = document.getElementById('suggestion-input');
             const typeFilter = document.getElementById('suggestion-type-filter');
             const type = typeFilter ? typeFilter.value : 'feature';
@@ -81,13 +81,19 @@ export function initSuggestions() {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Einreichen';
             }
+        };
+
+        submitBtn.addEventListener('click', handleNormalSubmit);
+        document.getElementById('suggestion-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleNormalSubmit();
         });
+        
         submitBtn.dataset.listenerAttached = 'true';
     }
 
     const updateSubmitBtn = document.getElementById('suggestion-update-submit-btn');
     if (updateSubmitBtn && !updateSubmitBtn.dataset.listenerAttached) {
-        updateSubmitBtn.addEventListener('click', async () => {
+        const handleUpdateSubmit = async () => {
             const nameEl = document.getElementById('char-update-name');
             const imgEl = document.getElementById('char-update-image');
             const reasonEl = document.getElementById('char-update-reason');
@@ -157,7 +163,19 @@ export function initSuggestions() {
                 updateSubmitBtn.disabled = false;
                 updateSubmitBtn.textContent = 'Update Vorschlag Einreichen';
             }
+        };
+
+        updateSubmitBtn.addEventListener('click', handleUpdateSubmit);
+        
+        ['char-update-name', 'char-update-image', 'char-update-reason'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') handleUpdateSubmit();
+                });
+            }
         });
+
         updateSubmitBtn.dataset.listenerAttached = 'true';
     }
 }
