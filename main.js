@@ -5,7 +5,7 @@ import { toggleTheme } from './theme.js';
 import { initRatingSystem } from './rating.js';
 import { initChangelog, updateChangelogContent } from './changelog.js';
 import { patchNotesStarWars } from './changelog-starwars.js';
-import { initAuth, loginOrRegister, logout, getCurrentUser, startPresenceHeartbeat } from './auth.js';
+import { initAuth, loginOrRegister, logout, getCurrentUser, startPresenceHeartbeat, markCurrentUserOffline } from './auth.js';
 import { initAdminPanel, stopAdminPanel } from './admin.js';
 import { renderHistory, initHistoryListener, stopHistoryListener } from './history.js';
 import { renderScoreboard } from './scoreboard.js';
@@ -31,6 +31,10 @@ function cleanupAllListeners() {
 }
 
 window.addEventListener('beforeunload', cleanupAllListeners);
+window.addEventListener('pagehide', () => {
+    markCurrentUserOffline();
+    cleanupAllListeners();
+});
 
 function showView(viewId) {
     document.getElementById('auth-view').classList.add('hidden');

@@ -125,7 +125,7 @@ export function startPresenceHeartbeat() {
     };
     sendHeartbeat();
     if(heartbeatInterval) clearInterval(heartbeatInterval);
-    heartbeatInterval = setInterval(sendHeartbeat, 180000); // Nur noch alle 3 Minuten pingen (spart 66% der Writes)
+    heartbeatInterval = setInterval(sendHeartbeat, 60000); // Alle 60s pingen für schnellere Disconnect-Erkennung
 }
 
 export async function markCharactersAsDiscovered(charNamesArray) {
@@ -213,6 +213,19 @@ export async function logout() {
     }
     localStorage.removeItem(CURRENT_USER_KEY);
     location.reload();
+}
+
+export async function markCurrentUserOffline() {
+    const user = getCurrentUser();
+    if (!user) return;
+    try {
+        await updateDoc(doc(db, "users", user.uid), {
+            lastActive: new Timestamp(0, 0)
+        });
+        trackWrite(1);
+    } catch (e) {
+        // ignore if request cannot complete during unload
+    }
 }
 
 export function getCurrentUser() {

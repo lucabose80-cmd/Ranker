@@ -112,8 +112,8 @@ export function initCommunity() {
         
         try {
             const now = Date.now();
-            const SIX_MIN = 360000;
-            const activeSince = Timestamp.fromDate(new Date(now - SIX_MIN));
+            const ACTIVE_THRESHOLD_MS = 120000; // 2 Minuten
+            const activeSince = Timestamp.fromDate(new Date(now - ACTIVE_THRESHOLD_MS));
 
             if (allUsersCache.length === 0) {
                 const allUsersSnap = await getDocs(query(collection(db, "users"), limit(100)));
@@ -207,7 +207,7 @@ export function initCommunity() {
                 `;
             });
 
-            document.getElementById('online-count').textContent = onlineCount + 1; // +1 für den aktuellen User
+            document.getElementById('online-count').textContent = onlineCount;
         } catch(e) {
             console.error("Fehler beim Abrufen der Online-User: ", e);
         }
