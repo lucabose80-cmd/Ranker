@@ -1,5 +1,15 @@
 export const patchNotesWaifu = [
     {
+        version: "v2.3",
+        title: "The Titles & Progression Update",
+        changes: [
+            "Neues Feature: Titel-System! Sammle abgeschlossene Spiele und schalte automatisch exklusive Titel frei (z.B. Kouhai, Senpai, Waifu-Master).",
+            "UI-Update: Das Profilmenü wurde komplett modernisiert. Wechsle nahtlos zwischen deinen Avataren und der brandneuen Titel-Raster-Ansicht.",
+            "Visualisierung: Dein ausgewählter Titel wird ab sofort für alle sichtbar in der oberen Leiste, bei deinen Historien-Einträgen und live im Chat neben deinem Namen angezeigt!",
+            "Hotfix: Massive Performance-Verbesserung! Durch cleveres Caching (lokales Speichern) von Profil- und Status-Abfragen wurden die Hintergrund-Datenbank-Zugriffe (Firebase Reads) drastisch reduziert."
+        ]
+    },
+    {
         version: "v2.2.1",
         title: "UI Polishing & Hotfixes",
         changes: [
