@@ -101,7 +101,7 @@ export function initProfile() {
         });
     });
 
-    document.getElementById('save-profile-btn').addEventListener('click', async () => {
+    const handleProfileSave = async () => {
         const newName = document.getElementById('profile-displayname').value;
         const newPass = document.getElementById('profile-password').value;
         const res = await updateUserProfile(newName, newPass || null, undefined);
@@ -113,7 +113,11 @@ export function initProfile() {
             document.getElementById('player-greeting').textContent = newName;
             updateTopbarAvatarElement(res.user);
         }
-    });
+    };
+
+    document.getElementById('save-profile-btn').addEventListener('click', handleProfileSave);
+    document.getElementById('profile-displayname').addEventListener('keypress', (e) => { if (e.key === 'Enter') handleProfileSave(); });
+    document.getElementById('profile-password').addEventListener('keypress', (e) => { if (e.key === 'Enter') handleProfileSave(); });
 
     refreshProfileContent();
 }

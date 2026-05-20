@@ -1,7 +1,7 @@
 // history.js
 import { db } from './firebase-config.js';
 import { collection, addDoc, onSnapshot, query, where, limit, orderBy, Timestamp, setDoc, doc, increment } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-import { getCurrentUser } from './auth.js';
+import { getCurrentUser, markCharactersAsDiscovered } from './auth.js';
 import { currentMode } from './mode-state.js';
 import { getResets } from './resets.js';
 import { trackRead, trackWrite } from './tracker.js';
@@ -100,6 +100,8 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
             });
         }
     }
+
+    markCharactersAsDiscovered(rankingData.map(c => c.name));
 
     const poolData = pool ? pool.map((c, idx) => ({ order: idx + 1, name: c.name, img: c.img })) : [];
 

@@ -128,20 +128,22 @@ export function startPresenceHeartbeat() {
     heartbeatInterval = setInterval(sendHeartbeat, 180000); // Nur noch alle 3 Minuten pingen (spart 66% der Writes)
 }
 
-export async function markCharacterAsDiscovered(charName) {
+export async function markCharactersAsDiscovered(charNamesArray) {
     const user = getCurrentUser();
     if (!user || user.role === 'admin') return;
     if (!user.discovered) user.discovered = [];
     if (!user.newlyDiscovered) user.newlyDiscovered = [];
-    if (user.discovered.includes(charName)) return;
+    
+    const newDiscoveries = charNamesArray.filter(name => !user.discovered.includes(name));
+    if (newDiscoveries.length === 0) return;
 
-    user.discovered.push(charName);
-    user.newlyDiscovered.push(charName);
+    user.discovered.push(...newDiscoveries);
+    user.newlyDiscovered.push(...newDiscoveries);
     localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
     try { 
         await updateDoc(doc(db, "users", user.uid), { 
-            discovered: arrayUnion(charName),
-            newlyDiscovered: arrayUnion(charName)
+            discovered: arrayUnion(...newDiscoveries),
+            newlyDiscovered: arrayUnion(...newDiscoveries)
         }); 
         trackWrite(1);
     } catch (e) {}

@@ -1,5 +1,17 @@
 export const patchNotesWaifu = [
     {
+        version: "v2.7.4",
+        title: "QoL & Game Flow Update",
+        isHotfix: false,
+        changes: [
+            "Game Flow: Eine neue Runde kann erst gestartet werden, wenn die aktuelle Liste bewertet wurde.",
+            "Discovery Anti-Cheat: Charaktere gelten erst am Ende einer vollständig gerankten Liste als 'entdeckt' (verhindert Reload-Abusing in der Voranzeige).",
+            "Chat Feature: Wenn der Chat geschlossen ist und eine neue Nachricht eingeht, leuchtet am Chat-Icon nun ein roter Punkt.",
+            "QoL: Eingaben in der Anmeldemaske und im Profil können nun bequem mit der Enter-Taste bestätigt werden.",
+            "Hotfix: Ein fehlerhaftes doppeltes 'Auge'-Icon (Passwort sichtbar machen) in manchen Browsern wurde entfernt."
+        ]
+    },
+    {
         version: "v2.7.3",
         title: "Hotfix: Progression & UI-Updates",
         isHotfix: true,

@@ -3,7 +3,7 @@ import { activeCharacterDatabase } from './theme.js';
 import { shuffleArray, preloadImages } from './utils.js';
 import { resetRatingUI } from './rating.js';
 import { saveGameToHistory } from './history.js';
-import { getCurrentUser, markCharacterAsDiscovered } from './auth.js';
+import { getCurrentUser } from './auth.js';
 import { doc, setDoc, Timestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { db } from './firebase-config.js';
 import { currentMode } from './mode-state.js';
@@ -83,7 +83,7 @@ export function showNextCharacter() {
         
         if (user && user.role !== 'admin' && !discoveredList.includes(currentChar.name)) {
             imgContainer.classList.add('gold-glow');
-            markCharacterAsDiscovered(currentChar.name);
+            // Charakter wurde aufgedeckt
         } else {
             imgContainer.classList.remove('gold-glow');
         }

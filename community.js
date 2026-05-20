@@ -27,6 +27,8 @@ export function initCommunity() {
     if(chatUnsubscribe) chatUnsubscribe();
     const qChat = query(collection(db, "chat"), orderBy("timestamp", "desc"), limit(25));
     
+    let isFirstLoad = true;
+
     chatUnsubscribe = onSnapshot(qChat, (snapshot) => {
         trackRead(snapshot.docChanges().filter(c => c.type !== 'removed').length);
         const messages = [];
@@ -34,8 +36,11 @@ export function initCommunity() {
         messages.reverse();
         
         chatContainer.innerHTML = '';
+        let hasNewFromOthers = false;
+
         messages.forEach(msg => {
             const isSelf = msg.username === user.username;
+            if (!isSelf && !isFirstLoad) hasNewFromOthers = true;
             
             // Berechne Modus-Tag Text und Klasse
             const modeText = msg.userMode === 'starwars' ? 'SW' : 'Anime';
@@ -56,6 +61,16 @@ export function initCommunity() {
             `;
         });
         chatContainer.scrollTop = chatContainer.scrollHeight;
+
+        if (hasNewFromOthers) {
+            const chatWidget = document.getElementById('chat-widget');
+            if (chatWidget && chatWidget.classList.contains('hidden')) {
+                const btn = document.getElementById('chat-toggle-btn');
+                if (btn) btn.classList.add('has-new');
+            }
+        }
+        
+        isFirstLoad = false;
     });
 
     const sendMessage = async () => {

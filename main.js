@@ -64,7 +64,7 @@ function setupAuthUI() {
         tBtn.innerHTML = isP ? eyeClosedSVG : eyeOpenSVG;
     });
 
-    lBtn.addEventListener('click', async () => {
+    const handleLogin = async () => {
         lBtn.disabled = true; lBtn.textContent = "Lädt...";
         const res = await loginOrRegister(document.getElementById('auth-username').value, pInput.value);
         if (res.success) location.reload();
@@ -73,7 +73,12 @@ function setupAuthUI() {
             const f = document.getElementById('auth-feedback');
             f.textContent = res.message; f.style.color = '#ff4757'; f.classList.remove('hidden');
         }
-    });
+    };
+
+    lBtn.addEventListener('click', handleLogin);
+    
+    document.getElementById('auth-username').addEventListener('keypress', (e) => { if(e.key === 'Enter') handleLogin(); });
+    pInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') handleLogin(); });
 }
 
 // Profil Overlay schließen
@@ -158,7 +163,11 @@ function setupGameUI(user) {
 
     // Chat Box Toggle
     const chatWidget = document.getElementById('chat-widget');
-    document.getElementById('chat-toggle-btn').addEventListener('click', () => chatWidget.classList.toggle('hidden'));
+    const chatToggleBtn = document.getElementById('chat-toggle-btn');
+    chatToggleBtn.addEventListener('click', () => {
+        chatWidget.classList.toggle('hidden');
+        chatToggleBtn.classList.remove('has-new');
+    });
     document.getElementById('close-chat-btn').addEventListener('click', () => chatWidget.classList.add('hidden'));
 
     initRatingSystem();

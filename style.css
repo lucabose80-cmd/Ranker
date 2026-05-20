@@ -113,8 +113,10 @@ body.waifu-theme .card-content:has(img) {
 #restart-btn {
     background-color: #3b82f6; color: #fff; border: none; padding: 12px 30px; 
     font-size: 1rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; letter-spacing: 1px;
+    transition: all 0.2s;
 }
-#restart-btn:hover { background-color: #2563eb; }
+#restart-btn:hover:not(:disabled) { background-color: #2563eb; }
+#restart-btn:disabled { background-color: #333; color: #888; cursor: not-allowed; opacity: 0.5; }
 
 /* ==========================================================================
    CHANGELOG & MODALS
@@ -361,6 +363,7 @@ body.waifu-theme .card-content:has(img) {
 .admin-panel { max-width: 600px; }
 input { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 6px; border: 2px solid #333; background-color: #111; color: #fff; font-size: 1rem; box-sizing: border-box; transition: border-color 0.3s; }
 input:focus { border-color: #3b82f6; outline: none; }
+input[type="password"]::-ms-reveal, input[type="password"]::-ms-clear { display: none; }
 
 .password-wrapper { position: relative; width: 100%; margin-bottom: 20px; }
 .password-wrapper input { margin-bottom: 0; padding-right: 40px; }
@@ -794,10 +797,23 @@ body.waifu-theme .live-progress-fill {
 .chat-toggle-btn {
     position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%;
     background: #3b82f6; color: white; font-size: 1.5rem; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-    cursor: pointer; z-index: 1000; transition: transform 0.2s;
+    cursor: pointer; z-index: 1000; transition: transform 0.2s; display: flex; align-items: center; justify-content: center;
 }
 .chat-toggle-btn:hover { transform: scale(1.1); }
 body.waifu-theme .chat-toggle-btn { background: #ff2a9d; }
+
+.chat-toggle-btn.has-new::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 12px;
+    height: 12px;
+    background-color: #ff4757;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 0 5px rgba(255, 71, 87, 0.8);
+}
 
 .chat-widget {
     position: fixed; bottom: 100px; right: 30px; width: 350px; height: 500px;
