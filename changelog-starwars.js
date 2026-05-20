@@ -30,6 +30,16 @@ export const patchNotesStarWars = [
         ]
     },
     {
+        version: "v2.8.3",
+        title: "Hotfix: Sicherheit & Admin",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Farbschema-Fortschritt zählt jetzt ausschließlich im klassischen Modus. Advanced-Spiele werden nicht mehr für Theme-Freischaltungen gewertet.",
+            "Hotfix: Admin kann jetzt Titel und Farbschema (inkl. Tag-Fortschritt) einzelner Spieler zurücksetzen.",
+            "Hotfix: Automatische Abmeldung nach 5 Minuten Inaktivität. 1 Minute vorher erscheint ein Warnbanner – so werden Hintergrund-Reads durch vergessene offene Tabs deutlich reduziert."
+        ]
+    },
+    {
         version: "v2.7.1",
         title: "UI Polishing & Hotfixes",
         changes: [

@@ -148,10 +148,12 @@ async function renderUserList() {
                 ${user.role !== 'admin' ? `<button class="text-btn delete-user-btn" style="color:#ff4757;" data-id="${user.id}">Account löschen</button>` : ''}
             </div>
             ${user.role !== 'admin' ? `
-            <div style="display:flex; gap: 5px; width: 100%;">
+            <div style="display:flex; gap: 5px; width: 100%; flex-wrap: wrap;">
                 <button class="rank-btn admin-user-action" data-action="discovery" data-id="${user.id}" style="height: auto; padding: 5px; flex:1; font-size: 0.7rem; background-color: ${discColor}; border-color: ${discColor}; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">Discovery</button>
                 <button class="rank-btn admin-user-action" data-action="history" data-id="${user.id}" style="height: auto; padding: 5px; flex:1; font-size: 0.7rem; background-color: ${histColor}; border-color: ${histColor}; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">Historie</button>
                 <button class="rank-btn admin-user-action" data-action="scoreboard" data-id="${user.id}" style="height: auto; padding: 5px; flex:1; font-size: 0.7rem; background-color: ${scoreColor}; border-color: ${scoreColor}; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">Scoreboard</button>
+                <button class="rank-btn admin-user-action" data-action="title" data-id="${user.id}" style="height: auto; padding: 5px; flex:1; font-size: 0.7rem; background-color: #7c3aed; border-color: #7c3aed; color: white;">Titel</button>
+                <button class="rank-btn admin-user-action" data-action="theme" data-id="${user.id}" style="height: auto; padding: 5px; flex:1; font-size: 0.7rem; background-color: #0891b2; border-color: #0891b2; color: white;">Farbschema</button>
             </div>
             ` : ''}
         </div>
@@ -191,24 +193,38 @@ async function renderUserList() {
                     const oldDisc = userDoc.discovered || [];
                     const newDisc = oldDisc.filter(n => !charNames.includes(n));
                     await updateDoc(userRef, { discovered: newDisc });
-                    invalidateAllCaches(); // Cache invalidieren
+                    invalidateAllCaches();
                     refreshAdminPanel();
                 }
             } else if (action === 'history') {
                 if(confirm(`Persönliche Historie für ${currentMode} ausblenden?`)) {
                     const obj = {}; obj[`historyResetAt_${currentMode}`] = Timestamp.now();
                     await updateDoc(userRef, obj);
-                    invalidateAllCaches(); // Cache invalidieren
+                    invalidateAllCaches();
                     refreshAdminPanel();
                 }
             } else if (action === 'scoreboard') {
                 if(confirm(`Persönliches Scoreboard für ${currentMode} nullen?`)) {
                     const obj = {}; obj[`scoreboardResetAt_${currentMode}`] = Timestamp.now();
                     await updateDoc(userRef, obj);
-                    // LÖSCHE DIE AGGREGIERTEN DOKUMENTE FÜR DIESEN USER
                     await deleteDoc(doc(db, "scores", `${currentMode}_classic_${userDoc.username}`));
                     await deleteDoc(doc(db, "scores", `${currentMode}_advanced_${userDoc.username}`));
-                    invalidateAllCaches(); // Cache invalidieren
+                    invalidateAllCaches();
+                    refreshAdminPanel();
+                }
+            } else if (action === 'title') {
+                if(confirm(`Aktiven Titel von '${userDoc.username}' für ${currentMode} zurücksetzen?`)) {
+                    const titleField = currentMode === 'starwars' ? 'activeTitle_starwars' : 'activeTitle_waifu';
+                    const obj = {}; obj[titleField] = '';
+                    await updateDoc(userRef, obj);
+                    refreshAdminPanel();
+                }
+            } else if (action === 'theme') {
+                if(confirm(`Farbschema von '${userDoc.username}' für ${currentMode} zurücksetzen? Setzt auch die geranken Tags (Fortschritt) zurück.`)) {
+                    const themeField = currentMode === 'starwars' ? 'activeTheme_starwars' : 'activeTheme_waifu';
+                    const obj = { [themeField]: '' };
+                    if (currentMode === 'starwars') obj.tags_ranked_starwars = {};
+                    await updateDoc(userRef, obj);
                     refreshAdminPanel();
                 }
             }

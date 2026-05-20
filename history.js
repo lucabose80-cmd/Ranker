@@ -123,8 +123,8 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
         const gamesPlayedField = `gamesPlayed_${currentMode}`;
         user[gamesPlayedField] = (user[gamesPlayedField] || 0) + 1;
 
-        // Track tags ranked (for theme unlock conditions)
-        if (currentMode === 'starwars') {
+        // Track tags ranked – NUR im klassischen Modus (Advanced zählt nicht für Theme-Freischaltung)
+        if (currentMode === 'starwars' && gameType === 'classic') {
             const charLookup = {};
             starWarsCharacters.forEach(c => { charLookup[c.name] = c.tags || []; });
             if (!user.tags_ranked_starwars) user.tags_ranked_starwars = {};
@@ -134,6 +134,7 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
                 });
             });
         }
+
 
         localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
         
