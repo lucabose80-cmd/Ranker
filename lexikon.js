@@ -36,7 +36,7 @@ export function renderLexikon() {
 
 function _renderAll(grid, user, discoveredList) {
     grid.className = 'lexikon-grid';
-    grid.style = '';
+    grid.removeAttribute('style'); // Wichtig: vollständig entfernen, nicht nur leeren
 
     const sortedChars = [...activeCharacterDatabase].sort((a, b) => a.name.localeCompare(b.name));
     const newlyDiscovered = user && user.newlyDiscovered ? user.newlyDiscovered : [];
@@ -102,7 +102,7 @@ function _renderByTags(grid, user, discoveredList) {
 
         const subGrid = document.createElement('div');
         subGrid.className = 'lexikon-grid';
-        subGrid.style = 'margin-top: 0;';
+        subGrid.style.marginTop = '0';
 
         tagMap[tag].sort((a, b) => a.name.localeCompare(b.name)).forEach(char => {
             const isDiscovered = user && user.role !== 'admin' ? discoveredList.includes(char.name) : true;

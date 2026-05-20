@@ -1,6 +1,6 @@
 // auth.js
 import { db } from './firebase-config.js';
-import { doc, setDoc, getDocs, collection, query, where, updateDoc, arrayUnion, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { doc, setDoc, getDocs, getDoc, collection, query, where, updateDoc, arrayUnion, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { currentMode } from './mode-state.js';
 import { trackRead, trackWrite } from './tracker.js';
 
@@ -129,24 +129,43 @@ export function startPresenceHeartbeat() {
 }
 
 export async function markCharactersAsDiscovered(charNamesArray) {
-    const user = getCurrentUser();
+    let user = getCurrentUser();
     if (!user || user.role === 'admin') return;
     if (!user.discovered) user.discovered = [];
     if (!user.newlyDiscovered) user.newlyDiscovered = [];
-    
+
+    // Prüfe ob ein Admin-Reset stattgefunden hat (discoveryResetAt ist neuer als lokaler Cache)
+    try {
+        const freshSnap = await getDoc(doc(db, "users", user.uid));
+        if (freshSnap.exists()) {
+            const freshData = freshSnap.data();
+            const localResetAt = user.discoveryResetAt ? (user.discoveryResetAt.seconds || 0) : 0;
+            const remoteResetAt = freshData.discoveryResetAt ? freshData.discoveryResetAt.seconds : 0;
+            if (remoteResetAt > localResetAt) {
+                // Admin hat discovery resetet – lokalen Cache invalidieren
+                user.discovered = freshData.discovered || [];
+                user.newlyDiscovered = freshData.newlyDiscovered || [];
+                user.discoveryResetAt = freshData.discoveryResetAt;
+                localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
+            }
+        }
+    } catch (e) { /* Ignorieren wenn offline */ }
+
+    // Alle Chars dieser Runde als "neu" markieren die lokal noch nicht bekannt sind
     const newDiscoveries = charNamesArray.filter(name => !user.discovered.includes(name));
     if (newDiscoveries.length === 0) return;
 
     user.discovered.push(...newDiscoveries);
-    user.newlyDiscovered.push(...newDiscoveries);
+    user.newlyDiscovered = [...new Set([...user.newlyDiscovered, ...newDiscoveries])];
     localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
     try { 
+        // arrayUnion ist idempotent – auch nach Admin-Reset wird korrekt neu eingetragen
         await updateDoc(doc(db, "users", user.uid), { 
             discovered: arrayUnion(...newDiscoveries),
             newlyDiscovered: arrayUnion(...newDiscoveries)
         }); 
         trackWrite(1);
-    } catch (e) {}
+    } catch (e) { console.error("Fehler bei markCharactersAsDiscovered:", e); }
 }
 
 export async function clearNewlyDiscovered() {

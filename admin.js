@@ -153,31 +153,31 @@ async function renderUserList() {
         userList.innerHTML = '<p class="prompt-text" style="padding:10px;">Keine normalen Benutzer gefunden.</p>';
     } else {
         userList.innerHTML = normalUsers.map(user => {
-            // Discovery Status
+            // Discovery Status – GRÜN = hat Discovery (kann resetten), GRAU = leer
             const discovered = user.discovered || [];
             const hasDiscovery = discovered.some(n => charNames.includes(n));
-            const discColor = hasDiscovery ? '#ff4757' : '#2ed573';
+            const discColor = hasDiscovery ? '#2ed573' : '#444';
             
             // History Status
             const personalHistReset = user[`historyResetAt_${currentMode}`] ? user[`historyResetAt_${currentMode}`].seconds : 0;
             const gamesHist = userHasHistory[user.username] || [];
             const hasActiveHist = gamesHist.some(s => s > globalHistReset && s > personalHistReset);
-            const histColor = hasActiveHist ? '#ff4757' : '#2ed573';
+            const histColor = hasActiveHist ? '#2ed573' : '#444';
             if(hasActiveHist) globalHasHistory = true;
 
             // Scoreboard Status
             const personalScoreReset = user[`scoreboardResetAt_${currentMode}`] ? user[`scoreboardResetAt_${currentMode}`].seconds : 0;
             const hasActiveScore = gamesHist.some(s => s > globalScoreReset && s > personalScoreReset);
-            const scoreColor = hasActiveScore ? '#ff4757' : '#2ed573';
+            const scoreColor = hasActiveScore ? '#2ed573' : '#444';
             if(hasActiveScore) globalHasScore = true;
 
-            // Title & Theme Status
+            // Title & Theme Status – GRÜN = hat aktiven Wert, GRAU = leer
             const titleField = currentMode === 'starwars' ? 'activeTitle_starwars' : 'activeTitle_waifu';
             const themeField = currentMode === 'starwars' ? 'activeTheme_starwars' : 'activeTheme_waifu';
             const hasTitle = user[titleField] && user[titleField] !== '';
             const hasTheme = user[themeField] && user[themeField] !== '';
-            const titleColor = hasTitle ? '#7c3aed' : '#333';
-            const themeColor = hasTheme ? '#0891b2' : '#333';
+            const titleColor = hasTitle ? '#2ed573' : '#444';
+            const themeColor = hasTheme ? '#2ed573' : '#444';
 
             return `
             <div class="admin-user-card" style="flex-direction: column; align-items: flex-start; gap: 8px; margin-bottom: 10px;">
@@ -201,17 +201,17 @@ async function renderUserList() {
         }).join('');
     }
 
-    // Global Buttons einfärben
+    // Global Buttons – GRÜN = gibt etwas zum Resetten, GRAU = bereits clean
     const btnHist = document.getElementById('admin-reset-global-history');
     if (btnHist) {
-        btnHist.style.backgroundColor = globalHasHistory ? '#ff4757' : '#2ed573';
-        btnHist.style.borderColor = globalHasHistory ? '#ff4757' : '#2ed573';
+        btnHist.style.backgroundColor = globalHasHistory ? '#2ed573' : '#444';
+        btnHist.style.borderColor = globalHasHistory ? '#2ed573' : '#444';
         btnHist.style.color = 'white';
     }
     const btnScore = document.getElementById('admin-reset-global-scoreboard');
     if (btnScore) {
-        btnScore.style.backgroundColor = globalHasScore ? '#ff4757' : '#2ed573';
-        btnScore.style.borderColor = globalHasScore ? '#ff4757' : '#2ed573';
+        btnScore.style.backgroundColor = globalHasScore ? '#2ed573' : '#444';
+        btnScore.style.borderColor = globalHasScore ? '#2ed573' : '#444';
         btnScore.style.color = 'white';
     }
 
@@ -240,7 +240,12 @@ async function renderUserList() {
                 if(confirm(`Discovery für ${userDoc.displayName || userDoc.username} in ${currentMode} löschen?`)) {
                     const oldDisc = userDoc.discovered || [];
                     const newDisc = oldDisc.filter(n => !charNames.includes(n));
-                    await updateDoc(userRef, { discovered: newDisc, newlyDiscovered: [] });
+                    // discoveryResetAt setzt einen Timestamp, den der Client beim nächsten Spiel prüft
+                    await updateDoc(userRef, { 
+                        discovered: newDisc, 
+                        newlyDiscovered: [],
+                        discoveryResetAt: Timestamp.now()
+                    });
                     invalidateAllCaches();
                     renderUserList();
                 }
