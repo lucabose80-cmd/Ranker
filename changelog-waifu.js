@@ -1,169 +1,164 @@
 export const patchNotesWaifu = [
     {
-        version: "v2.3",
+        version: "v2.7",
+        title: "The Themes & Factions Update",
+        changes: [
+            "Neues Feature: Farbschemas – Schalte durch besondere Leistungen exklusive Farbthemen für den Anime-Modus frei.",
+            "Neues Feature: Fraktions-Ansicht im Lexikon – Waifus sind jetzt mit Tags versehen und lassen sich nach Kategorie gefiltert anzeigen.",
+            "Neues Feature: Farbschemas, Titel und der Spielezähler sind nun strikt zwischen den Modi getrennt – deine Anime-Progression gehört dir allein.",
+            "Neues Feature: Automatische Abmeldung nach 5 Minuten Inaktivität mit Warnung 1 Minute vorher.",
+            "UI-Update: Das Updates-Fenster wurde komplett neu gestaltet mit Icon-basierter Änderungsliste und sauberem Kartendesign.",
+            "UI-Update: Admin kann nun Titel und Farbschemas einzelner Spieler gezielt zurücksetzen."
+        ]
+    },
+    {
+        version: "v2.7.1",
+        title: "Hotfix: Online-Tracker & Logout",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Logout setzt nun sofort ein Offline-Signal in der Datenbank – User verschwinden nicht mehr erst nach 7 Minuten aus der Online-Liste.",
+            "Hotfix: Online-Zeitfenster von 7 auf 6 Minuten reduziert, um inaktive User schneller zu entfernen.",
+            "Hotfix: Profil-Tabs (Avatare/Titel/Farbschemas) werden jetzt korrekt neu gerendert wenn der Modus gewechselt wird."
+        ]
+    },
+    {
+        version: "v2.6",
         title: "The Titles & Progression Update",
         changes: [
-            "Neues Feature: Titel-System! Sammle abgeschlossene Spiele und schalte automatisch exklusive Titel frei (z.B. Kouhai, Senpai, Waifu-Master).",
-            "UI-Update: Das Profilmenü wurde komplett modernisiert. Wechsle nahtlos zwischen deinen Avataren und der brandneuen Titel-Raster-Ansicht.",
-            "Visualisierung: Dein ausgewählter Titel wird ab sofort für alle sichtbar in der oberen Leiste, bei deinen Historien-Einträgen und live im Chat neben deinem Namen angezeigt!",
-            "Hotfix: Massive Performance-Verbesserung! Durch cleveres Caching (lokales Speichern) von Profil- und Status-Abfragen wurden die Hintergrund-Datenbank-Zugriffe (Firebase Reads) drastisch reduziert."
+            "Neues Feature: Titel-System! Sammle abgeschlossene klassische Spiele und schalte automatisch exklusive Titel frei (z.B. Kouhai, Senpai, Waifu-Master).",
+            "UI-Update: Das Profilmenü wurde komplett modernisiert – drei Tabs (Avatare / Titel / Farbschemas) mit Grid-Ansicht.",
+            "Visualisierung: Dein ausgewählter Titel wird für alle sichtbar in der Topbar, in Historien-Einträgen und live im Chat angezeigt."
+        ]
+    },
+    {
+        version: "v2.6.1",
+        title: "Hotfix: Performance & UI",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Massive Performance-Verbesserung durch 12-Stunden-Caching von Profil- und Status-Abfragen.",
+            "Hotfix: CSS-Kodierungsfehler behoben, der die Titel-Karten im Profil ohne Rahmen anzeigte.",
+            "Hotfix: Ausrichtungsfehler im Profil-Overlay zwischen linker Spalte und Tab-Buttons behoben.",
+            "Hotfix: Farbschema-Fortschritt zählt ausschließlich im klassischen Modus – Advanced-Spiele werden nicht gewertet."
+        ]
+    },
+    {
+        version: "v2.5.1",
+        title: "Hotfix: Voting & Patch Notes",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Beim Abstimmen leuchten die Haken (✓) nun kräftig grün auf statt grau zu bleiben.",
+            "Hotfix: Bilder bei Charakter-Update-Vorschlägen wurden nicht korrekt aus der Datenbank geladen."
+        ]
+    },
+    {
+        version: "v2.5",
+        title: "The Community & Suggestions Update",
+        changes: [
+            "Neues Feature: Erweiterter Vorschläge-Tab – gezielt filtern nach 'Features', 'Neuen Charakteren' und 'Charakter-Updates (Name/Bild)'.",
+            "Visualisierung: Charakter-Update-Vorschläge werden in einem interaktiven Bilder-Raster präsentiert – ein Klick öffnet die Voting-Details.",
+            "Neues Admin-Feature: Community-Ideen mit genug Votes können direkt als Roadmap-Punkte eingetragen werden und erscheinen in-game."
+        ]
+    },
+    {
+        version: "v2.4",
+        title: "The Performance & Database Overhaul",
+        changes: [
+            "Performance: Scoreboard berechnet Punkte nun im Hintergrund (1 Read statt hunderte pro Klick).",
+            "Performance: Admin-Resets werden 12 Stunden gepuffert, um überflüssige Reads zu vermeiden.",
+            "Performance: Online-Status fragt alle 2 Minuten ab statt einer konstanten Echtzeit-Verbindung.",
+            "Performance: Lazy Loading – Historie und Scoreboard werden erst geladen, wenn der Tab geöffnet wird."
+        ]
+    },
+    {
+        version: "v2.3.1",
+        title: "Hotfix: Advanced & History Grid",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Beim Zuschauen eines Advanced-Spiels werden nun alle 10 Slots korrekt dargestellt.",
+            "Hotfix: Die 10-Slot-Historienkarten brechen sauber um, ohne horizontalen Scrollbalken."
+        ]
+    },
+    {
+        version: "v2.3",
+        title: "The Advanced Mode & Joker Update",
+        changes: [
+            "Neues Feature: Advanced-Modus (10 Slots statt 5) für noch tieferes Waifu-Ranking.",
+            "Neues Feature: Joker-Phase – tausche einmalig zwei Karten per Klick am Ende des Advanced-Modus.",
+            "UI-Update: Scoreboard- und Historienkarten unterscheiden zwischen Klassisch (5er) und Advanced (10er).",
+            "QoL: Modus-Auswahl direkt im Spiel-Tab."
         ]
     },
     {
         version: "v2.2.1",
-        title: "UI Polishing & Hotfixes",
+        title: "Hotfix: Tracker",
+        isHotfix: true,
         changes: [
-            "UI-Update: Das gesamte Voting-System nutzt nun dynamische Haken (✓), die beim Abstimmen kräftig grün aufleuchten.",
-            "Hotfix: Ein Fehler wurde behoben, durch den Bilder bei Charakter-Updates nicht korrekt aus der Datenbank geladen wurden.",
-            "Hotfix: Historische Patch-Notes wurden aufgeräumt und konsistent strukturiert (Bugfixes in eigenständige Hotfixes ausgelagert)."
+            "Hotfix: Online-Tracker stabilisiert (Verbindungsprobleme und Anzeigefehler der Spieleranzahl behoben)."
         ]
     },
     {
         version: "v2.2",
-        title: "The Community & Suggestions Update",
+        title: "The Instant Speed & QoL Update",
         changes: [
-            "Neues Feature: Der Vorschläge-Tab wurde massiv erweitert! Du kannst nun gezielt zwischen 'Features', 'Neuen Charakteren' und 'Charakter-Updates (Name/Bild)' filtern.",
-            "Visualisierung: Änderungsvorschläge für bestehende Charaktere werden nun in einem schicken, interaktiven Bilder-Raster präsentiert. Ein Klick auf ein Bild öffnet die Voting-Details.",
-            "Neues Admin-Feature: Die Moderation kann hervorragende Community-Ideen mit einem Klick in echte Roadmap-Punkte verwandeln. Diese tauchen dann im Tab 'Roadmap' (unter Updates) direkt im Spiel auf!"
+            "Performance: Blitzschnelles Umschalten zwischen Historie und Scoreboard durch RAM-Caching.",
+            "Performance: Zirkelbezüge im JavaScript vollständig entkoppelt für absolute Stabilität.",
+            "UI-Update: Spielername in der Navigationsleiste deutlich größer und edler dargestellt.",
+            "UI-Update: Echte Anzeigenamen (korrekte Groß-/Kleinschreibung) in Historie und Scoreboard-Filter."
         ]
     },
     {
         version: "v2.1",
-        title: "The Performance & Database Overhaul",
+        title: "The Spectator & Quality of Life Update",
         changes: [
-            "Neues Feature: Vorschläge-Tab (Suggestions) hinzugefügt! Reiche eigene Ideen für neue Features ein und stimme für die Ideen anderer Spieler ab.",
-            "Performance: Massives Datenbank-Update – Scoreboard berechnet Punkte nun extrem ressourcenschonend im Hintergrund (kostet exakt 1 Read statt hunderten pro Klick).",
-            "Performance: 'Resets' vom Admin werden nun im Hintergrund für 12 Stunden gepuffert, um extrem viele überflüssige Reads zu sparen.",
-            "Performance: Online-Status-Tracker fragt nun alle 2 Minuten ab, anstatt eine konstante Live-Verbindung aufrechtzuerhalten.",
-            "Performance: Lazy Loading integriert – Inhalte von Tabs (Historie, Scoreboard) werden erst aus der Cloud geladen, wenn der Tab angeklickt wird."
+            "Neues Feature: Erscheinungsreihenfolge der Waifus wird in der Historie angezeigt.",
+            "Neues Feature: Beim Live-Zuschauen siehst du den kompletten Waifu-Pool inklusive Status.",
+            "Optimierung: Live-Spiele werden nach Abschluss automatisch aus der Datenbank gelöscht.",
+            "UI-Update: Scrollbalken in allen Rastern ausgeblendet für ein edleres Interface."
         ]
     },
     {
         version: "v2.0.1",
-        title: "The Advanced Fix & History Grid Update",
+        title: "Hotfix: Performance & Stabilität",
+        isHotfix: true,
         changes: [
-            "Hotfix (Advanced Modus): Beim Zuschauen (Live-Spectating) eines Advanced-Spiels werden nun alle 10 Slots korrekt dargestellt.",
-            "Hotfix (Historie): Die 10-Slot-Historienkarten wurden optimiert (Pool-Slots schrumpfen und brechen um), sodass das 3x3 Raster ohne horizontalen Scrollbalken sauber nach unten fließt."
+            "Hotfix: Globale Scoreboard- und Historien-Resets im Admin Panel korrigiert.",
+            "Hotfix: Heartbeat-Interval auf 60 Sekunden erhöht, Online-Anzeige nutzt periodische Abfragen."
         ]
     },
     {
         version: "v2.0",
-        title: "The Advanced Mode & Joker Update",
+        title: "The Admin Overhaul Update",
         changes: [
-            "Neues Feature: Advanced-Modus (10 Slots statt 5) spielbar für noch tieferes und komplexeres Ranking.",
-            "Neues Feature: Joker-Phase am Ende des Advanced-Modus – tausche einmalig zwei beliebige Karten durch Anklicken, um dein Ranking zu perfektionieren.",
-            "UI-Update: Scoreboard-Filter erweitert! Du kannst jetzt getrennt nach 'Klassisch (5er)' und 'Advanced (10er)' Scoreboards filtern.",
-            "UI-Update: Historienkarten passen sich dynamisch an 10 Slots an und sind mit einem gelben 'ADV' Badge gekennzeichnet.",
-            "QoL: Modus-Auswahl direkt im Spiel-Tab ermöglicht nahtloses Switchen per Klick."
+            "Neues Feature: Admin Panel mit Farbindikator (Rot = Aktion möglich, Grün = Clean).",
+            "Neues Feature: Resets sind nach Universum getrennt – Anime und Star Wars unabhängig zurücksetzbar.",
+            "Neues Feature: Chat-Moderation mit Einzellöschung und 'Alles löschen'.",
+            "Neues Feature: Discovery, Historie und Scoreboard pro User getrennt zurücksetzbar."
         ]
     },
     {
         version: "v1.9.1",
-        title: "Tracker Hotfix",
+        title: "Hotfix: Ranking & UI",
+        isHotfix: true,
         changes: [
-            "Hotfix: Der Online-Tracker wurde stabilisiert (Verbindungsprobleme und Anzeigefehler der Spieleranzahl behoben)."
+            "Hotfix: Ranken und Bewerten wurde blockiert falls die Cloud-Verbindung kurz hing.",
+            "Hotfix: Leere Karten-Slots hatten gestrichelte statt saubere Ränder."
         ]
     },
     {
         version: "v1.9",
-        title: "The Instant Speed & QoL Update",
+        title: "The Community Update",
         changes: [
-            "Performance: Extrem schnelles Umschalten zwischen Historie und Scoreboard (0ms Latenz) durch Shared-Realtime-Caching im RAM.",
-            "Performance: Zirkelbezüge im Javascript vollständig entkoppelt für absolute Stabilität und reibungsfreie Anmeldung.",
-            "UI-Update: Der Spielername oben links in der Navigationsleiste wird nun deutlich größer und edler dargestellt.",
-            "UI-Update: In der Historie und dem Scoreboard-Filter werden jetzt die echten Anzeigenamen (korrekte Groß-/Kleinschreibung) angezeigt."
-        ]
-    },
-    {
-        version: "v1.8",
-        title: "The Spectator & Quality of Life Update",
-        changes: [
-            "Neues Feature: Die Reihenfolge, in der die Waifus erschienen sind, wird jetzt in der Historie übersichtlich dargestellt.",
-            "Neues Feature: Beim Live-Zuschauen siehst du nun den kompletten Waifu-Auswahlpool der Person inklusive des aktuellen Status (platziert, aktuell, kommend).",
-            "Optimierung: Live-Spiele werden nun ausschließlich während des eigentlichen Rankens übertragen und nach Abschluss oder Abbruch sofort bereinigt.",
-            "UI-Update: Scrollbalken in allen Rastern (Historie, Scoreboard, Live-Spiele, Lexikon, Chat) wurden ausgeblendet, um das Interface noch edler wirken zu lassen."
-        ]
-    },
-    { 
-        version: "v1.7.1", 
-        title: "Performance & Stabilitätsfixes", 
-        changes: [
-            "Hotfix: Globale Scoreboard- und Historien-Resets im Admin Panel funktionieren nun korrekt (Fehler durch falsche Dokument-ID behoben).",
-            "Optimierung: Der Heartbeat-Interval wurde auf 60 Sekunden erhöht, um Schreibvorgänge zu halbieren.",
-            "Optimierung: Die Online-Anzeige nutzt nun periodische Abfragen statt Echtzeit-Listener, was die Lesevorgänge drastisch reduziert.",
-            "Optimierung: Live-Spectating lädt nur noch aktive Spiele der letzten 2 Minuten aus der Cloud.",
-            "Optimierung: Abgeschlossene Spielrunden räumen ihr Live-Spiel-Dokument automatisch aus der Datenbank auf."
-        ] 
-    },
-    { 
-        version: "v1.7", 
-        title: "The Admin Overhaul Update", 
-        changes: [
-            "Neues Feature: Das Admin Panel zeigt jetzt farblich an, ob Daten vorhanden sind (Rot = Aktion möglich, Grün = Clean).",
-            "Neues Feature: Admin-Resets sind nun nach Universum getrennt – Star Wars und Anime können unabhängig voneinander zurückgesetzt werden.",
-            "Neues Feature: Discovery-Reset entfernt nur Waifus des aktuell gewählten Universums, der andere Modus bleibt unberührt.",
-            "Neues Feature: Das Admin Panel zeigt oben immer an, für welchen Modus die Aktionen gelten.",
-            "Neues Feature: Chat-Moderation mit Einzellöschung pro Nachricht und 'Alles löschen'-Funktion hinzugefügt.",
-            "Neues Feature: Pro User können Discovery, Historie und Scoreboard nun getrennt voneinander zurückgesetzt werden."
-        ] 
-    },
-    { 
-        version: "v1.6.1", 
-        title: "Quality of Life & Hotfixes", 
-        changes: [
-            "Hotfix: Behebung eines Fehlers, bei dem das Ranken und Bewerten blockiert wurde, falls die Cloud-Verbindung kurz hing.",
-            "UI-Update: Bereits genutzte Rang- und Bewertungs-Buttons werden nun sichtbar ausgegraut.",
-            "UI-Update: Leere Karten-Slots haben nun aufgeräumte, durchgezogene Ränder (gestrichelt entfernt).",
-            "UI-Update: Wenn eine Waifu platziert wird, leuchtet der Rahmen des Slots nun passend zur Themenfarbe im Neon-Look auf."
-        ] 
-    },
-    { 
-        version: "v1.6", 
-        title: "The Community Update", 
-        changes: [
-            "Neues Feature: Live-Spectating! Schau anderen Spielern in Echtzeit beim Ranken zu.",
+            "Neues Feature: Live-Spectating – schau anderen Spielern in Echtzeit beim Ranken zu.",
             "Neues Feature: Globaler Chat als schwebendes Widget (mit Cross-Universe Tags).",
-            "Neues Feature: Wer-ist-online-Sidebar am linken Bildschirmrand.",
-            "Neues Feature: Das Profil ist nun ein Overlay. Ändere deinen Anzeigenamen, wann immer du willst!",
-            "Neues Feature: Du kannst dir jetzt spezifisch für den Anime-Modus einen eigenen Avatar aussuchen, der automatisch wechselt.",
-            "UI-Overhaul: Die Navigation ist jetzt fest am oberen Bildschirmrand fixiert.",
-            "UI-Overhaul: Historie und Scoreboard wurden in ein schickes 3-Spalten-Raster umgebaut.",
-            "Quality of Life: Leuchtender Update-Knopf bei ungelesenen Neuigkeiten."
-        ] 
+            "Neues Feature: Online-Sidebar und überarbeitetes Profil-Overlay.",
+            "UI-Overhaul: Sticky Navigation, 3-Spalten-Raster für Historie und Scoreboard.",
+            "QoL: Update-Knopf leuchtet golden auf wenn neue Patch Notes verfügbar sind."
+        ]
     },
-    { 
-        version: "v1.5", 
-        title: "New Encounters", 
-        changes: [
-            "Neues Feature: Charakter-Entdeckungen hinzugefügt (Achievements).",
-            "Visualisierung: Brandneue Waifus pulsieren im Spiel magisch gold, wenn du sie das erste Mal siehst.",
-            "Lexikon-Glow: Im Lexikon siehst du anhand des goldenen Glanzes, welche Waifus noch unentdeckt sind."
-        ] 
-    },
-    { 
-        version: "v1.4", 
-        title: "The Encyclopedia", 
-        changes: [
-            "Neues Feature: Lexikon-Tab hinzugefügt.",
-            "Visualisierung: Eine Übersicht aller Waifus im aktuellen Modus (Alphabetisch sortiert)."
-        ] 
-    },
-    { 
-        version: "v1.3", 
-        title: "The Ranking Meta", 
-        changes: [
-            "Neues Feature: Das SCOREBOARD Tab wurde hinzugefügt.",
-            "Ranking Meta: Waifus sammeln nun Punkte basierend auf Platzierung und Endbewertung."
-        ] 
-    },
-    { 
-        version: "v1.2", 
-        title: "Archive & Memories", 
-        changes: [
-            "Globales History-System: Waifu-Rankings werden nun gespeichert.",
-            "Neuer 'Historie' Tab: Vergleiche deinen Geschmack."
-        ] 
-    },
+    { version: "v1.5", title: "New Encounters", changes: ["Neues Feature: Charakter-Entdeckungen (Achievements) – unentdeckte Waifus pulsieren golden."] },
+    { version: "v1.4", title: "The Encyclopedia", changes: ["Neues Feature: Lexikon-Tab mit alphabetischer Übersicht aller Waifus."] },
+    { version: "v1.3", title: "The Ranking Meta", changes: ["Neues Feature: Scoreboard-Tab – Waifus sammeln Punkte basierend auf Platzierung und Bewertung."] },
+    { version: "v1.2", title: "Archive & Memories", changes: ["Globales History-System: Waifu-Rankings werden dauerhaft gespeichert."] },
     { version: "v1.1", title: "Visual Overhaul & Engine Upgrade", changes: ["Farbschema aktualisiert: Sattes Neon-Pink (#ff2a9d)."] },
     { version: "v1.0", title: "Anime Modus Release", changes: ["Neuer Waifu-Modus integriert."] }
 ];
