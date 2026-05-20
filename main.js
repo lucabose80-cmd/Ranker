@@ -10,7 +10,7 @@ import { initAdminPanel } from './admin.js';
 import { renderHistory, initHistoryListener, stopHistoryListener } from './history.js';
 import { renderScoreboard } from './scoreboard.js';
 import { renderLexikon, initLexikonTabs } from './lexikon.js';
-import { initProfile, renderAvatarSelection, updateTopbarAvatarElement, applyColorTheme } from './profile.js';
+import { initProfile, renderAvatarSelection, updateTopbarAvatarElement, applyColorTheme, refreshProfileContent } from './profile.js';
 import { initCommunity } from './community.js';
 import { initLiveSpectating, closeSpectatorModal, stopLiveSpectating } from './live.js';
 import { currentGameType, setCurrentGameType } from './mode-state.js';
@@ -137,7 +137,7 @@ function setupGameUI(user) {
     // Profil Overlay öffnen
     document.getElementById('profile-trigger').addEventListener('click', () => {
         document.getElementById('profile-overlay').classList.remove('hidden');
-        renderAvatarSelection(); // Baut die Bilder passend zum aktuellen Universum auf
+        refreshProfileContent(); // Baut alles passend zum aktuellen Modus neu auf
     });
     
     document.getElementById('close-profile-btn').addEventListener('click', closeProfileOverlay);

@@ -9,7 +9,7 @@ import { initAdvancedGame } from './game-advanced.js';
 import { renderHistory, initHistoryListener, stopHistoryListener } from './history.js';
 import { renderScoreboard } from './scoreboard.js';
 import { renderLexikon } from './lexikon.js';
-import { renderAvatarSelection, updateTopbarAvatarElement } from './profile.js';
+import { renderAvatarSelection, updateTopbarAvatarElement, refreshProfileContent } from './profile.js';
 import { getCurrentUser, startPresenceHeartbeat } from './auth.js';
 import { initLiveSpectating, stopLiveSpectating } from './live.js';
 import { refreshAdminPanel } from './admin.js';
@@ -77,5 +77,6 @@ export function toggleTheme() {
     // Live-Spectating wird oben bereits initialisiert falls sichtbar
 
     renderAvatarSelection();
+    refreshProfileContent(); // Aktualisiert Titel, Farbschemas & Counter passend zum neuen Modus
     refreshAdminPanel();
 }

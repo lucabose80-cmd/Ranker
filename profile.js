@@ -60,14 +60,14 @@ export function updateTopbarAvatarElement(user) {
 }
 
 export function applyColorTheme(user) {
-    // Remove all theme classes
-    const themesForMode = THEMES[currentMode] || [];
-    themesForMode.forEach(t => {
+    // Remove ALL possible theme classes from ALL modes to avoid leakage between modes
+    Object.values(THEMES).flat().forEach(t => {
         if (t.cssClass) document.body.classList.remove(t.cssClass);
     });
 
     const activeThemeId = currentMode === 'starwars' ? user.activeTheme_starwars : user.activeTheme_waifu;
     if (activeThemeId) {
+        const themesForMode = THEMES[currentMode] || [];
         const themeObj = themesForMode.find(t => t.id === activeThemeId);
         if (themeObj && themeObj.cssClass) {
             document.body.classList.add(themeObj.cssClass);
@@ -77,19 +77,14 @@ export function applyColorTheme(user) {
 
 export function initProfile() {
     const user = getCurrentUser();
-    if(!user) return;
+    if (!user) return;
     document.getElementById('profile-displayname').value = user.displayName;
-    renderAvatarSelection();
-    
-    const gamesPlayed = currentMode === 'starwars' ? (user.gamesPlayed_starwars || 0) : (user.gamesPlayed_waifu || 0);
-    document.getElementById('profile-games-count').textContent = gamesPlayed;
-    
-    // Setup Tabs
+
+    // Setup Tabs (nur einmal binden)
     document.querySelectorAll('.profile-tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.profile-tab-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
             const target = btn.dataset.tab;
             document.getElementById('profile-avatar-panel').classList.toggle('hidden', target !== 'avatar');
             document.getElementById('profile-title-panel').classList.toggle('hidden', target !== 'title');
@@ -97,24 +92,38 @@ export function initProfile() {
         });
     });
 
-    renderTitleSelection(user, gamesPlayed);
-    renderThemeSelection(user);
-
     document.getElementById('save-profile-btn').addEventListener('click', async () => {
         const newName = document.getElementById('profile-displayname').value;
         const newPass = document.getElementById('profile-password').value;
-        
         const res = await updateUserProfile(newName, newPass || null, undefined);
-        
         const feedback = document.getElementById('profile-feedback');
         feedback.classList.remove('hidden');
         feedback.textContent = res.success ? "Daten gespeichert!" : "Fehler: " + res.message;
         feedback.style.color = res.success ? "#2ed573" : "#ff4757";
-        if(res.success) {
+        if (res.success) {
             document.getElementById('player-greeting').textContent = newName;
             updateTopbarAvatarElement(res.user);
         }
     });
+
+    refreshProfileContent();
+}
+
+// Wird jedes Mal aufgerufen wenn das Profil geöffnet wird oder der Modus wechselt
+export function refreshProfileContent() {
+    const user = getCurrentUser();
+    if (!user) return;
+
+    renderAvatarSelection();
+
+    const gamesPlayed = currentMode === 'starwars'
+        ? (user.gamesPlayed_starwars || 0)
+        : (user.gamesPlayed_waifu || 0);
+    const el = document.getElementById('profile-games-count');
+    if (el) el.textContent = gamesPlayed;
+
+    renderTitleSelection(user, gamesPlayed);
+    renderThemeSelection(user);
 }
 
 function renderTitleSelection(user, gamesPlayed) {
