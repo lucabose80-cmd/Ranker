@@ -98,7 +98,7 @@ export function initCommunity() {
     sendBtn.onclick = sendMessage;
     input.onkeypress = (e) => { if(e.key === 'Enter') sendMessage(); };
 
-    // 2. Online Tracker (Unter dem Profil platziert, alle 60s abfragen statt Echtzeit-Snapshot)
+    // 2. Online Tracker – lädt ALLE User, zeigt sie grau/grün je nach Status
     if(onlineInterval) clearInterval(onlineInterval);
     
     const updateOnlineTracker = async () => {
@@ -106,86 +106,93 @@ export function initCommunity() {
         if(!onlineList) return;
         
         try {
-            const sixMinutesAgo = new Date(Date.now() - 360000);
-            const qOnline = query(collection(db, "users"), where("lastActive", ">=", Timestamp.fromDate(sixMinutesAgo)), limit(50));
-            const snapshot = await getDocs(qOnline);
-            trackRead(snapshot.size);
-            onlineList.innerHTML = '';
-            let count = 0;
+            // Alle User laden (kein Filter) damit auch Offline-User sichtbar sind
+            const allUsersSnap = await getDocs(query(collection(db, "users"), limit(100)));
+            trackRead(allUsersSnap.size);
+            
             const now = Date.now();
+            const SIX_MIN = 360000;
+            let onlineCount = 0;
 
-            // 1. Der aktuell eingetragene User selbst ist immer online und steht ganz oben!
+            // Alle User sammeln und sortieren: Online zuerst, dann alphabetisch
+            const allUsers = [];
+            allUsersSnap.forEach(docSnap => {
+                const u = docSnap.data();
+                if (u.role === 'admin') return; // Admin nicht anzeigen
+
+                let isOnline = false;
+                if (u.lastActive) {
+                    let lastActiveMillis = typeof u.lastActive.toMillis === 'function'
+                        ? u.lastActive.toMillis()
+                        : (u.lastActive.seconds ? u.lastActive.seconds * 1000 : 0);
+                    isOnline = (now - lastActiveMillis) < SIX_MIN;
+                }
+                allUsers.push({ ...u, _isOnline: isOnline });
+                if (isOnline) onlineCount++;
+            });
+
+            // Online zuerst, dann alphabetisch
+            allUsers.sort((a, b) => {
+                if (a._isOnline && !b._isOnline) return -1;
+                if (!a._isOnline && b._isOnline) return 1;
+                return (a.displayName || a.username).localeCompare(b.displayName || b.username);
+            });
+
+            onlineList.innerHTML = '';
+
+            // Aktuellen User immer ganz oben (immer online)
             const uMode = currentMode;
             const userAvatar = uMode === 'starwars' ? user.avatarStarWars : user.avatarWaifu;
             const avatarHtml = userAvatar ? `<img src="${userAvatar}" class="mini-avatar">` : `<div class="mini-avatar" style="background:#444"></div>`;
             const modeText = uMode === 'starwars' ? 'SW' : 'Anime';
             const modeClass = uMode === 'starwars' ? 'tag-sw' : 'tag-anime';
             const activeTitle = uMode === 'starwars' ? user.activeTitle_starwars : user.activeTitle_waifu;
-            const titleHtml = activeTitle && activeTitle !== 'Kein Titel' ? `<span style="font-size:0.6rem; color:#ffd700; font-weight:bold; margin-left:5px; text-transform:uppercase;">${activeTitle}</span>` : '';
+            const titleHtml = activeTitle && activeTitle !== 'Kein Titel'
+                ? `<span style="font-size:0.6rem; color:#ffd700; font-weight:bold; margin-left:4px; text-transform:uppercase;">${activeTitle}</span>` : '';
 
             onlineList.innerHTML += `
                 <div class="online-user-card">
                     <div class="online-indicator"></div>
                     ${avatarHtml}
-                    <strong>${user.displayName || user.username} (Du) ${titleHtml}</strong>
-                    <span class="chat-mode-tag ${modeClass}" style="margin-left:auto;">${modeText}</span>
+                    <strong>${user.displayName || user.username} (Du)${titleHtml}</strong>
+                    <span class="chat-mode-tag ${modeClass}" style="margin-left:auto; flex-shrink:0;">${modeText}</span>
                 </div>
             `;
-            count++;
 
-            // 2. Andere User hinzufügen, die aktiv sind
-            snapshot.forEach(docSnap => {
-                try {
-                    const u = docSnap.data();
-                    if (u.username === user.username) return; // Duplikate des aktuellen Users vermeiden
+            // Alle anderen User (skip aktueller User)
+            allUsers.forEach(u => {
+                if (u.username === user.username) return;
+                
+                const otherMode = u.activeMode || 'starwars';
+                const otherAvatar = otherMode === 'starwars' ? u.avatarStarWars : u.avatarWaifu;
+                const otherAvatarHtml = otherAvatar
+                    ? `<img src="${otherAvatar}" class="mini-avatar">`
+                    : `<div class="mini-avatar" style="background:#333"></div>`;
+                const otherModeText = otherMode === 'starwars' ? 'SW' : 'Anime';
+                const otherModeClass = otherMode === 'starwars' ? 'tag-sw' : 'tag-anime';
+                const otherTitle = otherMode === 'starwars' ? u.activeTitle_starwars : u.activeTitle_waifu;
+                const otherTitleHtml = otherTitle && otherTitle !== 'Kein Titel'
+                    ? `<span style="font-size:0.6rem; color:#ffd700; font-weight:bold; margin-left:4px; text-transform:uppercase;">${otherTitle}</span>` : '';
 
-                    let isOnline = false;
-                    if (u.lastActive) {
-                        let lastActiveMillis = 0;
-                        if (typeof u.lastActive.toMillis === 'function') {
-                            lastActiveMillis = u.lastActive.toMillis();
-                        } else if (u.lastActive.seconds) {
-                            lastActiveMillis = u.lastActive.seconds * 1000;
-                        } else {
-                            lastActiveMillis = new Date(u.lastActive).getTime();
-                        }
+                const offlineCss = u._isOnline ? '' : 'opacity: 0.45; filter: grayscale(0.5);';
+                const indicatorClass = u._isOnline ? 'online-indicator' : 'online-indicator offline';
 
-                        if (!isNaN(lastActiveMillis)) {
-                            isOnline = (now - lastActiveMillis) < 360000; // 6 Minuten (knapp über 3-Min-Heartbeat, unter 5-Min-Inaktivitäts-Timeout)
-                        }
-                    }
-
-                    if(isOnline) {
-                        count++;
-                        const otherMode = u.activeMode || 'starwars';
-                        const otherAvatar = otherMode === 'starwars' ? u.avatarStarWars : u.avatarWaifu;
-                        const otherAvatarHtml = otherAvatar ? `<img src="${otherAvatar}" class="mini-avatar">` : `<div class="mini-avatar" style="background:#444"></div>`;
-                        
-                        const otherModeText = otherMode === 'starwars' ? 'SW' : 'Anime';
-                        const otherModeClass = otherMode === 'starwars' ? 'tag-sw' : 'tag-anime';
-
-                        const otherTitle = otherMode === 'starwars' ? u.activeTitle_starwars : u.activeTitle_waifu;
-                        const otherTitleHtml = otherTitle && otherTitle !== 'Kein Titel' ? `<span style="font-size:0.6rem; color:#ffd700; font-weight:bold; margin-left:5px; text-transform:uppercase;">${otherTitle}</span>` : '';
-
-                        onlineList.innerHTML += `
-                            <div class="online-user-card">
-                                <div class="online-indicator"></div>
-                                ${otherAvatarHtml}
-                                <strong>${u.displayName || u.username} ${otherTitleHtml}</strong>
-                                <span class="chat-mode-tag ${otherModeClass}" style="margin-left:auto;">${otherModeText}</span>
-                            </div>
-                        `;
-                    }
-                } catch(err) {
-                    console.error("Fehler beim Laden eines Users im Online-Tracker: ", err);
-                }
+                onlineList.innerHTML += `
+                    <div class="online-user-card" style="${offlineCss}">
+                        <div class="${indicatorClass}"></div>
+                        ${otherAvatarHtml}
+                        <strong>${u.displayName || u.username}${otherTitleHtml}</strong>
+                        <span class="chat-mode-tag ${otherModeClass}" style="margin-left:auto; flex-shrink:0;">${otherModeText}</span>
+                    </div>
+                `;
             });
-            document.getElementById('online-count').textContent = count;
+
+            document.getElementById('online-count').textContent = onlineCount + 1; // +1 für den aktuellen User
         } catch(e) {
             console.error("Fehler beim Abrufen der Online-User: ", e);
         }
     };
 
     updateOnlineTracker();
-    onlineInterval = setInterval(updateOnlineTracker, 120000); // Polling (120s) spart noch einmal 50% der Reads!
+    onlineInterval = setInterval(updateOnlineTracker, 60000); // Alle 60s aktualisieren
 }

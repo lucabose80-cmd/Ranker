@@ -35,7 +35,7 @@ export function renderAvatarSelection() {
         } else {
             card.className = `lexikon-card avatar-card locked`;
             card.style.opacity = '0.5';
-            card.innerHTML = `<div style="width:100%; height:75%; display:flex; align-items:center; justify-content:center; font-size:3rem; color:#555;">?</div><span>???</span>`;
+            card.innerHTML = `<div class="lexikon-card-placeholder">?</div><span>???</span>`;
             card.title = "Noch nicht entdeckt!";
         }
         grid.appendChild(card);
