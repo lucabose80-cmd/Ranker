@@ -58,7 +58,7 @@ export async function initAdminPanel() {
 
         document.getElementById('admin-clear-chat-btn').addEventListener('click', async () => {
             if(confirm("Gesamten Chat löschen? Dies entfernt alle Nachrichten dauerhaft!")) {
-                const snap = await getDocs(collection(db, "chat"));
+                const snap = await getDocs(query(collection(db, "chat"), orderBy("timestamp"), limit(1000)));
                 snap.forEach(d => deleteDoc(doc(db, "chat", d.id)));
                 alert("Chat geleert!");
                 refreshAdminPanel();
@@ -112,7 +112,7 @@ async function renderUserList() {
     let globalHasScore = false;
     
     try {
-        const qHist = query(collection(db, "history"), where("mode", "==", currentMode));
+        const qHist = query(collection(db, "history"), where("mode", "==", currentMode), limit(1000));
         const histSnap = await getDocs(qHist);
         
         histSnap.forEach(d => {
@@ -242,7 +242,7 @@ function initChatModeration() {
     const clearBtn = document.getElementById('admin-clear-chat-btn');
     
     if(chatAdminUnsubscribe) chatAdminUnsubscribe();
-    const qChat = query(collection(db, "chat"), orderBy("timestamp", "desc"));
+    const qChat = query(collection(db, "chat"), orderBy("timestamp", "desc"), limit(100));
     
     chatAdminUnsubscribe = onSnapshot(qChat, (snapshot) => {
         if(!chatContainer) return;

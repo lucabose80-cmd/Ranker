@@ -1,5 +1,17 @@
 export const patchNotesStarWars = [
     {
+        version: "v2.9.2",
+        title: "Hotfix: Firebase Optimierungen",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Globale History-Reset funktioniert nun korrekt – localStorage Cache wird beim Reset geleert.",
+            "Hotfix: Alle Firebase Listener werden beim Seitenwechsel ordnungsgemäß abgemeldet, um Read-Spikes zu verhindern.",
+            "Hotfix: Online-Tracker Query begrenzt auf 50 User – verhindert massive Reads bei vielen Usern.",
+            "Hotfix: Admin Chat Listener auf 100 Nachrichten begrenzt.",
+            "Hotfix: Admin History Query auf 1.000 Einträge begrenzt – verhindert tausende Reads beim Admin-Panel."
+        ]
+    },
+    {
         version: "v2.9",
         title: "The Themes & Factions Update",
         changes: [
