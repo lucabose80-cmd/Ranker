@@ -101,7 +101,10 @@ export function initCommunity() {
     input.onkeypress = (e) => { if(e.key === 'Enter') sendMessage(); };
 
     // 2. Online Tracker – initiale Nutzerliste einmal laden, danach nur aktive User nachladen
-    if(onlineInterval) clearInterval(onlineInterval);
+    if(onlineInterval) {
+        clearInterval(onlineInterval);
+        onlineInterval = null;
+    }
     
     const updateOnlineTracker = async () => {
         const onlineList = document.getElementById('online-users-list');
@@ -210,6 +213,10 @@ export function initCommunity() {
         }
     };
 
+    const refreshBtn = document.getElementById('refresh-online-btn');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', updateOnlineTracker);
+    }
+
     updateOnlineTracker();
-    onlineInterval = setInterval(updateOnlineTracker, 60000); // Alle 60s aktualisieren
 }
