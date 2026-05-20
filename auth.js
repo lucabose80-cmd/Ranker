@@ -218,3 +218,22 @@ export async function logout() {
 export function getCurrentUser() {
     return JSON.parse(localStorage.getItem(CURRENT_USER_KEY));
 }
+
+// Liest den User-State frisch aus Firebase und aktualisiert den lokalen Cache.
+// Muss aufgerufen werden wenn der localStorage veraltet sein könnte (nach Admin-Reset, nach Spielende).
+export async function refreshCurrentUser() {
+    const user = getCurrentUser();
+    if (!user || user.role === 'admin') return user;
+    try {
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (snap.exists()) {
+            const freshData = snap.data();
+            const updatedUser = { ...user, ...freshData, uid: user.uid };
+            localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updatedUser));
+            return updatedUser;
+        }
+    } catch (e) {
+        console.warn("refreshCurrentUser fehlgeschlagen:", e);
+    }
+    return user;
+}

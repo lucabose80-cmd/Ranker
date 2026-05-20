@@ -16,11 +16,12 @@ const TAG_LABELS = {
 
 let currentView = 'all'; // 'all' | 'tags'
 
-export function renderLexikon() {
+export async function renderLexikon() {
     const grid = document.getElementById('lexikon-grid');
     grid.innerHTML = '';
 
-    const user = getCurrentUser();
+    const { refreshCurrentUser } = await import('./auth.js');
+    const user = await refreshCurrentUser();
     const discoveredList = user && user.discovered ? user.discovered : [];
 
     if (currentView === 'all') {

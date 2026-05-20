@@ -86,7 +86,7 @@ export function stopHistoryListener() {
 }
 // Speichert ein fertiges Spiel in der Cloud
 export async function saveGameToHistory(placedCharacters, rating, pool, gameType = 'classic') {
-    const user = getCurrentUser();
+    let user = getCurrentUser();
     if (!user) return;
 
     const rankingData = [];
@@ -101,7 +101,10 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
         }
     }
 
-    markCharactersAsDiscovered(rankingData.map(c => c.name));
+    // Warten bis Charaktere als entdeckt markiert sind (aktualisiert localStorage)
+    await markCharactersAsDiscovered(rankingData.map(c => c.name));
+    // Aktuellen User aus localStorage neu laden, damit die Entdeckungen nicht überschrieben werden
+    user = getCurrentUser();
 
     const poolData = pool ? pool.map((c, idx) => ({ order: idx + 1, name: c.name, img: c.img })) : [];
 

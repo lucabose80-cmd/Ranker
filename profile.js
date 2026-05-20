@@ -123,8 +123,9 @@ export function initProfile() {
 }
 
 // Wird jedes Mal aufgerufen wenn das Profil geöffnet wird oder der Modus wechselt
-export function refreshProfileContent() {
-    const user = getCurrentUser();
+export async function refreshProfileContent() {
+    const { refreshCurrentUser } = await import('./auth.js');
+    const user = await refreshCurrentUser();
     if (!user) return;
 
     renderAvatarSelection();
