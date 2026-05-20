@@ -9,9 +9,26 @@ let cacheTimestamp = 0;
 // Holt alle Resets (global und persönlich) mit einem 12-Stunden-Cache, um massive Reads zu verhindern
 export async function getResets(force = false) {
     const now = Date.now();
-    // 12 Stunden Cache (43200000 ms) statt 60 Sekunden, um die 30 Reads pro Ladevorgang zu fixen
+    // 12 Stunden Cache (43200000 ms) statt 60 Sekunden, um die Reads pro Ladevorgang zu fixen
     if (!force && cacheAdminResets && cacheUserResets && (now - cacheTimestamp < 43200000)) {
         return { adminResets: cacheAdminResets, userResets: cacheUserResets };
+    }
+
+    if (!force) {
+        try {
+            const localCacheStr = localStorage.getItem('ranker_resets_cache');
+            if (localCacheStr) {
+                const localCache = JSON.parse(localCacheStr);
+                if (now - localCache.timestamp < 43200000) {
+                    cacheAdminResets = localCache.adminResets;
+                    cacheUserResets = localCache.userResets;
+                    cacheTimestamp = localCache.timestamp;
+                    return { adminResets: cacheAdminResets, userResets: cacheUserResets };
+                }
+            }
+        } catch (e) {
+            console.warn("Fehler beim Lesen des localStorage Caches", e);
+        }
     }
 
     const adminResets = {
@@ -45,6 +62,14 @@ export async function getResets(force = false) {
         cacheAdminResets = adminResets;
         cacheUserResets = userResets;
         cacheTimestamp = now;
+
+        try {
+            localStorage.setItem('ranker_resets_cache', JSON.stringify({
+                adminResets: adminResets,
+                userResets: userResets,
+                timestamp: now
+            }));
+        } catch (e) {}
     } catch (e) {
         console.error("Fehler beim Laden der Resets:", e);
         // Falls der Cache bereits existiert, nutzen wir ihn als Fallback

@@ -15,8 +15,8 @@ let selectedCharForUpdate = "";
 export function initSuggestions() {
     if (suggestionsUnsubscribe) return; // Bereits aktiv
 
-    // Limit auf 200 erhöhen, damit wir clientseitig filtern können, sortiert ist es schon nach votes (Likes)!
-    const q = query(collection(db, "suggestions"), orderBy("votes", "desc"), limit(200));
+    // Limit auf 100 setzen, damit nicht extrem viele Reads pro Page-Reload entstehen
+    const q = query(collection(db, "suggestions"), orderBy("votes", "desc"), limit(100));
     
     suggestionsUnsubscribe = onSnapshot(q, (snapshot) => {
         trackRead(snapshot.docChanges().filter(c => c.type !== 'removed').length);
