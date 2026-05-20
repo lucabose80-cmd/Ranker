@@ -1,21 +1,17 @@
 export const patchNotesWaifu = [
     {
-        version: "v2.7.4",
-        title: "QoL & Game Flow Update",
+        version: "v2.7.5",
+        title: "Manual Refresh & Performance Update",
         isHotfix: false,
         changes: [
-            "Game Flow: Eine neue Runde kann erst gestartet werden, wenn die aktuelle Liste bewertet wurde.",
-            "Discovery Anti-Cheat: Charaktere gelten erst am Ende einer vollständig gerankten Liste als 'entdeckt' (verhindert Reload-Abusing in der Voranzeige).",
+            "Neues Feature: Online-Liste kann jetzt manuell über einen Button im Online-Panel aktualisiert werden.",
+            "Performance: Automatisches Polling wurde deaktiviert, um Firestore-Reads deutlich zu reduzieren.",
+            "Fix: Der eigene Benutzer erscheint nicht mehr doppelt in der Online-Liste.",
+            "Fix: Online-Zähler aktualisiert sich jetzt korrekt nach manueller Neuladung.",
+            "QoL: Der Refresh-Button ist direkt neben der Online-Überschrift verfügbar.",
             "Chat Feature: Wenn der Chat geschlossen ist und eine neue Nachricht eingeht, leuchtet am Chat-Icon nun ein roter Punkt.",
-            "Neues Feature: Online-Liste kann jetzt manuell mit einem Refresh-Button aktualisiert werden, um Hintergrund-Reads zu reduzieren.",
-            "Fix: Online-Liste zeigt den eigenen Benutzer nicht mehr doppelt an.",
-            "Performance: Online-Tracker lädt aktivere Benutzer effizienter nach und spart Firestore-Reads.",
             "QoL: Eingaben in der Anmeldemaske, im Profil und in Vorschlagsfeldern können nun bequem mit der Enter-Taste bestätigt werden.",
-            "Fix: Vorschlagskarten-Header, Lexikon-Gitterhöhe und das Zusammenbrechen des Lexikon-Rasters bei leerem Zustand wurden behoben.",
-            "Fix: Online-Statuspunkt und die Anzeige aller Benutzer im Online-Tab wurden korrigiert.",
-            "Fix: Admin-Panel, Chat/Suggestions/Resets/Scoreboard-Filter und Discovery-Reset-Synchronisierung wurden stabilisiert.",
-            "Fix: Lexikon und Profil rendern jetzt frische Daten asynchron, und Benutzerzustand wird nach Spielspeicherung korrekt aktualisiert.",
-            "Hotfix: Ein fehlerhaftes doppeltes 'Auge'-Icon (Passwort sichtbar machen) in manchen Browsern wurde entfernt."
+            "Fix: Vorschlagskarten-Header, Lexikon-Gitterhöhe und das Zusammenbrechen des Lexikon-Rasters bei leerem Zustand wurden behoben."
         ]
     },
     {
