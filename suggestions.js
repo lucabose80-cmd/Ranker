@@ -271,7 +271,7 @@ export function renderSuggestions() {
                     <div style="position: relative; width: 100%; display: flex; justify-content: center; flex-shrink: 0;">
                         <img src="${sug.charImage}" style="width: 100%; aspect-ratio: 1/1.3; object-fit: cover; border-radius: 4px;">
                         <div style="position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.8); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; color: #fff; border: 1px solid #444;">
-                            ${hasVoted ? '<span style="color:#2ed573">✓</span>' : '▲'} ${sug.votes}
+                            ${hasVoted ? '<span style="color:#2ed573; font-weight:bold;">✓</span>' : '<span style="color:#aaa;">✓</span>'} ${sug.votes}
                         </div>
                     </div>
                     <div class="update-details hidden" style="flex: 1; flex-direction: column; gap: 10px; margin-left: 15px; display: none;">
@@ -282,7 +282,7 @@ export function renderSuggestions() {
                             ${sug.text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
                         </div>
                         <button class="rank-btn upvote-btn ${hasVoted ? 'voted' : ''}" data-id="${sug.id}" ${hasVoted ? 'disabled' : ''} style="width: 100%; padding: 8px; font-size: 1rem; background: ${hasVoted ? '#2a3142' : ''}; color: ${hasVoted ? '#fff' : ''}; border-color: ${hasVoted ? '#2a3142' : ''}; margin-top: auto;">
-                            ${hasVoted ? '✓ Gevotet' : '▲ Dafür abstimmen'} (${sug.votes})
+                            ${hasVoted ? '<span style="color:#2ed573; font-weight:bold;">✓</span> Gevotet' : '<span style="color:#aaa;">✓</span> Dafür abstimmen'} (${sug.votes})
                         </button>
                     </div>
                 `;
@@ -322,7 +322,7 @@ export function renderSuggestions() {
                     </div>
                     <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; margin-left: 15px;">
                         <button class="rank-btn upvote-btn ${hasVoted ? 'voted' : ''}" data-id="${sug.id}" ${hasVoted ? 'disabled' : ''} style="width: auto; padding: 5px 15px; font-size: 1.2rem; background: ${hasVoted ? '#2a3142' : ''}; color: ${hasVoted ? '#fff' : ''}; border-color: ${hasVoted ? '#2a3142' : ''};">
-                            ${hasVoted ? '✓' : '▲'} ${sug.votes}
+                            ${hasVoted ? '<span style="color:#2ed573; font-weight:bold;">✓</span>' : '<span style="color:#aaa;">✓</span>'} ${sug.votes}
                         </button>
                     </div>
                 `;
@@ -345,7 +345,7 @@ export function renderSuggestions() {
                     } catch (e) {
                         console.error("Fehler beim Voten:", e);
                         upvoteBtn.disabled = false;
-                        upvoteBtn.innerHTML = `▲ ${sug.votes}`;
+                        upvoteBtn.innerHTML = `<span style="color:#aaa;">✓</span> ${sug.votes}`;
                     }
                 });
             }
