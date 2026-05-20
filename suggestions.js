@@ -10,6 +10,7 @@ let isLoaded = false;
 let isAdminContext = false;
 
 let isFilterListenerAttached = false;
+let selectedCharForUpdate = "";
 
 export function initSuggestions() {
     if (suggestionsUnsubscribe) return; // Bereits aktiv
@@ -82,20 +83,25 @@ export function initSuggestions() {
     const updateSubmitBtn = document.getElementById('suggestion-update-submit-btn');
     if (updateSubmitBtn && !updateSubmitBtn.dataset.listenerAttached) {
         updateSubmitBtn.addEventListener('click', async () => {
-            const selectEl = document.getElementById('char-update-select');
             const nameEl = document.getElementById('char-update-name');
             const imgEl = document.getElementById('char-update-image');
+            const reasonEl = document.getElementById('char-update-reason');
             
-            const charName = selectEl.value;
+            const charName = selectedCharForUpdate;
             const newName = nameEl.value.trim();
             const newImg = imgEl.value.trim();
+            const reason = reasonEl.value.trim();
             
             if (!charName) {
-                alert("Bitte wähle einen Charakter aus.");
+                alert("Bitte wähle oben ein Bild aus.");
                 return;
             }
             if (!newName && !newImg) {
                 alert("Bitte gib einen neuen Namen oder einen Bildlink an.");
+                return;
+            }
+            if (!reason) {
+                alert("Bitte gib einen Grund für die Änderung an.");
                 return;
             }
             
@@ -104,7 +110,8 @@ export function initSuggestions() {
             
             let text = `Update für [${charName}]:`;
             if (newName) text += ` Neuer Name: "${newName}".`;
-            if (newImg) text += ` Neues Bild: ${newImg}`;
+            if (newImg) text += ` Neues Bild: ${newImg}.`;
+            text += ` Grund: ${reason}`;
             
             updateSubmitBtn.disabled = true;
             updateSubmitBtn.textContent = '...';
@@ -124,7 +131,11 @@ export function initSuggestions() {
                     trackWrite(1);
                     nameEl.value = '';
                     imgEl.value = '';
-                    selectEl.value = '';
+                    reasonEl.value = '';
+                    selectedCharForUpdate = "";
+                    document.getElementById('char-update-selected-info').textContent = "Nichts ausgewählt";
+                    // Reset grid highlighting
+                    document.querySelectorAll('.char-update-img').forEach(el => el.style.borderColor = 'transparent');
                     updateSubmitBtn.disabled = false;
                     updateSubmitBtn.textContent = 'Update Vorschlag Einreichen';
                 });
@@ -152,14 +163,29 @@ export function renderSuggestions() {
                 document.getElementById('suggestion-update-input-group').classList.remove('hidden');
                 
                 import('./theme.js').then(({ activeCharacterDatabase }) => {
-                    const selectEl = document.getElementById('char-update-select');
-                    selectEl.innerHTML = '<option value="">Charakter auswählen...</option>';
+                    const gridEl = document.getElementById('char-update-grid');
+                    gridEl.innerHTML = '';
                     const sorted = [...activeCharacterDatabase].sort((a,b) => a.name.localeCompare(b.name));
                     sorted.forEach(c => {
-                        const opt = document.createElement('option');
-                        opt.value = c.name;
-                        opt.textContent = c.name;
-                        selectEl.appendChild(opt);
+                        const img = document.createElement('img');
+                        img.src = c.image;
+                        img.className = 'char-update-img';
+                        img.style.width = '100%';
+                        img.style.aspectRatio = '1 / 1.3';
+                        img.style.objectFit = 'cover';
+                        img.style.borderRadius = '4px';
+                        img.style.cursor = 'pointer';
+                        img.style.border = '2px solid transparent';
+                        img.title = c.name;
+                        
+                        img.addEventListener('click', () => {
+                            selectedCharForUpdate = c.name;
+                            document.getElementById('char-update-selected-info').textContent = "Ausgewählt: " + c.name;
+                            document.querySelectorAll('.char-update-img').forEach(el => el.style.borderColor = 'transparent');
+                            img.style.borderColor = '#2ed573';
+                        });
+                        
+                        gridEl.appendChild(img);
                     });
                 });
             } else {

@@ -199,12 +199,20 @@
 
                     <!-- Input für Charakter Updates -->
                     <div id="suggestion-update-input-group" class="hidden" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
-                        <select id="char-update-select" style="padding: 12px; border-radius: 6px; background: rgba(0,0,0,0.2); border: 1px solid #333; color: white;">
-                            <option value="">Charakter auswählen...</option>
-                        </select>
+                        <p class="prompt-text" style="margin-bottom: 0;">1. Wähle das Bild des Charakters:</p>
+                        <div id="char-update-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 10px; max-height: 200px; overflow-y: auto; padding: 10px; border: 1px solid #333; border-radius: 6px; background: rgba(0,0,0,0.3);">
+                            <!-- Grid wird via JS befüllt -->
+                        </div>
+                        <div id="char-update-selected-info" class="prompt-text" style="color:#2ed573; font-weight:bold; margin-top: -5px; min-height: 20px;">Nichts ausgewählt</div>
+                        
+                        <p class="prompt-text" style="margin-bottom: 0; margin-top: 10px;">2. Was soll geändert werden?</p>
                         <input type="text" id="char-update-name" placeholder="Korrekter Name (falls der aktuelle falsch ist)" style="padding: 12px; border-radius: 6px; background: rgba(0,0,0,0.2); border: 1px solid #333; color: white;" autocomplete="off" maxlength="100">
                         <input type="url" id="char-update-image" placeholder="Link zu einem besseren Bild (falls du eines hast)" style="padding: 12px; border-radius: 6px; background: rgba(0,0,0,0.2); border: 1px solid #333; color: white;" autocomplete="off">
-                        <button id="suggestion-update-submit-btn" class="rank-btn" style="width: 100%; padding: 12px;">Update Vorschlag Einreichen</button>
+                        
+                        <p class="prompt-text" style="margin-bottom: 0; margin-top: 10px;">3. Warum?</p>
+                        <input type="text" id="char-update-reason" placeholder="Warum sollte das geändert werden? (z.B. Unschärfe, Falsches Universum...)" style="padding: 12px; border-radius: 6px; background: rgba(0,0,0,0.2); border: 1px solid #333; color: white;" autocomplete="off" maxlength="200">
+                        
+                        <button id="suggestion-update-submit-btn" class="rank-btn" style="width: 100%; padding: 12px; margin-top: 10px;">Update Vorschlag Einreichen</button>
                     </div>
                     <div id="suggestions-list" class="history-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
                 </div>
