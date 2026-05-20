@@ -1,5 +1,17 @@
 export const patchNotesWaifu = [
     {
+        version: "v2.7.3",
+        title: "Hotfix: Progression & UI-Updates",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Spieler-Titel werden nun im Online-Bereich zuverlässig bei allen Usern angezeigt.",
+            "UI-Update: Panel-Überschriften passen sich nun dynamisch an das aktuell gewählte Farb-Theme an.",
+            "Neues Feature: Strengere Discovery-Regeln – Profil-Avatare können erst ausgewählt werden, wenn der Charakter entdeckt wurde.",
+            "Neues Feature: Unentdeckte Charaktere bleiben im Lexikon komplett verborgen (als '???').",
+            "Neues Feature: Der goldene Leuchteffekt ('✨') im Lexikon verschwindet nun, sobald man ihn das erste Mal betrachtet hat."
+        ]
+    },
+    {
         version: "v2.7.2",
         title: "Hotfix: Firebase Optimierungen",
         isHotfix: true,

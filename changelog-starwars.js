@@ -1,5 +1,19 @@
 export const patchNotesStarWars = [
     {
+        version: "v2.9.3",
+        title: "Hotfix: Progression & UI-Updates",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Das Sith-Theme lässt sich nun wieder korrekt auswählen und färbt das UI rot.",
+            "Hotfix: Spieler-Titel werden nun im Online-Bereich zuverlässig bei allen Usern angezeigt.",
+            "UI-Update: Panel-Überschriften passen sich nun dynamisch an das aktuell gewählte Farb-Theme an.",
+            "Neues Feature: Strengere Discovery-Regeln – Profil-Avatare können erst ausgewählt werden, wenn der Charakter entdeckt wurde.",
+            "Neues Feature: Unentdeckte Charaktere bleiben im Lexikon komplett verborgen (als '???').",
+            "Neues Feature: Der goldene Leuchteffekt ('✨') im Lexikon verschwindet nun, sobald man ihn das erste Mal betrachtet hat.",
+            "Neues Feature: Theme-Freischaltung überarbeitet – Farbschemas erhält man nun, wenn man 5 Charaktere derselben Fraktion (z.B. Sith) in einem einzigen klassischen Spiel zieht (selten!)."
+        ]
+    },
+    {
         version: "v2.9.2",
         title: "Hotfix: Firebase Optimierungen",
         isHotfix: true,
