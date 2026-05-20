@@ -3,17 +3,15 @@ import { getCurrentUser, markUpdatesAsRead } from './auth.js';
 import { currentMode } from './mode-state.js';
 import { roadmapStarWars, roadmapWaifu } from './roadmap.js';
 
-let activeLatestGroupKey = "";
 let isModalInitialized = false;
-let latestVersionString = "";
+let latestVersionString = '';
 
-// Extrahiert den Gruppen-Key aus einer Versionsnummer (z.B. "v2.2.1" -> "v2.2")
+// Gruppiert Versionen nach Major.Minor (z.B. v2.8 und v2.8.1 -> eine Gruppe)
 function getGroupKey(version) {
     const parts = version.replace('v', '').split('.');
     return `v${parts[0]}.${parts[1]}`;
 }
 
-// Gruppiert Versionen nach Major.Minor (z.B. v2.2 und v2.2.1 -> eine Gruppe)
 function groupVersions(data) {
     const groups = {};
     const order = [];
@@ -37,6 +35,18 @@ function groupVersions(data) {
     return order.map(k => groups[k]);
 }
 
+// Gibt pro Change-Text ein passendes Icon zurück
+function getChangeIcon(text) {
+    const t = text.toLowerCase();
+    if (t.startsWith('hotfix')) return '🔧';
+    if (t.includes('neues feature') || t.includes('feature:')) return '✨';
+    if (t.includes('ui-update') || t.includes('ui update') || t.includes('visualisierung')) return '🎨';
+    if (t.includes('performance') || t.includes('optimierung') || t.includes('caching')) return '⚡';
+    if (t.includes('neues admin') || t.includes('admin')) return '🛡️';
+    if (t.includes('qualit') || t.includes('qol')) return '✅';
+    return '▸';
+}
+
 export function initChangelog() {
     const btn = document.getElementById('changelog-open-btn');
 
@@ -45,31 +55,35 @@ export function initChangelog() {
         modal.id = 'changelog-modal';
         modal.className = 'modal hidden';
         modal.innerHTML = `
-            <div class="updates-content">
-                <button id="close-changelog-btn" class="close-btn">✕</button>
-                <h2 class="updates-main-title">UPDATES</h2>
-                <div class="changelog-tabs">
-                    <button class="changelog-tab active" data-tab="patchnotes">📋 Patch Notes</button>
-                    <button class="changelog-tab" data-tab="roadmap">🗺️ Roadmap</button>
+            <div class="cl-modal-box">
+                <div class="cl-header">
+                    <div class="cl-header-left">
+                        <span class="cl-logo">📦</span>
+                        <div>
+                            <div class="cl-title">Patch Notes</div>
+                            <div class="cl-subtitle">Star Wars Ranking</div>
+                        </div>
+                    </div>
+                    <button id="close-changelog-btn" class="cl-close-btn">✕</button>
                 </div>
-                <hr class="updates-divider">
-                <div id="changelog-patchnotes-panel"></div>
-                <div id="changelog-roadmap-panel" class="hidden"></div>
+                <div class="cl-tabs">
+                    <button class="cl-tab active" data-tab="patchnotes">📋 Updates</button>
+                    <button class="cl-tab" data-tab="roadmap">🗺️ Roadmap</button>
+                </div>
+                <div class="cl-body">
+                    <div id="changelog-patchnotes-panel"></div>
+                    <div id="changelog-roadmap-panel" class="hidden"></div>
+                </div>
             </div>
         `;
         document.body.appendChild(modal);
 
-        document.getElementById('close-changelog-btn').addEventListener('click', () => {
-            modal.classList.add('hidden');
-        });
+        document.getElementById('close-changelog-btn').addEventListener('click', () => modal.classList.add('hidden'));
+        modal.addEventListener('click', e => { if (e.target === modal) modal.classList.add('hidden'); });
 
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) modal.classList.add('hidden');
-        });
-
-        modal.querySelectorAll('.changelog-tab').forEach(tab => {
+        modal.querySelectorAll('.cl-tab').forEach(tab => {
             tab.addEventListener('click', () => {
-                modal.querySelectorAll('.changelog-tab').forEach(t => t.classList.remove('active'));
+                modal.querySelectorAll('.cl-tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
                 const target = tab.dataset.tab;
                 document.getElementById('changelog-patchnotes-panel').classList.toggle('hidden', target !== 'patchnotes');
@@ -82,9 +96,7 @@ export function initChangelog() {
         btn.addEventListener('click', () => {
             document.getElementById('changelog-modal').classList.remove('hidden');
             btn.classList.remove('text-gold-glow');
-            if (latestVersionString) {
-                markUpdatesAsRead(currentMode, latestVersionString);
-            }
+            if (latestVersionString) markUpdatesAsRead(currentMode, latestVersionString);
         });
         isModalInitialized = true;
     }
@@ -96,57 +108,72 @@ export function updateChangelogContent(changelogData) {
     if (!patchPanel) return;
 
     const grouped = groupVersions(changelogData);
-    activeLatestGroupKey = grouped[0]?.key || "";
-    latestVersionString = changelogData[0]?.version || "";
+    latestVersionString = changelogData[0]?.version || '';
+
+    // Update the subtitle to reflect current mode
+    const sub = document.querySelector('.cl-subtitle');
+    if (sub) sub.textContent = currentMode === 'starwars' ? 'Star Wars Ranking' : 'Anime Ranking';
 
     // --- Patch Notes rendern ---
     patchPanel.innerHTML = grouped.map((group, idx) => {
         const main = group.main;
         const patches = group.patches;
+        const isLatest = idx === 0;
 
-        const mainChangesHtml = main
-            ? `<ul>${main.changes.map(c => `<li>${c}</li>`).join('')}</ul>`
-            : '';
+        const mainChangesHtml = main ? main.changes.map(c => `
+            <div class="cl-change-item">
+                <span class="cl-change-icon">${getChangeIcon(c)}</span>
+                <span class="cl-change-text">${c.replace(/^(Hotfix|Neues Feature|UI-Update|Performance|Visualisierung|Optimierung|QoL|Balancing|Inhalts-Erweiterung|Vielfalt|Design|Globales|Neuer|Ranking Meta|Globale|Backend):\s*/i, '')}</span>
+            </div>
+        `).join('') : '';
 
         const patchesHtml = patches.length > 0 ? `
-            <button class="patch-accordion-btn">🔧 ${patches.length} Hotfix${patches.length > 1 ? 'es' : ''} anzeigen ▾</button>
-            <div class="patch-accordion-content hidden">
+            <button class="cl-hotfix-toggle">
+                🔧 ${patches.length} Hotfix${patches.length > 1 ? 'es' : ''} <span class="cl-hotfix-arrow">▾</span>
+            </button>
+            <div class="cl-hotfix-list hidden">
                 ${patches.map(p => `
-                    <div class="patch-entry">
-                        <div class="patch-entry-header">
-                            <span class="version-badge version-badge-patch">${p.version}</span>
-                            <span class="patch-entry-title-text">${p.title}</span>
+                    <div class="cl-hotfix-entry">
+                        <div class="cl-hotfix-header">
+                            <span class="cl-version-tag cl-version-hotfix">${p.version}</span>
+                            <span class="cl-hotfix-title">${p.title.replace(/^Hotfix:\s*/i, '')}</span>
                         </div>
-                        <ul>${p.changes.map(c => `<li>${c}</li>`).join('')}</ul>
+                        ${p.changes.map(c => `
+                            <div class="cl-change-item cl-change-item-small">
+                                <span class="cl-change-icon">🔧</span>
+                                <span class="cl-change-text">${c.replace(/^Hotfix:\s*/i, '')}</span>
+                            </div>
+                        `).join('')}
                     </div>
                 `).join('')}
             </div>
         ` : '';
 
         return `
-            <div class="update-card ${idx === 0 ? 'update-card-latest' : ''}">
-                <h3 class="update-card-title">
-                    <span class="version-badge">${group.key}</span>
-                    <span>${main?.title || ''}</span>
-                    ${idx === 0 ? '<span class="latest-badge">AKTUELL</span>' : ''}
-                </h3>
-                ${mainChangesHtml}
+            <div class="cl-update-card ${isLatest ? 'cl-update-latest' : ''}">
+                <div class="cl-update-header">
+                    <div class="cl-update-header-left">
+                        <span class="cl-version-tag">${group.key}</span>
+                        ${isLatest ? '<span class="cl-latest-badge">AKTUELL</span>' : ''}
+                    </div>
+                    <div class="cl-update-title">${main?.title || ''}</div>
+                </div>
+                <div class="cl-changes-list">
+                    ${mainChangesHtml}
+                </div>
                 ${patchesHtml}
             </div>
         `;
     }).join('');
 
-    // Accordion-Logik anheften
-    patchPanel.querySelectorAll('.patch-accordion-btn').forEach(btn => {
+    // Accordion-Logik
+    patchPanel.querySelectorAll('.cl-hotfix-toggle').forEach(btn => {
         btn.addEventListener('click', () => {
-            const content = btn.nextElementSibling;
-            const isOpen = !content.classList.contains('hidden');
-            content.classList.toggle('hidden');
-            if (isOpen) {
-                btn.textContent = btn.textContent.replace('verstecken ▴', 'anzeigen ▾');
-            } else {
-                btn.textContent = btn.textContent.replace('anzeigen ▾', 'verstecken ▴');
-            }
+            const list = btn.nextElementSibling;
+            const arrow = btn.querySelector('.cl-hotfix-arrow');
+            const isOpen = !list.classList.contains('hidden');
+            list.classList.toggle('hidden');
+            arrow.textContent = isOpen ? '▾' : '▴';
         });
     });
 
@@ -155,7 +182,7 @@ export function updateChangelogContent(changelogData) {
         import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js").then(async ({ collection, getDocs }) => {
             const { db } = await import('./firebase-config.js');
             let roadmapData = JSON.parse(JSON.stringify(currentMode === 'starwars' ? roadmapStarWars : roadmapWaifu));
-            
+
             try {
                 const snap = await getDocs(collection(db, "roadmap"));
                 let communityItems = [];
@@ -169,42 +196,34 @@ export function updateChangelogContent(changelogData) {
                     }
                 });
                 if (communityItems.length > 0) {
-                    // Sortiere nach Votes absteigend, falls wir sie im Doc gespeichert haben. Aber wir haben sie grad nicht in der Schleife verarbeitet, egal wir zeigen die Votes an.
-                    roadmapData.push({
-                        category: "💡 Community Wünsche",
-                        color: "#2ed573",
-                        items: communityItems
-                    });
+                    roadmapData.push({ category: "💡 Community Wünsche", color: "#2ed573", items: communityItems });
                 }
             } catch(e) {}
 
             roadmapPanel.innerHTML = roadmapData.map(section => `
-                <div class="roadmap-section">
-                    <h3 class="roadmap-section-title" style="color: ${section.color}">${section.category}</h3>
-                    <div class="roadmap-items">
-                        ${section.items.map(item => `
-                            <div class="roadmap-item" style="border-left-color: ${section.color}">
-                                <div class="roadmap-item-title">${item.title}</div>
-                                <div class="roadmap-item-desc">${item.desc}</div>
-                            </div>
-                        `).join('')}
-                    </div>
+                <div class="cl-roadmap-section">
+                    <h3 class="cl-roadmap-category" style="color: ${section.color}; border-bottom-color: ${section.color}44;">${section.category}</h3>
+                    ${section.items.map(item => `
+                        <div class="cl-roadmap-item" style="border-left-color: ${section.color}">
+                            <div class="cl-roadmap-item-title">${item.title}</div>
+                            <div class="cl-roadmap-item-desc">${item.desc}</div>
+                        </div>
+                    `).join('')}
                 </div>
             `).join('');
         });
     }
 
-    // --- Glow-Logik ---
+    // Glow-Logik
     const user = getCurrentUser();
-    const btn = document.getElementById('changelog-open-btn');
+    const openBtn = document.getElementById('changelog-open-btn');
     if (user && user.role !== 'admin') {
         const field = currentMode === 'starwars' ? 'lastReadVersionStarWars' : 'lastReadVersionWaifu';
         const lastRead = user[field] || '';
-
         if (lastRead !== latestVersionString) {
-            btn.classList.add('text-gold-glow');
+            openBtn.classList.add('text-gold-glow');
         } else {
-            btn.classList.remove('text-gold-glow');
+            openBtn.classList.remove('text-gold-glow');
         }
     }
 }
