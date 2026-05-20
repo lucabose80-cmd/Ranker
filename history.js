@@ -29,17 +29,13 @@ export function initHistoryListener(force = false) {
     }
     isFirstLoadComplete = false;
 
-    // Wir sortieren nach timestamp desc, filtern mode lokal, um zusammengesetzte Indizes zu umgehen
-    const q = query(collection(db, "history"), orderBy("timestamp", "desc"), limit(24));
+    const q = query(collection(db, "history"), where("mode", "==", currentMode), orderBy("timestamp", "desc"), limit(24));
     
-    historyUnsubscribe = onSnapshot(q, (snapshot) => {
+    const handleHistorySnapshot = (snapshot) => {
         trackRead(snapshot.docChanges().filter(c => c.type !== 'removed').length);
-        let games = [];
+        const games = [];
         snapshot.forEach((doc) => {
-            const data = doc.data();
-            if (data.mode === currentMode) {
-                games.push(data);
-            }
+            games.push(doc.data());
         });
 
         // Lokal sortieren nach Timestamp absteigend
@@ -61,19 +57,25 @@ export function initHistoryListener(force = false) {
         // Scoreboard ebenfalls live aktualisieren falls offen
         const scoreboardContainer = document.getElementById('scoreboard-list');
         if (scoreboardContainer && !document.getElementById('scoreboard-content').classList.contains('hidden')) {
-            // Import dynamisch oder wir verlassen uns darauf, dass renderScoreboard global importiert wird.
-            // Um Zirkelbezüge zu vermeiden, rufen wir das Event oder die Render-Funktion auf.
             const filterSelect = document.getElementById('scoreboard-user-filter');
             if (filterSelect) {
-                // Wir werfen ein Custom-Event oder rufen es auf, falls im Window-Scope registriert.
-                // Noch einfacher: Wir dispatchen ein Event oder triggern ein Rerender über das UI.
                 const event = new Event('change');
                 filterSelect.dispatchEvent(event);
             }
         }
-    }, (error) => {
+    };
+
+    const handleHistoryError = (error) => {
         console.error("Fehler im History-Listener:", error);
-    });
+        if (error?.message?.includes('index')) {
+            const fallbackQuery = query(collection(db, "history"), orderBy("timestamp", "desc"), limit(24));
+            historyUnsubscribe = onSnapshot(fallbackQuery, handleHistorySnapshot, (fallbackError) => {
+                console.error("History listener fallback error:", fallbackError);
+            });
+        }
+    };
+
+    historyUnsubscribe = onSnapshot(q, handleHistorySnapshot, handleHistoryError);
 }
 
 // Beendet den Echtzeit-Sync für die Historie, um Reads im Hintergrund zu sparen

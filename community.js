@@ -7,12 +7,14 @@ import { trackRead, trackWrite } from './tracker.js';
 
 let chatUnsubscribe = null;
 let onlineInterval = null;
+let allUsersCache = [];
 
 export function stopCommunity() {
     if(chatUnsubscribe) chatUnsubscribe();
     if(onlineInterval) clearInterval(onlineInterval);
     chatUnsubscribe = null;
     onlineInterval = null;
+    allUsersCache = [];
 }
 
 export function initCommunity() {
@@ -98,7 +100,7 @@ export function initCommunity() {
     sendBtn.onclick = sendMessage;
     input.onkeypress = (e) => { if(e.key === 'Enter') sendMessage(); };
 
-    // 2. Online Tracker – lädt ALLE User, zeigt sie grau/grün je nach Status
+    // 2. Online Tracker – initiale Nutzerliste einmal laden, danach nur aktive User nachladen
     if(onlineInterval) clearInterval(onlineInterval);
     
     const updateOnlineTracker = async () => {
@@ -106,29 +108,44 @@ export function initCommunity() {
         if(!onlineList) return;
         
         try {
-            // Alle User laden (kein Filter) damit auch Offline-User sichtbar sind
-            const allUsersSnap = await getDocs(query(collection(db, "users"), limit(100)));
-            trackRead(allUsersSnap.size);
-            
             const now = Date.now();
             const SIX_MIN = 360000;
-            let onlineCount = 0;
+            const activeSince = Timestamp.fromDate(new Date(now - SIX_MIN));
 
-            // Alle User sammeln und sortieren: Online zuerst, dann alphabetisch
-            const allUsers = [];
-            allUsersSnap.forEach(docSnap => {
+            if (allUsersCache.length === 0) {
+                const allUsersSnap = await getDocs(query(collection(db, "users"), limit(100)));
+                trackRead(allUsersSnap.size);
+
+                allUsersCache = [];
+                allUsersSnap.forEach(docSnap => {
+                    const u = docSnap.data();
+                    if (u.role === 'admin') return;
+                    allUsersCache.push({ ...u, username: docSnap.id, _isOnline: false });
+                });
+            }
+
+            const activeUsersSnap = await getDocs(query(collection(db, "users"), where("lastActive", ">", activeSince), limit(100)));
+            trackRead(activeUsersSnap.size);
+
+            const activeUsers = new Set();
+            activeUsersSnap.forEach(docSnap => {
                 const u = docSnap.data();
-                if (u.role === 'admin') return; // Admin nicht anzeigen
+                if (u.role === 'admin') return;
+                activeUsers.add(docSnap.id);
 
-                let isOnline = false;
-                if (u.lastActive) {
-                    let lastActiveMillis = typeof u.lastActive.toMillis === 'function'
-                        ? u.lastActive.toMillis()
-                        : (u.lastActive.seconds ? u.lastActive.seconds * 1000 : 0);
-                    isOnline = (now - lastActiveMillis) < SIX_MIN;
+                const existingIndex = allUsersCache.findIndex(item => item.username === docSnap.id);
+                if (existingIndex >= 0) {
+                    allUsersCache[existingIndex] = { ...allUsersCache[existingIndex], ...u, username: docSnap.id };
+                } else {
+                    allUsersCache.push({ ...u, username: docSnap.id, _isOnline: false });
                 }
-                allUsers.push({ ...u, _isOnline: isOnline });
+            });
+
+            let onlineCount = 0;
+            const allUsers = allUsersCache.map(u => {
+                const isOnline = activeUsers.has(u.username);
                 if (isOnline) onlineCount++;
+                return { ...u, _isOnline: isOnline };
             });
 
             // Online zuerst, dann alphabetisch
