@@ -85,7 +85,7 @@ export function initCommunity() {
         
         try {
             const sixMinutesAgo = new Date(Date.now() - 360000);
-            const qOnline = query(collection(db, "users"), where("lastActive", ">=", Timestamp.fromDate(sixMinutesAgo)));
+            const qOnline = query(collection(db, "users"), where("lastActive", ">=", Timestamp.fromDate(sixMinutesAgo)), limit(50));
             const snapshot = await getDocs(qOnline);
             trackRead(snapshot.size);
             onlineList.innerHTML = '';
