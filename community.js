@@ -120,7 +120,7 @@ export function initCommunity() {
                 allUsersSnap.forEach(docSnap => {
                     const u = docSnap.data();
                     if (u.role === 'admin') return;
-                    allUsersCache.push({ ...u, username: docSnap.id, _isOnline: false });
+                    allUsersCache.push({ ...u, uid: docSnap.id, username: u.username || docSnap.id, _isOnline: false });
                 });
             }
 
@@ -133,17 +133,17 @@ export function initCommunity() {
                 if (u.role === 'admin') return;
                 activeUsers.add(docSnap.id);
 
-                const existingIndex = allUsersCache.findIndex(item => item.username === docSnap.id);
+                const existingIndex = allUsersCache.findIndex(item => item.uid === docSnap.id);
                 if (existingIndex >= 0) {
-                    allUsersCache[existingIndex] = { ...allUsersCache[existingIndex], ...u, username: docSnap.id };
+                    allUsersCache[existingIndex] = { ...allUsersCache[existingIndex], ...u, uid: docSnap.id, username: u.username || docSnap.id };
                 } else {
-                    allUsersCache.push({ ...u, username: docSnap.id, _isOnline: false });
+                    allUsersCache.push({ ...u, uid: docSnap.id, username: u.username || docSnap.id, _isOnline: false });
                 }
             });
 
             let onlineCount = 0;
             const allUsers = allUsersCache.map(u => {
-                const isOnline = activeUsers.has(u.username);
+                const isOnline = activeUsers.has(u.uid);
                 if (isOnline) onlineCount++;
                 return { ...u, _isOnline: isOnline };
             });
@@ -178,7 +178,7 @@ export function initCommunity() {
 
             // Alle anderen User (skip aktueller User)
             allUsers.forEach(u => {
-                if (u.username === user.username) return;
+                if (u.uid === user.uid || u.username === user.username) return;
                 
                 const otherMode = u.activeMode || 'starwars';
                 const otherAvatar = otherMode === 'starwars' ? u.avatarStarWars : u.avatarWaifu;

@@ -7,6 +7,8 @@ export const patchNotesStarWars = [
             "Game Flow: Eine neue Runde kann erst gestartet werden, wenn die aktuelle Liste bewertet wurde.",
             "Discovery Anti-Cheat: Charaktere gelten erst am Ende einer vollständig gerankten Liste als 'entdeckt' (verhindert Reload-Abusing in der Voranzeige).",
             "Chat Feature: Wenn der Chat geschlossen ist und eine neue Nachricht eingeht, leuchtet am Chat-Icon nun ein roter Punkt.",
+            "Fix: Online-Liste zeigt den eigenen Benutzer nicht mehr doppelt an.",
+            "Performance: Online-Tracker lädt aktivere Benutzer effizienter nach und spart Firestore-Reads.",
             "QoL: Eingaben in der Anmeldemaske, im Profil und in Vorschlagsfeldern können nun bequem mit der Enter-Taste bestätigt werden.",
             "Fix: Vorschlagskarten-Header, Lexikon-Gitterhöhe und das Zusammenbrechen des Lexikon-Rasters bei leerem Zustand wurden behoben.",
             "Fix: Online-Statuspunkt und die Anzeige aller Benutzer im Online-Tab wurden korrigiert.",
