@@ -6,11 +6,11 @@ let cacheAdminResets = null;
 let cacheUserResets = null;
 let cacheTimestamp = 0;
 
-// Holt alle Resets (global und persönlich) mit einem 12-Stunden-Cache, um massive Reads zu verhindern
+// Holt alle Resets (global und persönlich) mit einem 5-Minuten-Cache
 export async function getResets(force = false) {
     const now = Date.now();
-    // 12 Stunden Cache (43200000 ms) statt 60 Sekunden, um die Reads pro Ladevorgang zu fixen
-    if (!force && cacheAdminResets && cacheUserResets && (now - cacheTimestamp < 43200000)) {
+    // 5 Minuten Cache (300000 ms) – kurz genug, damit neue User im Scoreboard erscheinen
+    if (!force && cacheAdminResets && cacheUserResets && (now - cacheTimestamp < 300000)) {
         return { adminResets: cacheAdminResets, userResets: cacheUserResets };
     }
 
@@ -19,7 +19,7 @@ export async function getResets(force = false) {
             const localCacheStr = localStorage.getItem('ranker_resets_cache');
             if (localCacheStr) {
                 const localCache = JSON.parse(localCacheStr);
-                if (now - localCache.timestamp < 43200000) {
+                if (now - localCache.timestamp < 300000) {
                     cacheAdminResets = localCache.adminResets;
                     cacheUserResets = localCache.userResets;
                     cacheTimestamp = localCache.timestamp;
@@ -44,10 +44,12 @@ export async function getResets(force = false) {
         usersSnap.forEach(d => {
             const u = d.data();
             if (u.role === 'admin') {
+                // Globale Reset-Timestamps aus dem Admin-Dokument lesen
                 if (u.globalHistoryReset_starwars) adminResets.globalHistoryReset_starwars = u.globalHistoryReset_starwars.seconds;
                 if (u.globalHistoryReset_waifu) adminResets.globalHistoryReset_waifu = u.globalHistoryReset_waifu.seconds;
                 if (u.globalScoreboardReset_starwars) adminResets.globalScoreboardReset_starwars = u.globalScoreboardReset_starwars.seconds;
                 if (u.globalScoreboardReset_waifu) adminResets.globalScoreboardReset_waifu = u.globalScoreboardReset_waifu.seconds;
+                return; // Admin NICHT ins userResets eintragen – soll nicht im Scoreboard erscheinen
             }
             
             userResets[u.username] = {
