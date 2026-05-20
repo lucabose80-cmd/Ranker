@@ -78,6 +78,65 @@ export function initSuggestions() {
         });
         submitBtn.dataset.listenerAttached = 'true';
     }
+
+    const updateSubmitBtn = document.getElementById('suggestion-update-submit-btn');
+    if (updateSubmitBtn && !updateSubmitBtn.dataset.listenerAttached) {
+        updateSubmitBtn.addEventListener('click', async () => {
+            const selectEl = document.getElementById('char-update-select');
+            const nameEl = document.getElementById('char-update-name');
+            const imgEl = document.getElementById('char-update-image');
+            
+            const charName = selectEl.value;
+            const newName = nameEl.value.trim();
+            const newImg = imgEl.value.trim();
+            
+            if (!charName) {
+                alert("Bitte wähle einen Charakter aus.");
+                return;
+            }
+            if (!newName && !newImg) {
+                alert("Bitte gib einen neuen Namen oder einen Bildlink an.");
+                return;
+            }
+            
+            const user = getCurrentUser();
+            if (!user) return;
+            
+            let text = `Update für [${charName}]:`;
+            if (newName) text += ` Neuer Name: "${newName}".`;
+            if (newImg) text += ` Neues Bild: ${newImg}`;
+            
+            updateSubmitBtn.disabled = true;
+            updateSubmitBtn.textContent = '...';
+            
+            try {
+                import('./mode-state.js').then(async ({ currentMode }) => {
+                    await addDoc(collection(db, "suggestions"), {
+                        text: text,
+                        type: 'char_update',
+                        targetMode: currentMode,
+                        author: user.username,
+                        authorDisplay: user.displayName || user.username,
+                        timestamp: Timestamp.now(),
+                        votes: 1,
+                        votedBy: [user.username]
+                    });
+                    trackWrite(1);
+                    nameEl.value = '';
+                    imgEl.value = '';
+                    selectEl.value = '';
+                    updateSubmitBtn.disabled = false;
+                    updateSubmitBtn.textContent = 'Update Vorschlag Einreichen';
+                });
+            } catch (e) {
+                console.error("Fehler beim Senden des Vorschlags:", e);
+                alert("Fehler beim Senden.");
+                updateSubmitBtn.disabled = false;
+                updateSubmitBtn.textContent = 'Update Vorschlag Einreichen';
+            }
+        });
+        updateSubmitBtn.dataset.listenerAttached = 'true';
+    }
 }
 
 export function renderSuggestions() {
@@ -86,7 +145,29 @@ export function renderSuggestions() {
     const selectedType = filterEl ? filterEl.value : 'feature';
 
     if (!isFilterListenerAttached && filterEl) {
-        filterEl.addEventListener('change', renderSuggestions);
+        filterEl.addEventListener('change', () => {
+            const val = filterEl.value;
+            if (val === 'char_update') {
+                document.getElementById('suggestion-normal-input-group').classList.add('hidden');
+                document.getElementById('suggestion-update-input-group').classList.remove('hidden');
+                
+                import('./theme.js').then(({ activeCharacterDatabase }) => {
+                    const selectEl = document.getElementById('char-update-select');
+                    selectEl.innerHTML = '<option value="">Charakter auswählen...</option>';
+                    const sorted = [...activeCharacterDatabase].sort((a,b) => a.name.localeCompare(b.name));
+                    sorted.forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c.name;
+                        opt.textContent = c.name;
+                        selectEl.appendChild(opt);
+                    });
+                });
+            } else {
+                document.getElementById('suggestion-normal-input-group').classList.remove('hidden');
+                document.getElementById('suggestion-update-input-group').classList.add('hidden');
+            }
+            renderSuggestions();
+        });
         isFilterListenerAttached = true;
     }
 
@@ -107,6 +188,9 @@ export function renderSuggestions() {
             // Features sind universumsübergreifend, Charaktere sind an den targetMode gebunden!
             if (selectedType === 'character') {
                 return sType === 'character' && s.targetMode === currentMode;
+            }
+            if (selectedType === 'char_update') {
+                return sType === 'char_update' && s.targetMode === currentMode;
             }
             return sType === 'feature';
         });

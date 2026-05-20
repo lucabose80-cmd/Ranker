@@ -186,12 +186,25 @@
                         <select id="suggestion-type-filter">
                             <option value="feature">Features & Allgemeines</option>
                             <option value="character">Neue Charaktere</option>
+                            <option value="char_update">Charakter Update (Name/Bild)</option>
                         </select>
                     </div>
                     <p class="prompt-text">Was wünschst du dir für das Spiel?</p>
-                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    
+                    <!-- Normales Input (Feature / Neuer Charakter) -->
+                    <div id="suggestion-normal-input-group" style="display: flex; gap: 10px; margin-bottom: 20px;">
                         <input type="text" id="suggestion-input" placeholder="Dein Vorschlag..." style="flex: 1; padding: 12px; border-radius: 6px; background: rgba(0,0,0,0.2); border: 1px solid #333; color: white;" autocomplete="off" maxlength="150">
                         <button id="suggestion-submit-btn" class="rank-btn" style="width: auto; padding: 0 20px;">Einreichen</button>
+                    </div>
+
+                    <!-- Input für Charakter Updates -->
+                    <div id="suggestion-update-input-group" class="hidden" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                        <select id="char-update-select" style="padding: 12px; border-radius: 6px; background: rgba(0,0,0,0.2); border: 1px solid #333; color: white;">
+                            <option value="">Charakter auswählen...</option>
+                        </select>
+                        <input type="text" id="char-update-name" placeholder="Korrekter Name (falls der aktuelle falsch ist)" style="padding: 12px; border-radius: 6px; background: rgba(0,0,0,0.2); border: 1px solid #333; color: white;" autocomplete="off" maxlength="100">
+                        <input type="url" id="char-update-image" placeholder="Link zu einem besseren Bild (falls du eines hast)" style="padding: 12px; border-radius: 6px; background: rgba(0,0,0,0.2); border: 1px solid #333; color: white;" autocomplete="off">
+                        <button id="suggestion-update-submit-btn" class="rank-btn" style="width: 100%; padding: 12px;">Update Vorschlag Einreichen</button>
                     </div>
                     <div id="suggestions-list" class="history-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
                 </div>
