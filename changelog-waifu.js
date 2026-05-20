@@ -1,13 +1,19 @@
 export const patchNotesWaifu = [
     {
+        version: "v2.2.1",
+        title: "UI Polishing & Bugfixes",
+        changes: [
+            "UI-Update: Das gesamte Voting-System nutzt nun dynamische Haken (✓), die beim Abstimmen kräftig grün aufleuchten.",
+            "Bugfix: Ein Fehler wurde behoben, durch den Bilder bei Charakter-Updates nicht korrekt aus der Datenbank geladen wurden."
+        ]
+    },
+    {
         version: "v2.2",
         title: "The Community & Suggestions Update",
         changes: [
             "Neues Feature: Der Vorschläge-Tab wurde massiv erweitert! Du kannst nun gezielt zwischen 'Features', 'Neuen Charakteren' und 'Charakter-Updates (Name/Bild)' filtern.",
             "Visualisierung: Änderungsvorschläge für bestehende Charaktere werden nun in einem schicken, interaktiven Bilder-Raster präsentiert. Ein Klick auf ein Bild öffnet die Voting-Details.",
-            "UI-Update: Das gesamte Voting-System nutzt nun dynamische Haken (✓), die beim Abstimmen kräftig grün aufleuchten.",
-            "Neues Admin-Feature: Die Moderation kann hervorragende Community-Ideen mit einem Klick in echte Roadmap-Punkte verwandeln. Diese tauchen dann im Tab 'Roadmap' (unter Updates) direkt im Spiel auf!",
-            "Bugfix: Ein Fehler wurde behoben, durch den Bilder bei Charakter-Updates nicht korrekt aus der Datenbank geladen wurden."
+            "Neues Admin-Feature: Die Moderation kann hervorragende Community-Ideen mit einem Klick in echte Roadmap-Punkte verwandeln. Diese tauchen dann im Tab 'Roadmap' (unter Updates) direkt im Spiel auf!"
         ]
     },
     {
