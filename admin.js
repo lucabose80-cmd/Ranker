@@ -14,6 +14,11 @@ function invalidateAllCaches() {
     invalidateResetsCache();
 }
 
+export function stopAdminPanel() {
+    if(chatAdminUnsubscribe) chatAdminUnsubscribe();
+    chatAdminUnsubscribe = null;
+}
+
 export async function initAdminPanel() {
     if(!listenersBound) {
         document.getElementById('admin-logout-btn').addEventListener('click', logout);

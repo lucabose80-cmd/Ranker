@@ -8,6 +8,13 @@ import { trackRead, trackWrite } from './tracker.js';
 let chatUnsubscribe = null;
 let onlineInterval = null;
 
+export function stopCommunity() {
+    if(chatUnsubscribe) chatUnsubscribe();
+    if(onlineInterval) clearInterval(onlineInterval);
+    chatUnsubscribe = null;
+    onlineInterval = null;
+}
+
 export function initCommunity() {
     const user = getCurrentUser();
     if(!user) return;

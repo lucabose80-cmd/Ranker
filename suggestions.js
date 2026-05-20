@@ -12,6 +12,11 @@ let isAdminContext = false;
 let isFilterListenerAttached = false;
 let selectedCharForUpdate = "";
 
+export function stopSuggestions() {
+    if(suggestionsUnsubscribe) suggestionsUnsubscribe();
+    suggestionsUnsubscribe = null;
+}
+
 export function initSuggestions() {
     if (suggestionsUnsubscribe) return; // Bereits aktiv
 
