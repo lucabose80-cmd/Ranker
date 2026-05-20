@@ -73,7 +73,10 @@
             <div class="top-bar">
                 <div id="profile-trigger" class="profile-trigger" title="Profil öffnen">
                     <img id="topbar-avatar" class="mini-avatar hidden" src="" alt="Avatar">
-                    <span id="player-greeting" class="prompt-text"></span>
+                    <div style="display:flex; flex-direction:column; align-items:flex-start;">
+                        <span id="player-greeting" class="prompt-text"></span>
+                        <span id="player-title" class="title-badge" style="display:none; font-size:0.7rem; color:#ffd700; margin-top:-5px; font-weight:bold; letter-spacing:1px; text-transform:uppercase;"></span>
+                    </div>
                 </div>
             </div>
             
@@ -230,6 +233,10 @@
                         <input type="text" id="profile-displayname">
                         <p class="prompt-text">Passwort ändern</p>
                         <input type="password" id="profile-password" placeholder="Neues Passwort">
+                        <p class="prompt-text" style="margin-top: 15px;">Dein Titel (Freigespielt: <span id="profile-games-count">0</span> Spiele)</p>
+                        <select id="profile-title" style="padding: 12px; border-radius: 6px; background: rgba(0,0,0,0.2); border: 1px solid #333; color: white; width: 100%; margin-bottom: 20px;">
+                            <!-- Titles filled via JS -->
+                        </select>
                         <button id="save-profile-btn" class="rank-btn auth-btn">Speichern</button>
                         <p id="profile-feedback" class="prompt-text hidden"></p>
                     </div>

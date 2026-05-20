@@ -34,13 +34,14 @@ export function initCommunity() {
             const modeText = msg.userMode === 'starwars' ? 'SW' : 'Anime';
             const modeClass = msg.userMode === 'starwars' ? 'tag-sw' : 'tag-anime';
             const avatarHtml = msg.avatar ? `<img src="${msg.avatar}">` : `<div class="mini-avatar" style="background:#444"></div>`;
+            const titleHtml = msg.title && msg.title !== 'Kein Titel' ? `<span style="font-size:0.6rem; color:#ffd700; font-weight:bold; margin-left:5px; text-transform:uppercase;">${msg.title}</span>` : '';
             
             chatContainer.innerHTML += `
                 <div class="chat-msg ${isSelf ? 'self' : ''}">
                     ${avatarHtml}
                     <div class="chat-msg-body">
                         <span class="chat-username">
-                            <span class="chat-mode-tag ${modeClass}">${modeText}</span> ${msg.displayName}
+                            <span class="chat-mode-tag ${modeClass}">${modeText}</span> ${msg.displayName} ${titleHtml}
                         </span>
                         <div class="chat-msg-content">${msg.text}</div>
                     </div>
@@ -64,6 +65,7 @@ export function initCommunity() {
                 displayName: user.displayName,
                 avatar: activeAvatar || '',
                 userMode: currentMode, // Welches Game der Schreiber gerade offen hat
+                title: currentMode === 'starwars' ? (user.activeTitle_starwars || '') : (user.activeTitle_waifu || ''),
                 text: text,
                 timestamp: Timestamp.now()
             });

@@ -102,6 +102,8 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
 
     const poolData = pool ? pool.map((c, idx) => ({ order: idx + 1, name: c.name, img: c.img })) : [];
 
+    const activeTitle = currentMode === 'starwars' ? (user.activeTitle_starwars || '') : (user.activeTitle_waifu || '');
+
     try {
         await addDoc(collection(db, "history"), {
             username: user.username,
@@ -111,8 +113,21 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
             rating: rating,
             ranking: rankingData,
             pool: poolData,
+            title: activeTitle,
             timestamp: Timestamp.now()
         });
+        trackWrite(1);
+        
+        // Update User Games Played locally and in DB
+        const gamesPlayedField = `gamesPlayed_${currentMode}`;
+        user[gamesPlayedField] = (user[gamesPlayedField] || 0) + 1;
+        localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
+        
+        // Asynchron das increment absenden
+        const { updateDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+        updateDoc(doc(db, "users", user.uid), {
+            [gamesPlayedField]: increment(1)
+        }).catch(e => console.error(e));
         trackWrite(1);
 
         // --- AGGREGATED SCOREBOARD SYSTEM ---
@@ -187,10 +202,14 @@ function renderHistoryHTML(games, container, displayNames) {
 
         const displayNameToUse = displayNames[game.username] || game.displayName || game.username;
         const modeBadge = isAdvanced ? '<span class="version-badge" style="background:#ffd700; color:#000; font-size:0.6rem; padding:1px 4px; margin-left:5px; border-radius:3px; font-weight:bold;">ADV</span>' : '';
+        const titleHtml = game.title && game.title !== 'Kein Titel' ? `<div style="font-size:0.7rem; color:#ffd700; font-weight:bold; letter-spacing:1px; text-transform:uppercase; margin-top:2px;">${game.title}</div>` : '';
 
         card.innerHTML = `
             <div class="history-header">
-                <strong>${displayNameToUse}${modeBadge}</strong>
+                <div>
+                    <strong>${displayNameToUse}${modeBadge}</strong>
+                    ${titleHtml}
+                </div>
                 <span class="history-date">${date}</span>
             </div>
             <div class="history-images">

@@ -2,6 +2,7 @@
 import { updateUserProfile, getCurrentUser } from './auth.js';
 import { activeCharacterDatabase } from './theme.js';
 import { currentMode } from './mode-state.js';
+import { TITLES } from './titles.js';
 
 export function renderAvatarSelection() {
     const user = getCurrentUser();
@@ -42,6 +43,17 @@ export function updateTopbarAvatarElement(user) {
     } else {
         topAvatar.classList.add('hidden');
     }
+    
+    // Title in Topbar aktualisieren
+    const topTitle = document.getElementById('player-title');
+    const activeTitle = currentMode === 'starwars' ? user.activeTitle_starwars : user.activeTitle_waifu;
+    
+    if (activeTitle) {
+        topTitle.textContent = activeTitle;
+        topTitle.style.display = 'block';
+    } else {
+        topTitle.style.display = 'none';
+    }
 }
 
 export function initProfile() {
@@ -49,16 +61,47 @@ export function initProfile() {
     if(!user) return;
     document.getElementById('profile-displayname').value = user.displayName;
     renderAvatarSelection();
+    
+    const gamesPlayed = currentMode === 'starwars' ? (user.gamesPlayed_starwars || 0) : (user.gamesPlayed_waifu || 0);
+    document.getElementById('profile-games-count').textContent = gamesPlayed;
+    
+    const titleSelect = document.getElementById('profile-title');
+    titleSelect.innerHTML = '';
+    const availableTitles = TITLES[currentMode] || [];
+    
+    availableTitles.forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t.name;
+        if (gamesPlayed < t.required) {
+            opt.textContent = `🔒 ${t.name} (Benötigt ${t.required} Spiele)`;
+            opt.disabled = true;
+        } else {
+            opt.textContent = `🔓 ${t.name} (Freigeschaltet)`;
+        }
+        titleSelect.appendChild(opt);
+    });
+    
+    const activeTitle = currentMode === 'starwars' ? user.activeTitle_starwars : user.activeTitle_waifu;
+    if (activeTitle) {
+        titleSelect.value = activeTitle;
+    } else if (availableTitles.length > 0) {
+        titleSelect.value = availableTitles[0].name;
+    }
 
     document.getElementById('save-profile-btn').addEventListener('click', async () => {
         const newName = document.getElementById('profile-displayname').value;
         const newPass = document.getElementById('profile-password').value;
-        const res = await updateUserProfile(newName, newPass || null, undefined);
+        const newTitle = titleSelect.value;
+        
+        const res = await updateUserProfile(newName, newPass || null, null, newTitle);
         
         const feedback = document.getElementById('profile-feedback');
         feedback.classList.remove('hidden');
         feedback.textContent = res.success ? "Daten gespeichert!" : "Fehler: " + res.message;
         feedback.style.color = res.success ? "#2ed573" : "#ff4757";
-        if(res.success) document.getElementById('player-greeting').textContent = newName;
+        if(res.success) {
+            document.getElementById('player-greeting').textContent = newName;
+            updateTopbarAvatarElement(res.user);
+        }
     });
 }
