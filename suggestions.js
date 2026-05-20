@@ -333,17 +333,16 @@ export function renderSuggestions() {
                 card.style.justifyContent = 'space-between';
 
                 card.innerHTML = `
-                    <div style="flex: 1; display: flex; align-items: center;">
-                        <div>
-                            <div class="history-header" style="margin-bottom: 5px;">
-                                <strong>${sug.authorDisplay}</strong> schlägt vor:
-                            </div>
-                            <div style="font-size: 1.1rem; line-height: 1.4;">
-                                ${sug.text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
-                            </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                        <div class="history-header" style="display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap;">
+                            <strong style="color:#fff;">${sug.authorDisplay}</strong>
+                            <span style="color:#888; font-size:0.85rem;">schlägt vor:</span>
+                        </div>
+                        <div style="font-size: 1rem; line-height: 1.5; color: #ccc; flex: 1;">
+                            ${sug.text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
                         </div>
                     </div>
-                    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; margin-left: 15px;">
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; margin-left: 15px; flex-shrink: 0;">
                         <button class="rank-btn upvote-btn ${hasVoted ? 'voted' : ''}" data-id="${sug.id}" ${hasVoted ? 'disabled' : ''} style="width: auto; padding: 5px 15px; font-size: 1.2rem; background: ${hasVoted ? '#2a3142' : ''}; color: ${hasVoted ? '#fff' : ''}; border-color: ${hasVoted ? '#2a3142' : ''};">
                             ${hasVoted ? '<span style="color:#2ed573; font-weight:bold;">✓</span>' : '<span style="color:#aaa;">✓</span>'} ${sug.votes}
                         </button>

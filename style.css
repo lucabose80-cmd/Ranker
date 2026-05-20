@@ -480,12 +480,13 @@ body.waifu-theme .history-controls select:focus {
 }
 .lexikon-card {
     background-color: #11151f; border: 2px solid #2a3142; border-radius: 10px; overflow: hidden;
-    display: flex; flex-direction: column; align-items: center; transition: transform 0.2s, box-shadow 0.2s; aspect-ratio: 1 / 1.25;
+    display: flex; flex-direction: column; align-items: center; transition: transform 0.2s, box-shadow 0.2s;
+    height: 175px;
 }
 .lexikon-card:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4); border-color: #3b82f6; z-index: 2; }
-.lexikon-card img { width: 100%; flex: 3; object-fit: cover; border-bottom: 2px solid #2a3142; min-height: 0; }
-.lexikon-card span { width: 100%; flex: 1; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: bold; color: #fff; text-align: center; padding: 0 5px; box-sizing: border-box; }
-.lexikon-card-placeholder { flex: 3; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: #444; width: 100%; min-height: 0; }
+.lexikon-card img { width: 100%; flex: 1; object-fit: cover; border-bottom: 2px solid #2a3142; min-height: 0; }
+.lexikon-card span { width: 100%; flex-shrink: 0; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: bold; color: #fff; text-align: center; padding: 0 5px; box-sizing: border-box; }
+.lexikon-card-placeholder { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: #444; width: 100%; min-height: 0; }
 body.waifu-theme .lexikon-card:hover { box-shadow: 0 8px 20px rgba(255, 42, 157, 0.4); border-color: #ff2a9d; }
 
 .sticky-section-header { position: sticky; top: 0; z-index: 10; backdrop-filter: blur(8px); padding: 8px 0; margin: 0; }
