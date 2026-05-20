@@ -4,7 +4,8 @@ export const patchNotesWaifu = [
         title: "UI Polishing & Hotfixes",
         changes: [
             "UI-Update: Das gesamte Voting-System nutzt nun dynamische Haken (✓), die beim Abstimmen kräftig grün aufleuchten.",
-            "Hotfix: Ein Fehler wurde behoben, durch den Bilder bei Charakter-Updates nicht korrekt aus der Datenbank geladen wurden."
+            "Hotfix: Ein Fehler wurde behoben, durch den Bilder bei Charakter-Updates nicht korrekt aus der Datenbank geladen wurden.",
+            "Hotfix: Historische Patch-Notes wurden aufgeräumt und konsistent strukturiert (Bugfixes in eigenständige Hotfixes ausgelagert)."
         ]
     },
     {
