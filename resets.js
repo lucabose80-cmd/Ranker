@@ -86,4 +86,5 @@ export function invalidateResetsCache() {
     cacheAdminResets = null;
     cacheUserResets = null;
     cacheTimestamp = 0;
+    localStorage.removeItem('ranker_resets_cache'); // Auch localStorage leeren!
 }
