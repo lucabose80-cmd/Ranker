@@ -117,11 +117,18 @@ export function initSuggestions() {
             updateSubmitBtn.textContent = '...';
             
             try {
-                import('./mode-state.js').then(async ({ currentMode }) => {
+                Promise.all([
+                    import('./mode-state.js'),
+                    import('./theme.js')
+                ]).then(async ([{ currentMode }, { activeCharacterDatabase }]) => {
+                    const originalChar = activeCharacterDatabase.find(c => c.name === charName);
+                    const charImage = originalChar ? originalChar.img : '';
+
                     await addDoc(collection(db, "suggestions"), {
                         text: text,
                         type: 'char_update',
                         targetMode: currentMode,
+                        charImage: charImage,
                         author: user.username,
                         authorDisplay: user.displayName || user.username,
                         timestamp: Timestamp.now(),
@@ -168,7 +175,7 @@ export function renderSuggestions() {
                     const sorted = [...activeCharacterDatabase].sort((a,b) => a.name.localeCompare(b.name));
                     sorted.forEach(c => {
                         const img = document.createElement('img');
-                        img.src = c.image;
+                        img.src = c.img;
                         img.className = 'char-update-img';
                         img.style.width = '100%';
                         img.style.aspectRatio = '1 / 1.3';
@@ -237,13 +244,21 @@ export function renderSuggestions() {
             card.style.justifyContent = 'space-between';
             card.style.padding = '15px';
             
+            let imageHtml = '';
+            if (sug.type === 'char_update' && sug.charImage) {
+                imageHtml = `<img src="${sug.charImage}" style="width: 60px; height: 80px; object-fit: cover; border-radius: 4px; border: 1px solid #333; margin-right: 15px; flex-shrink: 0;">`;
+            }
+
             card.innerHTML = `
-                <div style="flex: 1;">
-                    <div class="history-header" style="margin-bottom: 5px;">
-                        <strong>${sug.authorDisplay}</strong> schlägt vor:
-                    </div>
-                    <div style="font-size: 1.1rem; line-height: 1.4;">
-                        ${sug.text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
+                <div style="flex: 1; display: flex; align-items: center;">
+                    ${imageHtml}
+                    <div>
+                        <div class="history-header" style="margin-bottom: 5px;">
+                            <strong>${sug.authorDisplay}</strong> schlägt vor:
+                        </div>
+                        <div style="font-size: 1.1rem; line-height: 1.4;">
+                            ${sug.text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
+                        </div>
                     </div>
                 </div>
                 <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; margin-left: 15px;">
