@@ -117,7 +117,8 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
 
         // --- AGGREGATED SCOREBOARD SYSTEM ---
         const ratingMulti = parseInt(rating) || 1;
-        let updates = {};
+        
+        let characterUpdates = {};
 
         rankingData.forEach(item => {
             const rank = parseInt(item.rank);
@@ -126,11 +127,17 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
             // Firesore Key safe machen
             const safeName = item.name.replace(/[\.\/\[\]~#]/g, '_');
             
-            updates[`characters.${safeName}.score`] = increment(totalPoints);
-            updates[`characters.${safeName}.name`] = item.name;
-            updates[`characters.${safeName}.img`] = item.img;
+            characterUpdates[safeName] = {
+                score: increment(totalPoints),
+                name: item.name,
+                img: item.img
+            };
         });
-        updates["lastUpdated"] = Timestamp.now();
+
+        const updates = {
+            characters: characterUpdates,
+            lastUpdated: Timestamp.now()
+        };
 
         // Update Global Score
         await setDoc(doc(db, "scores", `${currentMode}_${gameType}_global`), updates, { merge: true });
