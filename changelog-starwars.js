@@ -21,6 +21,15 @@ export const patchNotesStarWars = [
         ]
     },
     {
+        version: "v2.8.2",
+        title: "Hotfix: Neue Farbschemas",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Zwei neue freischaltbare Farbschemas hinzugefügt: 'Klone' (Weiß/Silber, nach 5 Klonen) und 'Rebellion' (Grün, nach 5 Rebellen).",
+            "Hotfix: Alle drei Farbschemas (Sith, Klone, Rebellion) werden nun korrekt im Profil-Tab 'Farbschemas' mit aktuellem Fortschritt angezeigt."
+        ]
+    },
+    {
         version: "v2.7.1",
         title: "UI Polishing & Hotfixes",
         changes: [
