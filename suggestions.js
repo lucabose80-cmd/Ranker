@@ -234,39 +234,99 @@ export function renderSuggestions() {
         }
 
         container.innerHTML = '';
+        
+        if (selectedType === 'char_update') {
+            container.style.display = 'flex';
+            container.style.flexDirection = 'row';
+            container.style.flexWrap = 'wrap';
+            container.style.justifyContent = 'center';
+            container.style.alignItems = 'flex-start';
+            container.style.gap = '15px';
+        } else {
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.flexWrap = 'nowrap';
+            container.style.justifyContent = 'flex-start';
+            container.style.alignItems = 'stretch';
+            container.style.gap = '10px';
+        }
+
         filtered.forEach(sug => {
             const hasVoted = myUsername && sug.votedBy && sug.votedBy.includes(myUsername);
             
             const card = document.createElement('div');
             card.className = 'history-card classic-card';
-            card.style.flexDirection = 'row';
-            card.style.alignItems = 'center';
-            card.style.justifyContent = 'space-between';
             card.style.padding = '15px';
             
-            let imageHtml = '';
             if (sug.type === 'char_update' && sug.charImage) {
-                imageHtml = `<img src="${sug.charImage}" style="width: 60px; height: 80px; object-fit: cover; border-radius: 4px; border: 1px solid #333; margin-right: 15px; flex-shrink: 0;">`;
-            }
-
-            card.innerHTML = `
-                <div style="flex: 1; display: flex; align-items: center;">
-                    ${imageHtml}
-                    <div>
-                        <div class="history-header" style="margin-bottom: 5px;">
-                            <strong>${sug.authorDisplay}</strong> schlägt vor:
-                        </div>
-                        <div style="font-size: 1.1rem; line-height: 1.4;">
-                            ${sug.text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
+                card.style.width = '110px';
+                card.style.cursor = 'pointer';
+                card.style.padding = '10px';
+                card.style.display = 'flex';
+                card.style.flexDirection = 'column';
+                card.style.transition = 'width 0.2s ease';
+                card.style.overflow = 'hidden';
+                
+                card.innerHTML = `
+                    <div style="position: relative; width: 100%; display: flex; justify-content: center; flex-shrink: 0;">
+                        <img src="${sug.charImage}" style="width: 100%; aspect-ratio: 1/1.3; object-fit: cover; border-radius: 4px;">
+                        <div style="position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.8); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; color: #fff; border: 1px solid #444;">
+                            ${hasVoted ? '<span style="color:#2ed573">✓</span>' : '▲'} ${sug.votes}
                         </div>
                     </div>
-                </div>
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; margin-left: 15px;">
-                    <button class="rank-btn upvote-btn ${hasVoted ? 'voted' : ''}" data-id="${sug.id}" ${hasVoted ? 'disabled' : ''} style="width: auto; padding: 5px 15px; font-size: 1.2rem; background: ${hasVoted ? '#2a3142' : ''}; color: ${hasVoted ? '#fff' : ''}; border-color: ${hasVoted ? '#2a3142' : ''};">
-                        ${hasVoted ? '✓' : '▲'} ${sug.votes}
-                    </button>
-                </div>
-            `;
+                    <div class="update-details hidden" style="flex: 1; flex-direction: column; gap: 10px; margin-left: 15px; display: none;">
+                        <div class="history-header" style="margin-bottom: 5px;">
+                            <strong>${sug.authorDisplay}</strong>:
+                        </div>
+                        <div style="font-size: 1rem; line-height: 1.4; flex: 1;">
+                            ${sug.text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
+                        </div>
+                        <button class="rank-btn upvote-btn ${hasVoted ? 'voted' : ''}" data-id="${sug.id}" ${hasVoted ? 'disabled' : ''} style="width: 100%; padding: 8px; font-size: 1rem; background: ${hasVoted ? '#2a3142' : ''}; color: ${hasVoted ? '#fff' : ''}; border-color: ${hasVoted ? '#2a3142' : ''}; margin-top: auto;">
+                            ${hasVoted ? '✓ Gevotet' : '▲ Dafür abstimmen'} (${sug.votes})
+                        </button>
+                    </div>
+                `;
+                
+                card.addEventListener('click', (e) => {
+                    if(e.target.closest('.upvote-btn')) return;
+                    const details = card.querySelector('.update-details');
+                    if (details.classList.contains('hidden')) {
+                        card.style.width = '100%';
+                        card.style.flexDirection = 'row';
+                        card.firstElementChild.style.width = '110px';
+                        details.classList.remove('hidden');
+                        details.style.display = 'flex';
+                    } else {
+                        card.style.width = '110px';
+                        card.style.flexDirection = 'column';
+                        card.firstElementChild.style.width = '100%';
+                        details.classList.add('hidden');
+                        details.style.display = 'none';
+                    }
+                });
+            } else {
+                card.style.flexDirection = 'row';
+                card.style.alignItems = 'center';
+                card.style.justifyContent = 'space-between';
+
+                card.innerHTML = `
+                    <div style="flex: 1; display: flex; align-items: center;">
+                        <div>
+                            <div class="history-header" style="margin-bottom: 5px;">
+                                <strong>${sug.authorDisplay}</strong> schlägt vor:
+                            </div>
+                            <div style="font-size: 1.1rem; line-height: 1.4;">
+                                ${sug.text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; margin-left: 15px;">
+                        <button class="rank-btn upvote-btn ${hasVoted ? 'voted' : ''}" data-id="${sug.id}" ${hasVoted ? 'disabled' : ''} style="width: auto; padding: 5px 15px; font-size: 1.2rem; background: ${hasVoted ? '#2a3142' : ''}; color: ${hasVoted ? '#fff' : ''}; border-color: ${hasVoted ? '#2a3142' : ''};">
+                            ${hasVoted ? '✓' : '▲'} ${sug.votes}
+                        </button>
+                    </div>
+                `;
+            }
             
             const upvoteBtn = card.querySelector('.upvote-btn');
             if (upvoteBtn && !hasVoted) {
