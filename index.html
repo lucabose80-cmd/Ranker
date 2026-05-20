@@ -178,6 +178,10 @@
             <div id="lexikon-content" class="tab-content app-container hidden">
                 <div class="panel history-panel">
                     <h2>LEXIKON</h2>
+                    <div class="changelog-tabs" style="margin-bottom: 15px;">
+                        <button class="changelog-tab lexikon-tab-btn active" data-view="all">Alle</button>
+                        <button class="changelog-tab lexikon-tab-btn" data-view="tags">Nach Fraktionen</button>
+                    </div>
                     <div id="lexikon-grid" class="lexikon-grid"></div>
                 </div>
             </div>
@@ -240,6 +244,7 @@
                         <div class="profile-tabs" style="display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 15px;">
                             <button class="changelog-tab profile-tab-btn active" data-tab="avatar">Avatare</button>
                             <button class="changelog-tab profile-tab-btn" data-tab="title">Titel</button>
+                            <button class="changelog-tab profile-tab-btn" data-tab="theme">Farbschemas</button>
                         </div>
                         
                         <div id="profile-avatar-panel" class="profile-panel-content">
@@ -249,7 +254,12 @@
                         
                         <div id="profile-title-panel" class="profile-panel-content hidden">
                             <p class="prompt-text">Titel wählen (Freigespielt: <span id="profile-games-count">0</span> Spiele). Speichert sofort.</p>
-                            <div id="title-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; max-height: 400px; overflow-y: auto; padding-right: 10px;"></div>
+                            <div id="title-grid" class="title-grid"></div>
+                        </div>
+
+                        <div id="profile-theme-panel" class="profile-panel-content hidden">
+                            <p class="prompt-text">Farbschema wählen. Schalte neue Themes durch Erfolge frei.</p>
+                            <div id="theme-grid" class="title-grid"></div>
                         </div>
                     </div>
                 </div>

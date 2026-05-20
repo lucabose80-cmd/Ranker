@@ -9,8 +9,8 @@ import { initAuth, loginOrRegister, logout, getCurrentUser, startPresenceHeartbe
 import { initAdminPanel } from './admin.js';
 import { renderHistory, initHistoryListener, stopHistoryListener } from './history.js';
 import { renderScoreboard } from './scoreboard.js';
-import { renderLexikon } from './lexikon.js';
-import { initProfile, renderAvatarSelection, updateTopbarAvatarElement } from './profile.js';
+import { renderLexikon, initLexikonTabs } from './lexikon.js';
+import { initProfile, renderAvatarSelection, updateTopbarAvatarElement, applyColorTheme } from './profile.js';
 import { initCommunity } from './community.js';
 import { initLiveSpectating, closeSpectatorModal, stopLiveSpectating } from './live.js';
 import { currentGameType, setCurrentGameType } from './mode-state.js';
@@ -73,6 +73,7 @@ function setupGameUI(user) {
     showView('game-view');
     document.getElementById('player-greeting').textContent = user.displayName;
     updateTopbarAvatarElement(user);
+    applyColorTheme(user);
     document.getElementById('logout-btn').addEventListener('click', logout);
 
     // Die Tabs des Spiels (ohne Community, ohne Profil)
@@ -152,6 +153,7 @@ function setupGameUI(user) {
     initChangelog();
     updateChangelogContent(patchNotesStarWars);
     initProfile();
+    initLexikonTabs();
     initCommunity();
     initTrackerUI();
 

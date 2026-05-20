@@ -1,0 +1,64 @@
+/* Sith Theme – rote Borders, alles andere bleibt */
+body.theme-sith .panel,
+body.theme-sith .sticky-nav-container,
+body.theme-sith .online-sidebar,
+body.theme-sith .chat-widget,
+body.theme-sith .chat-header,
+body.theme-sith .updates-content {
+    border-color: #dc2626 !important;
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.25) !important;
+}
+body.theme-sith .nav-link.active {
+    color: #dc2626 !important;
+    border-bottom-color: #dc2626 !important;
+}
+body.theme-sith .sticky-nav-container {
+    border-bottom-color: #dc2626 !important;
+    box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3) !important;
+}
+body.theme-sith .card-content:has(img) {
+    border-color: #dc2626 !important;
+    box-shadow: 0 0 10px rgba(220, 38, 38, 0.4) !important;
+}
+body.theme-sith .mini-avatar {
+    border-color: #dc2626 !important;
+}
+body.theme-sith .rank-btn {
+    color: #dc2626 !important;
+    border-color: #dc2626 !important;
+}
+body.theme-sith .rank-btn:hover:not(:disabled) {
+    background-color: rgba(220, 38, 38, 0.2) !important;
+    box-shadow: 0 0 10px rgba(220, 38, 38, 0.5) !important;
+}
+body.theme-sith .changelog-tab.active {
+    background: #dc2626 !important;
+    border-color: #dc2626 !important;
+}
+body.theme-sith header h1 {
+    color: #dc2626 !important;
+    text-shadow: 0 0 10px rgba(220, 38, 38, 0.5) !important;
+}
+body.theme-sith .history-card:hover,
+body.theme-sith .score-card:hover {
+    border-color: #dc2626 !important;
+}
+body.theme-sith .lexikon-card:hover {
+    box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4) !important;
+    border-color: #dc2626 !important;
+}
+body.theme-sith .avatar-card.selected {
+    border-color: #dc2626 !important;
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.5) !important;
+}
+body.theme-sith input:focus {
+    border-color: #dc2626 !important;
+}
+body.theme-sith .title-card.selected {
+    border-color: #dc2626 !important;
+    box-shadow: 0 0 10px rgba(220, 38, 38, 0.4) !important;
+}
+body.theme-sith .online-sidebar {
+    border-color: #dc2626 !important;
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.2) !important;
+}

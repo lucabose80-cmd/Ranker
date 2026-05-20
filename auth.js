@@ -66,7 +66,7 @@ export async function loginOrRegister(usernameInput, password) {
     }
 }
 
-export async function updateUserProfile(newDisplayName, newPassword, newAvatarPath, newTitle) {
+export async function updateUserProfile(newDisplayName, newPassword, newAvatarPath, newTitle, newTheme) {
     const user = getCurrentUser();
     if(!user) return {success: false};
     
@@ -92,6 +92,11 @@ export async function updateUserProfile(newDisplayName, newPassword, newAvatarPa
         if (newTitle !== undefined && newTitle !== null) {
             if (currentMode === 'starwars') updates.activeTitle_starwars = newTitle;
             else updates.activeTitle_waifu = newTitle;
+        }
+
+        if (newTheme !== undefined && newTheme !== null) {
+            if (currentMode === 'starwars') updates.activeTheme_starwars = newTheme;
+            else updates.activeTheme_waifu = newTheme;
         }
         
         await updateDoc(doc(db, "users", user.uid), updates);

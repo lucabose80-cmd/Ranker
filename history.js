@@ -5,6 +5,7 @@ import { getCurrentUser } from './auth.js';
 import { currentMode } from './mode-state.js';
 import { getResets } from './resets.js';
 import { trackRead, trackWrite } from './tracker.js';
+import { starWarsCharacters } from './data-starwars.js';
 
 let historyCache = [];
 let historyUnsubscribe = null;
@@ -121,6 +122,19 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
         // Update User Games Played locally and in DB
         const gamesPlayedField = `gamesPlayed_${currentMode}`;
         user[gamesPlayedField] = (user[gamesPlayedField] || 0) + 1;
+
+        // Track tags ranked (for theme unlock conditions)
+        if (currentMode === 'starwars') {
+            const charLookup = {};
+            starWarsCharacters.forEach(c => { charLookup[c.name] = c.tags || []; });
+            if (!user.tags_ranked_starwars) user.tags_ranked_starwars = {};
+            rankingData.forEach(item => {
+                (charLookup[item.name] || []).forEach(tag => {
+                    user.tags_ranked_starwars[tag] = (user.tags_ranked_starwars[tag] || 0) + 1;
+                });
+            });
+        }
+
         localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
         
         // Asynchron das increment absenden

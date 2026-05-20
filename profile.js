@@ -3,6 +3,7 @@ import { updateUserProfile, getCurrentUser } from './auth.js';
 import { activeCharacterDatabase } from './theme.js';
 import { currentMode } from './mode-state.js';
 import { TITLES } from './titles.js';
+import { THEMES } from './themes.js';
 
 export function renderAvatarSelection() {
     const user = getCurrentUser();
@@ -10,7 +11,6 @@ export function renderAvatarSelection() {
     if (!grid || !user) return;
     
     grid.innerHTML = '';
-    // Ziehe den passenden Avatar je nach Modus
     const currentAvatar = currentMode === 'starwars' ? user.avatarStarWars : user.avatarWaifu;
 
     const sortedChars = [...activeCharacterDatabase].sort((a,b) => a.name.localeCompare(b.name));
@@ -54,6 +54,25 @@ export function updateTopbarAvatarElement(user) {
     } else {
         topTitle.style.display = 'none';
     }
+
+    // Apply active color theme
+    applyColorTheme(user);
+}
+
+export function applyColorTheme(user) {
+    // Remove all theme classes
+    const themesForMode = THEMES[currentMode] || [];
+    themesForMode.forEach(t => {
+        if (t.cssClass) document.body.classList.remove(t.cssClass);
+    });
+
+    const activeThemeId = currentMode === 'starwars' ? user.activeTheme_starwars : user.activeTheme_waifu;
+    if (activeThemeId) {
+        const themeObj = themesForMode.find(t => t.id === activeThemeId);
+        if (themeObj && themeObj.cssClass) {
+            document.body.classList.add(themeObj.cssClass);
+        }
+    }
 }
 
 export function initProfile() {
@@ -68,24 +87,18 @@ export function initProfile() {
     // Setup Tabs
     document.querySelectorAll('.profile-tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            document.querySelectorAll('.profile-tab-btn').forEach(b => {
-                b.classList.remove('active');
-                b.style.background = 'transparent';
-                b.style.color = '#fff';
-                b.style.borderColor = '#333';
-            });
+            document.querySelectorAll('.profile-tab-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            btn.style.background = ''; // reset to default rank-btn style
-            btn.style.color = '';
-            btn.style.borderColor = '';
             
             const target = btn.dataset.tab;
             document.getElementById('profile-avatar-panel').classList.toggle('hidden', target !== 'avatar');
             document.getElementById('profile-title-panel').classList.toggle('hidden', target !== 'title');
+            document.getElementById('profile-theme-panel').classList.toggle('hidden', target !== 'theme');
         });
     });
 
     renderTitleSelection(user, gamesPlayed);
+    renderThemeSelection(user);
 
     document.getElementById('save-profile-btn').addEventListener('click', async () => {
         const newName = document.getElementById('profile-displayname').value;
@@ -134,6 +147,64 @@ function renderTitleSelection(user, gamesPlayed) {
             });
         }
         
+        grid.appendChild(card);
+    });
+}
+
+function isThemeUnlocked(theme, user) {
+    if (!theme.condition) return true;
+    const { type, tag, required } = theme.condition;
+    if (type === 'tag_ranked') {
+        const tagCounts = user.tags_ranked_starwars || {};
+        return (tagCounts[tag] || 0) >= required;
+    }
+    return false;
+}
+
+function renderThemeSelection(user) {
+    const grid = document.getElementById('theme-grid');
+    if (!grid || !user) return;
+    grid.innerHTML = '';
+
+    const availableThemes = THEMES[currentMode] || [];
+    const activeThemeId = currentMode === 'starwars' ? user.activeTheme_starwars : user.activeTheme_waifu;
+
+    availableThemes.forEach(t => {
+        const unlocked = isThemeUnlocked(t, user);
+        const isSelected = activeThemeId === t.id || (!activeThemeId && t.id.endsWith('_default'));
+        
+        const card = document.createElement('div');
+        card.className = `title-card ${isSelected ? 'selected' : ''} ${!unlocked ? 'locked' : ''}`;
+        card.style.borderColor = unlocked && isSelected ? t.preview : '';
+
+        let reqText = '';
+        if (!unlocked && t.condition) {
+            const { tag, required } = t.condition;
+            const tagCounts = user.tags_ranked_starwars || {};
+            const current = tagCounts[tag] || 0;
+            reqText = `${current}/${required} ${tag.charAt(0).toUpperCase() + tag.slice(1)} gerankt`;
+        } else if (unlocked) {
+            reqText = 'Freigeschaltet';
+        }
+
+        card.innerHTML = `
+            <div style="width:30px; height:30px; border-radius:50%; background:${t.preview}; margin-bottom:8px; border:2px solid rgba(255,255,255,0.2);"></div>
+            <div class="title-card-name" style="color:${t.preview}">${!unlocked ? '🔒 ' : ''}${t.name}</div>
+            <div class="title-card-req">${reqText}</div>
+        `;
+
+        if (unlocked) {
+            card.addEventListener('click', async () => {
+                document.querySelectorAll('#theme-grid .title-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+
+                const res = await updateUserProfile(user.displayName, null, null, null, t.id);
+                if (res.success) {
+                    applyColorTheme(res.user);
+                }
+            });
+        }
+
         grid.appendChild(card);
     });
 }

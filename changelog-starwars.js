@@ -4,9 +4,20 @@ export const patchNotesStarWars = [
         title: "The Titles & Progression Update",
         changes: [
             "Neues Feature: Titel-System! Sammle abgeschlossene Spiele und schalte automatisch prestigeträchtige Ränge frei (z.B. Padawan, Jedi-Ritter, Großmeister).",
-            "UI-Update: Das Profilmenü wurde komplett modernisiert. Wechsle nahtlos zwischen deinen Avataren und der brandneuen Titel-Raster-Ansicht.",
-            "Visualisierung: Dein ausgewählter Titel wird ab sofort für alle sichtbar in der oberen Leiste, bei deinen Historien-Einträgen und live im Chat neben deinem Namen angezeigt!",
-            "Hotfix: Massive Performance-Verbesserung! Durch cleveres Caching (lokales Speichern) von Profil- und Status-Abfragen wurden die Hintergrund-Datenbank-Zugriffe (Firebase Reads) drastisch reduziert."
+            "Neues Feature: Farbschema-System! Schalte durch besondere Leistungen exklusive Farbthemen frei und passe das Erscheinungsbild der App an.",
+            "UI-Update: Das Profilmenü wurde komplett modernisiert – drei Tabs (Avatare / Titel / Farbschemas) mit Grid-Ansicht.",
+            "UI-Update: Das Lexikon hat jetzt eine neue 'Nach Fraktionen'-Ansicht, die alle Charaktere sauber nach Jedi, Sith, Klone, etc. sortiert.",
+            "Visualisierung: Dein ausgewählter Titel wird für alle sichtbar in der Topbar, in Historien-Einträgen und live im Chat angezeigt."
+        ]
+    },
+    {
+        version: "v2.8.1",
+        title: "Hotfix: Performance & UI",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Massive Performance-Verbesserung durch 12-Stunden-Caching von Profil- und Status-Abfragen.",
+            "Hotfix: CSS-Kodierungsfehler in style.css behoben, der die Titel-Karten im Profil ohne Rahmen anzeigte.",
+            "Hotfix: Ausrichtungsfehler im Profil-Overlay zwischen linker Spalte und Tab-Buttons behoben."
         ]
     },
     {
