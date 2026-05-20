@@ -1,6 +1,6 @@
 // lexikon.js
 import { activeCharacterDatabase } from './theme.js';
-import { getCurrentUser } from './auth.js';
+import { getCurrentUser, clearNewlyDiscovered } from './auth.js';
 
 const TAG_LABELS = {
     jedi:        { label: '⚔️ Jedi',        color: '#3b82f6' },
@@ -28,6 +28,10 @@ export function renderLexikon() {
     } else {
         _renderByTags(grid, user, discoveredList);
     }
+    
+    if (user && user.newlyDiscovered && user.newlyDiscovered.length > 0) {
+        clearNewlyDiscovered();
+    }
 }
 
 function _renderAll(grid, user, discoveredList) {
@@ -35,19 +39,28 @@ function _renderAll(grid, user, discoveredList) {
     grid.style = '';
 
     const sortedChars = [...activeCharacterDatabase].sort((a, b) => a.name.localeCompare(b.name));
+    const newlyDiscovered = user && user.newlyDiscovered ? user.newlyDiscovered : [];
 
     sortedChars.forEach(char => {
-        const isNew = user && user.role !== 'admin' && !discoveredList.includes(char.name);
+        const isDiscovered = user && user.role !== 'admin' ? discoveredList.includes(char.name) : true;
+        const isNew = newlyDiscovered.includes(char.name);
 
         const card = document.createElement('div');
-        card.className = `lexikon-card ${isNew ? 'gold-glow' : ''}`;
-        card.innerHTML = `
-            <img src="${char.img}" alt="${char.name}" loading="lazy">
-            <span>
-                ${char.name}
-                ${isNew ? '<b style="color:#ffd700; margin-left:5px;" title="Brandneu!">✨</b>' : ''}
-            </span>
-        `;
+        if (isDiscovered) {
+            card.className = `lexikon-card ${isNew ? 'gold-glow' : ''}`;
+            card.innerHTML = `
+                <img src="${char.img}" alt="${char.name}" loading="lazy">
+                <span>
+                    ${char.name}
+                    ${isNew ? '<b style="color:#ffd700; margin-left:5px;" title="Brandneu!">✨</b>' : ''}
+                </span>
+            `;
+        } else {
+            card.className = `lexikon-card locked`;
+            card.style.opacity = '0.5';
+            card.innerHTML = `<div style="width:100%; height:75%; display:flex; align-items:center; justify-content:center; font-size:3rem; color:#555;">?</div><span>???</span>`;
+            card.title = "Noch nicht entdeckt!";
+        }
         grid.appendChild(card);
     });
 }
@@ -68,6 +81,7 @@ function _renderByTags(grid, user, discoveredList) {
 
     // Rendere pro Tag-Gruppe
     const tagOrder = ['jedi', 'sith', 'klon', 'droide', 'separatist', 'rebell', 'mandalorian', 'schmuggel', 'sonstige'];
+    const newlyDiscovered = user && user.newlyDiscovered ? user.newlyDiscovered : [];
 
     tagOrder.forEach(tag => {
         if (!tagMap[tag]) return;
@@ -75,7 +89,7 @@ function _renderByTags(grid, user, discoveredList) {
 
         const section = document.createElement('div');
         section.innerHTML = `
-            <h3 style="
+            <h3 class="theme-heading" style="
                 color: ${info.color};
                 font-size: 0.9rem;
                 letter-spacing: 2px;
@@ -91,17 +105,25 @@ function _renderByTags(grid, user, discoveredList) {
         subGrid.style = 'margin-top: 0;';
 
         tagMap[tag].sort((a, b) => a.name.localeCompare(b.name)).forEach(char => {
-            const isNew = user && user.role !== 'admin' && !discoveredList.includes(char.name);
+            const isDiscovered = user && user.role !== 'admin' ? discoveredList.includes(char.name) : true;
+            const isNew = newlyDiscovered.includes(char.name);
 
             const card = document.createElement('div');
-            card.className = `lexikon-card ${isNew ? 'gold-glow' : ''}`;
-            card.innerHTML = `
-                <img src="${char.img}" alt="${char.name}" loading="lazy">
-                <span>
-                    ${char.name}
-                    ${isNew ? '<b style="color:#ffd700; margin-left:5px;" title="Brandneu!">✨</b>' : ''}
-                </span>
-            `;
+            if (isDiscovered) {
+                card.className = `lexikon-card ${isNew ? 'gold-glow' : ''}`;
+                card.innerHTML = `
+                    <img src="${char.img}" alt="${char.name}" loading="lazy">
+                    <span>
+                        ${char.name}
+                        ${isNew ? '<b style="color:#ffd700; margin-left:5px;" title="Brandneu!">✨</b>' : ''}
+                    </span>
+                `;
+            } else {
+                card.className = `lexikon-card locked`;
+                card.style.opacity = '0.5';
+                card.innerHTML = `<div style="width:100%; height:75%; display:flex; align-items:center; justify-content:center; font-size:3rem; color:#555;">?</div><span>???</span>`;
+                card.title = "Noch nicht entdeckt!";
+            }
             subGrid.appendChild(card);
         });
 

@@ -105,12 +105,14 @@ export function initCommunity() {
             const avatarHtml = userAvatar ? `<img src="${userAvatar}" class="mini-avatar">` : `<div class="mini-avatar" style="background:#444"></div>`;
             const modeText = uMode === 'starwars' ? 'SW' : 'Anime';
             const modeClass = uMode === 'starwars' ? 'tag-sw' : 'tag-anime';
+            const activeTitle = uMode === 'starwars' ? user.activeTitle_starwars : user.activeTitle_waifu;
+            const titleHtml = activeTitle && activeTitle !== 'Kein Titel' ? `<span style="font-size:0.6rem; color:#ffd700; font-weight:bold; margin-left:5px; text-transform:uppercase;">${activeTitle}</span>` : '';
 
             onlineList.innerHTML += `
                 <div class="online-user-card">
                     <div class="online-indicator"></div>
                     ${avatarHtml}
-                    <strong>${user.displayName || user.username} (Du)</strong>
+                    <strong>${user.displayName || user.username} (Du) ${titleHtml}</strong>
                     <span class="chat-mode-tag ${modeClass}" style="margin-left:auto;">${modeText}</span>
                 </div>
             `;
@@ -147,11 +149,14 @@ export function initCommunity() {
                         const otherModeText = otherMode === 'starwars' ? 'SW' : 'Anime';
                         const otherModeClass = otherMode === 'starwars' ? 'tag-sw' : 'tag-anime';
 
+                        const otherTitle = otherMode === 'starwars' ? u.activeTitle_starwars : u.activeTitle_waifu;
+                        const otherTitleHtml = otherTitle && otherTitle !== 'Kein Titel' ? `<span style="font-size:0.6rem; color:#ffd700; font-weight:bold; margin-left:5px; text-transform:uppercase;">${otherTitle}</span>` : '';
+
                         onlineList.innerHTML += `
                             <div class="online-user-card">
                                 <div class="online-indicator"></div>
                                 ${otherAvatarHtml}
-                                <strong>${u.displayName || u.username}</strong>
+                                <strong>${u.displayName || u.username} ${otherTitleHtml}</strong>
                                 <span class="chat-mode-tag ${otherModeClass}" style="margin-left:auto;">${otherModeText}</span>
                             </div>
                         `;

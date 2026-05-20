@@ -123,16 +123,39 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
         const gamesPlayedField = `gamesPlayed_${currentMode}`;
         user[gamesPlayedField] = (user[gamesPlayedField] || 0) + 1;
 
-        // Track tags ranked – NUR im klassischen Modus (Advanced zählt nicht für Theme-Freischaltung)
+        // Track tags for themes – 5 of the same tag in a single game unlocks the theme
         if (currentMode === 'starwars' && gameType === 'classic') {
+            const { activeCharacterDatabase } = await import('./theme.js');
             const charLookup = {};
-            starWarsCharacters.forEach(c => { charLookup[c.name] = c.tags || []; });
-            if (!user.tags_ranked_starwars) user.tags_ranked_starwars = {};
+            activeCharacterDatabase.forEach(c => { charLookup[c.name] = c.tags || []; });
+            
+            const tagCountsThisGame = {};
             rankingData.forEach(item => {
                 (charLookup[item.name] || []).forEach(tag => {
-                    user.tags_ranked_starwars[tag] = (user.tags_ranked_starwars[tag] || 0) + 1;
+                    tagCountsThisGame[tag] = (tagCountsThisGame[tag] || 0) + 1;
                 });
             });
+            
+            if (!user.unlocked_themes_starwars) user.unlocked_themes_starwars = [];
+            let unlockedAny = false;
+            
+            Object.entries(tagCountsThisGame).forEach(([tag, count]) => {
+                if (count === 5) {
+                    const themeId = `sw_theme_${tag}`;
+                    if (!user.unlocked_themes_starwars.includes(themeId)) {
+                        user.unlocked_themes_starwars.push(themeId);
+                        unlockedAny = true;
+                    }
+                }
+            });
+            
+            if (unlockedAny) {
+                const { updateDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+                updateDoc(doc(db, "users", user.uid), {
+                    unlocked_themes_starwars: user.unlocked_themes_starwars
+                }).catch(e => console.error(e));
+                trackWrite(1);
+            }
         }
 
 

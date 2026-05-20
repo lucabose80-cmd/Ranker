@@ -16,19 +16,28 @@ export function renderAvatarSelection() {
     const sortedChars = [...activeCharacterDatabase].sort((a,b) => a.name.localeCompare(b.name));
     
     sortedChars.forEach(char => {
+        const isDiscovered = user.discovered && user.discovered.includes(char.name);
         const card = document.createElement('div');
-        card.className = `lexikon-card avatar-card ${currentAvatar === char.img ? 'selected' : ''}`;
-        card.innerHTML = `<img src="${char.img}"><span>${char.name}</span>`;
         
-        card.addEventListener('click', async () => {
-            document.querySelectorAll('.avatar-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
+        if (isDiscovered) {
+            card.className = `lexikon-card avatar-card ${currentAvatar === char.img ? 'selected' : ''}`;
+            card.innerHTML = `<img src="${char.img}"><span>${char.name}</span>`;
             
-            const res = await updateUserProfile(user.displayName, null, char.img);
-            if(res.success) {
-                updateTopbarAvatarElement(res.user);
-            }
-        });
+            card.addEventListener('click', async () => {
+                document.querySelectorAll('.avatar-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                
+                const res = await updateUserProfile(user.displayName, null, char.img);
+                if(res.success) {
+                    updateTopbarAvatarElement(res.user);
+                }
+            });
+        } else {
+            card.className = `lexikon-card avatar-card locked`;
+            card.style.opacity = '0.5';
+            card.innerHTML = `<div style="width:100%; height:75%; display:flex; align-items:center; justify-content:center; font-size:3rem; color:#555;">?</div><span>???</span>`;
+            card.title = "Noch nicht entdeckt!";
+        }
         grid.appendChild(card);
     });
 }
@@ -162,10 +171,10 @@ function renderTitleSelection(user, gamesPlayed) {
 
 function isThemeUnlocked(theme, user) {
     if (!theme.condition) return true;
-    const { type, tag, required } = theme.condition;
-    if (type === 'tag_ranked') {
-        const tagCounts = user.tags_ranked_starwars || {};
-        return (tagCounts[tag] || 0) >= required;
+    const { type, tag } = theme.condition;
+    if (type === 'tag_full_team') {
+        const unlockedThemes = user.unlocked_themes_starwars || [];
+        return unlockedThemes.includes(theme.id);
     }
     return false;
 }
@@ -188,10 +197,10 @@ function renderThemeSelection(user) {
 
         let reqText = '';
         if (!unlocked && t.condition) {
-            const { tag, required } = t.condition;
-            const tagCounts = user.tags_ranked_starwars || {};
-            const current = tagCounts[tag] || 0;
-            reqText = `${current}/${required} ${tag.charAt(0).toUpperCase() + tag.slice(1)} gerankt`;
+            const { type, tag } = t.condition;
+            if (type === 'tag_full_team') {
+                reqText = `Ranke 5 ${tag.charAt(0).toUpperCase() + tag.slice(1)} im selben Spiel`;
+            }
         } else if (unlocked) {
             reqText = 'Freigeschaltet';
         }

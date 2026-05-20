@@ -17,7 +17,7 @@ body.theme-sith .mini-avatar { border-color: #dc2626 !important; }
 body.theme-sith .rank-btn { color: #dc2626 !important; border-color: #dc2626 !important; }
 body.theme-sith .rank-btn:hover:not(:disabled) { background-color: rgba(220, 38, 38, 0.2) !important; box-shadow: 0 0 10px rgba(220, 38, 38, 0.5) !important; }
 body.theme-sith .changelog-tab.active { background: #dc2626 !important; border-color: #dc2626 !important; }
-body.theme-sith header h1 { color: #dc2626 !important; text-shadow: 0 0 10px rgba(220, 38, 38, 0.5) !important; }
+body.theme-sith header h1, body.theme-sith .theme-heading { color: #dc2626 !important; text-shadow: 0 0 10px rgba(220, 38, 38, 0.5) !important; }
 body.theme-sith .history-card:hover, body.theme-sith .score-card:hover { border-color: #dc2626 !important; }
 body.theme-sith .lexikon-card:hover { box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4) !important; border-color: #dc2626 !important; }
 body.theme-sith .avatar-card.selected { border-color: #dc2626 !important; box-shadow: 0 0 15px rgba(220, 38, 38, 0.5) !important; }
@@ -44,7 +44,7 @@ body.theme-klon .mini-avatar { border-color: #cbd5e1 !important; }
 body.theme-klon .rank-btn { color: #e2e8f0 !important; border-color: #cbd5e1 !important; }
 body.theme-klon .rank-btn:hover:not(:disabled) { background-color: rgba(203, 213, 225, 0.15) !important; box-shadow: 0 0 10px rgba(203, 213, 225, 0.4) !important; }
 body.theme-klon .changelog-tab.active { background: #64748b !important; border-color: #cbd5e1 !important; }
-body.theme-klon header h1 { color: #e2e8f0 !important; text-shadow: 0 0 15px rgba(255, 255, 255, 0.4) !important; }
+body.theme-klon header h1, body.theme-klon .theme-heading { color: #e2e8f0 !important; text-shadow: 0 0 15px rgba(255, 255, 255, 0.4) !important; }
 body.theme-klon .history-card:hover, body.theme-klon .score-card:hover { border-color: #e2e8f0 !important; }
 body.theme-klon .lexikon-card:hover { box-shadow: 0 8px 20px rgba(203, 213, 225, 0.35) !important; border-color: #e2e8f0 !important; }
 body.theme-klon .avatar-card.selected { border-color: #e2e8f0 !important; box-shadow: 0 0 15px rgba(255, 255, 255, 0.4) !important; }
@@ -71,7 +71,7 @@ body.theme-rebell .mini-avatar { border-color: #16a34a !important; }
 body.theme-rebell .rank-btn { color: #22c55e !important; border-color: #16a34a !important; }
 body.theme-rebell .rank-btn:hover:not(:disabled) { background-color: rgba(22, 163, 74, 0.2) !important; box-shadow: 0 0 10px rgba(22, 163, 74, 0.5) !important; }
 body.theme-rebell .changelog-tab.active { background: #16a34a !important; border-color: #16a34a !important; }
-body.theme-rebell header h1 { color: #22c55e !important; text-shadow: 0 0 10px rgba(34, 197, 94, 0.5) !important; }
+body.theme-rebell header h1, body.theme-rebell .theme-heading { color: #22c55e !important; text-shadow: 0 0 10px rgba(34, 197, 94, 0.5) !important; }
 body.theme-rebell .history-card:hover, body.theme-rebell .score-card:hover { border-color: #22c55e !important; }
 body.theme-rebell .lexikon-card:hover { box-shadow: 0 8px 20px rgba(22, 163, 74, 0.4) !important; border-color: #22c55e !important; }
 body.theme-rebell .avatar-card.selected { border-color: #22c55e !important; box-shadow: 0 0 15px rgba(22, 163, 74, 0.5) !important; }

@@ -132,12 +132,30 @@ export async function markCharacterAsDiscovered(charName) {
     const user = getCurrentUser();
     if (!user || user.role === 'admin') return;
     if (!user.discovered) user.discovered = [];
+    if (!user.newlyDiscovered) user.newlyDiscovered = [];
     if (user.discovered.includes(charName)) return;
 
     user.discovered.push(charName);
+    user.newlyDiscovered.push(charName);
     localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
     try { 
-        await updateDoc(doc(db, "users", user.uid), { discovered: arrayUnion(charName) }); 
+        await updateDoc(doc(db, "users", user.uid), { 
+            discovered: arrayUnion(charName),
+            newlyDiscovered: arrayUnion(charName)
+        }); 
+        trackWrite(1);
+    } catch (e) {}
+}
+
+export async function clearNewlyDiscovered() {
+    const user = getCurrentUser();
+    if (!user || user.role === 'admin') return;
+    if (!user.newlyDiscovered || user.newlyDiscovered.length === 0) return;
+
+    user.newlyDiscovered = [];
+    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
+    try { 
+        await updateDoc(doc(db, "users", user.uid), { newlyDiscovered: [] }); 
         trackWrite(1);
     } catch (e) {}
 }

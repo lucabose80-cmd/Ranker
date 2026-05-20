@@ -7,6 +7,7 @@
     <title>Ranking Game</title>
     <link rel="stylesheet" href="style.css">
     <link id="theme-stylesheet" rel="stylesheet" href="theme-starwars.css">
+    <link rel="stylesheet" href="theme-sith.css">
 </head>
 <body>
     
@@ -34,22 +35,22 @@
                 
                 <!-- Spalte 1: User & Globale Aktionen -->
                 <div class="admin-col">
-                    <h3 style="color: #3b82f6; border-bottom: 1px solid #333; padding-bottom: 10px;">USER VERWALTUNG</h3>
+                    <h3 class="theme-heading" style="border-bottom: 1px solid #333; padding-bottom: 10px;">USER VERWALTUNG</h3>
                     <div id="admin-user-list" class="user-list" style="max-height: 400px; margin-bottom: 30px;"></div>
                     
-                    <h3 style="color: #3b82f6; border-bottom: 1px solid #333; padding-bottom: 10px;">GLOBALE AKTIONEN</h3>
+                    <h3 class="theme-heading" style="border-bottom: 1px solid #333; padding-bottom: 10px;">GLOBALE AKTIONEN</h3>
                     <div style="display: flex; gap: 10px; flex-direction: column;">
                         <button id="admin-reset-global-history" class="rank-btn" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%;">Alle globalen Historien ausblenden (Reset)</button>
                         <button id="admin-reset-global-scoreboard" class="rank-btn" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%;">Alle globalen Scoreboards nullen (Reset)</button>
                     </div>
 
-                    <h3 style="color: #3b82f6; border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 30px;">VORSCHLÄGE MODERATION</h3>
+                    <h3 class="theme-heading" style="border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 30px;">VORSCHLÄGE MODERATION</h3>
                     <div id="admin-suggestions-list" class="user-list" style="max-height: 400px; margin-bottom: 30px; display: flex; flex-direction: column; gap: 10px;"></div>
                 </div>
                 
                 <!-- Spalte 2: Chat Moderation -->
                 <div class="admin-col">
-                    <h3 style="color: #3b82f6; border-bottom: 1px solid #333; padding-bottom: 10px;">CHAT MODERATION</h3>
+                    <h3 class="theme-heading" style="border-bottom: 1px solid #333; padding-bottom: 10px;">CHAT MODERATION</h3>
                     <div id="admin-chat-list" class="chat-messages" style="height: 400px; border: 1px solid #2a3142; border-radius: 8px; margin-bottom: 15px;"></div>
                     <button id="admin-clear-chat-btn" class="rank-btn" style="height: auto; padding: 12px; font-size: 0.9rem; color: #ff4757; border-color: #ff4757; width: 100%;">Gesamten Chat löschen</button>
                 </div>
@@ -86,7 +87,7 @@
         </div>
 
         <div class="online-sidebar panel">
-            <h3 style="color: #3b82f6; font-size: 0.9rem; letter-spacing: 1px; margin-top: 0; margin-bottom: 15px;">ONLINE (<span id="online-count">0</span>)</h3>
+            <h3 class="theme-heading" style="font-size: 0.9rem; letter-spacing: 1px; margin-top: 0; margin-bottom: 15px;">ONLINE (<span id="online-count">0</span>)</h3>
             <div id="online-users-list" class="online-list"></div>
         </div>
 
