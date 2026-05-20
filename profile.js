@@ -65,35 +65,33 @@ export function initProfile() {
     const gamesPlayed = currentMode === 'starwars' ? (user.gamesPlayed_starwars || 0) : (user.gamesPlayed_waifu || 0);
     document.getElementById('profile-games-count').textContent = gamesPlayed;
     
-    const titleSelect = document.getElementById('profile-title');
-    titleSelect.innerHTML = '';
-    const availableTitles = TITLES[currentMode] || [];
-    
-    availableTitles.forEach(t => {
-        const opt = document.createElement('option');
-        opt.value = t.name;
-        if (gamesPlayed < t.required) {
-            opt.textContent = `🔒 ${t.name} (Benötigt ${t.required} Spiele)`;
-            opt.disabled = true;
-        } else {
-            opt.textContent = `🔓 ${t.name} (Freigeschaltet)`;
-        }
-        titleSelect.appendChild(opt);
+    // Setup Tabs
+    document.querySelectorAll('.profile-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.profile-tab-btn').forEach(b => {
+                b.classList.remove('active');
+                b.style.background = 'transparent';
+                b.style.color = '#fff';
+                b.style.borderColor = '#333';
+            });
+            btn.classList.add('active');
+            btn.style.background = ''; // reset to default rank-btn style
+            btn.style.color = '';
+            btn.style.borderColor = '';
+            
+            const target = btn.dataset.tab;
+            document.getElementById('profile-avatar-panel').classList.toggle('hidden', target !== 'avatar');
+            document.getElementById('profile-title-panel').classList.toggle('hidden', target !== 'title');
+        });
     });
-    
-    const activeTitle = currentMode === 'starwars' ? user.activeTitle_starwars : user.activeTitle_waifu;
-    if (activeTitle) {
-        titleSelect.value = activeTitle;
-    } else if (availableTitles.length > 0) {
-        titleSelect.value = availableTitles[0].name;
-    }
+
+    renderTitleSelection(user, gamesPlayed);
 
     document.getElementById('save-profile-btn').addEventListener('click', async () => {
         const newName = document.getElementById('profile-displayname').value;
         const newPass = document.getElementById('profile-password').value;
-        const newTitle = titleSelect.value;
         
-        const res = await updateUserProfile(newName, newPass || null, null, newTitle);
+        const res = await updateUserProfile(newName, newPass || null, undefined);
         
         const feedback = document.getElementById('profile-feedback');
         feedback.classList.remove('hidden');
@@ -103,5 +101,39 @@ export function initProfile() {
             document.getElementById('player-greeting').textContent = newName;
             updateTopbarAvatarElement(res.user);
         }
+    });
+}
+
+function renderTitleSelection(user, gamesPlayed) {
+    const grid = document.getElementById('title-grid');
+    if (!grid || !user) return;
+    grid.innerHTML = '';
+    
+    const availableTitles = TITLES[currentMode] || [];
+    const activeTitle = currentMode === 'starwars' ? user.activeTitle_starwars : user.activeTitle_waifu;
+    
+    availableTitles.forEach(t => {
+        const isLocked = gamesPlayed < t.required;
+        const card = document.createElement('div');
+        card.className = `title-card ${activeTitle === t.name ? 'selected' : ''} ${isLocked ? 'locked' : ''}`;
+        
+        card.innerHTML = `
+            <div class="title-card-name">${isLocked ? '🔒 ' + t.name : t.name}</div>
+            <div class="title-card-req">${isLocked ? `Benötigt ${t.required} Spiele` : 'Freigeschaltet'}</div>
+        `;
+        
+        if (!isLocked) {
+            card.addEventListener('click', async () => {
+                document.querySelectorAll('.title-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                
+                const res = await updateUserProfile(user.displayName, null, null, t.name);
+                if(res.success) {
+                    updateTopbarAvatarElement(res.user);
+                }
+            });
+        }
+        
+        grid.appendChild(card);
     });
 }
