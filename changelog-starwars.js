@@ -1,12 +1,32 @@
 export const patchNotesStarWars = [
     {
+        version: "v2.9",
+        title: "The Themes & Factions Update",
+        changes: [
+            "Neues Feature: Farbschemas – Schalte durch besondere Leistungen exklusive Farbthemen frei: Sith (Rot), Klone (Weiß) und Rebellion (Grün).",
+            "Neues Feature: Fraktions-Ansicht im Lexikon – Alle Charaktere sind jetzt mit Tags versehen (Jedi, Sith, Klon, etc.) und lassen sich im Lexikon nach Fraktion gefiltert anzeigen.",
+            "Neues Feature: Farbschemas und Titel sind strikt nach Modus getrennt – Star Wars und Anime teilen sich keine Progression.",
+            "Neues Feature: Automatische Abmeldung nach 5 Minuten Inaktivität mit Warnung 1 Minute vorher, um Datenbank-Reads durch offene Hintergrundtabs zu reduzieren.",
+            "UI-Update: Das Updates-Fenster wurde komplett neu gestaltet mit Icon-basierter Änderungsliste und sauberem Kartendesign.",
+            "UI-Update: Admin kann nun Titel und Farbschemas einzelner Spieler gezielt zurücksetzen."
+        ]
+    },
+    {
+        version: "v2.9.1",
+        title: "Hotfix: Online-Tracker & Logout",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Logout setzt nun sofort ein Offline-Signal in der Datenbank – User verschwinden nicht mehr erst nach 7 Minuten aus der Online-Liste.",
+            "Hotfix: Online-Zeitfenster von 7 auf 6 Minuten reduziert, um inaktive User schneller zu entfernen.",
+            "Hotfix: Profil-Tabs (Avatare/Titel/Farbschemas) werden jetzt korrekt neu gerendert wenn der Modus gewechselt wird."
+        ]
+    },
+    {
         version: "v2.8",
         title: "The Titles & Progression Update",
         changes: [
-            "Neues Feature: Titel-System! Sammle abgeschlossene Spiele und schalte automatisch prestigeträchtige Ränge frei (z.B. Padawan, Jedi-Ritter, Großmeister).",
-            "Neues Feature: Farbschema-System! Schalte durch besondere Leistungen exklusive Farbthemen frei und passe das Erscheinungsbild der App an.",
+            "Neues Feature: Titel-System! Sammle abgeschlossene klassische Spiele und schalte automatisch prestigeträchtige Ränge frei (z.B. Jüngling, Padawan, Jedi-Ritter, Großmeister).",
             "UI-Update: Das Profilmenü wurde komplett modernisiert – drei Tabs (Avatare / Titel / Farbschemas) mit Grid-Ansicht.",
-            "UI-Update: Das Lexikon hat jetzt eine neue 'Nach Fraktionen'-Ansicht, die alle Charaktere sauber nach Jedi, Sith, Klone, etc. sortiert.",
             "Visualisierung: Dein ausgewählter Titel wird für alle sichtbar in der Topbar, in Historien-Einträgen und live im Chat angezeigt."
         ]
     },
@@ -16,194 +36,138 @@ export const patchNotesStarWars = [
         isHotfix: true,
         changes: [
             "Hotfix: Massive Performance-Verbesserung durch 12-Stunden-Caching von Profil- und Status-Abfragen.",
-            "Hotfix: CSS-Kodierungsfehler in style.css behoben, der die Titel-Karten im Profil ohne Rahmen anzeigte.",
-            "Hotfix: Ausrichtungsfehler im Profil-Overlay zwischen linker Spalte und Tab-Buttons behoben."
-        ]
-    },
-    {
-        version: "v2.8.2",
-        title: "Hotfix: Neue Farbschemas",
-        isHotfix: true,
-        changes: [
-            "Hotfix: Zwei neue freischaltbare Farbschemas hinzugefügt: 'Klone' (Weiß/Silber, nach 5 Klonen) und 'Rebellion' (Grün, nach 5 Rebellen).",
-            "Hotfix: Alle drei Farbschemas (Sith, Klone, Rebellion) werden nun korrekt im Profil-Tab 'Farbschemas' mit aktuellem Fortschritt angezeigt."
-        ]
-    },
-    {
-        version: "v2.8.3",
-        title: "Hotfix: Sicherheit & Admin",
-        isHotfix: true,
-        changes: [
-            "Hotfix: Farbschema-Fortschritt zählt jetzt ausschließlich im klassischen Modus. Advanced-Spiele werden nicht mehr für Theme-Freischaltungen gewertet.",
-            "Hotfix: Admin kann jetzt Titel und Farbschema (inkl. Tag-Fortschritt) einzelner Spieler zurücksetzen.",
-            "Hotfix: Automatische Abmeldung nach 5 Minuten Inaktivität. 1 Minute vorher erscheint ein Warnbanner – so werden Hintergrund-Reads durch vergessene offene Tabs deutlich reduziert."
+            "Hotfix: CSS-Kodierungsfehler behoben, der die Titel-Karten im Profil ohne Rahmen anzeigte.",
+            "Hotfix: Ausrichtungsfehler im Profil-Overlay zwischen linker Spalte und Tab-Buttons behoben.",
+            "Hotfix: Farbschema-Fortschritt zählt ausschließlich im klassischen Modus – Advanced-Spiele werden nicht gewertet."
         ]
     },
     {
         version: "v2.7.1",
-        title: "UI Polishing & Hotfixes",
+        title: "Hotfix: Voting & Patch Notes",
+        isHotfix: true,
         changes: [
-            "UI-Update: Das gesamte Voting-System nutzt nun dynamische Haken (✓), die beim Abstimmen kräftig grün aufleuchten.",
-            "Hotfix: Ein Fehler wurde behoben, durch den Bilder bei Charakter-Updates nicht korrekt aus der Datenbank geladen wurden.",
-            "Hotfix: Historische Patch-Notes wurden aufgeräumt und konsistent strukturiert (Bugfixes in eigenständige Hotfixes ausgelagert)."
+            "Hotfix: Beim Abstimmen leuchten die Haken (✓) nun kräftig grün auf statt grau zu bleiben.",
+            "Hotfix: Bilder bei Charakter-Update-Vorschlägen wurden nicht korrekt aus der Datenbank geladen."
         ]
     },
     {
         version: "v2.7",
         title: "The Community & Suggestions Update",
         changes: [
-            "Neues Feature: Der Vorschläge-Tab wurde massiv erweitert! Du kannst nun gezielt zwischen 'Features', 'Neuen Charakteren' und 'Charakter-Updates (Name/Bild)' filtern.",
-            "Visualisierung: Änderungsvorschläge für bestehende Charaktere werden nun in einem schicken, interaktiven Bilder-Raster präsentiert. Ein Klick auf ein Bild öffnet die Voting-Details.",
-            "Neues Admin-Feature: Die Moderation kann hervorragende Community-Ideen mit einem Klick in echte Roadmap-Punkte verwandeln. Diese tauchen dann im Tab 'Roadmap' (unter Updates) direkt im Spiel auf!"
+            "Neues Feature: Erweiterter Vorschläge-Tab – gezielt filtern nach 'Features', 'Neuen Charakteren' und 'Charakter-Updates (Name/Bild)'.",
+            "Visualisierung: Charakter-Update-Vorschläge werden in einem interaktiven Bilder-Raster präsentiert – ein Klick öffnet die Voting-Details.",
+            "Neues Admin-Feature: Community-Ideen mit genug Votes können direkt als Roadmap-Punkte eingetragen werden und erscheinen in-game."
         ]
     },
     {
         version: "v2.6",
         title: "The Performance & Database Overhaul",
         changes: [
-            "Neues Feature: Vorschläge-Tab (Suggestions) hinzugefügt! Reiche eigene Ideen für neue Features ein und stimme für die Ideen anderer Spieler ab.",
-            "Performance: Massives Datenbank-Update – Scoreboard berechnet Punkte nun extrem ressourcenschonend im Hintergrund (kostet exakt 1 Read statt hunderten pro Klick).",
-            "Performance: 'Resets' vom Admin werden nun im Hintergrund für 12 Stunden gepuffert, um extrem viele überflüssige Reads zu sparen.",
-            "Performance: Online-Status-Tracker fragt nun alle 2 Minuten ab, anstatt eine konstante Live-Verbindung aufrechtzuerhalten.",
-            "Performance: Lazy Loading integriert – Inhalte von Tabs (Historie, Scoreboard) werden erst aus der Cloud geladen, wenn der Tab angeklickt wird."
+            "Performance: Scoreboard berechnet Punkte nun im Hintergrund (1 Read statt hunderte pro Klick).",
+            "Performance: Admin-Resets werden 12 Stunden gepuffert, um überflüssige Reads zu vermeiden.",
+            "Performance: Online-Status fragt alle 2 Minuten ab statt einer konstanten Echtzeit-Verbindung.",
+            "Performance: Lazy Loading – Historie und Scoreboard werden erst geladen, wenn der Tab geöffnet wird."
         ]
     },
     {
         version: "v2.5.1",
-        title: "The Advanced Fix & History Grid Update",
+        title: "Hotfix: Advanced & History Grid",
+        isHotfix: true,
         changes: [
-            "Hotfix (Advanced Modus): Beim Zuschauen (Live-Spectating) eines Advanced-Spiels werden nun alle 10 Slots korrekt dargestellt.",
-            "Hotfix (Historie): Die 10-Slot-Historienkarten wurden optimiert (Pool-Slots schrumpfen und brechen um), sodass das 3x3 Raster ohne horizontalen Scrollbalken sauber nach unten fließt."
+            "Hotfix: Beim Zuschauen eines Advanced-Spiels werden nun alle 10 Slots korrekt dargestellt.",
+            "Hotfix: Die 10-Slot-Historienkarten brechen sauber um, ohne horizontalen Scrollbalken."
         ]
     },
     {
         version: "v2.5",
         title: "The Advanced Mode & Joker Update",
         changes: [
-            "Neues Feature: Advanced-Modus (10 Slots statt 5) spielbar für noch tieferes und komplexeres Ranking.",
-            "Neues Feature: Joker-Phase am Ende des Advanced-Modus – tausche einmalig zwei beliebige Karten durch Anklicken, um dein Ranking zu perfektionieren.",
-            "UI-Update: Scoreboard-Filter erweitert! Du kannst jetzt getrennt nach 'Klassisch (5er)' und 'Advanced (10er)' Scoreboards filtern.",
-            "UI-Update: Historienkarten passen sich dynamisch an 10 Slots an und sind mit einem gelben 'ADV' Badge gekennzeichnet.",
-            "QoL: Modus-Auswahl direkt im Spiel-Tab ermöglicht nahtloses Switchen per Klick."
+            "Neues Feature: Advanced-Modus (10 Slots statt 5) für noch tieferes Ranking.",
+            "Neues Feature: Joker-Phase – tausche einmalig zwei Karten per Klick am Ende des Advanced-Modus.",
+            "UI-Update: Scoreboard- und Historienkarten unterscheiden zwischen Klassisch (5er) und Advanced (10er).",
+            "QoL: Modus-Auswahl direkt im Spiel-Tab."
         ]
     },
     {
         version: "v2.4.1",
-        title: "Tracker Hotfix",
+        title: "Hotfix: Tracker",
+        isHotfix: true,
         changes: [
-            "Hotfix: Der Online-Tracker wurde stabilisiert (Verbindungsprobleme und Anzeigefehler der Spieleranzahl behoben)."
+            "Hotfix: Online-Tracker stabilisiert (Verbindungsprobleme und Anzeigefehler der Spieleranzahl behoben)."
         ]
     },
     {
         version: "v2.4",
         title: "The Instant Speed & QoL Update",
         changes: [
-            "Performance: Extrem schnelles Umschalten zwischen Historie und Scoreboard (0ms Latenz) durch Shared-Realtime-Caching im RAM.",
-            "Performance: Zirkelbezüge im Javascript vollständig entkoppelt für absolute Stabilität und reibungsfreie Anmeldung.",
-            "UI-Update: Der Spielername oben links in der Navigationsleiste wird nun deutlich größer und edler dargestellt.",
-            "UI-Update: In der Historie und dem Scoreboard-Filter werden jetzt die echten Anzeigenamen (korrekte Groß-/Kleinschreibung) angezeigt."
+            "Performance: Blitzschnelles Umschalten zwischen Historie und Scoreboard durch RAM-Caching.",
+            "Performance: Zirkelbezüge im JavaScript vollständig entkoppelt für absolute Stabilität.",
+            "UI-Update: Spielername in der Navigationsleiste deutlich größer und edler dargestellt.",
+            "UI-Update: Echte Anzeigenamen (korrekte Groß-/Kleinschreibung) in Historie und Scoreboard-Filter."
         ]
     },
     {
         version: "v2.3",
         title: "The Spectator & Quality of Life Update",
         changes: [
-            "Neues Feature: Die Reihenfolge, in der die Charaktere erschienen sind, wird jetzt in der Historie übersichtlich dargestellt.",
-            "Neues Feature: Beim Live-Zuschauen siehst du nun den kompletten Charakter-Auswahlpool der Person inklusive des aktuellen Status (platziert, aktuell, kommend).",
-            "Optimierung: Live-Spiele werden nun ausschließlich während des eigentlichen Rankens übertragen und nach Abschluss oder Abbruch sofort bereinigt.",
-            "UI-Update: Scrollbalken in allen Rastern (Historie, Scoreboard, Live-Spiele, Lexikon, Chat) wurden ausgeblendet, um das Interface noch edler wirken zu lassen."
+            "Neues Feature: Erscheinungsreihenfolge der Charaktere wird in der Historie angezeigt.",
+            "Neues Feature: Beim Live-Zuschauen siehst du den kompletten Charakter-Pool inklusive Status.",
+            "Optimierung: Live-Spiele werden nach Abschluss automatisch aus der Datenbank gelöscht.",
+            "UI-Update: Scrollbalken in allen Rastern ausgeblendet für ein edleres Interface."
         ]
     },
-    { 
-        version: "v2.2.1", 
-        title: "Performance & Stabilitätsfixes", 
+    {
+        version: "v2.2.1",
+        title: "Hotfix: Performance & Stabilität",
+        isHotfix: true,
         changes: [
-            "Hotfix: Globale Scoreboard- und Historien-Resets im Admin Panel funktionieren nun korrekt (Fehler durch falsche Dokument-ID behoben).",
-            "Optimierung: Der Heartbeat-Interval wurde auf 60 Sekunden erhöht, um Schreibvorgänge zu halbieren.",
-            "Optimierung: Die Online-Anzeige nutzt nun periodische Abfragen statt Echtzeit-Listener, was die Lesevorgänge drastisch reduziert.",
-            "Optimierung: Live-Spectating lädt nur noch aktive Spiele der letzten 2 Minuten aus der Cloud.",
-            "Optimierung: Abgeschlossene Spielrunden räumen ihr Live-Spiel-Dokument automatisch aus der Datenbank auf."
-        ] 
+            "Hotfix: Globale Scoreboard- und Historien-Resets im Admin Panel korrigiert.",
+            "Hotfix: Heartbeat-Interval auf 60 Sekunden erhöht, Online-Anzeige nutzt periodische Abfragen."
+        ]
     },
-    { 
-        version: "v2.2", 
-        title: "The Admin Overhaul Update", 
+    {
+        version: "v2.2",
+        title: "The Admin Overhaul Update",
         changes: [
-            "Neues Feature: Das Admin Panel zeigt jetzt farblich an, ob Daten vorhanden sind (Rot = Aktion möglich, Grün = Clean).",
-            "Neues Feature: Admin-Resets sind nun nach Universum getrennt – Star Wars und Anime können unabhängig voneinander zurückgesetzt werden.",
-            "Neues Feature: Discovery-Reset entfernt nur Charaktere des aktuell gewählten Universums, der andere Modus bleibt unberührt.",
-            "Neues Feature: Das Admin Panel zeigt oben immer an, für welchen Modus die Aktionen gelten.",
-            "Neues Feature: Chat-Moderation mit Einzellöschung pro Nachricht und 'Alles löschen'-Funktion hinzugefügt.",
-            "Neues Feature: Pro User können Discovery, Historie und Scoreboard nun getrennt voneinander zurückgesetzt werden."
-        ] 
+            "Neues Feature: Admin Panel mit Farbindikator (Rot = Aktion möglich, Grün = Clean).",
+            "Neues Feature: Resets sind nach Universum getrennt – Star Wars und Anime unabhängig zurücksetzbar.",
+            "Neues Feature: Chat-Moderation mit Einzellöschung und 'Alles löschen'.",
+            "Neues Feature: Discovery, Historie und Scoreboard per User getrennt zurücksetzbar."
+        ]
     },
-    { 
-        version: "v2.1.1", 
-        title: "Quality of Life & Hotfixes", 
+    {
+        version: "v2.1.1",
+        title: "Hotfix: Ranking & UI",
+        isHotfix: true,
         changes: [
-            "Hotfix: Behebung eines Fehlers, bei dem das Ranken und Bewerten blockiert wurde, falls die Cloud-Verbindung kurz hing.",
-            "UI-Update: Bereits genutzte Rang- und Bewertungs-Buttons werden nun sichtbar ausgegraut.",
-            "UI-Update: Leere Karten-Slots haben nun aufgeräumte, durchgezogene Ränder (gestrichelt entfernt).",
-            "UI-Update: Wenn ein Charakter platziert wird, leuchtet der Rahmen des Slots nun passend zur Themenfarbe im Neon-Look auf."
-        ] 
+            "Hotfix: Ranken und Bewerten wurde blockiert falls die Cloud-Verbindung kurz hing.",
+            "Hotfix: Leere Karten-Slots hatten gestrichelte statt saubere Ränder."
+        ]
     },
-	{ 
-    version: "v2.1", 
-    title: "The Expanded Galaxy Update", 
-    changes: [
-        "Inhalts-Erweiterung: Das Archiv wurde massiv aufgestockt! 20 neue Charaktere aus dem gesamten Star Wars Universum wurden hinzugefügt.",
-        "Vielfalt: Von den Klonkriegen bis hin zum Outer Rim – entdecke neue Legenden und bereichere deine Rankings.",
-        "Balancing: Die neuen Charaktere wurden vollständig in das Lexikon und das Achievement-System integriert."
-    ] 
-},
-    { 
-        version: "v2.0", 
-        title: "The Social Hub Update", 
+    {
+        version: "v2.1",
+        title: "The Expanded Galaxy Update",
         changes: [
-            "Neues Feature: Live-Spectating! Schau anderen Spielern in Echtzeit beim Ranken zu.",
-            "Neues Feature: Globaler Chat als schwebendes Widget, um dich mit anderen Spielern auszutauschen.",
-            "Neues Feature: Wer-ist-online-Sidebar hinzugefügt.",
-            "Neues Feature: Profil-System überarbeitet. Es ist nun ein Overlay, in dem du deinen Anzeigenamen jederzeit ändern kannst.",
-            "UI-Overhaul: Die Navigation bleibt nun beim Scrollen fest am oberen Bildschirmrand.",
-            "UI-Overhaul: Historie und Scoreboard nutzen nun ein übersichtliches 3-Spalten-Raster.",
-            "Quality of Life: Der Update-Knopf leuchtet nun golden auf, wenn es neue Patch Notes gibt!"
-        ] 
+            "Inhalts-Erweiterung: 20 neue Charaktere aus dem gesamten Star Wars Universum hinzugefügt.",
+            "Vielfalt: Von den Klonkriegen bis zum Outer Rim – neue Legenden für dein Ranking.",
+            "Balancing: Alle neuen Charaktere ins Lexikon und Achievement-System integriert."
+        ]
     },
-    { 
-        version: "v1.9", 
-        title: "The Discovery Update", 
+    {
+        version: "v2.0",
+        title: "The Social Hub Update",
         changes: [
-            "Neues Feature: Charakter-Entdeckungen hinzugefügt (Achievements).",
-            "Visualisierung: Brandneue Charaktere pulsieren im Spiel magisch gold, wenn du sie das erste Mal siehst.",
-            "Lexikon-Glow: Im Lexikon siehst du anhand des goldenen Glanzes und eines ✨-Symbols, welche Charaktere noch unentdeckt sind."
-        ] 
+            "Neues Feature: Live-Spectating – schau anderen Spielern in Echtzeit beim Ranken zu.",
+            "Neues Feature: Globaler Chat als schwebendes Widget.",
+            "Neues Feature: Online-Sidebar und überarbeitetes Profil-Overlay.",
+            "UI-Overhaul: Sticky Navigation, 3-Spalten-Raster für Historie und Scoreboard.",
+            "QoL: Update-Knopf leuchtet golden auf wenn neue Patch Notes verfügbar sind."
+        ]
     },
-    { 
-        version: "v1.8", 
-        title: "The Archives Expanded", 
-        changes: [
-            "Neues Feature: Lexikon-Tab hinzugefügt.",
-            "Visualisierung: Eine Übersicht aller Charaktere des aktuellen Universums (Alphabetisch sortiert).",
-            "Design: Lexikon passt sich nahtlos an das gewählte Theme an."
-        ] 
-    },
-    { 
-        version: "v1.7", 
-        title: "The Leaderboard Update", 
-        changes: [
-            "Neues Feature: Das SCOREBOARD Tab wurde hinzugefügt.",
-            "Ranking Meta: Charaktere sammeln nun Punkte basierend auf Platzierung und Endbewertung.",
-            "Globale & Eigene Meta: Im Scoreboard kann zwischen allen Spielern und einzelnen Usern gefiltert werden."
-        ] 
-    },
-    { 
-        version: "v1.6", 
-        title: "The Archive Update", 
-        changes: [
-            "Globales History-System: Jedes Spiel wird nun dauerhaft in der Cloud gespeichert.",
-            "Neuer 'Historie' Tab: Siehe die Top-Rankings und Bewertungen aller Spieler live ein."
-        ] 
-    },
+    { version: "v1.9", title: "The Discovery Update", changes: ["Neues Feature: Charakter-Entdeckungen (Achievements) – unentdeckte Charaktere pulsieren golden."] },
+    { version: "v1.8", title: "The Archives Expanded", changes: ["Neues Feature: Lexikon-Tab mit alphabetischer Übersicht aller Charaktere."] },
+    { version: "v1.7", title: "The Leaderboard Update", changes: ["Neues Feature: Scoreboard-Tab – Charaktere sammeln Punkte basierend auf Platzierung und Bewertung."] },
+    { version: "v1.6", title: "The Archive Update", changes: ["Globales History-System: Jedes Spiel wird dauerhaft in der Cloud gespeichert."] },
     { version: "v1.5", title: "The Multiverse Update", changes: ["Backend: Firebase-Datenbank implementiert."] },
     { version: "v1.4", title: "End-Screen & UI Overhaul", changes: ["Visuelles Upgrade für den End-Screen."] },
     { version: "v1.3", title: "The Reveal & Modularisierung", changes: ["Charakternamen werden am Ende enthüllt."] },

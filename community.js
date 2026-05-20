@@ -84,8 +84,8 @@ export function initCommunity() {
         if(!onlineList) return;
         
         try {
-            const sevenMinutesAgo = new Date(Date.now() - 420000);
-            const qOnline = query(collection(db, "users"), where("lastActive", ">=", Timestamp.fromDate(sevenMinutesAgo)));
+            const sixMinutesAgo = new Date(Date.now() - 360000);
+            const qOnline = query(collection(db, "users"), where("lastActive", ">=", Timestamp.fromDate(sixMinutesAgo)));
             const snapshot = await getDocs(qOnline);
             trackRead(snapshot.size);
             onlineList.innerHTML = '';
@@ -127,7 +127,7 @@ export function initCommunity() {
                         }
 
                         if (!isNaN(lastActiveMillis)) {
-                            isOnline = (now - lastActiveMillis) < 420000; // 7 Minuten Threshold (passend zum 3-Minuten-Heartbeat)
+                            isOnline = (now - lastActiveMillis) < 360000; // 6 Minuten (knapp über 3-Min-Heartbeat, unter 5-Min-Inaktivitäts-Timeout)
                         }
                     }
 

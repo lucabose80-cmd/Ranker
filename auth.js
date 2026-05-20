@@ -161,10 +161,19 @@ export async function markUpdatesAsRead(mode, version) {
     } catch (e) {}
 }
 
-export function logout() {
+export async function logout() {
     if(heartbeatInterval) clearInterval(heartbeatInterval);
+    // Setzt lastActive auf einen weit vergangenen Timestamp, damit der Online-Tracker den User sofort entfernt
+    const user = getCurrentUser();
+    if (user) {
+        try {
+            await updateDoc(doc(db, "users", user.uid), {
+                lastActive: new Timestamp(0, 0) // 1. Januar 1970 = definitiv offline
+            });
+        } catch(e) {}
+    }
     localStorage.removeItem(CURRENT_USER_KEY);
-    location.reload(); 
+    location.reload();
 }
 
 export function getCurrentUser() {
