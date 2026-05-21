@@ -234,8 +234,8 @@ export function getCurrentUser() {
         user.isTestUser = true;
         user.gamesPlayed_starwars = 999;
         user.gamesPlayed_waifu = 999;
-        user.unlocked_themes_starwars = ['sith', 'clone', 'rebel'];
-        user.unlocked_themes_waifu = ['magical', 'mecha', 'isekai'];
+        user.unlocked_themes_starwars = ['sw_theme_sith', 'sw_theme_klon', 'sw_theme_rebell'];
+        user.unlocked_themes_waifu = [];
     }
     return user;
 }
@@ -255,8 +255,8 @@ export async function refreshCurrentUser() {
                 updatedUser.isTestUser = true;
                 updatedUser.gamesPlayed_starwars = 999;
                 updatedUser.gamesPlayed_waifu = 999;
-                updatedUser.unlocked_themes_starwars = ['sith', 'clone', 'rebel'];
-                updatedUser.unlocked_themes_waifu = ['magical', 'mecha', 'isekai'];
+                updatedUser.unlocked_themes_starwars = ['sw_theme_sith', 'sw_theme_klon', 'sw_theme_rebell'];
+                updatedUser.unlocked_themes_waifu = [];
             }
             
             localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updatedUser));

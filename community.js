@@ -163,27 +163,30 @@ export function initCommunity() {
 
             onlineList.innerHTML = '';
 
-            // Aktuellen User immer ganz oben (immer online)
-            const uMode = currentMode;
-            const userAvatar = uMode === 'starwars' ? user.avatarStarWars : user.avatarWaifu;
-            const avatarHtml = userAvatar ? `<img src="${userAvatar}" class="mini-avatar">` : `<div class="mini-avatar" style="background:#444"></div>`;
-            const modeText = uMode === 'starwars' ? 'SW' : 'Anime';
-            const modeClass = uMode === 'starwars' ? 'tag-sw' : 'tag-anime';
-            const activeTitle = uMode === 'starwars' ? user.activeTitle_starwars : user.activeTitle_waifu;
-            const titleHtml = activeTitle && activeTitle !== 'Kein Titel'
-                ? `<div style="font-size:0.65rem; color:#ffd700; font-weight:bold; margin-top:2px; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${activeTitle}</div>` : '';
+            // Aktuellen User immer ganz oben (immer online), falls kein Geister-Account
+            if (!user.isTestUser) {
+                const uMode = currentMode;
+                const userAvatar = uMode === 'starwars' ? user.avatarStarWars : user.avatarWaifu;
+                const avatarHtml = userAvatar ? `<img src="${userAvatar}" class="mini-avatar">` : `<div class="mini-avatar" style="background:#444"></div>`;
+                const modeText = uMode === 'starwars' ? 'SW' : 'Anime';
+                const modeClass = uMode === 'starwars' ? 'tag-sw' : 'tag-anime';
+                const activeTitle = uMode === 'starwars' ? user.activeTitle_starwars : user.activeTitle_waifu;
+                const titleHtml = activeTitle && activeTitle !== 'Kein Titel'
+                    ? `<div style="font-size:0.65rem; color:#ffd700; font-weight:bold; margin-top:2px; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${activeTitle}</div>` : '';
 
-            onlineList.innerHTML += `
-                <div class="online-user-card" style="cursor:pointer;" data-uid="${user.uid}">
-                    <div class="online-indicator"></div>
-                    ${avatarHtml}
-                    <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;">
-                        <strong style="flex: unset; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${user.displayName || user.username} (Du)</strong>
-                        ${titleHtml}
+                onlineList.innerHTML += `
+                    <div class="online-user-card" style="cursor:pointer;" data-uid="${user.uid}">
+                        <div class="online-indicator"></div>
+                        ${avatarHtml}
+                        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;">
+                            <strong style="flex: unset; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${user.displayName || user.username} (Du)</strong>
+                            ${titleHtml}
+                        </div>
+                        <span class="chat-mode-tag ${modeClass}" style="margin-left:auto; flex-shrink:0;">${modeText}</span>
                     </div>
-                    <span class="chat-mode-tag ${modeClass}" style="margin-left:auto; flex-shrink:0;">${modeText}</span>
-                </div>
-            `;
+                `;
+            }
+
 
             // Alle anderen User (skip aktueller User)
             allUsers.forEach(u => {
