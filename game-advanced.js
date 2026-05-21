@@ -15,13 +15,7 @@ export let jokerUsed = false;
 let selectedJokerSlot = null;
 
 export function initAdvancedGame() {
-    currentIndex = 0;
-    jokerUsed = false;
-    selectedJokerSlot = null;
-    placedCharacters = {};
-    for (let i = 1; i <= 10; i++) {
-        placedCharacters[i] = null;
-    }
+    // We will initialize currentIndex, jokerUsed and placedCharacters inside the state check below
     
     // Board-Klassen anpassen
     const board = document.getElementById('ranking-board');
@@ -73,24 +67,53 @@ export function initAdvancedGame() {
     if(user && user.role !== 'admin' && !user.isTestUser) {
         deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
     }
-    // Anti-Reload System: Komplette Liste erzwingen, falls neugeladen wurde
     const punishPoolStr = localStorage.getItem('punish_pool_' + currentMode + '_advanced');
     if (punishPoolStr) {
         try {
             const cachedPool = JSON.parse(punishPoolStr);
             if (cachedPool && cachedPool.length === 10) {
                 activePool = cachedPool;
+                
+                // Lade den Fortschritt
+                const punishStateStr = localStorage.getItem('punish_state_' + currentMode + '_advanced');
+                if (punishStateStr) {
+                    const state = JSON.parse(punishStateStr);
+                    currentIndex = state.currentIndex || 0;
+                    placedCharacters = state.placedCharacters || {};
+                    jokerUsed = state.jokerUsed || false;
+                } else {
+                    currentIndex = 0;
+                    jokerUsed = false;
+                    placedCharacters = {};
+                    for (let i = 1; i <= 10; i++) { placedCharacters[i] = null; }
+                }
             } else {
-                activePool = shuffleArray(activeCharacterDatabase).slice(0, 10);
-                localStorage.setItem('punish_pool_' + currentMode + '_advanced', JSON.stringify(activePool));
+                startFreshAdvancedGame();
             }
         } catch (e) {
-            activePool = shuffleArray(activeCharacterDatabase).slice(0, 10);
-            localStorage.setItem('punish_pool_' + currentMode + '_advanced', JSON.stringify(activePool));
+            startFreshAdvancedGame();
         }
     } else {
+        startFreshAdvancedGame();
+    }
+    
+    function startFreshAdvancedGame() {
         activePool = shuffleArray(activeCharacterDatabase).slice(0, 10);
         localStorage.setItem('punish_pool_' + currentMode + '_advanced', JSON.stringify(activePool));
+        localStorage.removeItem('punish_state_' + currentMode + '_advanced');
+        currentIndex = 0;
+        jokerUsed = false;
+        placedCharacters = {};
+        for (let i = 1; i <= 10; i++) { placedCharacters[i] = null; }
+    }
+    
+    // Restore DOM if we resumed a game
+    for (let i = 1; i <= 10; i++) {
+        if (placedCharacters[i]) {
+            document.querySelector(`#slot-${i} .card-content`).innerHTML = `<img src="${placedCharacters[i].img}" alt="Ranked">`;
+            const btn = document.querySelector(`.rank-btn[data-rank="${i}"]`);
+            if (btn) btn.disabled = true;
+        }
     }
     
     preloadImages(activePool);
@@ -184,6 +207,13 @@ function handleJokerSlotClick(slotNum) {
         jokerUsed = true;
         selectedJokerSlot = null;
         
+        // State aktualisieren, damit Tausch beim Neuladen erhalten bleibt
+        localStorage.setItem('punish_state_' + currentMode + '_advanced', JSON.stringify({
+            currentIndex: currentIndex,
+            placedCharacters: placedCharacters,
+            jokerUsed: jokerUsed
+        }));
+        
         // Joker-Phase beenden
         disableJokerSelection();
         
@@ -241,6 +271,13 @@ export async function handleAdvancedRankSelection(rank, buttonElement) {
     buttonElement.disabled = true;
     currentIndex++;
     
+    // Save progress
+    localStorage.setItem('punish_state_' + currentMode + '_advanced', JSON.stringify({
+        currentIndex: currentIndex,
+        placedCharacters: placedCharacters,
+        jokerUsed: jokerUsed
+    }));
+    
     // Live Broadcast
     const user = getCurrentUser();
     if(user && user.role !== 'admin' && !user.isTestUser) {
@@ -262,5 +299,6 @@ export async function handleAdvancedRankSelection(rank, buttonElement) {
 
 export function submitAdvancedFinalRating(value) {
     localStorage.removeItem('punish_pool_' + currentMode + '_advanced');
+    localStorage.removeItem('punish_state_' + currentMode + '_advanced');
     saveGameToHistory(placedCharacters, value, activePool, 'advanced');
 }

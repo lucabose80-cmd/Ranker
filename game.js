@@ -13,8 +13,7 @@ export let currentIndex = 0;
 export let placedCharacters = { 1: null, 2: null, 3: null, 4: null, 5: null };
 
 export function initGame() {
-    currentIndex = 0;
-    placedCharacters = { 1: null, 2: null, 3: null, 4: null, 5: null };
+    // We will initialize currentIndex and placedCharacters inside the state check below
     
     // Board zurücksetzen und Slots generieren
     const board = document.getElementById('ranking-board');
@@ -65,25 +64,50 @@ export function initGame() {
         deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
     }
     
-    // Anti-Reload System: Komplette Liste erzwingen, falls neugeladen wurde
     const punishPoolStr = localStorage.getItem('punish_pool_' + currentMode + '_classic');
     if (punishPoolStr) {
         try {
             const cachedPool = JSON.parse(punishPoolStr);
             if (cachedPool && cachedPool.length === 5) {
                 activePool = cachedPool;
+                
+                // Lade den Fortschritt
+                const punishStateStr = localStorage.getItem('punish_state_' + currentMode + '_classic');
+                if (punishStateStr) {
+                    const state = JSON.parse(punishStateStr);
+                    currentIndex = state.currentIndex || 0;
+                    placedCharacters = state.placedCharacters || { 1: null, 2: null, 3: null, 4: null, 5: null };
+                } else {
+                    currentIndex = 0;
+                    placedCharacters = { 1: null, 2: null, 3: null, 4: null, 5: null };
+                }
             } else {
-                activePool = shuffleArray(activeCharacterDatabase).slice(0, 5);
-                localStorage.setItem('punish_pool_' + currentMode + '_classic', JSON.stringify(activePool));
+                startFreshClassicGame();
             }
         } catch (e) {
-            activePool = shuffleArray(activeCharacterDatabase).slice(0, 5);
-            localStorage.setItem('punish_pool_' + currentMode + '_classic', JSON.stringify(activePool));
+            startFreshClassicGame();
         }
     } else {
+        startFreshClassicGame();
+    }
+    
+    function startFreshClassicGame() {
         activePool = shuffleArray(activeCharacterDatabase).slice(0, 5);
         localStorage.setItem('punish_pool_' + currentMode + '_classic', JSON.stringify(activePool));
+        localStorage.removeItem('punish_state_' + currentMode + '_classic');
+        currentIndex = 0;
+        placedCharacters = { 1: null, 2: null, 3: null, 4: null, 5: null };
     }
+    
+    // Restore DOM if we resumed a game
+    for (let i = 1; i <= 5; i++) {
+        if (placedCharacters[i]) {
+            document.querySelector(`#slot-${i} .card-content`).innerHTML = `<img src="${placedCharacters[i].img}" alt="Ranked">`;
+            const btn = document.querySelector(`.rank-btn[data-rank="${i}"]`);
+            if (btn) btn.disabled = true;
+        }
+    }
+    
     
     preloadImages(activePool);
     showNextCharacter();
@@ -139,6 +163,12 @@ export async function handleRankSelection(rank, buttonElement) {
     buttonElement.disabled = true;
     currentIndex++;
     
+    // Save progress to prevent reload-cheating
+    localStorage.setItem('punish_state_' + currentMode + '_classic', JSON.stringify({
+        currentIndex: currentIndex,
+        placedCharacters: placedCharacters
+    }));
+    
     // Live Broadcast mit Pool-Info für Zuschauer
     const user = getCurrentUser();
     if(user && user.role !== 'admin' && !user.isTestUser) {
@@ -160,5 +190,6 @@ export async function handleRankSelection(rank, buttonElement) {
 
 export function submitFinalRating(value) {
     localStorage.removeItem('punish_pool_' + currentMode + '_classic');
+    localStorage.removeItem('punish_state_' + currentMode + '_classic');
     saveGameToHistory(placedCharacters, value, activePool, 'classic');
 }
