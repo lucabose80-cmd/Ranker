@@ -1,5 +1,17 @@
 export const patchNotesStarWars = [
     {
+        version: "v3.2.1",
+        title: "Hotfix: Live-Spectating & Scoreboard",
+        isHotfix: true,
+        changes: [
+            "Performance: Der Live-Modus wurde radikal optimiert. Eine permanente Hintergrundabfrage wurde durch einen manuellen 'Live-Spiele suchen'-Button ersetzt.",
+            "Performance: Das sekundengenaue Live-Update läuft nun wirklich nur noch für den einzelnen Spieler, dem man aktiv zuschaut, was die Datenbankkosten extrem verringert.",
+            "Hotfix: Test-Accounts verstecken sich nun auch korrekt aus der Online-Liste der Community.",
+            "Hotfix: Ein kritischer Speicherfehler wurde behoben, durch den absolvierte Runden zeitweise nicht mehr in die Historie und das Scoreboard geschrieben wurden.",
+            "Hotfix: Das Design des neuen Live-Buttons wurde an den restlichen Stil der App angepasst und UI-Crashes behoben."
+        ]
+    },
+    {
         version: "v3.2",
         title: "Test-Umgebung & Performance Update",
         isHotfix: false,
