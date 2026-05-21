@@ -24,7 +24,7 @@ export async function initLiveSpectating(force = false) {
         headerArea.style.textAlign = 'center';
         headerArea.style.marginBottom = '20px';
         headerArea.innerHTML = `<button id="manual-live-refresh-btn" class="action-btn" style="padding:10px 20px; font-size:1.1rem; background-color:#3b82f6;">Live-Spiele suchen</button>`;
-        liveSection.insertBefore(headerArea, grid);
+        grid.parentNode.insertBefore(headerArea, grid);
         
         document.getElementById('manual-live-refresh-btn').addEventListener('click', () => {
             fetchLiveGames(grid);
