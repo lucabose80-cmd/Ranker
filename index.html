@@ -68,6 +68,7 @@
                 <button class="nav-link" data-target="live-content">LIVE</button>
                 <button class="nav-link" data-target="history-content">HISTORIE</button>
                 <button class="nav-link" data-target="scoreboard-content">SCOREBOARD</button>
+                <button class="nav-link" data-target="versus-content">VERSUS</button>
                 <button class="nav-link" data-target="lexikon-content">LEXIKON</button>
                 <button class="nav-link" data-target="suggestions-content">VORSCHLÄGE</button>
             </nav>
@@ -158,6 +159,7 @@
                         <select id="history-type-filter">
                             <option value="classic">Klassisch (5er)</option>
                             <option value="advanced">Advanced (10er)</option>
+                            <option value="versus">Versus</option>
                         </select>
                     </div>
                     <div id="history-list" class="history-list"></div>
@@ -174,9 +176,28 @@
                         <select id="scoreboard-type-filter">
                             <option value="classic">Klassisch (5er)</option>
                             <option value="advanced">Advanced (10er)</option>
+                            <option value="versus">Versus (Wins)</option>
                         </select>
                     </div>
                     <div id="scoreboard-list" class="history-list"></div>
+                </div>
+            </div>
+
+            <div id="versus-content" class="tab-content app-container hidden">
+                <div class="panel history-panel" id="versus-lobby-list-view">
+                    <h2>VERSUS LOBBYS</h2>
+                    <p class="prompt-text">Spiele gegen andere. Wer rankt am besten?</p>
+                    <button id="create-versus-lobby-btn" class="rank-btn" style="margin-bottom: 20px; width: auto; padding: 0 20px;">Neue Lobby erstellen</button>
+                    <div id="versus-lobbies-grid" class="live-grid"></div>
+                </div>
+                <div class="panel history-panel hidden" id="versus-waiting-room-view">
+                    <h2 id="versus-room-title">Lobby</h2>
+                    <p class="prompt-text" id="versus-room-status">Warte auf Spieler...</p>
+                    <div id="versus-players-grid" class="live-grid" style="margin-bottom: 20px;"></div>
+                    <div style="display:flex; flex-direction:column; gap:10px; align-items:center;">
+                        <button id="start-versus-game-btn" class="rank-btn hidden" style="background:#2ed573; border-color:#2ed573; width: auto; padding: 0 20px;">Spiel starten</button>
+                        <button id="leave-versus-lobby-btn" class="text-btn">Verlassen</button>
+                    </div>
                 </div>
             </div>
 
@@ -277,6 +298,14 @@
                 <h2 id="spectator-title">Spieler schaut zu</h2>
                 <div id="spectator-board" class="horizontal-board spec-large-board"></div>
                 <div id="spectator-pool" class="hidden"></div>
+            </div>
+        </div>
+
+        <div id="versus-result-modal" class="profile-overlay hidden">
+            <div class="panel spectator-modal-panel">
+                <button id="close-versus-result-btn" class="close-overlay-btn">✕</button>
+                <h2>VERSUS RESULTATE</h2>
+                <div id="versus-result-content" style="display:flex; flex-direction:column; gap:20px; overflow-y:auto; max-height:80vh;"></div>
             </div>
         </div>
 

@@ -57,7 +57,11 @@ export async function getResets(force = false) {
                 historyResetAt_starwars: u.historyResetAt_starwars?.seconds || 0,
                 historyResetAt_waifu: u.historyResetAt_waifu?.seconds || 0,
                 scoreboardResetAt_starwars: u.scoreboardResetAt_starwars?.seconds || 0,
-                scoreboardResetAt_waifu: u.scoreboardResetAt_waifu?.seconds || 0
+                scoreboardResetAt_waifu: u.scoreboardResetAt_waifu?.seconds || 0,
+                versusWins_starwars: u.versusWins_starwars || 0,
+                versusWins_waifu: u.versusWins_waifu || 0,
+                avatarStarWars: u.avatarStarWars || '',
+                avatarWaifu: u.avatarWaifu || ''
             };
         });
 

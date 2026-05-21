@@ -82,6 +82,30 @@ export async function renderScoreboard() {
             isFilterListenerAttached = true;
         }
 
+        if (selectedType === 'versus') {
+            // Render Versus Scoreboard (Wins)
+            const winsField = `versusWins_${currentMode}`;
+            const avatarField = currentMode === 'starwars' ? 'avatarStarWars' : 'avatarWaifu';
+            const { userResets } = await getResets();
+            
+            const playersWithWins = Object.keys(userResets)
+                .map(uname => ({
+                    name: userResets[uname].displayName || uname,
+                    score: userResets[uname][winsField] || 0,
+                    img: userResets[uname][avatarField] || 'https://i.imgur.com/kS5x87t.png'
+                }))
+                .filter(p => p.score > 0)
+                .sort((a, b) => b.score - a.score);
+
+            if (selectedUser !== 'global') {
+                const filtered = playersWithWins.filter(p => p.name === (userResets[selectedUser]?.displayName || selectedUser));
+                renderScoreboardHTML(filtered, container);
+            } else {
+                renderScoreboardHTML(playersWithWins, container);
+            }
+            return;
+        }
+
         // Das extrem optimierte "Running Total" Fetching (EXAKT 1 READ)
         const docRef = doc(db, "scores", `${currentMode}_${selectedType}_${selectedUser}`);
         const docSnap = await getDoc(docRef);

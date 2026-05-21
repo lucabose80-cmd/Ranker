@@ -228,8 +228,35 @@ function renderHistoryHTML(games, container, displayNames) {
         const date = dateObj.toLocaleString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
         
         const card = document.createElement('div');
-        const isAdvanced = game.gameType === 'advanced' || game.ranking.length > 5;
+        const isAdvanced = game.gameType === 'advanced' || (game.ranking && game.ranking.length > 5);
         card.className = `history-card ${game.mode}-card ${isAdvanced ? 'advanced-history-card' : ''}`;
+
+        if (game.type === 'versus') {
+            const winnerNames = game.winners.map(wId => {
+                const p = game.players.find(pl => pl.uid === wId);
+                return p ? p.displayName : '???';
+            }).join(', ');
+            
+            card.innerHTML = `
+                <div class="history-header">
+                    <div>
+                        <strong>VERSUS MATCH</strong>
+                        <div style="font-size:0.7rem; color:#ffd700; font-weight:bold; letter-spacing:1px; text-transform:uppercase; margin-top:2px;">Gewinner: ${winnerNames}</div>
+                    </div>
+                    <span class="history-date">${date}</span>
+                </div>
+                <div class="history-images" style="justify-content: center; align-items: center; gap: 15px;">
+                    <span style="font-size: 1.5rem;">⚔️</span>
+                    <span>${game.players.length} Spieler</span>
+                </div>
+            `;
+            card.style.cursor = 'pointer';
+            card.addEventListener('click', () => {
+                openVersusResultModal(game);
+            });
+            container.appendChild(card);
+            return;
+        }
 
         const poolHtml = (game.pool && game.pool.length > 0) ? `
             <div class="history-pool">
@@ -276,6 +303,71 @@ function renderHistoryHTML(games, container, displayNames) {
         });
         container.appendChild(card);
     });
+}
+
+export async function openVersusResultModal(game) {
+    const modal = document.getElementById('versus-result-modal');
+    if (!modal) return;
+    
+    const content = document.getElementById('versus-result-content');
+    content.innerHTML = '<p>Lade Ergebnisse...</p>';
+    modal.classList.remove('hidden');
+
+    const { activeCharacterDatabase } = await import('./theme.js');
+    const getImgForChar = (name) => {
+        const c = activeCharacterDatabase.find(x => x.name === name);
+        return c ? c.img : 'https://i.imgur.com/kS5x87t.png';
+    };
+    
+    content.innerHTML = '';
+    
+    content.innerHTML += `
+        <div style="border: 1px solid #ffd700; padding: 10px; border-radius: 8px;">
+            <h4 style="margin:0 0 10px 0; color:#ffd700;">Globales Konsens-Ranking (Perfekt)</h4>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
+                ${game.perfectRanking.map((charName, i) => `
+                    <div style="text-align:center;">
+                        <img src="${getImgForChar(charName)}" style="width:40px; height:40px; border-radius:4px; object-fit:cover;">
+                        <div style="font-size:0.7rem; font-weight:bold;">#${i+1}</div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+    
+    const sortedPlayers = [...game.players].sort((a,b) => a.score - b.score);
+    
+    sortedPlayers.forEach(p => {
+        const isWinner = game.winners.includes(p.uid);
+        content.innerHTML += `
+            <div style="background: ${isWinner ? 'rgba(46, 213, 115, 0.2)' : 'rgba(0,0,0,0.3)'}; padding: 10px; border-radius: 8px; border: 1px solid ${isWinner ? '#2ed573' : '#333'};">
+                <div style="display:flex; justify-content:space-between; margin-bottom: 10px; align-items:center;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <img src="${p.avatar}" style="width:30px; height:30px; border-radius:50%; border: 1px solid #555;">
+                        <strong>${p.displayName}</strong>
+                    </div>
+                    <div style="font-size:0.8rem; color:#aaa;">Abweichung: <strong style="color:${isWinner ? '#2ed573' : '#fff'};">${p.score}</strong></div>
+                </div>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    ${p.picks.map((charName, i) => {
+                        const perfectRank = game.perfectRanking.indexOf(charName) + 1;
+                        const diff = Math.abs((i+1) - perfectRank);
+                        const diffColor = diff === 0 ? '#2ed573' : (diff === 1 ? '#ffd700' : '#ff4757');
+                        return `
+                            <div style="text-align:center;">
+                                <img src="${getImgForChar(charName)}" style="width:40px; height:40px; border-radius:4px; object-fit:cover; border-bottom: 3px solid ${diffColor};">
+                                <div style="font-size:0.7rem; font-weight:bold;">#${i+1}</div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    });
+    
+    document.getElementById('close-versus-result-btn').onclick = () => {
+        modal.classList.add('hidden');
+    };
 }
 
 function openArchiveDetailModal(game) {
@@ -379,10 +471,14 @@ export async function renderHistory() {
             const personalResetSecs = userResets[game.username] || 0;
             
             if (gameSecs > globalHistoryResetSecs && gameSecs > personalResetSecs) {
-                const isGameAdvanced = game.gameType === 'advanced' || game.ranking.length > 5;
-                if (selectedType === 'advanced' && isGameAdvanced) {
+                const isVersus = game.type === 'versus';
+                const isGameAdvanced = game.gameType === 'advanced' || (game.ranking && game.ranking.length > 5);
+                
+                if (selectedType === 'versus' && isVersus) {
                     filteredGames.push(game);
-                } else if (selectedType === 'classic' && !isGameAdvanced) {
+                } else if (selectedType === 'advanced' && isGameAdvanced && !isVersus) {
+                    filteredGames.push(game);
+                } else if (selectedType === 'classic' && !isGameAdvanced && !isVersus) {
                     filteredGames.push(game);
                 }
             }

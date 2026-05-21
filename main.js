@@ -12,6 +12,7 @@ import { renderScoreboard } from './scoreboard.js';
 import { renderLexikon, initLexikonTabs } from './lexikon.js';
 import { initProfile, renderAvatarSelection, updateTopbarAvatarElement, applyColorTheme, refreshProfileContent } from './profile.js';
 import { initCommunity, stopCommunity } from './community.js';
+import { initVersus, stopVersus } from './versus.js';
 import { initLiveSpectating, closeSpectatorModal, stopLiveSpectating } from './live.js';
 import { currentGameType, setCurrentGameType } from './mode-state.js';
 import { initTrackerUI } from './tracker.js';
@@ -27,6 +28,7 @@ function cleanupAllListeners() {
     stopLiveSpectating();
     stopSuggestions();
     stopCommunity();
+    stopVersus();
     stopAdminPanel();
 }
 
@@ -98,7 +100,7 @@ function setupGameUI(user) {
     document.getElementById('logout-btn').addEventListener('click', logout);
 
     // Die Tabs des Spiels (ohne Community, ohne Profil)
-    const tabs = ['game-main-content', 'live-content', 'history-content', 'scoreboard-content', 'lexikon-content', 'suggestions-content'];
+    const tabs = ['game-main-content', 'live-content', 'history-content', 'scoreboard-content', 'lexikon-content', 'suggestions-content', 'versus-content'];
     
     // Tab-Navigation mit erzwungenem Live-Reload bei JEDEM Klick
     document.querySelectorAll('.nav-link').forEach(link => {
@@ -129,6 +131,7 @@ function setupGameUI(user) {
             }
             if (target === 'lexikon-content') renderLexikon();
             if (target === 'live-content') initLiveSpectating();
+            if (target === 'versus-content') initVersus();
         });
     });
 
