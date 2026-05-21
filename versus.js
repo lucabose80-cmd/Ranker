@@ -1,5 +1,5 @@
 import { db } from './firebase-config.js';
-import { collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot, query, where, orderBy, Timestamp, getDocs, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot, query, where, orderBy, Timestamp, getDocs, getDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { getCurrentUser, refreshCurrentUser } from './auth.js';
 import { currentMode } from './mode-state.js';
 import { activeCharacterDatabase } from './theme.js';
@@ -285,18 +285,44 @@ function showWaitingRoom(lobbyId) {
                 // Warteraum anzeigen
                 document.getElementById('game-main-content').classList.add('hidden');
                 document.getElementById('versus-content').classList.remove('hidden');
-                document.getElementById('versus-room-status').innerHTML = "Du bist fertig! Warte auf die anderen Spieler...<br><br><div class='loader'></div>";
+                
+                const allFinished = lobby.players.every(p => p.status === 'finished');
+                
+                if (!allFinished) {
+                    // Manuelles Polling: Listener abbrechen um Reads zu sparen
+                    if (lobbyUnsubscribe) {
+                        lobbyUnsubscribe();
+                        lobbyUnsubscribe = null;
+                    }
+                    
+                    document.getElementById('versus-room-status').innerHTML = `
+                        Du bist fertig! Lade die Lobby neu, sobald die anderen fertig sind.<br><br>
+                        <button id="manual-refresh-versus-btn" class="action-btn" style="padding:10px 20px; font-size:1.1rem; background-color:#3b82f6;">Lobby aktualisieren</button>
+                    `;
+                    
+                    setTimeout(() => {
+                        const btn = document.getElementById('manual-refresh-versus-btn');
+                        if (btn) {
+                            btn.onclick = () => {
+                                btn.textContent = "Prüfe...";
+                                btn.disabled = true;
+                                showWaitingRoom(lobbyId); // Neustart des Listeners für einen Check
+                            };
+                        }
+                    }, 100);
+                } else {
+                    document.getElementById('versus-room-status').innerHTML = "Alle sind fertig! Werte Spiel aus...<br><br><div class='loader'></div>";
+                }
+                
                 leaveBtn.classList.remove('hidden'); // Darf immer verlassen, falls Lobby hängt
             }
             
             // Überprüfen ob alle fertig sind
             const allFinished = lobby.players.every(p => p.status === 'finished');
             if (allFinished) {
-                // Der erste Spieler in der Liste übernimmt die Auswertung, falls Host buggy ist
-                const evaluatorUid = lobby.players.length > 0 ? lobby.players[0].uid : null;
-                if (user.uid === evaluatorUid) {
-                    await evaluateVersusMatch(lobbyId, lobby);
-                }
+                // Erlauben wir es JEDEM, der manuell refresht hat und alle fertig sieht.
+                // Die Race-Condition wird innerhalb von evaluateVersusMatch abgefangen.
+                await evaluateVersusMatch(lobbyId, lobby);
             }
         } else if (lobby.status === 'finished') {
             // Zeige Endbildschirm
@@ -320,6 +346,22 @@ function showWaitingRoom(lobbyId) {
 
 // Auswertung des Versus Matches
 async function evaluateVersusMatch(lobbyId, lobby) {
+    // 0. Transaktions-Sperre: Verhindere, dass mehrere Clients gleichzeitig auswerten
+    let shouldEvaluate = false;
+    try {
+        await runTransaction(db, async (transaction) => {
+            const snap = await transaction.get(doc(db, "versus_lobbies", lobbyId));
+            if (!snap.exists()) return;
+            const data = snap.data();
+            if (data.status === 'finished' || data.status === 'evaluating') return;
+            
+            transaction.update(doc(db, "versus_lobbies", lobbyId), { status: 'evaluating' });
+            shouldEvaluate = true;
+        });
+    } catch(e) { console.error("Lock error", e); }
+    
+    if (!shouldEvaluate) return; // Ein anderer Spieler wertet bereits aus
+    
     // 1. Hole das globale Scoreboard für den Modus
     const scoresRef = doc(db, "scores", `${lobby.mode}_classic_global`);
     const scoresSnap = await getDoc(scoresRef);
