@@ -331,6 +331,16 @@ export async function openVersusResultModal(game) {
     
     content.innerHTML = '';
     
+    const winnerNames = safeWinners.map(uid => safePlayers.find(p => p.uid === uid)?.displayName || 'Unbekannt');
+    const isTie = safeWinners.length === safePlayers.length && safePlayers.length > 1;
+    const winnerBannerText = isTie ? "UNENTSCHIEDEN!" : `GEWINNER: ${winnerNames.join(', ')}`;
+    
+    content.innerHTML += `
+        <div style="text-align:center; padding: 15px; border-radius: 8px; background: rgba(46, 213, 115, 0.2); border: 2px solid #2ed573;">
+            <h2 style="margin:0; color:#2ed573; text-transform:uppercase; letter-spacing:2px; font-size:1.5rem;">${winnerBannerText}</h2>
+        </div>
+    `;
+    
     content.innerHTML += `
         <div style="border: 1px solid #ffd700; padding: 10px; border-radius: 8px;">
             <h4 style="margin:0 0 10px 0; color:#ffd700;">Globales Konsens-Ranking (Perfekt)</h4>

@@ -176,6 +176,17 @@ async function leaveVersusLobby() {
     
     if (snap.exists()) {
         const lobby = snap.data();
+        if (lobby.status === 'finished') {
+            // Die Lobby ist abgeschlossen. Wir dürfen die DB nicht mehr verändern, 
+            // damit andere Spieler das Resultat noch in Ruhe abrufen können!
+            if (lobbyUnsubscribe) lobbyUnsubscribe();
+            lobbyUnsubscribe = null;
+            currentLobbyId = null;
+            document.getElementById('versus-waiting-room-view').classList.add('hidden');
+            document.getElementById('versus-lobby-list-view').classList.remove('hidden');
+            return;
+        }
+
         lobby.players = lobby.players.filter(p => p.uid !== user.uid);
         
         if (lobby.players.length === 0) {
