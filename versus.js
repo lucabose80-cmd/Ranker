@@ -39,6 +39,11 @@ export async function initVersus() {
     document.getElementById('create-versus-lobby-btn').onclick = createVersusLobby;
     document.getElementById('leave-versus-lobby-btn').onclick = leaveVersusLobby;
     document.getElementById('start-versus-game-btn').onclick = startVersusGame;
+    document.getElementById('abort-versus-game-btn').onclick = () => {
+        document.getElementById('abort-versus-game-btn').classList.add('hidden');
+        leaveVersusLobby();
+        window.location.reload(); // Force full reload to clear any hung state
+    };
 
     listenToLobbies();
 }

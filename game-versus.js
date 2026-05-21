@@ -61,6 +61,9 @@ export function initGameVersus(lobby) {
     
     preloadImages(activePool);
     
+    // Abort button einblenden
+    document.getElementById('abort-versus-game-btn').classList.remove('hidden');
+    
     // Mode selector ausblenden
     const modeSel = document.querySelector('.mode-selector');
     if (modeSel) modeSel.style.display = 'none';
@@ -79,6 +82,7 @@ function showNextCharacterVersus() {
 
     } else {
         document.getElementById('active-game-area').classList.add('hidden');
+        document.getElementById('abort-versus-game-btn').classList.add('hidden');
         revealNamesVersus();
         
         // Fertig! An Lobby senden.
