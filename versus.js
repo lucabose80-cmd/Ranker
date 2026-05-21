@@ -323,40 +323,56 @@ async function evaluateVersusMatch(lobbyId, lobby) {
         return scoreB - scoreA; // Absteigend (meiste Punkte = Platz 1)
     });
     
-    // 3. Bewerte jeden Spieler
+    // Check if there are any global scores for these characters
+    let totalPoints = 0;
+    lobby.characters.forEach(c => {
+        const safe = c.replace(/[\.\/\[\]~#]/g, '_');
+        totalPoints += globalScores.characters?.[safe]?.score || 0;
+    });
+
     let bestScore = Infinity;
     let winners = [];
     
-    lobby.players.forEach(player => {
-        let diffSum = 0;
-        // player.picks enthält die Namen in Reihenfolge von 1 bis 5
-        player.picks.forEach((pickName, index) => {
-            const playerRank = index + 1;
-            const perfectRank = perfectRanking.indexOf(pickName) + 1;
-            diffSum += Math.abs(playerRank - perfectRank);
-        });
-        player.score = diffSum;
-        
-        if (diffSum < bestScore) {
-            bestScore = diffSum;
-            winners = [player.uid];
-        } else if (diffSum === bestScore) {
+    if (totalPoints === 0) {
+        // No global scores yet, it's a tie for everyone
+        lobby.players.forEach(player => {
+            player.score = 0; // 0 Abweichung
             winners.push(player.uid);
-        }
-    });
-    
-    // 4. Update die Stats der Gewinner
-    const winnerPromises = winners.map(async (winnerUid) => {
-        const uRef = doc(db, "users", winnerUid);
-        const winField = `versusWins_${lobby.mode}`;
-        const uSnap = await getDoc(uRef);
-        if (uSnap.exists()) {
-            const data = uSnap.data();
-            const wins = (data[winField] || 0) + 1;
-            await updateDoc(uRef, { [winField]: wins });
-        }
-    });
-    await Promise.all(winnerPromises);
+        });
+        // We won't increment win stats for 0-point unranked games
+    } else {
+        // Normal evaluation
+        lobby.players.forEach(player => {
+            let diffSum = 0;
+            // player.picks enthält die Namen in Reihenfolge von 1 bis 5
+            player.picks.forEach((pickName, index) => {
+                const playerRank = index + 1;
+                const perfectRank = perfectRanking.indexOf(pickName) + 1;
+                diffSum += Math.abs(playerRank - perfectRank);
+            });
+            player.score = diffSum;
+            
+            if (diffSum < bestScore) {
+                bestScore = diffSum;
+                winners = [player.uid];
+            } else if (diffSum === bestScore) {
+                winners.push(player.uid);
+            }
+        });
+        
+        // 4. Update die Stats der Gewinner
+        const winnerPromises = winners.map(async (winnerUid) => {
+            const uRef = doc(db, "users", winnerUid);
+            const winField = `versusWins_${lobby.mode}`;
+            const uSnap = await getDoc(uRef);
+            if (uSnap.exists()) {
+                const data = uSnap.data();
+                const wins = (data[winField] || 0) + 1;
+                await updateDoc(uRef, { [winField]: wins });
+            }
+        });
+        await Promise.all(winnerPromises);
+    }
     
     // 5. Speichere das Spiel in die History
     const historyData = {
@@ -370,9 +386,11 @@ async function evaluateVersusMatch(lobbyId, lobby) {
     };
     await setDoc(doc(db, "history", `versus_${Date.now()}`), historyData);
     
-    // 6. Setze Lobby auf Finished
+    // 6. Setze Lobby auf Finished und speichere die Results in der Lobby
     await updateDoc(doc(db, "versus_lobbies", lobbyId), {
         status: 'finished',
-        players: lobby.players // Updated mit Scores
+        players: lobby.players,
+        perfectRanking: perfectRanking,
+        winners: winners
     });
 }

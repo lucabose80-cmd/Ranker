@@ -319,13 +319,23 @@ export async function openVersusResultModal(game) {
         return c ? c.img : 'https://i.imgur.com/kS5x87t.png';
     };
     
+    // Fallbacks falls alte Datenstruktur geladen wird
+    const safePerfectRanking = game.perfectRanking || game.characters || [];
+    const safeWinners = game.winners || [];
+    const safePlayers = game.players || [];
+    
+    // Close Button sofort binden, damit er auch bei Fehlern funktioniert
+    document.getElementById('close-versus-result-btn').onclick = () => {
+        modal.classList.add('hidden');
+    };
+    
     content.innerHTML = '';
     
     content.innerHTML += `
         <div style="border: 1px solid #ffd700; padding: 10px; border-radius: 8px;">
             <h4 style="margin:0 0 10px 0; color:#ffd700;">Globales Konsens-Ranking (Perfekt)</h4>
             <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
-                ${game.perfectRanking.map((charName, i) => `
+                ${safePerfectRanking.map((charName, i) => `
                     <div style="text-align:center;">
                         <img src="${getImgForChar(charName)}" style="width:40px; height:40px; border-radius:4px; object-fit:cover;">
                         <div style="font-size:0.7rem; font-weight:bold;">#${i+1}</div>
@@ -335,10 +345,10 @@ export async function openVersusResultModal(game) {
         </div>
     `;
     
-    const sortedPlayers = [...game.players].sort((a,b) => a.score - b.score);
+    const sortedPlayers = [...safePlayers].sort((a,b) => (a.score || 0) - (b.score || 0));
     
     sortedPlayers.forEach(p => {
-        const isWinner = game.winners.includes(p.uid);
+        const isWinner = safeWinners.includes(p.uid);
         content.innerHTML += `
             <div style="background: ${isWinner ? 'rgba(46, 213, 115, 0.2)' : 'rgba(0,0,0,0.3)'}; padding: 10px; border-radius: 8px; border: 1px solid ${isWinner ? '#2ed573' : '#333'};">
                 <div style="display:flex; justify-content:space-between; margin-bottom: 10px; align-items:center;">
@@ -349,8 +359,8 @@ export async function openVersusResultModal(game) {
                     <div style="font-size:0.8rem; color:#aaa;">Abweichung: <strong style="color:${isWinner ? '#2ed573' : '#fff'};">${p.score}</strong></div>
                 </div>
                 <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                    ${p.picks.map((charName, i) => {
-                        const perfectRank = game.perfectRanking.indexOf(charName) + 1;
+                    ${(p.picks || []).map((charName, i) => {
+                        const perfectRank = safePerfectRanking.indexOf(charName) + 1;
                         const diff = Math.abs((i+1) - perfectRank);
                         const diffColor = diff === 0 ? '#2ed573' : (diff === 1 ? '#ffd700' : '#ff4757');
                         return `
@@ -364,10 +374,6 @@ export async function openVersusResultModal(game) {
             </div>
         `;
     });
-    
-    document.getElementById('close-versus-result-btn').onclick = () => {
-        modal.classList.add('hidden');
-    };
 }
 
 function openArchiveDetailModal(game) {
