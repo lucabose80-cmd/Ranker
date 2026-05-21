@@ -182,8 +182,7 @@ async function leaveVersusLobby() {
             if (lobbyUnsubscribe) lobbyUnsubscribe();
             lobbyUnsubscribe = null;
             currentLobbyId = null;
-            document.getElementById('versus-waiting-room-view').classList.add('hidden');
-            document.getElementById('versus-lobby-list-view').classList.remove('hidden');
+            resetVersusUI();
             return;
         }
 
@@ -204,8 +203,25 @@ async function leaveVersusLobby() {
     lobbyUnsubscribe = null;
     currentLobbyId = null;
     
-    document.getElementById('versus-waiting-room-view').classList.add('hidden');
-    document.getElementById('versus-lobby-list-view').classList.remove('hidden');
+    resetVersusUI();
+}
+
+export function resetVersusUI() {
+    const wRoom = document.getElementById('versus-waiting-room-view');
+    const lList = document.getElementById('versus-lobby-list-view');
+    if (wRoom) wRoom.classList.add('hidden');
+    if (lList) lList.classList.remove('hidden');
+    
+    const gameMain = document.getElementById('game-main-content');
+    const versusContent = document.getElementById('versus-content');
+    if (gameMain) gameMain.classList.remove('hidden');
+    if (versusContent) versusContent.classList.add('hidden');
+    
+    const abortBtn = document.getElementById('abort-versus-game-btn');
+    if (abortBtn) abortBtn.classList.add('hidden');
+    
+    const modeSel = document.querySelector('.mode-selector');
+    if (modeSel) modeSel.style.display = 'flex';
 }
 
 async function startVersusGame() {
@@ -327,19 +343,69 @@ function showWaitingRoom(lobbyId) {
         } else if (lobby.status === 'finished') {
             // Zeige Endbildschirm
             leaveBtn.classList.remove('hidden');
-            leaveBtn.textContent = "Zurück zur Übersicht";
+            leaveBtn.textContent = "Lobby verlassen";
             document.getElementById('game-main-content').classList.add('hidden');
             document.getElementById('versus-content').classList.remove('hidden');
-            document.getElementById('versus-room-status').innerHTML = "Spiel beendet! Siehe Historie.";
             
-            // ODER wir zeigen direkt das Resultat-Modal.
-            // ... (Hier rufen wir die Funktion auf, die in history.js das Modal öffnet)
-            import('./history.js').then(module => {
-                const dummyGame = { ...lobby, mode: lobby.mode, type: 'versus', timestamp: Timestamp.now() };
-                module.openVersusResultModal(dummyGame);
-            });
+            const readyCount = lobby.readyForRestart ? lobby.readyForRestart.length : 0;
+            const isReady = lobby.readyForRestart && lobby.readyForRestart.includes(user.uid);
             
-            leaveVersusLobby(); // Cleanup
+            document.getElementById('versus-room-status').innerHTML = `
+                Spiel beendet! Siehe Historie.<br><br>
+                <button id="restart-versus-btn" class="action-btn" ${isReady ? 'disabled' : ''} style="${isReady ? 'opacity:0.5;' : ''}">
+                    ${isReady ? `Warte auf andere... (${readyCount}/${lobby.players.length})` : 'Noch eine Runde'}
+                </button>
+            `;
+            
+            const restartBtn = document.getElementById('restart-versus-btn');
+            if (restartBtn && !isReady) {
+                restartBtn.onclick = async () => {
+                    restartBtn.disabled = true;
+                    restartBtn.textContent = "Bereit...";
+                    try {
+                        await runTransaction(db, async (transaction) => {
+                            const snap = await transaction.get(doc(db, "versus_lobbies", lobbyId));
+                            if (!snap.exists()) return;
+                            const data = snap.data();
+                            const readyList = data.readyForRestart || [];
+                            if (!readyList.includes(user.uid)) {
+                                readyList.push(user.uid);
+                            }
+                            
+                            if (readyList.length >= data.players.length) {
+                                // Alle bereit -> Neustart!
+                                const { activeCharacterDatabase } = await import('./theme.js');
+                                const { shuffleArray } = await import('./utils.js');
+                                const newChars = shuffleArray(activeCharacterDatabase).slice(0, 5).map(c => c.name);
+                                
+                                const resetPlayers = data.players.map(p => ({
+                                    ...p, status: 'waiting', picks: [], score: 0
+                                }));
+                                
+                                transaction.update(doc(db, "versus_lobbies", lobbyId), {
+                                    status: 'waiting',
+                                    readyForRestart: [],
+                                    characters: newChars,
+                                    players: resetPlayers
+                                });
+                            } else {
+                                transaction.update(doc(db, "versus_lobbies", lobbyId), {
+                                    readyForRestart: readyList
+                                });
+                            }
+                        });
+                    } catch(e) { console.error(e); }
+                };
+            }
+            
+            // Result-Modal öffnen, falls es noch nicht geöffnet wurde (wir nutzen ein lokales flag)
+            if (!window.versusModalOpenedForLobby || window.versusModalOpenedForLobby !== lobbyId) {
+                window.versusModalOpenedForLobby = lobbyId;
+                import('./history.js').then(module => {
+                    const dummyGame = { ...lobby, mode: lobby.mode, type: 'versus', timestamp: Timestamp.now() };
+                    module.openVersusResultModal(dummyGame);
+                });
+            }
         }
     });
 }
@@ -416,18 +482,22 @@ async function evaluateVersusMatch(lobbyId, lobby) {
         const hasTestUser = lobby.players.some(p => p.username === 'test1' || p.username === 'test2');
         
         if (!hasTestUser) {
-            // 4. Update die Stats der Gewinner
-            const winnerPromises = winners.map(async (winnerUid) => {
-                const uRef = doc(db, "users", winnerUid);
+            // 4. Update die Stats der Gewinner UND inkrementiere gamesPlayed für alle
+            const playerPromises = lobby.players.map(async (player) => {
+                const uRef = doc(db, "users", player.uid);
                 const winField = `versusWins_${lobby.mode}`;
+                const gamesField = `gamesPlayed_${lobby.mode}`;
                 const uSnap = await getDoc(uRef);
                 if (uSnap.exists()) {
                     const data = uSnap.data();
-                    const wins = (data[winField] || 0) + 1;
-                    await updateDoc(uRef, { [winField]: wins });
+                    const updates = { [gamesField]: (data[gamesField] || 0) + 1 };
+                    if (winners.includes(player.uid)) {
+                        updates[winField] = (data[winField] || 0) + 1;
+                    }
+                    await updateDoc(uRef, updates);
                 }
             });
-            await Promise.all(winnerPromises);
+            await Promise.all(playerPromises);
         }
     }
     

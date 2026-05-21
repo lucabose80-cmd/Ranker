@@ -109,7 +109,7 @@ export function initCommunity() {
         onlineInterval = null;
     }
     
-    const updateOnlineTracker = async () => {
+    const updateOnlineTracker = async (forceFullRefresh = false) => {
         const onlineList = document.getElementById('online-users-list');
         if(!onlineList) return;
         
@@ -118,7 +118,7 @@ export function initCommunity() {
             const ACTIVE_THRESHOLD_MS = 120000; // 2 Minuten
             const activeSince = Timestamp.fromDate(new Date(now - ACTIVE_THRESHOLD_MS));
 
-            if (allUsersCache.length === 0) {
+            if (forceFullRefresh || allUsersCache.length === 0) {
                 const allUsersSnap = await getDocs(query(collection(db, "users"), limit(100)));
                 trackRead(allUsersSnap.size);
 
@@ -179,7 +179,10 @@ export function initCommunity() {
                         <div class="online-indicator"></div>
                         ${avatarHtml}
                         <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;">
-                            <strong style="flex: unset; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${user.displayName || user.username} (Du)</strong>
+                            <strong style="flex: unset; display: flex; align-items: center; min-width: 0;">
+                                <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${user.displayName || user.username}</span>
+                                <span style="flex-shrink:0; color:#888; font-size:0.8rem; margin-left:5px;">(Du)</span>
+                            </strong>
                             ${titleHtml}
                         </div>
                         <span class="chat-mode-tag ${modeClass}" style="margin-left:auto; flex-shrink:0;">${modeText}</span>
@@ -227,7 +230,7 @@ export function initCommunity() {
 
     const refreshBtn = document.getElementById('refresh-online-btn');
     if (refreshBtn) {
-        refreshBtn.addEventListener('click', updateOnlineTracker);
+        refreshBtn.addEventListener('click', () => updateOnlineTracker(true));
     }
 
     const onlineListEl = document.getElementById('online-users-list');

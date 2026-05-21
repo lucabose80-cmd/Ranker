@@ -1,5 +1,5 @@
 // admin.js
-import { logout, getCurrentUser } from './auth.js';
+import { logout, getCurrentUser, updateUserProfile } from './auth.js';
 import { db } from './firebase-config.js';
 import { collection, getDocs, deleteDoc, doc, updateDoc, setDoc, onSnapshot, query, orderBy, limit, Timestamp, where, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { activeCharacterDatabase } from './theme.js';
@@ -79,6 +79,23 @@ export async function initAdminPanel() {
                     await Promise.all(deletes);
                     alert("Chat geleert!");
                 } catch(e) { console.error(e); alert(`Fehler: ${e.message}`); }
+            }
+        });
+        
+        document.getElementById('admin-change-password-btn').addEventListener('click', async () => {
+            const newPass = document.getElementById('admin-new-password').value;
+            if (!newPass || newPass.trim() === '') {
+                alert("Bitte ein gültiges Passwort eingeben.");
+                return;
+            }
+            if (confirm("Möchtest du das Admin-Passwort wirklich ändern?")) {
+                const res = await updateUserProfile(null, newPass, null, null, null);
+                if (res !== false) {
+                    alert("Admin-Passwort erfolgreich geändert!");
+                    document.getElementById('admin-new-password').value = '';
+                } else {
+                    alert("Fehler beim Ändern des Passworts.");
+                }
             }
         });
 

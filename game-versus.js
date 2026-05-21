@@ -1,7 +1,7 @@
 import { activeCharacterDatabase } from './theme.js';
 import { preloadImages } from './utils.js';
 import { getCurrentUser } from './auth.js';
-import { doc, getDoc, updateDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { doc, getDoc, updateDoc, runTransaction, Timestamp, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { db } from './firebase-config.js';
 
 let activePool = []; 
@@ -45,7 +45,13 @@ export function initGameVersus(lobby) {
         btn.className = "rank-btn";
         btn.setAttribute('data-rank', i);
         btn.textContent = i;
-        btn.addEventListener('click', () => handleRankSelectionVersus(i, btn));
+        btn.addEventListener('click', (e) => {
+            if (!e.isTrusted) {
+                alert("Bot Aktivität blockiert!");
+                return;
+            }
+            handleRankSelectionVersus(i, btn);
+        });
         btnContainer.appendChild(btn);
     }
     
@@ -109,6 +115,22 @@ async function handleRankSelectionVersus(rank, buttonElement) {
     buttonElement.disabled = true;
     currentIndex++;
     
+    // Live Broadcast
+    const user = getCurrentUser();
+    if(user && user.role !== 'admin' && !user.isTestUser) {
+        try {
+            setDoc(doc(db, "live_games", user.username), {
+                displayName: user.displayName || user.username,
+                avatar: user.avatar || '',
+                placedCharacters,
+                pool: activePool,
+                currentIndex: currentIndex,
+                updatedAt: Timestamp.now(),
+                gameType: 'versus'
+            }).catch(e => console.error("Live Broadcast Error:", e));
+        } catch(e) {}
+    }
+    
     showNextCharacterVersus();
 }
 
@@ -145,6 +167,11 @@ async function submitVersusPicks() {
                 throw new Error("Du bist nicht mehr in der Lobby.");
             }
         });
+        
+        // Remove live broadcast
+        if(user && user.role !== 'admin' && !user.isTestUser) {
+            deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
+        }
     } catch(e) {
         console.error("Versus Submit Error", e);
         document.getElementById('versus-room-status').innerHTML = "Fehler beim Senden: " + e.message;

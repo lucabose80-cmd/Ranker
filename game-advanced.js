@@ -45,7 +45,13 @@ export function initAdvancedGame() {
         btn.className = "rank-btn";
         btn.setAttribute('data-rank', i);
         btn.textContent = i;
-        btn.addEventListener('click', () => handleAdvancedRankSelection(i, btn));
+        btn.addEventListener('click', (e) => {
+            if (!e.isTrusted) {
+                alert("Bot Aktivität blockiert!");
+                return;
+            }
+            handleAdvancedRankSelection(i, btn);
+        });
         btnContainer.appendChild(btn);
     }
     

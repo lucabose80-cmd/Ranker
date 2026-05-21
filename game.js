@@ -41,7 +41,13 @@ export function initGame() {
         btn.className = "rank-btn";
         btn.setAttribute('data-rank', i);
         btn.textContent = i;
-        btn.addEventListener('click', () => handleRankSelection(i, btn));
+        btn.addEventListener('click', (e) => {
+            if (!e.isTrusted) {
+                alert("Bot Aktivität blockiert!");
+                return;
+            }
+            handleRankSelection(i, btn);
+        });
         btnContainer.appendChild(btn);
     }
     
