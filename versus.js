@@ -27,11 +27,11 @@ export async function initVersus() {
     const gamesPlayed = currentMode === 'starwars' ? (user.gamesPlayed_starwars || 0) : (user.gamesPlayed_waifu || 0);
     const container = document.getElementById('versus-lobby-list-view');
     
-    if (gamesPlayed < 5) {
+    if (gamesPlayed < 10) {
         container.innerHTML = `
             <h2>VERSUS LOBBYS</h2>
             <p class="prompt-text" style="color:#ff4757;">Versus Modus gesperrt!</p>
-            <p class="prompt-text">Du musst zuerst 5 klassische Spiele in diesem Universum abschließen, bevor du an Versus-Matches teilnehmen kannst. (${gamesPlayed}/5)</p>
+            <p class="prompt-text">Du musst zuerst 10 klassische Spiele in diesem Universum abschließen, bevor du an Versus-Matches teilnehmen kannst. (${gamesPlayed}/10)</p>
         `;
         return;
     }
