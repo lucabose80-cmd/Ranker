@@ -65,19 +65,24 @@ export function initGame() {
         deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
     }
     
-    activePool = shuffleArray(activeCharacterDatabase).slice(0, 5);
-    
-    // Anti-Spachmann System: Ersten Charakter erzwingen, falls neugeladen wurde
-    const punishName = localStorage.getItem('punish_char_' + currentMode + '_classic');
-    if (punishName) {
-        const punishChar = activeCharacterDatabase.find(c => c.name === punishName);
-        if (punishChar) {
-            activePool = activePool.filter(c => c.name !== punishName);
-            activePool.unshift(punishChar);
-            activePool = activePool.slice(0, 5);
+    // Anti-Reload System: Komplette Liste erzwingen, falls neugeladen wurde
+    const punishPoolStr = localStorage.getItem('punish_pool_' + currentMode + '_classic');
+    if (punishPoolStr) {
+        try {
+            const cachedPool = JSON.parse(punishPoolStr);
+            if (cachedPool && cachedPool.length === 5) {
+                activePool = cachedPool;
+            } else {
+                activePool = shuffleArray(activeCharacterDatabase).slice(0, 5);
+                localStorage.setItem('punish_pool_' + currentMode + '_classic', JSON.stringify(activePool));
+            }
+        } catch (e) {
+            activePool = shuffleArray(activeCharacterDatabase).slice(0, 5);
+            localStorage.setItem('punish_pool_' + currentMode + '_classic', JSON.stringify(activePool));
         }
     } else {
-        localStorage.setItem('punish_char_' + currentMode + '_classic', activePool[0].name);
+        activePool = shuffleArray(activeCharacterDatabase).slice(0, 5);
+        localStorage.setItem('punish_pool_' + currentMode + '_classic', JSON.stringify(activePool));
     }
     
     preloadImages(activePool);
@@ -124,10 +129,8 @@ export function revealNames() {
 }
 
 export async function handleRankSelection(rank, buttonElement) {
-    if (currentIndex === 0) {
-        // Spieler hat seinen ersten Charakter platziert -> Bestrafung aufheben
-        localStorage.removeItem('punish_char_' + currentMode + '_classic');
-    }
+    // The user has placed a character, but we only remove the punishment when they finish rating or start a new game.
+    // Actually, we remove it when the game is finished (all 5 placed) so they can't reload during the game.
     
     const currentChar = activePool[currentIndex];
     document.querySelector(`#slot-${rank} .card-content`).innerHTML = `<img src="${currentChar.img}" alt="Ranked">`;
@@ -156,5 +159,6 @@ export async function handleRankSelection(rank, buttonElement) {
 }
 
 export function submitFinalRating(value) {
+    localStorage.removeItem('punish_pool_' + currentMode + '_classic');
     saveGameToHistory(placedCharacters, value, activePool, 'classic');
 }

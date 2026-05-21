@@ -73,19 +73,24 @@ export function initAdvancedGame() {
     if(user && user.role !== 'admin' && !user.isTestUser) {
         deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
     }
-    activePool = shuffleArray(activeCharacterDatabase).slice(0, 10);
-    
-    // Anti-Spachmann System: Ersten Charakter erzwingen, falls neugeladen wurde
-    const punishName = localStorage.getItem('punish_char_' + currentMode + '_advanced');
-    if (punishName) {
-        const punishChar = activeCharacterDatabase.find(c => c.name === punishName);
-        if (punishChar) {
-            activePool = activePool.filter(c => c.name !== punishName);
-            activePool.unshift(punishChar);
-            activePool = activePool.slice(0, 10);
+    // Anti-Reload System: Komplette Liste erzwingen, falls neugeladen wurde
+    const punishPoolStr = localStorage.getItem('punish_pool_' + currentMode + '_advanced');
+    if (punishPoolStr) {
+        try {
+            const cachedPool = JSON.parse(punishPoolStr);
+            if (cachedPool && cachedPool.length === 10) {
+                activePool = cachedPool;
+            } else {
+                activePool = shuffleArray(activeCharacterDatabase).slice(0, 10);
+                localStorage.setItem('punish_pool_' + currentMode + '_advanced', JSON.stringify(activePool));
+            }
+        } catch (e) {
+            activePool = shuffleArray(activeCharacterDatabase).slice(0, 10);
+            localStorage.setItem('punish_pool_' + currentMode + '_advanced', JSON.stringify(activePool));
         }
     } else {
-        localStorage.setItem('punish_char_' + currentMode + '_advanced', activePool[0].name);
+        activePool = shuffleArray(activeCharacterDatabase).slice(0, 10);
+        localStorage.setItem('punish_pool_' + currentMode + '_advanced', JSON.stringify(activePool));
     }
     
     preloadImages(activePool);
@@ -226,10 +231,8 @@ export function revealAdvancedNames() {
 }
 
 export async function handleAdvancedRankSelection(rank, buttonElement) {
-    if (currentIndex === 0) {
-        // Spieler hat seinen ersten Charakter platziert -> Bestrafung aufheben
-        localStorage.removeItem('punish_char_' + currentMode + '_advanced');
-    }
+    // The user has placed a character, but we only remove the punishment when they finish rating or start a new game.
+    // Actually, we remove it when the game is finished (all 10 placed) so they can't reload during the game.
     
     const currentChar = activePool[currentIndex];
     document.querySelector(`#slot-${rank} .card-content`).innerHTML = `<img src="${currentChar.img}" alt="Ranked">`;
@@ -258,5 +261,6 @@ export async function handleAdvancedRankSelection(rank, buttonElement) {
 }
 
 export function submitAdvancedFinalRating(value) {
+    localStorage.removeItem('punish_pool_' + currentMode + '_advanced');
     saveGameToHistory(placedCharacters, value, activePool, 'advanced');
 }

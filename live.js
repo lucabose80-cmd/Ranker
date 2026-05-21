@@ -179,13 +179,23 @@ function updateSpectatorModalContent(data) {
             <div class="spectator-pool-grid">
                 ${data.pool.map((char, idx) => {
                     let stateClass = '';
-                    if (idx < currentIdx) stateClass = 'pool-placed';
-                    else if (idx === currentIdx) stateClass = 'pool-current';
-                    else stateClass = 'pool-upcoming';
+                    let displayImg = char.img;
+                    let displayName = char.name;
+                    
+                    if (idx < currentIdx) {
+                        stateClass = 'pool-placed';
+                    } else if (idx === currentIdx) {
+                        stateClass = 'pool-current';
+                    } else {
+                        stateClass = 'pool-upcoming';
+                        displayImg = '';
+                        displayName = '???';
+                    }
+                    
                     return `
-                        <div class="spectator-pool-item ${stateClass}" title="${char.name}">
-                            <img src="${char.img}">
-                            <span>${char.name}</span>
+                        <div class="spectator-pool-item ${stateClass}" title="${displayName}">
+                            ${displayImg ? `<img src="${displayImg}">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.5);"><span style="font-size:1.5rem;color:#fff;">?</span></div>`}
+                            <span>${displayName}</span>
                             <div class="pool-order-badge">${idx + 1}</div>
                         </div>
                     `;

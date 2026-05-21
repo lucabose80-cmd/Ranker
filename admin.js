@@ -117,9 +117,9 @@ async function renderUserList() {
     
     allUsersCache = users; // Für die Action-Buttons cachen
 
-    // Admin-User herausfiltern (Admin soll nicht in der Liste erscheinen)
-    const normalUsers = users.filter(u => u.role !== 'admin');
-    const adminUser = users.find(u => u.role === 'admin');
+    // Haupt-Admin aus der Liste filtern (bleibt versteckt)
+    const normalUsers = users.filter(u => u.username !== 'admin');
+    const adminUser = users.find(u => u.username === 'admin');
 
     // Globale Resets auslesen
     let globalHistReset = 0;

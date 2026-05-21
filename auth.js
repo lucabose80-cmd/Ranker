@@ -9,6 +9,13 @@ let heartbeatInterval;
 
 export async function initAuth() {}
 
+async function hashPassword(password) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 export async function loginOrRegister(usernameInput, password) {
     if (!usernameInput || !password) return { success: false, message: 'Bitte alles ausfüllen.' };
     
@@ -30,8 +37,17 @@ export async function loginOrRegister(usernameInput, password) {
             if (user.lastReadVersionStarWars === undefined) user.lastReadVersionStarWars = "";
             if (user.lastReadVersionWaifu === undefined) user.lastReadVersionWaifu = "";
             
-            if (user.password === password) {
-                localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
+            const hashedInput = await hashPassword(password);
+            
+            if (user.password === password || user.password === hashedInput) {
+                // Silent Upgrade: Wenn das Passwort noch im Klartext in der DB liegt, speichern wir jetzt den Hash
+                if (user.password === password) {
+                    await updateDoc(doc(db, "users", user.uid), { password: hashedInput });
+                    user.password = hashedInput;
+                }
+                
+                const { password: _, ...safeUser } = user;
+                localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(safeUser));
                 startPresenceHeartbeat(); 
                 return { success: true, user, message: 'Erfolgreich eingeloggt.' };
             } else {
@@ -44,7 +60,7 @@ export async function loginOrRegister(usernameInput, password) {
             const newUser = { 
                 username: safeName.toLowerCase(),
                 displayName: safeName,
-                password, 
+                password: await hashPassword(password), 
                 role, 
                 stats: { gamesPlayed: 0 }, 
                 discovered: [], 
@@ -57,7 +73,8 @@ export async function loginOrRegister(usernameInput, password) {
             
             await setDoc(doc(db, "users", newUid), newUser);
             trackWrite(1);
-            localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(newUser));
+            const { password: _, ...safeNewUser } = newUser;
+            localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(safeNewUser));
             startPresenceHeartbeat();
             return { success: true, user: newUser, message: 'Account erstellt!' };
         }
@@ -83,7 +100,7 @@ export async function updateUserProfile(newDisplayName, newPassword, newAvatarPa
             updates.username = newDisplayName.toLowerCase();
         }
         
-        if (newPassword) updates.password = newPassword;
+        if (newPassword) updates.password = await hashPassword(newPassword);
         if (newAvatarPath !== undefined && newAvatarPath !== null) {
             if (currentMode === 'starwars') updates.avatarStarWars = newAvatarPath;
             else updates.avatarWaifu = newAvatarPath;

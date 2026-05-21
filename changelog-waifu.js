@@ -1,5 +1,16 @@
 export const patchNotesWaifu = [
     {
+        version: "v3.2.4",
+        title: "Security & Bugfixes",
+        isHotfix: true,
+        changes: [
+            "Anti-Cheat: Wer im Spiel die Seite neu lädt (z.B. mit F5), bekommt nun exakt denselben Pool an Charakteren zurück. Ein Reload zum Neuauswürfeln von ungeliebten Charakteren ist damit auch im fortgeschrittenen Verlauf ausgeschlossen.",
+            "Live-Modus: Zuschauer sehen nun nur noch die Charaktere, die der spielenden Person auch schon angezeigt wurden. Zukünftige Charaktere bleiben als Fragezeichen getarnt, um Vorsagen ('Ghosting') zu verhindern.",
+            "Sicherheit: Passwörter werden ab sofort stark verschlüsselt in der Datenbank abgelegt und sind nicht mehr über die Browser-Konsole (DevTools) oder im LocalStorage auslesbar.",
+            "Bugfix: Fehler behoben, durch den einige Admins fälschlicherweise komplett aus der Online-Liste und dem Moderations-Werkzeug unsichtbar gemacht wurden."
+        ]
+    },
+    {
         version: "v3.2.3",
         title: "Hotfix: DOM & DevTools Protection",
         isHotfix: true,
