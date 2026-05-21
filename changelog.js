@@ -233,7 +233,6 @@ export function updateChangelogContent(changelogData) {
     }
 
     // Glow-Logik
-    const user = getCurrentUser();
     const openBtn = document.getElementById('changelog-open-btn');
     if (user && user.role !== 'admin') {
         const field = currentMode === 'starwars' ? 'lastReadVersionStarWars' : 'lastReadVersionWaifu';
