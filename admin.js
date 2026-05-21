@@ -269,9 +269,12 @@ async function renderUserList() {
                 }
             } else if (action === 'title') {
                 const titleField = currentMode === 'starwars' ? 'activeTitle_starwars' : 'activeTitle_waifu';
+                const gamesField = currentMode === 'starwars' ? 'gamesPlayed_starwars' : 'gamesPlayed_waifu';
                 const currentTitle = userDoc[titleField] || 'Kein Titel';
-                if(confirm(`Aktiven Titel von '${userDoc.displayName || userDoc.username}' zurücksetzen?\nAktuell: ${currentTitle}`)) {
-                    const obj = {}; obj[titleField] = '';
+                if(confirm(`Aktiven Titel UND Spiele-Counter von '${userDoc.displayName || userDoc.username}' zurücksetzen?\nAktuell: ${currentTitle} (${userDoc[gamesField] || 0} Spiele)`)) {
+                    const obj = {}; 
+                    obj[titleField] = '';
+                    obj[gamesField] = 0;
                     await updateDoc(userRef, obj);
                     renderUserList();
                 }
