@@ -1,5 +1,14 @@
 export const patchNotesStarWars = [
     {
+        version: "v3.2.2",
+        title: "Hotfix: Anti-Cheat & Spam Protection",
+        isHotfix: true,
+        changes: [
+            "Anti-Cheat: Ein neues Signatur-System blockiert das mehrfache Einsenden des exakt selben Spiels. So kann das Scoreboard nicht mehr durch manipulierte Skripte oder Lag-Spamming verfälscht werden.",
+            "Performance: Ein sekundengenauer Cooldown verhindert serverseitig das maschinelle Spammen des Speicher-Buttons durch Auto-Klicker."
+        ]
+    },
+    {
         version: "v3.2.1",
         title: "Hotfix: Live-Spectating & Scoreboard",
         isHotfix: true,
