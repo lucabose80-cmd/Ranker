@@ -1,5 +1,17 @@
 export const patchNotesStarWars = [
     {
+        version: "v3.5",
+        title: "Das Gamification & Quality of Life Update",
+        isHotfix: false,
+        changes: [
+            "Gamification: Bei Freischaltung eines neuen Titels oder Farbschemas erscheint nun eine dynamische On-Screen-Benachrichtigung (Toast) inklusive Sound-Effekt.",
+            "Visualisierung: Alle Fenster-Überschriften passen sich nun farblich absolut synchron deinem gewählten Theme an.",
+            "Statistik: Bei Farbschemas und geheimen Titeln wird nun dauerhaft die mathematisch exakte, prozentuale Chance angezeigt, diese in einer Ranking-Runde zu ziehen.",
+            "Geheimnisse: Ständig auf der Suche nach Herausforderungen? Eine Reihe streng geheimer Titel wurde implementiert, die besondere Charakter-Kombinationen in einer Runde erfordern (z.B. Zwillingssonnen oder Der Auserwählte).",
+            "UI-Update: Sobald du neue Updates verpasst hast, leuchtet der Update-Button nun durchgehend golden. Alle neuen Versionen erhalten im Fenster ein stark sichtbares 'NEU' Abzeichen."
+        ]
+    },
+    {
         version: "v3.4",
         title: "Das große Versus & QoL Update",
         isHotfix: false,

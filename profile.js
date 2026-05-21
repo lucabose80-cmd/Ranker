@@ -140,6 +140,16 @@ export async function refreshProfileContent() {
     renderThemeSelection(user);
 }
 
+function getCombination(n, r) {
+    if (r > n) return 0;
+    if (r === 0 || r === n) return 1;
+    let res = 1;
+    for (let i = 1; i <= r; i++) {
+        res = res * (n - i + 1) / i;
+    }
+    return res;
+}
+
 function renderTitleSelection(user, gamesPlayed) {
     const grid = document.getElementById('title-grid');
     if (!grid || !user) return;
@@ -158,12 +168,37 @@ function renderTitleSelection(user, gamesPlayed) {
             }
             isLocked = false;
         }
+        
+        let reqText = isLocked ? `Benötigt ${t.required} Spiele` : 'Freigeschaltet';
+        let probHtml = '';
+        
+        if (t.secret && t.condition && t.condition.type === 'has_characters') {
+            const totalChars = activeCharacterDatabase.length;
+            const m = t.condition.characters.length;
+            
+            const charsExist = t.condition.characters.every(name => 
+                activeCharacterDatabase.some(c => c.name === name)
+            );
+            
+            if (!charsExist) {
+                probHtml = `<br><span style="font-size:0.75rem; color:#ff4757;">(Nicht möglich)</span>`;
+            } else if (totalChars >= 5 && m <= 5) {
+                const waysToPickMfrom5 = getCombination(5, m);
+                const waysToPickMfromTotal = getCombination(totalChars, m);
+                const prob = waysToPickMfrom5 / waysToPickMfromTotal;
+                const probPercent = (prob * 100).toFixed(4);
+                probHtml = `<br><span style="font-size:0.75rem; color:#888;">(Chance: <strong style="color:#ffd700">${probPercent}%</strong>)</span>`;
+            }
+        }
+        
+        reqText += probHtml;
+
         const card = document.createElement('div');
         card.className = `title-card ${activeTitle === t.name ? 'selected' : ''} ${isLocked ? 'locked' : ''}`;
         
         card.innerHTML = `
             <div class="title-card-name">${isLocked ? '🔒 ' + t.name : t.name}</div>
-            <div class="title-card-req">${isLocked ? `Benötigt ${t.required} Spiele` : 'Freigeschaltet'}</div>
+            <div class="title-card-req">${reqText}</div>
         `;
         
         if (!isLocked) {
@@ -209,29 +244,36 @@ function renderThemeSelection(user) {
         card.style.borderColor = unlocked && isSelected ? t.preview : '';
 
         let reqText = '';
+        let probHtml = '';
+
+        if (t.condition && t.condition.type === 'tag_full_team') {
+            const tag = t.condition.tag;
+            const totalChars = activeCharacterDatabase.length;
+            if (totalChars >= 5) {
+                const matchingChars = activeCharacterDatabase.filter(c => c.tags && c.tags.includes(tag)).length;
+                if (matchingChars >= 5) {
+                    let prob = 1;
+                    for (let i = 0; i < 5; i++) {
+                        prob *= (matchingChars - i) / (totalChars - i);
+                    }
+                    const probPercent = (prob * 100).toFixed(4);
+                    probHtml = `<br><span style="font-size:0.75rem; color:#888;">(Chance: <strong style="color:#ffd700">${probPercent}%</strong> - ${matchingChars}/${totalChars} Chars)</span>`;
+                } else {
+                    probHtml = `<br><span style="font-size:0.75rem; color:#ff4757;">(Unmöglich: nur ${matchingChars} Chars mit diesem Tag)</span>`;
+                }
+            }
+        }
+
         if (!unlocked && t.condition) {
             const { type, tag } = t.condition;
             if (type === 'tag_full_team') {
-                reqText = `Ranke 5 ${tag.charAt(0).toUpperCase() + tag.slice(1)} im selben Spiel<br>`;
-                
-                const totalChars = activeCharacterDatabase.length;
-                if (totalChars >= 5) {
-                    const matchingChars = activeCharacterDatabase.filter(c => c.tags && c.tags.includes(tag)).length;
-                    if (matchingChars >= 5) {
-                        let prob = 1;
-                        for (let i = 0; i < 5; i++) {
-                            prob *= (matchingChars - i) / (totalChars - i);
-                        }
-                        const probPercent = (prob * 100).toFixed(4);
-                        reqText += `<span style="font-size:0.75rem; color:#888;">(Chance: <strong style="color:#ffd700">${probPercent}%</strong> - ${matchingChars}/${totalChars} Chars)</span>`;
-                    } else {
-                        reqText += `<span style="font-size:0.75rem; color:#ff4757;">(Unmöglich: nur ${matchingChars} Chars mit diesem Tag)</span>`;
-                    }
-                }
+                reqText = `Ranke 5 ${tag.charAt(0).toUpperCase() + tag.slice(1)} im selben Spiel`;
             }
         } else if (unlocked) {
             reqText = 'Freigeschaltet';
         }
+        
+        reqText += probHtml;
 
         card.innerHTML = `
             <div style="width:30px; height:30px; border-radius:50%; background:${t.preview}; margin-bottom:8px; border:2px solid rgba(255,255,255,0.2);"></div>

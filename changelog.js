@@ -118,8 +118,6 @@ export function updateChangelogContent(changelogData) {
     const user = getCurrentUser();
     const readField = currentMode === 'starwars' ? 'lastReadVersionStarWars' : 'lastReadVersionWaifu';
     const lastRead = user ? user[readField] : null;
-    
-    let hasReachedRead = false;
 
     // --- Patch Notes rendern ---
     patchPanel.innerHTML = grouped.map((group, idx) => {
@@ -128,11 +126,15 @@ export function updateChangelogContent(changelogData) {
         
         let isLatest = false;
         if (lastRead) {
-            const groupContainsLastRead = (main && main.version === lastRead) || patches.some(p => p.version === lastRead);
-            if (groupContainsLastRead) {
-                hasReachedRead = true;
-            } else if (!hasReachedRead) {
-                isLatest = true;
+            const lastReadIndex = changelogData.findIndex(d => d.version === lastRead);
+            if (lastReadIndex === -1) {
+                isLatest = idx === 0;
+            } else {
+                const groupVersions = [main?.version, ...patches.map(p => p.version)].filter(Boolean);
+                isLatest = groupVersions.some(v => {
+                    const vi = changelogData.findIndex(d => d.version === v);
+                    return vi !== -1 && vi < lastReadIndex;
+                });
             }
         } else {
             isLatest = idx === 0; // Fallback: Wenn noch nie geöffnet, nur neuestes
