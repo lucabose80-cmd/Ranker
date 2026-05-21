@@ -250,12 +250,7 @@ function setupAdminUI() {
     initAdminPanel(); 
 }
 
-window.showUnlockNotification = function(type, desc) {
-    const notif = document.getElementById('unlock-notification');
-    document.getElementById('unlock-title').textContent = type === 'title' ? 'Titel freigeschaltet!' : 'Farbschema freigeschaltet!';
-    document.getElementById('unlock-desc').textContent = desc;
-    
-    // 8-bit Soundeffekt generieren
+window.playStarWars8BitTheme = function() {
     try {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         const actx = new AudioContext();
@@ -297,6 +292,15 @@ window.showUnlockNotification = function(type, desc) {
     } catch(e) {
         console.warn("Audio play blocked", e);
     }
+};
+
+window.showUnlockNotification = function(type, desc) {
+    const notif = document.getElementById('unlock-notification');
+    document.getElementById('unlock-title').textContent = type === 'title' ? 'Titel freigeschaltet!' : 'Farbschema freigeschaltet!';
+    document.getElementById('unlock-desc').textContent = desc;
+    
+    // 8-bit Soundeffekt abspielen
+    window.playStarWars8BitTheme();
 
     notif.classList.remove('hidden');
     // Force reflow

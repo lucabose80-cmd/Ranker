@@ -98,6 +98,14 @@ export async function initAdminPanel() {
                 }
             }
         });
+        
+        document.getElementById('admin-test-sound-1').addEventListener('click', () => {
+            if (window.playStarWars8BitTheme) {
+                window.playStarWars8BitTheme();
+            } else {
+                alert("Sound-Funktion noch nicht geladen.");
+            }
+        });
 
         listenersBound = true;
     }
