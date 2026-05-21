@@ -1,5 +1,14 @@
 export const patchNotesWaifu = [
     {
+        version: "v3.2",
+        title: "Test-Umgebung & Performance Update",
+        isHotfix: false,
+        changes: [
+            "Performance: Der Versus-Warteraum nutzt nun einen manuellen 'Aktualisieren'-Button, was ständige Hintergrundabfragen stoppt und die Stabilität massiv verbessert.",
+            "Neues Feature: Unsichtbare Admin-Testaccounts wurden ins System integriert. Diese Geister-Accounts haben alles freigeschaltet, tauchen aber weder in der Historie noch im Scoreboard auf, um die echten Spieler-Rankings beim Testen nicht zu verfälschen."
+        ]
+    },
+    {
         version: "v3.1",
         title: "Anti-Luca Spachmann Update",
         isHotfix: false,
