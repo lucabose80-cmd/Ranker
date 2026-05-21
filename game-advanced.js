@@ -73,8 +73,21 @@ export function initAdvancedGame() {
     if(user && user.role !== 'admin') {
         deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
     }
-    
     activePool = shuffleArray(activeCharacterDatabase).slice(0, 10);
+    
+    // Anti-Spachmann System: Ersten Charakter erzwingen, falls neugeladen wurde
+    const punishName = localStorage.getItem('punish_char_' + currentMode + '_advanced');
+    if (punishName) {
+        const punishChar = activeCharacterDatabase.find(c => c.name === punishName);
+        if (punishChar) {
+            activePool = activePool.filter(c => c.name !== punishName);
+            activePool.unshift(punishChar);
+            activePool = activePool.slice(0, 10);
+        }
+    } else {
+        localStorage.setItem('punish_char_' + currentMode + '_advanced', activePool[0].name);
+    }
+    
     preloadImages(activePool);
     showNextAdvancedCharacter();
 }
@@ -213,6 +226,11 @@ export function revealAdvancedNames() {
 }
 
 export async function handleAdvancedRankSelection(rank, buttonElement) {
+    if (currentIndex === 0) {
+        // Spieler hat seinen ersten Charakter platziert -> Bestrafung aufheben
+        localStorage.removeItem('punish_char_' + currentMode + '_advanced');
+    }
+    
     const currentChar = activePool[currentIndex];
     document.querySelector(`#slot-${rank} .card-content`).innerHTML = `<img src="${currentChar.img}" alt="Ranked">`;
     placedCharacters[rank] = currentChar;

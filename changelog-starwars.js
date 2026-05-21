@@ -1,5 +1,13 @@
 export const patchNotesStarWars = [
     {
+        version: "v3.1",
+        title: "Anti-Luca Spachmann Update",
+        isHotfix: false,
+        changes: [
+            "Neues Feature: Anti-Reload System. Wenn man die Seite neu lädt, um den unliebsamen ersten Charakter loszuwerden, wird dieser nun gespeichert und taucht beim nächsten Versuch unausweichlich wieder an Position 1 auf. Kein Schummeln mehr am Start!"
+        ]
+    },
+    {
         version: "v3.0.1",
         title: "Hotfix: Versus Modus Stabilität",
         isHotfix: true,

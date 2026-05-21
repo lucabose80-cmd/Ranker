@@ -66,6 +66,20 @@ export function initGame() {
     }
     
     activePool = shuffleArray(activeCharacterDatabase).slice(0, 5);
+    
+    // Anti-Spachmann System: Ersten Charakter erzwingen, falls neugeladen wurde
+    const punishName = localStorage.getItem('punish_char_' + currentMode + '_classic');
+    if (punishName) {
+        const punishChar = activeCharacterDatabase.find(c => c.name === punishName);
+        if (punishChar) {
+            activePool = activePool.filter(c => c.name !== punishName);
+            activePool.unshift(punishChar);
+            activePool = activePool.slice(0, 5);
+        }
+    } else {
+        localStorage.setItem('punish_char_' + currentMode + '_classic', activePool[0].name);
+    }
+    
     preloadImages(activePool);
     showNextCharacter();
 }
@@ -110,6 +124,11 @@ export function revealNames() {
 }
 
 export async function handleRankSelection(rank, buttonElement) {
+    if (currentIndex === 0) {
+        // Spieler hat seinen ersten Charakter platziert -> Bestrafung aufheben
+        localStorage.removeItem('punish_char_' + currentMode + '_classic');
+    }
+    
     const currentChar = activePool[currentIndex];
     document.querySelector(`#slot-${rank} .card-content`).innerHTML = `<img src="${currentChar.img}" alt="Ranked">`;
     placedCharacters[rank] = currentChar;
