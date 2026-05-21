@@ -224,6 +224,13 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
                         unlockedAnyTitle = true;
                         if (window.showUnlockNotification) window.showUnlockNotification('title', t.name);
                     }
+                } else if (t.condition && t.condition.type === 'has_tag_in_round') {
+                    const count = rankingData.filter(r => r.tags && r.tags.includes(t.condition.tag)).length;
+                    if (count >= t.condition.count && !user[titlesField].includes(t.id)) {
+                        user[titlesField].push(t.id);
+                        unlockedAnyTitle = true;
+                        if (window.showUnlockNotification) window.showUnlockNotification('title', t.name);
+                    }
                 }
             } else {
                 // Regular titles

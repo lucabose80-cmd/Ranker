@@ -190,6 +190,20 @@ function renderTitleSelection(user, gamesPlayed) {
                 const probPercent = (prob * 100).toFixed(4);
                 probHtml = `<br><span style="font-size:0.75rem; color:#888;">(Chance: <strong style="color:#ffd700">${probPercent}%</strong>)</span>`;
             }
+        } else if (t.secret && t.condition && t.condition.type === 'has_tag_in_round') {
+            const totalChars = activeCharacterDatabase.length;
+            const k = activeCharacterDatabase.filter(c => c.tags && c.tags.includes(t.condition.tag)).length;
+            const m = t.condition.count;
+            if (k < m) {
+                probHtml = `<br><span style="font-size:0.75rem; color:#ff4757;">(Nicht möglich)</span>`;
+            } else if (totalChars >= 5 && m <= 5) {
+                const waysToPickM = getCombination(k, m);
+                const waysToPickRest = getCombination(totalChars - k, 5 - m);
+                const totalWays = getCombination(totalChars, 5);
+                const prob = (waysToPickM * waysToPickRest) / totalWays;
+                const probPercent = (prob * 100).toFixed(4);
+                probHtml = `<br><span style="font-size:0.75rem; color:#888;">(Chance: <strong style="color:#ffd700">${probPercent}%</strong>)</span>`;
+            }
         }
         
         reqText += probHtml;
