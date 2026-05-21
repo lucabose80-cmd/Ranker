@@ -22,11 +22,11 @@ export const starWarsCharacters = [
   { name: "Flash", img: "starwars.bilder/flash.jpg", tags: ["klon"] },
   { name: "Lucky", img: "starwars.bilder/lucky.jpg", tags: ["klon"] },
   { name: "Scorch", img: "starwars.bilder/scorch.jpg", tags: ["klon"] },
-  { name: "Hunter", img: "starwars.bilder/hunter.jpg", tags: ["klon"] }, // NEU
-  { name: "Wrecker", img: "starwars.bilder/wrecker.jpg", tags: ["klon"] }, // NEU
-  { name: "Tech", img: "starwars.bilder/tech.jpg", tags: ["klon"] }, // NEU
-  { name: "Crosshair", img: "starwars.bilder/crosshair.jpg", tags: ["klon"] }, // NEU
-  { name: "Omega", img: "starwars.bilder/omega.jpg", tags: ["klon"] }, // NEU
+  { name: "Hunter", img: "starwars.bilder/hunter.jpg", tags: ["klon"] },
+  { name: "Wrecker", img: "starwars.bilder/wrecker.jpg", tags: ["klon"] },
+  { name: "Tech", img: "starwars.bilder/tech.jpg", tags: ["klon"] },
+  { name: "Crosshair", img: "starwars.bilder/crosshair.jpg", tags: ["klon"] },
+  { name: "Omega", img: "starwars.bilder/omega.jpg", tags: ["klon"] },
 
   // Jedi
   { name: "Luke Skywalker", img: "starwars.bilder/luke.jpg", tags: ["jedi", "rebell"] },
