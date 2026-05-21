@@ -1,5 +1,28 @@
 // data-starwars.js
 export const starWarsCharacters = [
+  // Klone
+  { name: "Captain Rex",          img: "starwars.bilder/Captain_Rex.jpg",   tags: ["klon"] },
+  { name: "Commander Cody",       img: "starwars.bilder/cody.jpg",          tags: ["klon"] }, // NEU
+  { name: "Fives",                img: "starwars.bilder/fives.jpg",         tags: ["klon"] },
+  { name: "Echo",                 img: "starwars.bilder/echo.jpg",          tags: ["klon"] },
+  { name: "Jesse",                img: "starwars.bilder/jesse.jpg",         tags: ["klon"] },
+  { name: "Wolffe",               img: "starwars.bilder/wolffe.jpg",        tags: ["klon"] },
+  { name: "Gregor",               img: "starwars.bilder/gregor.jpg",        tags: ["klon"] },
+  { name: "Commander Bly",        img: "starwars.bilder/bly.jpg",           tags: ["klon"] }, // NEU
+  { name: "Waxer",                img: "starwars.bilder/waxer.jpg",         tags: ["klon"] }, // NEU
+  { name: "Boil",                 img: "starwars.bilder/boil.jpg",          tags: ["klon"] }, // NEU
+  { name: "Commander Thorn",      img: "starwars.bilder/thorn.jpg",         tags: ["klon"] }, // NEU
+  { name: "Commander Fox",        img: "starwars.bilder/fox.jpg",           tags: ["klon"] }, // NEU
+  { name: "Kix",                  img: "starwars.bilder/kix.jpg",           tags: ["klon"] }, // NEU
+  { name: "Cameron",              img: "starwars.bilder/cameron.jpg",       tags: ["klon"] }, // NEU
+  { name: "Commander Gree",       img: "starwars.bilder/gree.jpg",          tags: ["klon"] }, // NEU
+  { name: "Commander Doom",       img: "starwars.bilder/doom.jpg",          tags: ["klon"] }, // NEU
+  { name: "Commander Bacara",     img: "starwars.bilder/bacara.jpg",        tags: ["klon"] }, // NEU
+  { name: "Hevy",                 img: "starwars.bilder/hevy.jpg",          tags: ["klon"] }, // NEU
+  { name: "Flash",                img: "starwars.bilder/flash.jpg",         tags: ["klon"] }, // NEU
+  { name: "Lucky",                img: "starwars.bilder/lucky.jpg",         tags: ["klon"] }, // NEU
+  { name: "Scorch",               img: "starwars.bilder/scorch.jpg",        tags: ["klon"] }, // NEU
+
   // Jedi
   { name: "Luke Skywalker",       img: "starwars.bilder/luke.jpg",          tags: ["jedi", "rebell"] },
   { name: "Obi-Wan Kenobi",       img: "starwars.bilder/obiwan.jpg",        tags: ["jedi"] },
@@ -8,41 +31,51 @@ export const starWarsCharacters = [
   { name: "Mace Windu",           img: "starwars.bilder/mace.jpg",          tags: ["jedi"] },
   { name: "Qui-Gon Jinn",         img: "starwars.bilder/quigon.jpg",        tags: ["jedi"] },
   { name: "Ahsoka Tano",          img: "starwars.bilder/ahsoka.jpg",        tags: ["jedi"] },
+  { name: "Kit Fisto",            img: "starwars.bilder/kitfisto.jpg",      tags: ["jedi"] }, // NEU
+  { name: "Plo Koon",             img: "starwars.bilder/plokoon.jpg",       tags: ["jedi"] }, // NEU
+  { name: "Ki-Adi-Mundi",         img: "starwars.bilder/kiadimundi.jpg",    tags: ["jedi"] }, // NEU
+  { name: "Aayla Secura",         img: "starwars.bilder/aaylasecura.jpg",   tags: ["jedi"] }, // NEU
+  { name: "Coleman Trebor",       img: "starwars.bilder/colemantrebor.jpg", tags: ["jedi"] }, // NEU
+  { name: "Shaak Ti",             img: "starwars.bilder/shaakti.jpg",       tags: ["jedi"] }, // NEU
+  { name: "Luminara Unduli",      img: "starwars.bilder/luminara.jpg",      tags: ["jedi"] }, // NEU
   { name: "Ezra Bridger",         img: "starwars.bilder/ezra.jpg",          tags: ["jedi"] },
   { name: "Kanan Jarrus",         img: "starwars.bilder/kanan.jpg",         tags: ["jedi"] },
   { name: "Cal Kestis",           img: "starwars.bilder/cal.jpg",           tags: ["jedi"] },
   { name: "Rey Skywalker",        img: "starwars.bilder/rey.jpg",           tags: ["jedi"] },
 
-  // Sith
+  // Sith / Dunkle Seite
   { name: "Darth Vader",          img: "starwars.bilder/vader.jpg",         tags: ["sith"] },
   { name: "Emperor Palpatine",    img: "starwars.bilder/palpatine.jpg",     tags: ["sith"] },
   { name: "Darth Maul",           img: "starwars.bilder/maul.jpg",          tags: ["sith"] },
-  { name: "Count Dooku",          img: "starwars.bilder/dooku.jpg",         tags: ["sith"] },
+  { name: "Count Dooku",          img: "starwars.bilder/dooku.jpg",         tags: ["sith", "separatist"] },
+  { name: "Darth Plagueis",       img: "starwars.bilder/plagueis.jpg",      tags: ["sith"] }, // NEU
+  { name: "Savage Opress",        img: "starwars.bilder/savageopress.jpg",  tags: ["sith"] }, // NEU
   { name: "Kylo Ren",             img: "starwars.bilder/kyloren.jpg",       tags: ["sith"] },
   { name: "Asajj Ventress",       img: "starwars.bilder/ventress.jpg",      tags: ["sith", "separatist"] },
+  { name: "Grand Inquisitor",     img: "starwars.bilder/grandinquisitor.jpg",tags: ["sith"] }, // NEU
   { name: "Baylan Skoll",         img: "starwars.bilder/baylan.jpg",        tags: ["sith"] },
   { name: "Shin Hati",            img: "starwars.bilder/shin.jpg",          tags: ["sith"] },
   { name: "Morgan Elsbeth",       img: "starwars.bilder/morgan.jpg",        tags: ["sith"] },
 
-  // Klone
-  { name: "Captain Rex",          img: "starwars.bilder/Captain_Rex.jpg",   tags: ["klon"] },
-  { name: "Fives",                img: "starwars.bilder/fives.jpg",         tags: ["klon"] },
-  { name: "Echo",                 img: "starwars.bilder/echo.jpg",          tags: ["klon"] },
-  { name: "Jesse",                img: "starwars.bilder/jesse.jpg",         tags: ["klon"] },
-  { name: "Wolffe",               img: "starwars.bilder/wolffe.jpg",        tags: ["klon"] },
-  { name: "Gregor",               img: "starwars.bilder/gregor.jpg",        tags: ["klon"] },
+  // Mandalorianer
+  { name: "Din Djarin",           img: "starwars.bilder/mandalorian.jpg",   tags: ["mandalorian"] },
+  { name: "Bo-Katan Kryze",       img: "starwars.bilder/bokatan.jpg",       tags: ["mandalorian"] },
+  { name: "Boba Fett",            img: "starwars.bilder/boba.jpg",          tags: ["mandalorian", "schmuggel"] },
+  { name: "Jango Fett",           img: "starwars.bilder/jangofett.jpg",     tags: ["mandalorian", "schmuggel"] }, // NEU
+  { name: "Duchess Satine",       img: "starwars.bilder/satine.jpg",        tags: ["mandalorian"] }, // NEU
+  { name: "Paz Vizsla",           img: "starwars.bilder/pazvizsla.jpg",     tags: ["mandalorian"] }, // NEU
+  { name: "The Armorer",          img: "starwars.bilder/armorer.jpg",       tags: ["mandalorian"] }, // NEU
 
   // Droiden
   { name: "R2-D2",                img: "starwars.bilder/r2d2.jpg",          tags: ["droide"] },
   { name: "C-3PO",                img: "starwars.bilder/c3po.jpg",          tags: ["droide"] },
   { name: "General Grievous",     img: "starwars.bilder/grievous.jpg",      tags: ["droide", "separatist"] },
+  { name: "BB-8",                 img: "starwars.bilder/bb8.jpg",           tags: ["droide"] }, // NEU
+  { name: "K-2SO",                img: "starwars.bilder/k2so.jpg",          tags: ["droide", "rebell"] }, // NEU
+  { name: "Chopper",              img: "starwars.bilder/chopper.jpg",       tags: ["droide", "rebell"] }, // NEU
+  { name: "IG-11",                img: "starwars.bilder/ig11.jpg",          tags: ["droide", "schmuggel"] }, // NEU
 
-  // Separatisten
-  { name: "Wat Tambor",           img: "starwars.bilder/wattambor.jpg",     tags: ["separatist"] },
-  { name: "Poggle the Lesser",    img: "starwars.bilder/poggle.jpg",        tags: ["separatist"] },
-  { name: "Nute Gunray",          img: "starwars.bilder/nutegunray.jpg",    tags: ["separatist"] },
-
-  // Rebellen
+  // Rebellen / Republik
   { name: "Han Solo",             img: "starwars.bilder/han.jpg",           tags: ["rebell", "schmuggel"] },
   { name: "Leia Organa",          img: "starwars.bilder/leia.jpg",          tags: ["rebell"] },
   { name: "Chewbacca",            img: "starwars.bilder/chewbacca.jpg",     tags: ["rebell"] },
@@ -52,6 +85,8 @@ export const starWarsCharacters = [
   { name: "Saw Gerrera",          img: "starwars.bilder/saw.jpg",           tags: ["rebell"] },
   { name: "Mon Mothma",           img: "starwars.bilder/monmothma.jpg",     tags: ["rebell"] },
   { name: "Admiral Ackbar",       img: "starwars.bilder/ackbar.jpg",        tags: ["rebell"] },
+  { name: "Wedge Antilles",       img: "starwars.bilder/wedge.jpg",         tags: ["rebell"] }, // NEU
+  { name: "Bail Organa",          img: "starwars.bilder/bailorgana.jpg",    tags: ["rebell"] }, // NEU
   { name: "Poe Dameron",          img: "starwars.bilder/poe.jpg",           tags: ["rebell"] },
   { name: "Finn",                 img: "starwars.bilder/finn.jpg",          tags: ["rebell"] },
   { name: "Rose Tico",            img: "starwars.bilder/rose.jpg",          tags: ["rebell"] },
@@ -59,13 +94,18 @@ export const starWarsCharacters = [
   { name: "Hera Syndulla",        img: "starwars.bilder/hera.jpg",          tags: ["rebell"] },
   { name: "Sabine Wren",          img: "starwars.bilder/sabine.jpg",        tags: ["rebell", "mandalorian"] },
 
-  // Mandalorian
-  { name: "Din Djarin",           img: "starwars.bilder/mandalorian.jpg",   tags: ["mandalorian"] },
-  { name: "Bo-Katan Kryze",       img: "starwars.bilder/bokatan.jpg",       tags: ["mandalorian"] },
-  { name: "Boba Fett",            img: "starwars.bilder/boba.jpg",          tags: ["mandalorian", "schmuggel"] },
+  // Separatisten
+  { name: "Wat Tambor",           img: "starwars.bilder/wattambor.jpg",     tags: ["separatist"] },
+  { name: "Poggle the Lesser",    img: "starwars.bilder/poggle.jpg",        tags: ["separatist"] },
+  { name: "Nute Gunray",          img: "starwars.bilder/nutegunray.jpg",    tags: ["separatist"] },
+  { name: "Admiral Trench",       img: "starwars.bilder/trench.jpg",        tags: ["separatist"] }, // NEU
+  { name: "San Hill",             img: "starwars.bilder/sanhill.jpg",       tags: ["separatist"] }, // NEU
 
-  // Sonstige
+  // Sonstige & Kopfgeldjäger
   { name: "Padmé Amidala",        img: "starwars.bilder/padme.jpg",         tags: ["sonstige"] },
+  { name: "Cad Bane",             img: "starwars.bilder/cadbane.jpg",       tags: ["sonstige", "schmuggel"] }, // NEU
+  { name: "Hondo Ohnaka",         img: "starwars.bilder/hondo.jpg",         tags: ["sonstige", "schmuggel"] }, // NEU
+  { name: "Jabba the Hutt",       img: "starwars.bilder/jabba.jpg",         tags: ["sonstige", "schmuggel"] }, // NEU
   { name: "Merrin",               img: "starwars.bilder/merrin.jpg",        tags: ["sonstige"] },
   { name: "Grogu",                img: "starwars.bilder/grogu.jpg",         tags: ["sonstige"] },
   { name: "Grand Admiral Thrawn", img: "starwars.bilder/thrawn.jpg",        tags: ["sonstige"] },
@@ -74,4 +114,8 @@ export const starWarsCharacters = [
   { name: "Enfys Nest",           img: "starwars.bilder/enfys.jpg",         tags: ["sonstige"] },
   { name: "Dryden Vos",           img: "starwars.bilder/dryden.jpg",        tags: ["sonstige"] },
   { name: "Qi'ra",                img: "starwars.bilder/qira.jpg",          tags: ["sonstige"] },
+
+  // Anime (Sonder-Charaktere)
+  { name: "Fino Bloodstone",      img: "starwars.bilder/finobloodstone.jpg",tags: ["anime"] }, // NEU
+  { name: "Monkey D. Ruffy",      img: "starwars.bilder/ruffy.jpg",         tags: ["anime"] }  // NEU
 ];

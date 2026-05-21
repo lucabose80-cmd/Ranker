@@ -255,11 +255,13 @@ window.showUnlockNotification = function(type, desc) {
     document.getElementById('unlock-title').textContent = type === 'title' ? 'Titel freigeschaltet!' : 'Farbschema freigeschaltet!';
     document.getElementById('unlock-desc').textContent = desc;
     
-    // Soundeffekt (falls vorhanden)
+    // Soundeffekt
     try {
-        const audio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
-        audio.volume = 0.5;
-        audio.play().catch(e=>console.warn("Audio play blocked", e));
+        const audio = document.getElementById('unlock-sound');
+        if (audio) {
+            audio.volume = 0.5;
+            audio.play().catch(e=>console.warn("Audio play blocked", e));
+        }
     } catch(e) {}
 
     notif.classList.remove('hidden');
@@ -267,10 +269,13 @@ window.showUnlockNotification = function(type, desc) {
     void notif.offsetWidth;
     notif.classList.add('show');
     
-    setTimeout(() => {
-        notif.classList.remove('show');
-        setTimeout(() => notif.classList.add('hidden'), 500);
-    }, 4000);
+    const closeBtn = document.getElementById('close-unlock-btn');
+    if (closeBtn) {
+        closeBtn.onclick = () => {
+            notif.classList.remove('show');
+            setTimeout(() => notif.classList.add('hidden'), 500);
+        };
+    }
 }
 
 bootApp();
