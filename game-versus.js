@@ -82,7 +82,8 @@ function showNextCharacterVersus() {
 
     } else {
         document.getElementById('active-game-area').classList.add('hidden');
-        document.getElementById('abort-versus-game-btn').classList.add('hidden');
+        // Button NICHT mehr verstecken, falls es hängt:
+        // document.getElementById('abort-versus-game-btn').classList.add('hidden');
         revealNamesVersus();
         
         // Fertig! An Lobby senden.
@@ -114,6 +115,11 @@ async function handleRankSelectionVersus(rank, buttonElement) {
 async function submitVersusPicks() {
     const user = getCurrentUser();
     if (!user || !currentLobby) return;
+
+    // Sofortiges UI Feedback GANZ VORNE um Hängenbleiben zu verhindern, egal was die DB macht
+    document.getElementById('game-main-content').classList.add('hidden');
+    document.getElementById('versus-content').classList.remove('hidden');
+    document.getElementById('versus-room-status').innerHTML = "Sende Ranking...<br><br><div class='loader'></div>";
     
     const picksArray = [];
     for (let i = 1; i <= 5; i++) {
@@ -123,8 +129,6 @@ async function submitVersusPicks() {
     const lobbyRef = doc(db, "versus_lobbies", currentLobby.id);
     
     try {
-        // Transaction oder simples Update? Simples Update mit Array-Ersetzung ist schwierig wenn es concurrent ist.
-        // Besser: getDoc, dann array updaten, dann setDoc. (Es ist ein Spielzeug-Projekt, Race-Conditions sind selten hier, da Arrays of objects)
         const snap = await getDoc(lobbyRef);
         if (snap.exists()) {
             const data = snap.data();
@@ -133,18 +137,18 @@ async function submitVersusPicks() {
                 data.players[pIndex].picks = picksArray;
                 data.players[pIndex].status = 'finished';
                 
-                // Sofortiges UI Feedback um Hängenbleiben zu verhindern
-                document.getElementById('game-main-content').classList.add('hidden');
-                document.getElementById('versus-content').classList.remove('hidden');
-                document.getElementById('versus-room-status').innerHTML = "Sende Ranking...<br><br><div class='loader'></div>";
-                
                 await updateDoc(lobbyRef, { players: data.players });
             } else {
                 alert("Du bist nicht mehr in der Lobby.");
+                document.getElementById('versus-room-status').innerHTML = "Fehler: Nicht mehr in der Lobby.";
             }
+        } else {
+            alert("Die Lobby existiert nicht mehr.");
+            document.getElementById('versus-room-status').innerHTML = "Fehler: Lobby existiert nicht mehr.";
         }
     } catch(e) {
         console.error("Versus Submit Error", e);
         alert("Fehler beim Senden: " + e.message);
+        document.getElementById('versus-room-status').innerHTML = "Fehler beim Senden: " + e.message;
     }
 }
