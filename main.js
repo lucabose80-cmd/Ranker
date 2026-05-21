@@ -255,14 +255,42 @@ window.showUnlockNotification = function(type, desc) {
     document.getElementById('unlock-title').textContent = type === 'title' ? 'Titel freigeschaltet!' : 'Farbschema freigeschaltet!';
     document.getElementById('unlock-desc').textContent = desc;
     
-    // Soundeffekt
+    // 8-bit Soundeffekt generieren
     try {
-        const audio = document.getElementById('unlock-sound');
-        if (audio) {
-            audio.volume = 0.5;
-            audio.play().catch(e=>console.warn("Audio play blocked", e));
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const actx = new AudioContext();
+        
+        function playTone(freq, time, duration) {
+            const osc = actx.createOscillator();
+            const gain = actx.createGain();
+            osc.type = 'square'; // 8-bit sound style
+            osc.frequency.setValueAtTime(freq, time);
+            
+            gain.gain.setValueAtTime(0.1, time);
+            gain.gain.exponentialRampToValueAtTime(0.001, time + duration - 0.05);
+            
+            osc.connect(gain);
+            gain.connect(actx.destination);
+            
+            osc.start(time);
+            osc.stop(time + duration);
         }
-    } catch(e) {}
+        
+        const now = actx.currentTime;
+        // Star Wars Main Theme snippet (G4, G4, G4, C5, G5)
+        const g4 = 392.00;
+        const c5 = 523.25;
+        const g5 = 783.99;
+        
+        playTone(g4, now, 0.15);
+        playTone(g4, now + 0.2, 0.15);
+        playTone(g4, now + 0.4, 0.15);
+        playTone(c5, now + 0.6, 0.6);
+        playTone(g5, now + 1.2, 0.6);
+
+    } catch(e) {
+        console.warn("Audio play blocked", e);
+    }
 
     notif.classList.remove('hidden');
     // Force reflow

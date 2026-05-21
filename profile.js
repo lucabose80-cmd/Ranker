@@ -172,11 +172,12 @@ function renderTitleSelection(user, gamesPlayed) {
         let reqText = isLocked ? `Benötigt ${t.required} Spiele` : 'Freigeschaltet';
         let probHtml = '';
         
-        if (t.secret && t.condition && t.condition.type === 'has_characters') {
+        if (t.secret && t.condition && (t.condition.type === 'has_characters' || t.condition.type === 'has_discovered_characters')) {
             const totalChars = activeCharacterDatabase.length;
-            const m = t.condition.characters.length;
+            const targetChars = t.condition.chars || t.condition.characters || [];
+            const m = targetChars.length;
             
-            const charsExist = t.condition.characters.every(name => 
+            const charsExist = targetChars.every(name => 
                 activeCharacterDatabase.some(c => c.name === name)
             );
             

@@ -1,5 +1,16 @@
 export const patchNotesStarWars = [
     {
+        version: "v3.7",
+        title: "Das Große Lexikon Update",
+        isHotfix: false,
+        changes: [
+            "Massive Charakter-Erweiterung: Dutzende neue Helden, Schurken, Klone und Droiden wurden zum Spiel hinzugefügt! Die Fraktionen wurden ausbalanciert.",
+            "Neuer geheimer Titel: Ein brandneuer geheimer Titel ('Weeb') wurde hinzugefügt, den man freischaltet, wenn man die neuen Sonder-Anime-Charaktere in sein Lexikon aufnimmt.",
+            "Neues Freischaltungs-System: Wenn du einen neuen Titel oder ein neues Farbschema erhältst, wird dies ab sofort mit einem riesigen Popup und einem klassischen 8-Bit Retro-Sound gefeiert!",
+            "Statistik-Fix: Die Wahrscheinlichkeiten für geheime Titel berechnen sich nun wieder zu 100% dynamisch basierend auf der aktuellen Größe der Datenbank."
+        ]
+    },
+    {
         version: "v3.6",
         title: "Das Klon-Modus Update (Extra für Jonas)",
         isHotfix: false,
