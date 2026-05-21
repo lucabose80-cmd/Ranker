@@ -1,32 +1,15 @@
 export const patchNotesStarWars = [
     {
-        version: "v3.2.4",
-        title: "Security & Bugfixes",
-        isHotfix: true,
+        version: "v3.3",
+        title: "Das große Anti-Cheat & Security Update",
+        isHotfix: false,
         changes: [
-            "Anti-Cheat: Wer im Spiel die Seite neu lädt (z.B. mit F5), bekommt nun exakt denselben Pool an Charakteren zurück. Ein Reload zum Neuauswürfeln von ungeliebten Charakteren ist damit auch im fortgeschrittenen Verlauf ausgeschlossen.",
+            "Anti-Cheat: Ein strenges Signatur-System blockiert ab sofort das doppelte Speichern einer Runde durch Skripte oder Klick-Spamming.",
+            "Anti-Cheat: Wer im Spiel die Seite neu lädt, erhält nun exakt denselben Pool zurück UND alle gesetzten Charaktere bleiben auf dem Board. Ein 'Scouten' oder Neuauswürfeln durch F5 ist physisch unmöglich geworden.",
+            "Anti-Cheat: Hacker, die mit DevTools die HTML-Struktur der Bewertungs-Buttons manipulieren, prallen nun an serverseitigen JavaScript-Sperren ab.",
+            "Sicherheit: Passwörter werden ab sofort kryptographisch stark verschlüsselt (SHA-256) in der Datenbank abgelegt und sind nicht mehr auslesbar.",
             "Live-Modus: Zuschauer sehen nun nur noch die Charaktere, die der spielenden Person auch schon angezeigt wurden. Zukünftige Charaktere bleiben als Fragezeichen getarnt, um Vorsagen ('Ghosting') zu verhindern.",
-            "Sicherheit: Passwörter werden ab sofort stark verschlüsselt in der Datenbank abgelegt und sind nicht mehr über die Browser-Konsole (DevTools) oder im LocalStorage auslesbar.",
-            "Bugfix: Fehler behoben, durch den einige Admins fälschlicherweise komplett aus der Online-Liste und dem Moderations-Werkzeug unsichtbar gemacht wurden."
-        ]
-    },
-    {
-        version: "v3.2.3",
-        title: "Hotfix: DOM & DevTools Protection",
-        isHotfix: true,
-        changes: [
-            "Anti-Cheat: Hacker, die mit den Browser DevTools die HTML-Elemente der Bewertungs-Buttons manipulieren (um z.B. Sperren aufzuheben), werden nun abgewehrt.",
-            "Security: Ein strenges internes JavaScript-Regelwerk verhindert nun jegliche Ausführung von Befehlen, selbst wenn das HTML durch externe Tools verändert wurde.",
-            "UI: Nach der Bewertung verschwinden die Buttons nun vollständig aus dem Code, was weitere Manipulationsversuche verhindert."
-        ]
-    },
-    {
-        version: "v3.2.2",
-        title: "Hotfix: Anti-Cheat & Spam Protection",
-        isHotfix: true,
-        changes: [
-            "Anti-Cheat: Ein neues Signatur-System blockiert das mehrfache Einsenden des exakt selben Spiels. So kann das Scoreboard nicht mehr durch manipulierte Skripte oder Lag-Spamming verfälscht werden.",
-            "Performance: Ein sekundengenauer Cooldown verhindert serverseitig das maschinelle Spammen des Speicher-Buttons durch Auto-Klicker."
+            "Bugfix: Fehler behoben, durch den einige Admins fälschlicherweise aus der Online-Liste und dem Moderations-Werkzeug versteckt wurden."
         ]
     },
     {
