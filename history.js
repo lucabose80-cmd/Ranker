@@ -148,8 +148,10 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
         user[gamesPlayedField] = (user[gamesPlayedField] || 0) + 1;
 
         // Track tags for themes – 5 of the same tag in a single game unlocks the theme
-        if (currentMode === 'starwars' && gameType === 'classic') {
+        if (gameType === 'classic') {
             const { activeCharacterDatabase } = await import('./theme.js');
+            const { THEMES } = await import('./themes.js');
+            
             const charLookup = {};
             activeCharacterDatabase.forEach(c => { charLookup[c.name] = c.tags || []; });
             
@@ -160,26 +162,69 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
                 });
             });
             
-            if (!user.unlocked_themes_starwars) user.unlocked_themes_starwars = [];
-            let unlockedAny = false;
+            const themesField = `unlocked_themes_${currentMode}`;
+            if (!user[themesField]) user[themesField] = [];
+            let unlockedAnyTheme = false;
             
             Object.entries(tagCountsThisGame).forEach(([tag, count]) => {
-                if (count === 5) {
-                    const themeId = `sw_theme_${tag}`;
-                    if (!user.unlocked_themes_starwars.includes(themeId)) {
-                        user.unlocked_themes_starwars.push(themeId);
-                        unlockedAny = true;
+                if (count >= 5) {
+                    const themePrefix = currentMode === 'starwars' ? 'sw_theme_' : 'wf_theme_';
+                    const themeId = `${themePrefix}${tag}`;
+                    // Theme existiert?
+                    const themeObj = (THEMES[currentMode] || []).find(t => t.id === themeId);
+                    if (themeObj && !user[themesField].includes(themeId)) {
+                        user[themesField].push(themeId);
+                        unlockedAnyTheme = true;
+                        if (window.showUnlockNotification) {
+                            window.showUnlockNotification('theme', themeObj.name);
+                        }
                     }
                 }
             });
             
-            if (unlockedAny) {
+            if (unlockedAnyTheme) {
                 const { updateDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
                 updateDoc(doc(db, "users", user.uid), {
-                    unlocked_themes_starwars: user.unlocked_themes_starwars
+                    [themesField]: user[themesField]
                 }).catch(e => console.error(e));
                 trackWrite(1);
             }
+        }
+        
+        // Title unlocks (Regular + Secret)
+        const { TITLES } = await import('./titles.js');
+        const titlesField = `unlocked_titles_${currentMode}`;
+        if (!user[titlesField]) user[titlesField] = [];
+        let unlockedAnyTitle = false;
+        
+        const oldGamesPlayed = (user[gamesPlayedField] || 1) - 1;
+        const newGamesPlayed = user[gamesPlayedField];
+
+        (TITLES[currentMode] || []).forEach(t => {
+            if (t.secret) {
+                // Check secret conditions
+                if (t.condition && t.condition.type === 'has_characters') {
+                    const hasAll = t.condition.chars.every(charName => rankingData.some(r => r.name === charName));
+                    if (hasAll && !user[titlesField].includes(t.id)) {
+                        user[titlesField].push(t.id);
+                        unlockedAnyTitle = true;
+                        if (window.showUnlockNotification) window.showUnlockNotification('title', t.name);
+                    }
+                }
+            } else {
+                // Regular titles
+                if (oldGamesPlayed < t.required && newGamesPlayed >= t.required) {
+                    if (window.showUnlockNotification) window.showUnlockNotification('title', t.name);
+                }
+            }
+        });
+
+        if (unlockedAnyTitle) {
+            const { updateDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+            updateDoc(doc(db, "users", user.uid), {
+                [titlesField]: user[titlesField]
+            }).catch(e => console.error(e));
+            trackWrite(1);
         }
 
 

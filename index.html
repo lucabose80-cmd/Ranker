@@ -13,7 +13,7 @@
     
     <div id="auth-view" class="view-container">
         <div class="panel auth-panel">
-            <h2>LOGIN</h2>
+            <h2 class="theme-heading">LOGIN</h2>
             <p id="auth-feedback" class="prompt-text hidden"></p>
             <input type="text" id="auth-username" placeholder="Benutzername" autocomplete="off">
             <div class="password-wrapper">
@@ -30,7 +30,7 @@
 
     <div id="admin-view" class="view-container hidden">
         <div class="panel admin-panel" style="max-width: 1000px; width: 95%;">
-            <h2>ADMIN PANEL <span id="admin-mode-indicator" style="font-size: 1rem; margin-left: 15px; padding: 5px 10px; border-radius: 4px; background: #2a3142;">Modus: Star Wars</span></h2>
+            <h2 class="theme-heading">ADMIN PANEL <span id="admin-mode-indicator" style="font-size: 1rem; margin-left: 15px; padding: 5px 10px; border-radius: 4px; background: #2a3142;">Modus: Star Wars</span></h2>
             <div class="admin-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; text-align: left;">
                 
                 <!-- Spalte 1: User & Globale Aktionen -->
@@ -116,7 +116,7 @@
 
                 <div class="panel ranking-panel">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h2 style="margin: 0;">DEIN RANKING</h2>
+                        <h2 class="theme-heading" style="margin: 0;">DEIN RANKING</h2>
                         <button id="abort-versus-game-btn" class="text-btn hidden" style="color: #ff4757; font-size: 0.8rem; border: 1px solid #ff4757; padding: 4px 8px; border-radius: 4px;">Versus Abbrechen</button>
                     </div>
                     <div id="ranking-board" class="horizontal-board">
@@ -155,7 +155,7 @@
 
             <div id="live-content" class="tab-content app-container hidden">
                 <div class="panel history-panel">
-                    <h2>LIVE SPIELE</h2>
+                    <h2 class="theme-heading">LIVE SPIELE</h2>
                     <p class="prompt-text">Schau anderen Spielern in Echtzeit zu</p>
                     <div id="live-games-grid" class="live-grid"></div>
                 </div>
@@ -163,7 +163,7 @@
 
             <div id="history-content" class="tab-content app-container hidden">
                 <div class="panel history-panel">
-                    <h2>GALAKTISCHE ARCHIVE</h2>
+                    <h2 class="theme-heading">GALAKTISCHE ARCHIVE</h2>
                     <div class="history-controls">
                         <select id="history-type-filter">
                             <option value="classic">Klassisch (5er)</option>
@@ -177,7 +177,7 @@
 
             <div id="scoreboard-content" class="tab-content app-container hidden">
                 <div class="panel history-panel">
-                    <h2>SCOREBOARD</h2>
+                    <h2 class="theme-heading">SCOREBOARD</h2>
                     <div class="scoreboard-controls">
                         <select id="scoreboard-user-filter">
                             <option value="global">Global (Alle)</option>
@@ -194,13 +194,13 @@
 
             <div id="versus-content" class="tab-content app-container hidden">
                 <div class="panel history-panel" id="versus-lobby-list-view">
-                    <h2>VERSUS LOBBYS</h2>
+                    <h2 class="theme-heading">VERSUS LOBBYS</h2>
                     <p class="prompt-text">Spiele gegen andere. Wer rankt am besten?</p>
                     <button id="create-versus-lobby-btn" class="rank-btn" style="margin-bottom: 20px; width: auto; padding: 0 20px;">Neue Lobby erstellen</button>
                     <div id="versus-lobbies-grid" class="live-grid"></div>
                 </div>
                 <div class="panel history-panel hidden" id="versus-waiting-room-view">
-                    <h2 id="versus-room-title">Lobby</h2>
+                    <h2 id="versus-room-title" class="theme-heading">Lobby</h2>
                     <p class="prompt-text" id="versus-room-status">Warte auf Spieler...</p>
                     <div id="versus-players-grid" class="live-grid" style="margin-bottom: 20px;"></div>
                     <div style="display:flex; flex-direction:column; gap:10px; align-items:center;">
@@ -212,7 +212,7 @@
 
             <div id="lexikon-content" class="tab-content app-container hidden">
                 <div class="panel history-panel">
-                    <h2>LEXIKON</h2>
+                    <h2 class="theme-heading">LEXIKON</h2>
                     <div class="changelog-tabs" style="margin-bottom: 15px;">
                         <button class="changelog-tab lexikon-tab-btn active" data-view="all">Alle</button>
                         <button class="changelog-tab lexikon-tab-btn" data-view="tags">Nach Fraktionen</button>
@@ -223,7 +223,7 @@
 
             <div id="suggestions-content" class="tab-content app-container hidden">
                 <div class="panel history-panel">
-                    <h2>COMMUNITY VORSCHLÄGE</h2>
+                    <h2 class="theme-heading">COMMUNITY VORSCHLÄGE</h2>
                     <div class="history-controls">
                         <select id="suggestion-type-filter">
                             <option value="feature">Features & Allgemeines</option>
@@ -265,7 +265,7 @@
         <div id="profile-overlay" class="profile-overlay hidden">
             <div class="panel profile-panel">
                 <button id="close-profile-btn" class="close-overlay-btn">✕</button>
-                <h2>DEIN PROFIL</h2>
+                <h2 class="theme-heading">DEIN PROFIL</h2>
                 <div class="profile-layout">
                     <div class="profile-settings">
                         <p class="prompt-text" style="margin-top: 0;">Name ändern</p>
@@ -304,7 +304,7 @@
         <div id="spectator-modal" class="profile-overlay hidden">
             <div class="panel spectator-modal-panel">
                 <button id="close-spectator-btn" class="close-overlay-btn">✕</button>
-                <h2 id="spectator-title">Spieler schaut zu</h2>
+                <h2 id="spectator-title" class="theme-heading">Spieler schaut zu</h2>
                 <div id="spectator-switcher" style="display:flex; gap:10px; margin-bottom:15px; overflow-x:auto; padding-bottom:5px;"></div>
                 <div id="spectator-board" class="horizontal-board spec-large-board"></div>
                 <div id="spectator-pool" class="hidden"></div>
@@ -314,7 +314,7 @@
         <div id="versus-result-modal" class="profile-overlay hidden">
             <div class="panel spectator-modal-panel">
                 <button id="close-versus-result-btn" class="close-overlay-btn">✕</button>
-                <h2>VERSUS RESULTATE</h2>
+                <h2 class="theme-heading">VERSUS RESULTATE</h2>
                 <div id="versus-result-content" style="display:flex; flex-direction:column; gap:20px; overflow-y:auto; max-height:80vh;"></div>
             </div>
         </div>
@@ -333,6 +333,15 @@
         </div>
 
     </div>
+    <div id="unlock-notification" class="unlock-notification hidden">
+        <div class="unlock-icon">🏆</div>
+        <div class="unlock-text">
+            <h4 id="unlock-title" style="margin:0; font-size:1rem; color:#ffd700;">Titel freigeschaltet!</h4>
+            <p id="unlock-desc" style="margin:5px 0 0 0; font-size:0.85rem; color:#fff;">Der Auserwählte</p>
+        </div>
+    </div>
+    
+    <script type="module" src="utils.js"></script>
     <script type="module" src="main.js?v=4"></script>
 </body>
 </html>

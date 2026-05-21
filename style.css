@@ -1290,3 +1290,23 @@ body.waifu-theme #db-tracker-reads {
     color: #888;
 }
 .theme-heading { color: #3b82f6; }
+.unlock-notification {
+    position: fixed;
+    top: 20px;
+    right: -300px;
+    width: 250px;
+    background: linear-gradient(135deg, #1a1e29, #2a3142);
+    border: 2px solid #ffd700;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 10000;
+    transition: right 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 0 20px rgba(255,215,0,0.3);
+}
+.unlock-notification.show { right: 20px; }
+.unlock-icon { font-size: 2rem; }
+.unlock-notification.hidden { display: none; }
+

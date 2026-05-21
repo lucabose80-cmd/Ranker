@@ -149,7 +149,15 @@ function renderTitleSelection(user, gamesPlayed) {
     const activeTitle = currentMode === 'starwars' ? user.activeTitle_starwars : user.activeTitle_waifu;
     
     availableTitles.forEach(t => {
-        const isLocked = gamesPlayed < t.required;
+        let isLocked = gamesPlayed < t.required;
+        
+        if (t.secret) {
+            const unlockedList = currentMode === 'starwars' ? (user.unlocked_titles_starwars || []) : (user.unlocked_titles_waifu || []);
+            if (!unlockedList.includes(t.id)) {
+                return; // Verstecke den Titel komplett, wenn er nicht freigeschaltet ist
+            }
+            isLocked = false;
+        }
         const card = document.createElement('div');
         card.className = `title-card ${activeTitle === t.name ? 'selected' : ''} ${isLocked ? 'locked' : ''}`;
         
@@ -204,7 +212,22 @@ function renderThemeSelection(user) {
         if (!unlocked && t.condition) {
             const { type, tag } = t.condition;
             if (type === 'tag_full_team') {
-                reqText = `Ranke 5 ${tag.charAt(0).toUpperCase() + tag.slice(1)} im selben Spiel`;
+                reqText = `Ranke 5 ${tag.charAt(0).toUpperCase() + tag.slice(1)} im selben Spiel<br>`;
+                
+                const totalChars = activeCharacterDatabase.length;
+                if (totalChars >= 5) {
+                    const matchingChars = activeCharacterDatabase.filter(c => c.tags && c.tags.includes(tag)).length;
+                    if (matchingChars >= 5) {
+                        let prob = 1;
+                        for (let i = 0; i < 5; i++) {
+                            prob *= (matchingChars - i) / (totalChars - i);
+                        }
+                        const probPercent = (prob * 100).toFixed(4);
+                        reqText += `<span style="font-size:0.75rem; color:#888;">(Chance: <strong style="color:#ffd700">${probPercent}%</strong> - ${matchingChars}/${totalChars} Chars)</span>`;
+                    } else {
+                        reqText += `<span style="font-size:0.75rem; color:#ff4757;">(Unmöglich: nur ${matchingChars} Chars mit diesem Tag)</span>`;
+                    }
+                }
             }
         } else if (unlocked) {
             reqText = 'Freigeschaltet';

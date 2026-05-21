@@ -114,11 +114,29 @@ export function updateChangelogContent(changelogData) {
     const sub = document.querySelector('.cl-subtitle');
     if (sub) sub.textContent = currentMode === 'starwars' ? 'Star Wars Ranking' : 'Anime Ranking';
 
+    // Hole letzten Stand aus Profil
+    const user = getCurrentUser();
+    const readField = currentMode === 'starwars' ? 'lastReadVersionStarWars' : 'lastReadVersionWaifu';
+    const lastRead = user ? user[readField] : null;
+    
+    let hasReachedRead = false;
+
     // --- Patch Notes rendern ---
     patchPanel.innerHTML = grouped.map((group, idx) => {
         const main = group.main;
         const patches = group.patches;
-        const isLatest = idx === 0;
+        
+        let isLatest = false;
+        if (lastRead) {
+            const groupContainsLastRead = (main && main.version === lastRead) || patches.some(p => p.version === lastRead);
+            if (groupContainsLastRead) {
+                hasReachedRead = true;
+            } else if (!hasReachedRead) {
+                isLatest = true;
+            }
+        } else {
+            isLatest = idx === 0; // Fallback: Wenn noch nie geöffnet, nur neuestes
+        }
 
         const mainChangesHtml = main ? main.changes.map(c => `
             <div class="cl-change-item">
@@ -154,7 +172,7 @@ export function updateChangelogContent(changelogData) {
                 <div class="cl-update-header">
                     <div class="cl-update-header-left">
                         <span class="cl-version-tag">${group.key}</span>
-                        ${isLatest ? '<span class="cl-latest-badge">AKTUELL</span>' : ''}
+                        ${isLatest ? '<span class="cl-latest-badge">NEU</span>' : ''}
                     </div>
                     <div class="cl-update-title">${main?.title || ''}</div>
                 </div>

@@ -222,4 +222,28 @@ function setupAdminUI() {
     showView('admin-view');
     initAdminPanel(); 
 }
+
+window.showUnlockNotification = function(type, desc) {
+    const notif = document.getElementById('unlock-notification');
+    document.getElementById('unlock-title').textContent = type === 'title' ? 'Titel freigeschaltet!' : 'Farbschema freigeschaltet!';
+    document.getElementById('unlock-desc').textContent = desc;
+    
+    // Soundeffekt (falls vorhanden)
+    try {
+        const audio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+        audio.volume = 0.5;
+        audio.play().catch(e=>console.warn("Audio play blocked", e));
+    } catch(e) {}
+
+    notif.classList.remove('hidden');
+    // Force reflow
+    void notif.offsetWidth;
+    notif.classList.add('show');
+    
+    setTimeout(() => {
+        notif.classList.remove('show');
+        setTimeout(() => notif.classList.add('hidden'), 500);
+    }, 4000);
+}
+
 bootApp();

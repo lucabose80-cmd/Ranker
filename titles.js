@@ -6,7 +6,9 @@ export const TITLES = {
         { id: 'sw_3', name: 'Jedi-Ritter', required: 50 },
         { id: 'sw_4', name: 'Jedi-Meister', required: 100 },
         { id: 'sw_5', name: 'Großmeister', required: 250 },
-        { id: 'sw_6', name: 'Machtgeist', required: 500 }
+        { id: 'sw_6', name: 'Machtgeist', required: 500 },
+        { id: 'sw_secret_1', name: 'Der Auserwählte', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Anakin Skywalker', 'Darth Vader'] } },
+        { id: 'sw_secret_2', name: 'Zwillingssonnen', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Luke Skywalker', 'Leia Organa'] } }
     ],
     waifu: [
         { id: 'wf_0', name: 'Kein Titel', required: 0 },
@@ -15,6 +17,7 @@ export const TITLES = {
         { id: 'wf_3', name: 'Sensei', required: 50 },
         { id: 'wf_4', name: 'Weeb', required: 100 },
         { id: 'wf_5', name: 'Otaku', required: 250 },
-        { id: 'wf_6', name: 'Isekai-Gott', required: 500 }
+        { id: 'wf_6', name: 'Isekai-Gott', required: 500 },
+        { id: 'wf_secret_1', name: 'Tsundere-Meister', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Asuka Langley Soryu', 'Taiga Aisaka'] } }
     ]
 };
