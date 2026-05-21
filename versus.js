@@ -39,9 +39,19 @@ export async function initVersus() {
     document.getElementById('create-versus-lobby-btn').onclick = createVersusLobby;
     document.getElementById('leave-versus-lobby-btn').onclick = leaveVersusLobby;
     document.getElementById('start-versus-game-btn').onclick = startVersusGame;
-    document.getElementById('abort-versus-game-btn').onclick = () => {
-        document.getElementById('abort-versus-game-btn').classList.add('hidden');
-        leaveVersusLobby();
+    document.getElementById('abort-versus-game-btn').onclick = async () => {
+        const btn = document.getElementById('abort-versus-game-btn');
+        btn.classList.add('hidden');
+        
+        // Live Game explizit löschen bevor wir die Seite verlassen
+        const user = getCurrentUser();
+        if (user) {
+            try {
+                await deleteDoc(doc(db, "live_games", user.username));
+            } catch(e) {}
+        }
+        
+        await leaveVersusLobby();
         window.location.reload(); // Force full reload to clear any hung state
     };
 
