@@ -217,8 +217,7 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
                         if (window.showUnlockNotification) window.showUnlockNotification('title', t.name);
                     }
                 } else if (t.condition && t.condition.type === 'has_discovered_characters') {
-                    const discoveredField = `discovered_${currentMode}`;
-                    const discoveredList = user[discoveredField] || [];
+                    const discoveredList = user.discovered || [];
                     const hasAll = t.condition.chars.every(charName => discoveredList.includes(charName));
                     if (hasAll && !user[titlesField].includes(t.id)) {
                         user[titlesField].push(t.id);

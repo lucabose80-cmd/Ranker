@@ -276,6 +276,10 @@ function showWaitingRoom(lobbyId) {
         const startBtn = document.getElementById('start-versus-game-btn');
         const leaveBtn = document.getElementById('leave-versus-lobby-btn');
         
+        if (lobby.status === 'waiting') {
+            window.versusModalOpenedForLobby = null; // Reset the modal flag for new rounds
+        }
+        
         if (isHost && lobby.status === 'waiting') {
             startBtn.classList.remove('hidden');
             if (lobby.players.length > 1) {
@@ -376,7 +380,7 @@ function showWaitingRoom(lobbyId) {
             
             document.getElementById('versus-room-status').innerHTML = `
                 Spiel beendet! Siehe Historie.<br><br>
-                <button id="restart-versus-btn" class="rank-btn" ${isReady ? 'disabled' : ''} style="height: auto; padding: 12px; font-size: 0.9rem; ${isReady ? 'opacity:0.5;' : ''}">
+                <button id="restart-versus-btn" class="rank-btn" ${isReady ? 'disabled' : ''} style="height: auto; padding: 12px 24px; font-size: 0.9rem; margin: 10px auto; display: inline-block; width: auto; min-width: 200px; ${isReady ? 'opacity:0.5;' : ''}">
                     ${isReady ? `Warte auf andere... (${readyCount}/${lobby.players.length})` : 'Noch eine Runde'}
                 </button>
             `;
