@@ -86,6 +86,10 @@ export function stopHistoryListener() {
         currentListenerMode = null;
     }
 }
+
+let lastSaveTime = 0;
+let lastSavedGameHash = "";
+
 // Speichert ein fertiges Spiel in der Cloud
 export async function saveGameToHistory(placedCharacters, rating, pool, gameType = 'classic') {
     let user = getCurrentUser();
@@ -102,6 +106,19 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
             });
         }
     }
+
+    // Anti-Spam / Anti-Cheat: Verhindere das Speichern des exakt selben Spiels mehrfach
+    const gameHash = rankingData.map(c => c.name).join('|') + "_" + gameType;
+    const now = Date.now();
+    
+    if (now - lastSaveTime < 3000) return; // 3 Sekunden Cooldown
+    if (gameHash === lastSavedGameHash) {
+        console.warn("Dieses Spiel wurde bereits in der Historie gespeichert!");
+        return; // Exakt gleiches Spiel wird nicht nochmal gewertet
+    }
+    
+    lastSaveTime = now;
+    lastSavedGameHash = gameHash;
 
     // Warten bis Charaktere als entdeckt markiert sind (aktualisiert localStorage)
     await markCharactersAsDiscovered(rankingData.map(c => c.name));
