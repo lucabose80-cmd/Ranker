@@ -113,6 +113,10 @@
                     <button id="mode-classic-btn" class="mode-toggle-btn active">Klassisch (5 Slots)</button>
                     <button id="mode-advanced-btn" class="mode-toggle-btn">Advanced (10 Slots)</button>
                 </div>
+                <div id="category-selector-container" class="mode-selector" style="margin-top: 10px;">
+                    <button id="cat-normal-btn" class="mode-toggle-btn active" style="font-size: 0.8rem; padding: 5px 15px;">Normal</button>
+                    <button id="cat-klon-btn" class="mode-toggle-btn" style="font-size: 0.8rem; padding: 5px 15px;">Nur Klone</button>
+                </div>
 
                 <div class="panel ranking-panel">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -167,8 +171,10 @@
                     <div class="history-controls">
                         <select id="history-type-filter">
                             <option value="classic">Klassisch (5er)</option>
+                            <option value="classic_klon">Klon Modus (5er)</option>
                             <option value="advanced">Advanced (10er)</option>
                             <option value="versus">Versus</option>
+                            <option value="versus_klon">Versus (Klon)</option>
                         </select>
                     </div>
                     <div id="history-list" class="history-list"></div>
@@ -184,6 +190,7 @@
                         </select>
                         <select id="scoreboard-type-filter">
                             <option value="classic">Klassisch (5er)</option>
+                            <option value="classic_klon">Klon Modus (5er)</option>
                             <option value="advanced">Advanced (10er)</option>
                             <option value="versus">Versus (Wins)</option>
                         </select>
@@ -196,7 +203,13 @@
                 <div class="panel history-panel" id="versus-lobby-list-view">
                     <h2 class="theme-heading">VERSUS LOBBYS</h2>
                     <p class="prompt-text">Spiele gegen andere. Wer rankt am besten?</p>
-                    <button id="create-versus-lobby-btn" class="rank-btn" style="margin-bottom: 20px; width: auto; padding: 0 20px;">Neue Lobby erstellen</button>
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <button id="create-versus-lobby-btn" class="rank-btn" style="margin: 0; width: auto; padding: 0 20px;">Neue Lobby erstellen</button>
+                        <select id="versus-category-select" style="background: rgba(0,0,0,0.3); color: white; border: 1px solid #333; padding: 10px; border-radius: 6px;">
+                            <option value="normal">Klassisch (Normal)</option>
+                            <option value="klon">Klassisch (Nur Klone)</option>
+                        </select>
+                    </div>
                     <div id="versus-lobbies-grid" class="live-grid"></div>
                 </div>
                 <div class="panel history-panel hidden" id="versus-waiting-room-view">

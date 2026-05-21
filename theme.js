@@ -24,6 +24,8 @@ export function toggleTheme() {
 
     document.getElementById('scoreboard-user-filter').innerHTML = '<option value="global">Global (Alle)</option>';
 
+    const catContainer = document.getElementById('category-selector-container');
+
     if (currentMode === 'starwars') {
         setCurrentMode('waifu');
         activeCharacterDatabase = waifuCharacters;
@@ -31,6 +33,7 @@ export function toggleTheme() {
         mainTitle.textContent = "WAIFU RANKING";
         themeStylesheet.href = "theme-waifu.css"; 
         document.body.classList.add('waifu-theme');
+        if (catContainer) catContainer.classList.add('hidden');
     } else {
         setCurrentMode('starwars');
         activeCharacterDatabase = starWarsCharacters;
@@ -38,6 +41,7 @@ export function toggleTheme() {
         mainTitle.textContent = "STAR WARS RANKING";
         themeStylesheet.href = "theme-starwars.css"; 
         document.body.classList.remove('waifu-theme');
+        if (catContainer && currentGameType === 'classic') catContainer.classList.remove('hidden');
     }
     
     updateChangelogContent(activeChangelogDatabase);

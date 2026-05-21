@@ -7,7 +7,7 @@ export const patchNotesWaifu = [
             "Gamification: Bei Freischaltung eines neuen Titels oder Farbschemas erscheint nun eine dynamische On-Screen-Benachrichtigung (Toast) inklusive Sound-Effekt.",
             "Visualisierung: Alle Fenster-Überschriften passen sich nun farblich absolut synchron deinem gewählten Theme an.",
             "Statistik: Bei Farbschemas und geheimen Titeln wird nun dauerhaft die mathematisch exakte, prozentuale Chance angezeigt, diese in einer Ranking-Runde zu ziehen.",
-            "Geheimnisse: Eine Reihe streng geheimer Titel wurde implementiert, die ganz besondere Charakter-Kombinationen erfordern (z.B. Rivalinnen oder Best Friends).",
+            "Geheimnisse: Eine Reihe streng geheimer Titel wurde implementiert, die ganz besondere Charakter-Kombinationen erfordern.",
             "UI-Update: Sobald du neue Updates verpasst hast, leuchtet der Update-Button nun durchgehend golden. Alle neuen Versionen erhalten im Fenster ein stark sichtbares 'NEU' Abzeichen."
         ]
     },

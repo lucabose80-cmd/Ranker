@@ -6,7 +6,7 @@ import { saveGameToHistory } from './history.js';
 import { getCurrentUser } from './auth.js';
 import { doc, setDoc, Timestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { db } from './firebase-config.js';
-import { currentMode } from './mode-state.js';
+import { currentMode, currentGameCategory } from './mode-state.js';
 
 export let activePool = []; 
 export let currentIndex = 0;
@@ -70,7 +70,7 @@ export function initGame() {
         deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
     }
     
-    const punishPoolStr = localStorage.getItem('punish_pool_' + currentMode + '_classic');
+    const punishPoolStr = localStorage.getItem('punish_pool_' + currentMode + '_' + currentGameCategory + '_classic');
     if (punishPoolStr) {
         try {
             const cachedPool = JSON.parse(punishPoolStr);
@@ -78,7 +78,7 @@ export function initGame() {
                 activePool = cachedPool;
                 
                 // Lade den Fortschritt
-                const punishStateStr = localStorage.getItem('punish_state_' + currentMode + '_classic');
+                const punishStateStr = localStorage.getItem('punish_state_' + currentMode + '_' + currentGameCategory + '_classic');
                 if (punishStateStr) {
                     const state = JSON.parse(punishStateStr);
                     currentIndex = state.currentIndex || 0;
@@ -98,9 +98,13 @@ export function initGame() {
     }
     
     function startFreshClassicGame() {
-        activePool = shuffleArray(activeCharacterDatabase).slice(0, 5);
-        localStorage.setItem('punish_pool_' + currentMode + '_classic', JSON.stringify(activePool));
-        localStorage.removeItem('punish_state_' + currentMode + '_classic');
+        let poolSource = activeCharacterDatabase;
+        if (currentMode === 'starwars' && currentGameCategory === 'klon') {
+            poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon'));
+        }
+        activePool = shuffleArray(poolSource).slice(0, 5);
+        localStorage.setItem('punish_pool_' + currentMode + '_' + currentGameCategory + '_classic', JSON.stringify(activePool));
+        localStorage.removeItem('punish_state_' + currentMode + '_' + currentGameCategory + '_classic');
         currentIndex = 0;
         placedCharacters = { 1: null, 2: null, 3: null, 4: null, 5: null };
     }
@@ -170,7 +174,7 @@ export async function handleRankSelection(rank, buttonElement) {
     currentIndex++;
     
     // Save progress to prevent reload-cheating
-    localStorage.setItem('punish_state_' + currentMode + '_classic', JSON.stringify({
+    localStorage.setItem('punish_state_' + currentMode + '_' + currentGameCategory + '_classic', JSON.stringify({
         currentIndex: currentIndex,
         placedCharacters: placedCharacters
     }));
@@ -195,7 +199,7 @@ export async function handleRankSelection(rank, buttonElement) {
 }
 
 export function submitFinalRating(value) {
-    localStorage.removeItem('punish_pool_' + currentMode + '_classic');
-    localStorage.removeItem('punish_state_' + currentMode + '_classic');
-    saveGameToHistory(placedCharacters, value, activePool, 'classic');
+    localStorage.removeItem('punish_pool_' + currentMode + '_' + currentGameCategory + '_classic');
+    localStorage.removeItem('punish_state_' + currentMode + '_' + currentGameCategory + '_classic');
+    saveGameToHistory(placedCharacters, value, activePool, 'classic', currentGameCategory);
 }

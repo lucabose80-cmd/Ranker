@@ -14,7 +14,7 @@ import { initProfile, renderAvatarSelection, updateTopbarAvatarElement, applyCol
 import { initCommunity, stopCommunity } from './community.js';
 import { initVersus, stopVersus } from './versus.js';
 import { initLiveSpectating, closeSpectatorModal, stopLiveSpectating } from './live.js';
-import { currentGameType, setCurrentGameType } from './mode-state.js';
+import { currentGameType, setCurrentGameType, currentMode, currentGameCategory, setCurrentGameCategory } from './mode-state.js';
 import { initTrackerUI } from './tracker.js';
 import { initSuggestions, renderSuggestions, stopSuggestions } from './suggestions.js';
 import { initInactivityWatcher } from './inactivity.js';
@@ -144,6 +144,10 @@ function setupGameUI(user) {
         setCurrentGameType('classic');
         mClassicBtn.classList.add('active');
         mAdvancedBtn.classList.remove('active');
+        
+        const catContainer = document.getElementById('category-selector-container');
+        if (catContainer && currentMode === 'starwars') catContainer.classList.remove('hidden');
+        
         document.getElementById('game-subtitle').textContent = "Ordne 5 Charaktere blind ein. Wo landen sie?";
         initGame();
     });
@@ -153,9 +157,32 @@ function setupGameUI(user) {
         setCurrentGameType('advanced');
         mAdvancedBtn.classList.add('active');
         mClassicBtn.classList.remove('active');
+        
+        const catContainer = document.getElementById('category-selector-container');
+        if (catContainer) catContainer.classList.add('hidden');
+        
         document.getElementById('game-subtitle').textContent = "Ordne 10 Charaktere blind ein. Wo landen sie und nutze deinen Joker!";
         initAdvancedGame();
     });
+
+    const catNormalBtn = document.getElementById('cat-normal-btn');
+    const catKlonBtn = document.getElementById('cat-klon-btn');
+    if (catNormalBtn && catKlonBtn) {
+        catNormalBtn.addEventListener('click', () => {
+            if (currentGameCategory === 'normal') return;
+            setCurrentGameCategory('normal');
+            catNormalBtn.classList.add('active');
+            catKlonBtn.classList.remove('active');
+            if (currentGameType === 'classic') initGame();
+        });
+        catKlonBtn.addEventListener('click', () => {
+            if (currentGameCategory === 'klon') return;
+            setCurrentGameCategory('klon');
+            catKlonBtn.classList.add('active');
+            catNormalBtn.classList.remove('active');
+            if (currentGameType === 'classic') initGame();
+        });
+    }
 
     // Profil Overlay öffnen
     document.getElementById('profile-trigger').addEventListener('click', () => {

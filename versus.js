@@ -120,8 +120,16 @@ async function createVersusLobby() {
     const user = getCurrentUser();
     if (!user) return;
     
+    const catSelect = document.getElementById('versus-category-select');
+    const category = catSelect ? catSelect.value : 'normal';
+    
+    let poolSource = activeCharacterDatabase;
+    if (currentMode === 'starwars' && category === 'klon') {
+        poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon'));
+    }
+    
     // Generiere 5 Charaktere
-    const chars = shuffleArray(activeCharacterDatabase).slice(0, 5).map(c => c.name);
+    const chars = shuffleArray(poolSource).slice(0, 5).map(c => c.name);
     
     const lobbyId = "lobby_" + Date.now().toString(36) + Math.random().toString(36).substring(2);
     
@@ -129,6 +137,7 @@ async function createVersusLobby() {
     
     const lobbyData = {
         mode: currentMode,
+        category: category,
         hostUid: user.uid,
         hostName: user.displayName || user.username,
         status: 'waiting',
@@ -386,7 +395,12 @@ function showWaitingRoom(lobbyId) {
                                 // Alle bereit -> Neustart!
                                 const { activeCharacterDatabase } = await import('./theme.js');
                                 const { shuffleArray } = await import('./utils.js');
-                                const newChars = shuffleArray(activeCharacterDatabase).slice(0, 5).map(c => c.name);
+                                
+                                let poolSource = activeCharacterDatabase;
+                                if (data.mode === 'starwars' && data.category === 'klon') {
+                                    poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon'));
+                                }
+                                const newChars = shuffleArray(poolSource).slice(0, 5).map(c => c.name);
                                 
                                 const resetPlayers = data.players.map(p => ({
                                     ...p, status: 'waiting', picks: [], score: 0
@@ -412,7 +426,7 @@ function showWaitingRoom(lobbyId) {
             if (!window.versusModalOpenedForLobby || window.versusModalOpenedForLobby !== lobbyId) {
                 window.versusModalOpenedForLobby = lobbyId;
                 import('./history.js').then(module => {
-                    const dummyGame = { ...lobby, mode: lobby.mode, type: 'versus', timestamp: Timestamp.now() };
+                    const dummyGame = { ...lobby, mode: lobby.mode, type: 'versus', category: lobby.category || 'normal', timestamp: Timestamp.now() };
                     module.openVersusResultModal(dummyGame);
                 });
             }
@@ -439,7 +453,8 @@ async function evaluateVersusMatch(lobbyId, lobby) {
     if (!shouldEvaluate) return; // Ein anderer Spieler wertet bereits aus
     
     // 1. Hole das globale Scoreboard für den Modus
-    const scoresRef = doc(db, "scores", `${lobby.mode}_classic_global`);
+    const suffix = lobby.category === 'klon' ? '_klon' : '';
+    const scoresRef = doc(db, "scores", `${lobby.mode}_classic${suffix}_global`);
     const scoresSnap = await getDoc(scoresRef);
     const globalScores = scoresSnap.exists() ? scoresSnap.data() : {};
     
@@ -495,7 +510,8 @@ async function evaluateVersusMatch(lobbyId, lobby) {
             // 4. Update die Stats der Gewinner UND inkrementiere gamesPlayed für alle
             const playerPromises = lobby.players.map(async (player) => {
                 const uRef = doc(db, "users", player.uid);
-                const winField = `versusWins_${lobby.mode}`;
+                const suffixWin = lobby.category === 'klon' ? '_klon' : '';
+                const winField = `versusWins_${lobby.mode}${suffixWin}`;
                 const gamesField = `gamesPlayed_${lobby.mode}`;
                 const uSnap = await getDoc(uRef);
                 if (uSnap.exists()) {
@@ -516,6 +532,7 @@ async function evaluateVersusMatch(lobbyId, lobby) {
         // 5. Speichere das Spiel in die History
         const historyData = {
             mode: lobby.mode,
+            category: lobby.category || 'normal',
             type: 'versus',
             timestamp: Timestamp.now(),
             characters: lobby.characters,

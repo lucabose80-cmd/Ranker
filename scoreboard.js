@@ -82,9 +82,10 @@ export async function renderScoreboard() {
             isFilterListenerAttached = true;
         }
 
-        if (selectedType === 'versus') {
+        if (selectedType.startsWith('versus')) {
             // Render Versus Scoreboard (Wins)
-            const winsField = `versusWins_${currentMode}`;
+            const suffix = selectedType === 'versus_klon' ? '_klon' : '';
+            const winsField = `versusWins_${currentMode}${suffix}`;
             const avatarField = currentMode === 'starwars' ? 'avatarStarWars' : 'avatarWaifu';
             const { userResets } = await getResets();
             

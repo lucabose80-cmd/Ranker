@@ -91,7 +91,7 @@ let lastSaveTime = 0;
 let lastSavedGameHash = "";
 
 // Speichert ein fertiges Spiel in der Cloud
-export async function saveGameToHistory(placedCharacters, rating, pool, gameType = 'classic') {
+export async function saveGameToHistory(placedCharacters, rating, pool, gameType = 'classic', category = 'normal') {
     let user = getCurrentUser();
     if (!user || user.role === 'admin' || user.isTestUser) return;
 
@@ -135,6 +135,7 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
             displayName: user.displayName || user.username,
             mode: currentMode,
             gameType: gameType,
+            category: category,
             rating: rating,
             ranking: rankingData,
             pool: poolData,
@@ -148,7 +149,7 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
         user[gamesPlayedField] = (user[gamesPlayedField] || 0) + 1;
 
         // Track tags for themes – 5 of the same tag in a single game unlocks the theme
-        if (gameType === 'classic') {
+        if (gameType === 'classic' && category === 'normal') {
             const { activeCharacterDatabase } = await import('./theme.js');
             const { THEMES } = await import('./themes.js');
             
@@ -261,12 +262,14 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
             lastUpdated: Timestamp.now()
         };
 
+        const suffix = category === 'klon' ? '_klon' : '';
+        
         // Update Global Score
-        await setDoc(doc(db, "scores", `${currentMode}_${gameType}_global`), updates, { merge: true });
+        await setDoc(doc(db, "scores", `${currentMode}_${gameType}${suffix}_global`), updates, { merge: true });
         trackWrite(1);
 
         // Update Personal Score
-        await setDoc(doc(db, "scores", `${currentMode}_${gameType}_${user.username}`), updates, { merge: true });
+        await setDoc(doc(db, "scores", `${currentMode}_${gameType}${suffix}_${user.username}`), updates, { merge: true });
         trackWrite(1);
 
     } catch (e) {
@@ -552,13 +555,16 @@ export async function renderHistory() {
                 const isVersus = game.type === 'versus';
                 const isGameAdvanced = game.gameType === 'advanced' || (game.ranking && game.ranking.length > 5);
                 
-                if (selectedType === 'versus' && isVersus) {
-                    filteredGames.push(game);
-                } else if (selectedType === 'advanced' && isGameAdvanced && !isVersus) {
-                    filteredGames.push(game);
-                } else if (selectedType === 'classic' && !isGameAdvanced && !isVersus) {
-                    filteredGames.push(game);
-                }
+                let gameCategory = game.category || 'normal';
+                
+                let isMatch = false;
+                if (selectedType === 'versus' && isVersus && gameCategory === 'normal') isMatch = true;
+                else if (selectedType === 'versus_klon' && isVersus && gameCategory === 'klon') isMatch = true;
+                else if (selectedType === 'advanced' && isGameAdvanced && !isVersus) isMatch = true;
+                else if (selectedType === 'classic' && !isGameAdvanced && !isVersus && gameCategory === 'normal') isMatch = true;
+                else if (selectedType === 'classic_klon' && !isGameAdvanced && !isVersus && gameCategory === 'klon') isMatch = true;
+                
+                if (isMatch) filteredGames.push(game);
             }
         });
 
