@@ -23,7 +23,7 @@ export async function initLiveSpectating(force = false) {
         const headerArea = document.createElement('div');
         headerArea.style.textAlign = 'center';
         headerArea.style.marginBottom = '20px';
-        headerArea.innerHTML = `<button id="manual-live-refresh-btn" class="action-btn" style="padding:10px 20px; font-size:1.1rem; background-color:#3b82f6;">Live-Spiele suchen</button>`;
+        headerArea.innerHTML = `<button id="manual-live-refresh-btn" class="rank-btn" style="width: auto; padding: 0 20px;">Live-Spiele suchen</button>`;
         grid.parentNode.insertBefore(headerArea, grid);
         
         document.getElementById('manual-live-refresh-btn').addEventListener('click', () => {

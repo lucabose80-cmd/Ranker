@@ -88,7 +88,7 @@ export function stopHistoryListener() {
 }
 // Speichert ein fertiges Spiel in der Cloud
 export async function saveGameToHistory(placedCharacters, rating, pool, gameType = 'classic') {
-    const user = getCurrentUser();
+    let user = getCurrentUser();
     if (!user || user.role === 'admin' || user.isTestUser) return;
 
     const rankingData = [];
