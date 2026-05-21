@@ -9,6 +9,7 @@ import { initGameVersus } from './game-versus.js';
 let currentLobbyId = null;
 let lobbyUnsubscribe = null;
 let lobbiesListUnsubscribe = null;
+let isPlayingVersus = false;
 
 export function stopVersus() {
     if (lobbyUnsubscribe) lobbyUnsubscribe();
@@ -16,6 +17,7 @@ export function stopVersus() {
     lobbyUnsubscribe = null;
     lobbiesListUnsubscribe = null;
     currentLobbyId = null;
+    isPlayingVersus = false;
 }
 
 export async function initVersus() {
@@ -240,7 +242,7 @@ function showWaitingRoom(lobbyId) {
             
             return `
                 <div class="history-card" style="text-align:center; padding:10px;">
-                    <img src="${p.avatar}" style="width:50px;height:50px;border-radius:50%;margin-bottom:10px;border:2px solid ${isMe ? '#ffd700' : '#444'};">
+                    <img src="${p.avatar}" style="width:50px;height:50px;object-fit:cover;border-radius:50%;margin-bottom:10px;border:2px solid ${isMe ? '#ffd700' : '#444'};">
                     <div style="font-weight:bold; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${p.displayName}</div>
                     <div style="font-size:0.8rem; color:${statusColor}; margin-top:5px;">${statusText}</div>
                 </div>
@@ -250,15 +252,19 @@ function showWaitingRoom(lobbyId) {
         if (lobby.status === 'playing') {
             const me = lobby.players.find(p => p.uid === user.uid);
             if (me && me.status !== 'finished') {
-                // Game View starten!
-                document.getElementById('versus-content').classList.add('hidden');
-                document.getElementById('game-main-content').classList.remove('hidden');
-                
-                // Alle Nav-Buttons deaktivieren
-                document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
-                
-                initGameVersus(lobby);
+                if (!isPlayingVersus) {
+                    isPlayingVersus = true;
+                    // Game View starten!
+                    document.getElementById('versus-content').classList.add('hidden');
+                    document.getElementById('game-main-content').classList.remove('hidden');
+                    
+                    // Alle Nav-Buttons deaktivieren
+                    document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+                    
+                    initGameVersus(lobby);
+                }
             } else if (me && me.status === 'finished') {
+                isPlayingVersus = false;
                 // Warteraum anzeigen
                 document.getElementById('game-main-content').classList.add('hidden');
                 document.getElementById('versus-content').classList.remove('hidden');
@@ -300,8 +306,10 @@ async function evaluateVersusMatch(lobbyId, lobby) {
     
     // 2. Erstelle ein "Perfektes" Ranking der 5 Charaktere
     const perfectRanking = [...lobby.characters].sort((a, b) => {
-        const scoreA = globalScores[a] || 0;
-        const scoreB = globalScores[b] || 0;
+        const safeA = a.replace(/[\.\/\[\]~#]/g, '_');
+        const safeB = b.replace(/[\.\/\[\]~#]/g, '_');
+        const scoreA = globalScores.characters?.[safeA]?.score || 0;
+        const scoreB = globalScores.characters?.[safeB]?.score || 0;
         return scoreB - scoreA; // Absteigend (meiste Punkte = Platz 1)
     });
     
