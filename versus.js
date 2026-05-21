@@ -238,13 +238,13 @@ function showWaitingRoom(lobbyId) {
             const statusColor = isFinished ? '#2ed573' : (lobby.status === 'playing' ? '#ffd700' : '#ccc');
             const statusText = isFinished ? 'Fertig!' : (lobby.status === 'playing' ? 'Rankt...' : 'Bereit');
             
-            return \`
+            return `
                 <div class="history-card" style="text-align:center; padding:10px;">
-                    <img src="\${p.avatar}" style="width:50px;height:50px;border-radius:50%;margin-bottom:10px;border:2px solid \${isMe ? '#ffd700' : '#444'};">
-                    <div style="font-weight:bold; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">\${p.displayName}</div>
-                    <div style="font-size:0.8rem; color:\${statusColor}; margin-top:5px;">\${statusText}</div>
+                    <img src="${p.avatar}" style="width:50px;height:50px;border-radius:50%;margin-bottom:10px;border:2px solid ${isMe ? '#ffd700' : '#444'};">
+                    <div style="font-weight:bold; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${p.displayName}</div>
+                    <div style="font-size:0.8rem; color:${statusColor}; margin-top:5px;">${statusText}</div>
                 </div>
-            \`;
+            `;
         }).join('');
         
         if (lobby.status === 'playing') {
@@ -294,7 +294,7 @@ function showWaitingRoom(lobbyId) {
 // Auswertung des Versus Matches
 async function evaluateVersusMatch(lobbyId, lobby) {
     // 1. Hole das globale Scoreboard für den Modus
-    const scoresRef = doc(db, "scores", \`\${lobby.mode}_classic_global\`);
+    const scoresRef = doc(db, "scores", `${lobby.mode}_classic_global`);
     const scoresSnap = await getDoc(scoresRef);
     const globalScores = scoresSnap.exists() ? scoresSnap.data() : {};
     
@@ -330,7 +330,7 @@ async function evaluateVersusMatch(lobbyId, lobby) {
     // 4. Update die Stats der Gewinner
     const winnerPromises = winners.map(async (winnerUid) => {
         const uRef = doc(db, "users", winnerUid);
-        const winField = \`versusWins_\${lobby.mode}\`;
+        const winField = `versusWins_${lobby.mode}`;
         const uSnap = await getDoc(uRef);
         if (uSnap.exists()) {
             const data = uSnap.data();
@@ -350,7 +350,7 @@ async function evaluateVersusMatch(lobbyId, lobby) {
         perfectRanking: perfectRanking,
         winners: winners
     };
-    await setDoc(doc(db, "history", \`versus_\${Date.now()}\`), historyData);
+    await setDoc(doc(db, "history", `versus_${Date.now()}`), historyData);
     
     // 6. Setze Lobby auf Finished
     await updateDoc(doc(db, "versus_lobbies", lobbyId), {
