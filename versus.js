@@ -269,13 +269,17 @@ function showWaitingRoom(lobbyId) {
                 document.getElementById('game-main-content').classList.add('hidden');
                 document.getElementById('versus-content').classList.remove('hidden');
                 document.getElementById('versus-room-status').innerHTML = "Du bist fertig! Warte auf die anderen Spieler...<br><br><div class='loader'></div>";
-                leaveBtn.classList.add('hidden'); // Darf nicht mehr verlassen!
+                leaveBtn.classList.remove('hidden'); // Darf immer verlassen, falls Lobby hängt
             }
             
             // Überprüfen ob alle fertig sind
             const allFinished = lobby.players.every(p => p.status === 'finished');
-            if (allFinished && isHost) {
-                await evaluateVersusMatch(lobbyId, lobby);
+            if (allFinished) {
+                // Der erste Spieler in der Liste übernimmt die Auswertung, falls Host buggy ist
+                const evaluatorUid = lobby.players.length > 0 ? lobby.players[0].uid : null;
+                if (user.uid === evaluatorUid) {
+                    await evaluateVersusMatch(lobbyId, lobby);
+                }
             }
         } else if (lobby.status === 'finished') {
             // Zeige Endbildschirm

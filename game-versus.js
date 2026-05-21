@@ -128,10 +128,19 @@ async function submitVersusPicks() {
             if (pIndex !== -1) {
                 data.players[pIndex].picks = picksArray;
                 data.players[pIndex].status = 'finished';
+                
+                // Sofortiges UI Feedback um Hängenbleiben zu verhindern
+                document.getElementById('game-main-content').classList.add('hidden');
+                document.getElementById('versus-content').classList.remove('hidden');
+                document.getElementById('versus-room-status').innerHTML = "Sende Ranking...<br><br><div class='loader'></div>";
+                
                 await updateDoc(lobbyRef, { players: data.players });
+            } else {
+                alert("Du bist nicht mehr in der Lobby.");
             }
         }
     } catch(e) {
         console.error("Versus Submit Error", e);
+        alert("Fehler beim Senden: " + e.message);
     }
 }
