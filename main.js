@@ -277,16 +277,22 @@ window.showUnlockNotification = function(type, desc) {
         }
         
         const now = actx.currentTime;
-        // Star Wars Main Theme snippet (G4, G4, G4, C5, G5)
-        const g4 = 392.00;
-        const c5 = 523.25;
-        const g5 = 783.99;
+        // Star Wars Main Theme
+        const g4 = 392.00, c5 = 523.25, d5 = 587.33, e5 = 659.25, f5 = 698.46, g5 = 783.99, c6 = 1046.50;
+        const melody = [
+            [g4, 0.0, 0.15], [g4, 0.2, 0.15], [g4, 0.4, 0.15],
+            [c5, 0.6, 0.6], [g5, 1.4, 0.6],
+            [f5, 2.2, 0.15], [e5, 2.4, 0.15], [d5, 2.6, 0.15],
+            [c6, 2.8, 0.6], [g5, 3.6, 0.4],
+            [f5, 4.2, 0.15], [e5, 4.4, 0.15], [d5, 4.6, 0.15],
+            [c6, 4.8, 0.6], [g5, 5.6, 0.4],
+            [f5, 6.2, 0.15], [e5, 6.4, 0.15], [f5, 6.6, 0.15],
+            [d5, 6.8, 1.0]
+        ];
         
-        playTone(g4, now, 0.15);
-        playTone(g4, now + 0.2, 0.15);
-        playTone(g4, now + 0.4, 0.15);
-        playTone(c5, now + 0.6, 0.6);
-        playTone(g5, now + 1.2, 0.6);
+        melody.forEach(([freq, time, dur]) => {
+            playTone(freq, now + time, dur);
+        });
 
     } catch(e) {
         console.warn("Audio play blocked", e);
