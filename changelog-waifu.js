@@ -1,5 +1,14 @@
 export const patchNotesWaifu = [
     {
+        version: "v2.7.6",
+        title: "Public Profiles Update",
+        isHotfix: false,
+        changes: [
+            "Neues Feature: Klicke auf Spieler in der Online-Liste, um deren öffentliches Profil aufzurufen.",
+            "Neues Feature: Das Spieler-Profil zeigt den Avatar, aktuellen Titel und alle freigeschalteten Themes und Titel für beide Modi an."
+        ]
+    },
+    {
         version: "v2.7.5",
         title: "Manual Refresh & Performance Update",
         isHotfix: false,

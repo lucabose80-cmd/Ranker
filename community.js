@@ -4,10 +4,13 @@ import { collection, onSnapshot, query, orderBy, limit, addDoc, Timestamp, getDo
 import { getCurrentUser } from './auth.js';
 import { currentMode } from './mode-state.js';
 import { trackRead, trackWrite } from './tracker.js';
+import { TITLES } from './titles.js';
+import { THEMES } from './themes.js';
 
 let chatUnsubscribe = null;
 let onlineInterval = null;
 let allUsersCache = [];
+let isOnlineListBound = false;
 
 export function stopCommunity() {
     if(chatUnsubscribe) chatUnsubscribe();
@@ -168,13 +171,16 @@ export function initCommunity() {
             const modeClass = uMode === 'starwars' ? 'tag-sw' : 'tag-anime';
             const activeTitle = uMode === 'starwars' ? user.activeTitle_starwars : user.activeTitle_waifu;
             const titleHtml = activeTitle && activeTitle !== 'Kein Titel'
-                ? `<span style="font-size:0.6rem; color:#ffd700; font-weight:bold; margin-left:4px; text-transform:uppercase;">${activeTitle}</span>` : '';
+                ? `<div style="font-size:0.65rem; color:#ffd700; font-weight:bold; margin-top:2px; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${activeTitle}</div>` : '';
 
             onlineList.innerHTML += `
-                <div class="online-user-card">
+                <div class="online-user-card" style="cursor:pointer;" data-uid="${user.uid}">
                     <div class="online-indicator"></div>
                     ${avatarHtml}
-                    <strong>${user.displayName || user.username} (Du)${titleHtml}</strong>
+                    <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;">
+                        <strong style="flex: unset; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${user.displayName || user.username} (Du)</strong>
+                        ${titleHtml}
+                    </div>
                     <span class="chat-mode-tag ${modeClass}" style="margin-left:auto; flex-shrink:0;">${modeText}</span>
                 </div>
             `;
@@ -192,16 +198,19 @@ export function initCommunity() {
                 const otherModeClass = otherMode === 'starwars' ? 'tag-sw' : 'tag-anime';
                 const otherTitle = otherMode === 'starwars' ? u.activeTitle_starwars : u.activeTitle_waifu;
                 const otherTitleHtml = otherTitle && otherTitle !== 'Kein Titel'
-                    ? `<span style="font-size:0.6rem; color:#ffd700; font-weight:bold; margin-left:4px; text-transform:uppercase;">${otherTitle}</span>` : '';
+                    ? `<div style="font-size:0.65rem; color:#ffd700; font-weight:bold; margin-top:2px; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${otherTitle}</div>` : '';
 
                 const offlineCss = u._isOnline ? '' : 'opacity: 0.45; filter: grayscale(0.5);';
                 const indicatorClass = u._isOnline ? 'online-indicator' : 'online-indicator offline';
 
                 onlineList.innerHTML += `
-                    <div class="online-user-card" style="${offlineCss}">
+                    <div class="online-user-card" style="${offlineCss} cursor:pointer;" data-uid="${u.uid}">
                         <div class="${indicatorClass}"></div>
                         ${otherAvatarHtml}
-                        <strong>${u.displayName || u.username}${otherTitleHtml}</strong>
+                        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;">
+                            <strong style="flex: unset; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${u.displayName || u.username}</strong>
+                            ${otherTitleHtml}
+                        </div>
                         <span class="chat-mode-tag ${otherModeClass}" style="margin-left:auto; flex-shrink:0;">${otherModeText}</span>
                     </div>
                 `;
@@ -218,5 +227,95 @@ export function initCommunity() {
         refreshBtn.addEventListener('click', updateOnlineTracker);
     }
 
+    const onlineListEl = document.getElementById('online-users-list');
+    if (onlineListEl && !isOnlineListBound) {
+        onlineListEl.addEventListener('click', (e) => {
+            const card = e.target.closest('.online-user-card');
+            if (!card) return;
+            const uid = card.dataset.uid;
+            let clickedUser = null;
+            if (uid === user.uid) {
+                clickedUser = user;
+            } else {
+                clickedUser = allUsersCache.find(u => u.uid === uid);
+            }
+            if (clickedUser) {
+                openUserProfileModal(clickedUser);
+            }
+        });
+        isOnlineListBound = true;
+    }
+
     updateOnlineTracker();
+}
+
+function openUserProfileModal(u) {
+    if (!document.getElementById('public-profile-modal')) {
+        const modal = document.createElement('div');
+        modal.id = 'public-profile-modal';
+        modal.className = 'modal hidden';
+        modal.innerHTML = `
+            <div class="cl-modal-box" style="max-width: 500px; text-align:center; position: relative;">
+                <div class="cl-modal-header" style="justify-content: space-between; margin-bottom: 20px;">
+                    <h2 style="margin:0;">Spieler-Profil</h2>
+                    <button id="close-public-profile-btn" class="text-btn">SCHLIESSEN</button>
+                </div>
+                <div class="cl-modal-content" id="public-profile-content" style="text-align: left;">
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        document.getElementById('close-public-profile-btn').addEventListener('click', () => modal.classList.add('hidden'));
+        modal.addEventListener('click', e => { if (e.target === modal) modal.classList.add('hidden'); });
+    }
+
+    const modal = document.getElementById('public-profile-modal');
+    const content = document.getElementById('public-profile-content');
+    
+    let progressHtml = '';
+    if (currentMode === 'starwars') {
+        const swGames = u.gamesPlayed_starwars || 0;
+        const swTitles = (TITLES['starwars'] || []).filter(t => swGames >= t.required).map(t => t.name);
+        const swThemes = u.unlocked_themes_starwars || [];
+        const swThemeNames = (THEMES['starwars'] || []).filter(t => t.id.endsWith('_default') || swThemes.includes(t.id)).map(t => t.name);
+        
+        progressHtml = `
+            <div style="background:#11151f; padding:15px; border-radius:8px; border:1px solid #2a3142;">
+                <h4 style="margin:0 0 10px 0; color:#e2e8f0; border-bottom:1px solid #2a3142; padding-bottom:5px;">Star Wars Fortschritt</h4>
+                <div style="font-size:0.85rem; color:#94a3b8; margin-bottom:5px;">Spiele gespielt: <span style="color:#fff">${swGames}</span></div>
+                <div style="font-size:0.85rem; color:#94a3b8; margin-bottom:5px;">Freigeschaltete Titel: <span style="color:#fff">${swTitles.join(', ') || '-'}</span></div>
+                <div style="font-size:0.85rem; color:#94a3b8;">Freigeschaltete Themes: <span style="color:#fff">${swThemeNames.join(', ') || '-'}</span></div>
+            </div>
+        `;
+    } else {
+        const animeGames = u.gamesPlayed_waifu || 0;
+        const animeTitles = (TITLES['waifu'] || []).filter(t => animeGames >= t.required).map(t => t.name);
+        const animeThemes = u.unlocked_themes_waifu || [];
+        const animeThemeNames = (THEMES['waifu'] || []).filter(t => t.id.endsWith('_default') || animeThemes.includes(t.id)).map(t => t.name);
+        
+        progressHtml = `
+            <div style="background:#11151f; padding:15px; border-radius:8px; border:1px solid #2a3142;">
+                <h4 style="margin:0 0 10px 0; color:#e2e8f0; border-bottom:1px solid #2a3142; padding-bottom:5px;">Anime Fortschritt</h4>
+                <div style="font-size:0.85rem; color:#94a3b8; margin-bottom:5px;">Spiele gespielt: <span style="color:#fff">${animeGames}</span></div>
+                <div style="font-size:0.85rem; color:#94a3b8; margin-bottom:5px;">Freigeschaltete Titel: <span style="color:#fff">${animeTitles.join(', ') || '-'}</span></div>
+                <div style="font-size:0.85rem; color:#94a3b8;">Freigeschaltete Themes: <span style="color:#fff">${animeThemeNames.join(', ') || '-'}</span></div>
+            </div>
+        `;
+    }
+    
+    const avatar = (currentMode === 'starwars' ? u.avatarStarWars : u.avatarWaifu) || '';
+    const avatarHtml = avatar ? `<img src="${avatar}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid #555;margin:0 auto 10px; display:block;">` : `<div style="width:80px;height:80px;border-radius:50%;background:#444;margin:0 auto 10px; display:block;"></div>`;
+    
+    const activeTitle = (currentMode === 'starwars' ? u.activeTitle_starwars : u.activeTitle_waifu) || 'Kein Titel';
+    
+    content.innerHTML = `
+        <div style="text-align:center;">
+            ${avatarHtml}
+            <h3 style="margin:0; font-size:1.5rem; color:#fff;">${u.displayName || u.username}</h3>
+            <p style="color:#ffd700; font-weight:bold; margin-top:5px; margin-bottom:20px; text-transform:uppercase; font-size:0.9rem;">${activeTitle}</p>
+        </div>
+        ${progressHtml}
+    `;
+    
+    modal.classList.remove('hidden');
 }
