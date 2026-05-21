@@ -1,5 +1,15 @@
 export const patchNotesStarWars = [
     {
+        version: "v3.2.3",
+        title: "Hotfix: DOM & DevTools Protection",
+        isHotfix: true,
+        changes: [
+            "Anti-Cheat: Hacker, die mit den Browser DevTools die HTML-Elemente der Bewertungs-Buttons manipulieren (um z.B. Sperren aufzuheben), werden nun abgewehrt.",
+            "Security: Ein strenges internes JavaScript-Regelwerk verhindert nun jegliche Ausführung von Befehlen, selbst wenn das HTML durch externe Tools verändert wurde.",
+            "UI: Nach der Bewertung verschwinden die Buttons nun vollständig aus dem Code, was weitere Manipulationsversuche verhindert."
+        ]
+    },
+    {
         version: "v3.2.2",
         title: "Hotfix: Anti-Cheat & Spam Protection",
         isHotfix: true,
