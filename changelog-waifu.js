@@ -1,5 +1,15 @@
 export const patchNotesWaifu = [
     {
+        version: "v3.6",
+        title: "Das Klon-Modus Update (Extra für Jonas)",
+        isHotfix: false,
+        changes: [
+            "Neuer Spielmodus (Star Wars): 'Nur Klone' hinzugefügt! Das Ranking-Wissen kann dort ausschließlich mit Klonsoldaten getestet werden.",
+            "Isolierter Fortschritt (Star Wars): Der Klon-Modus verfügt über ein komplett eigenes, unabhängiges globales Scoreboard sowie eine eigene Historie.",
+            "Versus Klon-Lobby (Star Wars): Es können nun Lobbys im Versus-Modus erstellt werden, die nur Klon-Charaktere beinhalten. (Voraussetzung: 10 gespielte Runden im Klon-Modus)"
+        ]
+    },
+    {
         version: "v3.5",
         title: "Das Gamification & Quality of Life Update",
         isHotfix: false,

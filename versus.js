@@ -125,6 +125,11 @@ async function createVersusLobby() {
     
     let poolSource = activeCharacterDatabase;
     if (currentMode === 'starwars' && category === 'klon') {
+        const klonGames = user['gamesPlayed_starwars_klon'] || 0;
+        if (klonGames < 10) {
+            alert("Du musst mindestens 10 Spiele im 'Nur Klone' Modus (Klassisch) absolviert haben, um den Klon-Versus Modus zu hosten!");
+            return;
+        }
         poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon'));
     }
     

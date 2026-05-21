@@ -1,5 +1,16 @@
 export const patchNotesStarWars = [
     {
+        version: "v3.6",
+        title: "Das Klon-Modus Update (Extra für Jonas)",
+        isHotfix: false,
+        changes: [
+            "Neuer Spielmodus: 'Nur Klone' hinzugefügt! Teste dein Ranking-Wissen ausschließlich mit Klonsoldaten. Du findest die Auswahl im klassischen Modus.",
+            "Isolierter Fortschritt: Der Klon-Modus verfügt über ein komplett eigenes, unabhängiges globales Scoreboard sowie eine eigene Historie, damit er nicht mit den normalen Rankings gemischt wird.",
+            "Versus Klon-Lobby: Du kannst nun Lobbys im Versus-Modus erstellen, die nur Klon-Charaktere beinhalten. (Voraussetzung: Du hast mindestens 10 Runden im normalen Klon-Modus absolviert!)",
+            "Fortschrittsspeicherung: Auch beim Wechsel zwischen dem normalen Modus und dem Klon-Modus bleibt dein jeweils letzter Fortschritt erhalten."
+        ]
+    },
+    {
         version: "v3.5",
         title: "Das Gamification & Quality of Life Update",
         isHotfix: false,

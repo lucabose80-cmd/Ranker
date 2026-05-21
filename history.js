@@ -147,6 +147,11 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
         // Update User Games Played locally and in DB
         const gamesPlayedField = `gamesPlayed_${currentMode}`;
         user[gamesPlayedField] = (user[gamesPlayedField] || 0) + 1;
+        
+        const klonGamesPlayedField = `gamesPlayed_${currentMode}_klon`;
+        if (category === 'klon') {
+            user[klonGamesPlayedField] = (user[klonGamesPlayedField] || 0) + 1;
+        }
 
         // Track tags for themes – 5 of the same tag in a single game unlocks the theme
         if (gameType === 'classic' && category === 'normal') {
@@ -233,9 +238,15 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
         
         // Asynchron das increment absenden
         const { updateDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
-        updateDoc(doc(db, "users", user.uid), {
+        
+        const updatePayload = {
             [gamesPlayedField]: increment(1)
-        }).catch(e => console.error(e));
+        };
+        if (category === 'klon') {
+            updatePayload[`gamesPlayed_${currentMode}_klon`] = increment(1);
+        }
+        
+        updateDoc(doc(db, "users", user.uid), updatePayload).catch(e => console.error(e));
         trackWrite(1);
 
         // --- AGGREGATED SCOREBOARD SYSTEM ---
