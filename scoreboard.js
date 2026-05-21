@@ -47,8 +47,8 @@ export async function renderScoreboard() {
         try {
             // force=true beim direkten Render, damit nach Resets sofort aktuelle Daten sichtbar sind
             const { userResets: cachedUserResets } = await getResets();
-            // Nur echte Spieler (kein Admin) ins Dropdown
-            allKnownUsers = Object.keys(cachedUserResets).filter(uname => uname !== 'admin');
+            // Nur echte Spieler (kein Admin, keine Tester) ins Dropdown
+            allKnownUsers = Object.keys(cachedUserResets).filter(uname => uname !== 'admin' && uname !== 'test1' && uname !== 'test2');
             allKnownUsers.forEach(uname => {
                 displayNames[uname] = cachedUserResets[uname].displayName || uname;
             });

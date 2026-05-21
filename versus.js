@@ -413,31 +413,38 @@ async function evaluateVersusMatch(lobbyId, lobby) {
             }
         });
         
-        // 4. Update die Stats der Gewinner
-        const winnerPromises = winners.map(async (winnerUid) => {
-            const uRef = doc(db, "users", winnerUid);
-            const winField = `versusWins_${lobby.mode}`;
-            const uSnap = await getDoc(uRef);
-            if (uSnap.exists()) {
-                const data = uSnap.data();
-                const wins = (data[winField] || 0) + 1;
-                await updateDoc(uRef, { [winField]: wins });
-            }
-        });
-        await Promise.all(winnerPromises);
+        const hasTestUser = lobby.players.some(p => p.username === 'test1' || p.username === 'test2');
+        
+        if (!hasTestUser) {
+            // 4. Update die Stats der Gewinner
+            const winnerPromises = winners.map(async (winnerUid) => {
+                const uRef = doc(db, "users", winnerUid);
+                const winField = `versusWins_${lobby.mode}`;
+                const uSnap = await getDoc(uRef);
+                if (uSnap.exists()) {
+                    const data = uSnap.data();
+                    const wins = (data[winField] || 0) + 1;
+                    await updateDoc(uRef, { [winField]: wins });
+                }
+            });
+            await Promise.all(winnerPromises);
+        }
     }
     
-    // 5. Speichere das Spiel in die History
-    const historyData = {
-        mode: lobby.mode,
-        type: 'versus',
-        timestamp: Timestamp.now(),
-        characters: lobby.characters,
-        players: lobby.players,
-        perfectRanking: perfectRanking,
-        winners: winners
-    };
-    await setDoc(doc(db, "history", `versus_${Date.now()}`), historyData);
+    const hasTestUserGlobal = lobby.players.some(p => p.username === 'test1' || p.username === 'test2');
+    if (!hasTestUserGlobal) {
+        // 5. Speichere das Spiel in die History
+        const historyData = {
+            mode: lobby.mode,
+            type: 'versus',
+            timestamp: Timestamp.now(),
+            characters: lobby.characters,
+            players: lobby.players,
+            perfectRanking: perfectRanking,
+            winners: winners
+        };
+        await setDoc(doc(db, "history", `versus_${Date.now()}`), historyData);
+    }
     
     // 6. Setze Lobby auf Finished und speichere die Results in der Lobby
     await updateDoc(doc(db, "versus_lobbies", lobbyId), {

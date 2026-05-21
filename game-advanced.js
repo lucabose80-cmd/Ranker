@@ -70,7 +70,7 @@ export function initAdvancedGame() {
     
     // Live Game Dokument aufräumen
     const user = getCurrentUser();
-    if(user && user.role !== 'admin') {
+    if(user && user.role !== 'admin' && !user.isTestUser) {
         deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
     }
     activePool = shuffleArray(activeCharacterDatabase).slice(0, 10);
@@ -119,7 +119,7 @@ export function showNextAdvancedCharacter() {
 function startJokerPhase() {
     // Live-Übertragung beenden/aktualisieren
     const user = getCurrentUser();
-    if(user && user.role !== 'admin') {
+    if(user && user.role !== 'admin' && !user.isTestUser) {
         deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
     }
 
@@ -240,7 +240,7 @@ export async function handleAdvancedRankSelection(rank, buttonElement) {
     
     // Live Broadcast
     const user = getCurrentUser();
-    if(user && user.role !== 'admin') {
+    if(user && user.role !== 'admin' && !user.isTestUser) {
         try {
             setDoc(doc(db, "live_games", user.username), {
                 displayName: user.displayName || user.username,

@@ -112,7 +112,7 @@ export async function updateUserProfile(newDisplayName, newPassword, newAvatarPa
 
 export function startPresenceHeartbeat() {
     const user = getCurrentUser();
-    if (!user) return;
+    if (!user || user.role === 'admin' || user.isTestUser) return;
     
     const sendHeartbeat = async () => {
         try { 
@@ -130,7 +130,7 @@ export function startPresenceHeartbeat() {
 
 export async function markCharactersAsDiscovered(charNamesArray) {
     let user = getCurrentUser();
-    if (!user || user.role === 'admin') return;
+    if (!user || user.role === 'admin' || user.isTestUser) return;
     if (!user.discovered) user.discovered = [];
     if (!user.newlyDiscovered) user.newlyDiscovered = [];
 
@@ -170,7 +170,7 @@ export async function markCharactersAsDiscovered(charNamesArray) {
 
 export async function clearNewlyDiscovered() {
     const user = getCurrentUser();
-    if (!user || user.role === 'admin') return;
+    if (!user || user.role === 'admin' || user.isTestUser) return;
     if (!user.newlyDiscovered || user.newlyDiscovered.length === 0) return;
 
     user.newlyDiscovered = [];
@@ -184,7 +184,7 @@ export async function clearNewlyDiscovered() {
 // NEU: Markiert Updates als gelesen
 export async function markUpdatesAsRead(mode, version) {
     const user = getCurrentUser();
-    if (!user || user.role === 'admin') return;
+    if (!user || user.role === 'admin' || user.isTestUser) return;
 
     const field = mode === 'starwars' ? 'lastReadVersionStarWars' : 'lastReadVersionWaifu';
     if (user[field] === version) return; // Bereits gelesen
@@ -229,7 +229,15 @@ export async function markCurrentUserOffline() {
 }
 
 export function getCurrentUser() {
-    return JSON.parse(localStorage.getItem(CURRENT_USER_KEY));
+    let user = JSON.parse(localStorage.getItem(CURRENT_USER_KEY));
+    if (user && (user.username === 'test1' || user.username === 'test2')) {
+        user.isTestUser = true;
+        user.gamesPlayed_starwars = 999;
+        user.gamesPlayed_waifu = 999;
+        user.unlocked_themes_starwars = ['sith', 'clone', 'rebel'];
+        user.unlocked_themes_waifu = ['magical', 'mecha', 'isekai'];
+    }
+    return user;
 }
 
 // Liest den User-State frisch aus Firebase und aktualisiert den lokalen Cache.
@@ -241,7 +249,16 @@ export async function refreshCurrentUser() {
         const snap = await getDoc(doc(db, "users", user.uid));
         if (snap.exists()) {
             const freshData = snap.data();
-            const updatedUser = { ...user, ...freshData, uid: user.uid };
+            let updatedUser = { ...user, ...freshData, uid: user.uid };
+            
+            if (updatedUser.username === 'test1' || updatedUser.username === 'test2') {
+                updatedUser.isTestUser = true;
+                updatedUser.gamesPlayed_starwars = 999;
+                updatedUser.gamesPlayed_waifu = 999;
+                updatedUser.unlocked_themes_starwars = ['sith', 'clone', 'rebel'];
+                updatedUser.unlocked_themes_waifu = ['magical', 'mecha', 'isekai'];
+            }
+            
             localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updatedUser));
             return updatedUser;
         }

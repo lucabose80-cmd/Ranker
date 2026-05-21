@@ -125,7 +125,7 @@ export function initCommunity() {
                 allUsersCache = [];
                 allUsersSnap.forEach(docSnap => {
                     const u = docSnap.data();
-                    if (u.role === 'admin') return;
+                    if (u.role === 'admin' || u.username === 'test1' || u.username === 'test2') return;
                     allUsersCache.push({ ...u, uid: docSnap.id, username: u.username || docSnap.id, _isOnline: false });
                 });
             }
@@ -136,7 +136,7 @@ export function initCommunity() {
             const activeUsers = new Set();
             activeUsersSnap.forEach(docSnap => {
                 const u = docSnap.data();
-                if (u.role === 'admin') return;
+                if (u.role === 'admin' || u.username === 'test1' || u.username === 'test2') return;
                 activeUsers.add(docSnap.id);
 
                 const existingIndex = allUsersCache.findIndex(item => item.uid === docSnap.id);

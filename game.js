@@ -61,7 +61,7 @@ export function initGame() {
     
     // Live Game Dokument aufräumen beim Neustart
     const user = getCurrentUser();
-    if(user && user.role !== 'admin') {
+    if(user && user.role !== 'admin' && !user.isTestUser) {
         deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
     }
     
@@ -105,7 +105,7 @@ export function showNextCharacter() {
     } else {
         // Alle 5 platziert → Live-Dokument löschen
         const user = getCurrentUser();
-        if(user && user.role !== 'admin') {
+        if(user && user.role !== 'admin' && !user.isTestUser) {
             deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
         }
 
@@ -138,7 +138,7 @@ export async function handleRankSelection(rank, buttonElement) {
     
     // Live Broadcast mit Pool-Info für Zuschauer
     const user = getCurrentUser();
-    if(user && user.role !== 'admin') {
+    if(user && user.role !== 'admin' && !user.isTestUser) {
         try {
             setDoc(doc(db, "live_games", user.username), {
                 displayName: user.displayName || user.username,
