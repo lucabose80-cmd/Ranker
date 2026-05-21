@@ -1,5 +1,20 @@
 export const patchNotesStarWars = [
     {
+        version: "v3.4",
+        title: "Das große Versus & QoL Update",
+        isHotfix: false,
+        changes: [
+            "Versus Rematch: Nach Abschluss eines Versus-Spiels kann die Lobby nun über den Button 'Noch eine Runde' sofort neu gestartet werden, ohne sich neu einladen zu müssen.",
+            "Versus Live-Spectating: Zuschauer können nun Live bei Versus-Matches zusehen. Ein neuer Umschalter im Zuschauermodus erlaubt das nahtlose Wechseln zwischen allen Spielern desselben Matches.",
+            "Versus Fortschritt: Abgeschlossene Versus-Matches zählen nun offiziell als absolvierte Spiele und schalten Titel und Themes frei.",
+            "Anti-Botting: Ein neuer Makro-Schutz (Hardware-Prüfung) blockiert automatisierte Klick-Bots in allen Spielmodi.",
+            "Admin-Panel: Administratoren können ihr Passwort nun direkt und sicher über das Admin-Panel ändern.",
+            "Quality of Life: Der Aktualisieren-Button im Online-Tab lädt nun sämtliche Titel und Statistiken aller Spieler komplett neu (Full Refresh).",
+            "Bugfix: Abgebrochene Live-Spiele verschwinden nun für Zuschauer sofort (Behebung einer Race Condition).",
+            "Bugfix: Der '(Du)' Indikator bei sehr langen Namen im Chat/Online-Tab wird nicht mehr fehlerhaft abgeschnitten."
+        ]
+    },
+    {
         version: "v3.3",
         title: "Das große Anti-Cheat & Security Update",
         isHotfix: false,
