@@ -66,7 +66,7 @@ export const starWarsCharacters = [
   { name: "Din Djarin", img: "starwars.bilder/mandalorian.jpg", tags: ["mandalorian"] },
   { name: "Bo-Katan Kryze", img: "starwars.bilder/bokatan.jpg", tags: ["mandalorian"] },
   { name: "Boba Fett", img: "starwars.bilder/boba.jpg", tags: ["mandalorian", "schmuggel"] },
-  { name: "Jango Fett", img: "starwars.bilder/jangofett.jpg", tags: ["mandalorian", "schmuggel"] }, // NEU
+  { name: "Jango Fett", img: "starwars.bilder/jangofett.jpg", tags: ["mandalorian", "schmuggel"] },
   { name: "Duchess Satine", img: "starwars.bilder/satine.jpg", tags: ["mandalorian"] },
   { name: "Paz Vizsla", img: "starwars.bilder/pazvizsla.jpg", tags: ["mandalorian"] },
   { name: "The Armorer", img: "starwars.bilder/armorer.jpg", tags: ["mandalorian"] },
