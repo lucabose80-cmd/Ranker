@@ -68,9 +68,9 @@ export function initAdvancedGame() {
     
     resetRatingUI();
     
-    // Live Game Dokument aufräumen
+    // Live Game Dokument aufräumen beim Neustart
     const user = getCurrentUser();
-    if(user && user.role !== 'admin' && !user.isTestUser) {
+    if (user) {
         deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
     }
     const punishPoolStr = localStorage.getItem('punish_pool_' + currentMode + '_advanced');
@@ -254,6 +254,13 @@ function finishAdvancedGame() {
     disableJokerSelection();
     document.getElementById('joker-area').classList.add('hidden');
     document.getElementById('active-game-area').classList.add('hidden');
+    
+    // Live-Status aufräumen
+    const user = getCurrentUser();
+    if (user) {
+        deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
+    }
+    
     revealAdvancedNames();
     document.getElementById('end-screen-area').classList.remove('hidden');
 }
@@ -286,7 +293,7 @@ export async function handleAdvancedRankSelection(rank, buttonElement) {
     
     // Live Broadcast
     const user = getCurrentUser();
-    if(user && user.role !== 'admin' && !user.isTestUser) {
+    if (user) {
         try {
             setDoc(doc(db, "live_games", user.username), {
                 displayName: user.displayName || user.username,

@@ -117,7 +117,7 @@ async function handleRankSelectionVersus(rank, buttonElement) {
     
     // Live Broadcast
     const user = getCurrentUser();
-    if(user && user.role !== 'admin' && !user.isTestUser) {
+    if (user) {
         try {
             setDoc(doc(db, "live_games", user.username), {
                 displayName: user.displayName || user.username,
@@ -169,7 +169,7 @@ async function submitVersusPicks() {
         });
         
         // Remove live broadcast
-        if(user && user.role !== 'admin' && !user.isTestUser) {
+        if (user) {
             deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
         }
     } catch(e) {

@@ -66,7 +66,7 @@ export function initGame() {
     
     // Live Game Dokument aufräumen beim Neustart
     const user = getCurrentUser();
-    if(user && user.role !== 'admin' && !user.isTestUser) {
+    if (user) {
         deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
     }
     
@@ -138,9 +138,9 @@ export function showNextCharacter() {
         }
 
     } else {
-        // Alle 5 platziert → Live-Dokument löschen
+        // Wenn das Spiel zu Ende ist, Live-Status löschen
         const user = getCurrentUser();
-        if(user && user.role !== 'admin' && !user.isTestUser) {
+        if (user) {
             deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
         }
 
