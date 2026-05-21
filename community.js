@@ -110,6 +110,7 @@ export function initCommunity() {
     }
     
     const updateOnlineTracker = async (forceFullRefresh = false) => {
+        const user = getCurrentUser(); // Neu laden, damit Titeländerungen wirken
         const onlineList = document.getElementById('online-users-list');
         if(!onlineList) return;
         

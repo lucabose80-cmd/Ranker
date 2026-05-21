@@ -313,7 +313,7 @@ function showWaitingRoom(lobbyId) {
                     
                     document.getElementById('versus-room-status').innerHTML = `
                         Du bist fertig! Lade die Lobby neu, sobald die anderen fertig sind.<br><br>
-                        <button id="manual-refresh-versus-btn" class="action-btn" style="padding:10px 20px; font-size:1.1rem; background-color:#3b82f6;">Lobby aktualisieren</button>
+                        <button id="manual-refresh-versus-btn" class="rank-btn" style="height: auto; padding: 12px; font-size: 0.9rem;">Lobby aktualisieren</button>
                     `;
                     
                     setTimeout(() => {
@@ -352,7 +352,7 @@ function showWaitingRoom(lobbyId) {
             
             document.getElementById('versus-room-status').innerHTML = `
                 Spiel beendet! Siehe Historie.<br><br>
-                <button id="restart-versus-btn" class="action-btn" ${isReady ? 'disabled' : ''} style="${isReady ? 'opacity:0.5;' : ''}">
+                <button id="restart-versus-btn" class="rank-btn" ${isReady ? 'disabled' : ''} style="height: auto; padding: 12px; font-size: 0.9rem; ${isReady ? 'opacity:0.5;' : ''}">
                     ${isReady ? `Warte auf andere... (${readyCount}/${lobby.players.length})` : 'Noch eine Runde'}
                 </button>
             `;

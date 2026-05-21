@@ -4,9 +4,10 @@ import { collection, onSnapshot, query, where, Timestamp, getDocs, doc } from "h
 import { trackRead } from './tracker.js';
 import { currentMode } from './mode-state.js';
 
-let activeSpectatedUser = null;
 let currentLiveMode = null;
+let activeSpectatedUser = null;
 let spectatorUnsubscribe = null;
+let allLiveGamesCache = [];
 
 export async function initLiveSpectating(force = false) {
     if (!force && currentLiveMode === currentMode) {
@@ -50,10 +51,13 @@ async function fetchLiveGames(grid) {
         
         grid.innerHTML = '';
         let activeGames = 0;
+        allLiveGamesCache = [];
 
         snapshot.forEach(docSnap => {
             const data = docSnap.data();
             const username = docSnap.id;
+            
+            allLiveGamesCache.push({ username, data });
             
             activeGames++;
             const avatarImg = data.avatar ? `<img src="${data.avatar}" class="mini-avatar">` : '';
@@ -111,14 +115,14 @@ export function stopLiveSpectating() {
 function openSpectatorModal(username, data) {
     activeSpectatedUser = username;
     document.getElementById('spectator-modal').classList.remove('hidden');
-    updateSpectatorModalContent(data);
+    updateSpectatorModalContent(username, data);
     
     // Live-Update nur für diesen einen Spieler abonnieren
     if (spectatorUnsubscribe) spectatorUnsubscribe();
     spectatorUnsubscribe = onSnapshot(doc(db, "live_games", username), (docSnap) => {
         if (docSnap.exists() && activeSpectatedUser === username) {
             trackRead(1);
-            updateSpectatorModalContent(docSnap.data());
+            updateSpectatorModalContent(username, docSnap.data());
         } else {
             // Spiel ist wohl vorbei oder Dokument gelöscht
             document.getElementById('spectator-title').textContent = "Spiel beendet / Spieler offline";
@@ -139,11 +143,53 @@ export function closeSpectatorModal() {
     if (grid) fetchLiveGames(grid);
 }
 
-function updateSpectatorModalContent(data) {
+function updateSpectatorModalContent(username, data) {
     const isAdvanced = data.gameType === 'advanced';
+    const isVersus = data.gameType === 'versus';
     const maxSlots = isAdvanced ? 10 : 5;
     
-    document.getElementById('spectator-title').textContent = `LIVE: ${data.displayName} rankt gerade (${isAdvanced ? 'Advanced' : 'Klassisch'})`;
+    const typeLabel = isVersus ? 'Versus' : (isAdvanced ? 'Advanced' : 'Klassisch');
+    document.getElementById('spectator-title').textContent = `LIVE: ${data.displayName} rankt gerade (${typeLabel})`;
+    
+    const switcher = document.getElementById('spectator-switcher');
+    switcher.innerHTML = '';
+    
+    if (isVersus && allLiveGamesCache.length > 0) {
+        // Finde andere Spieler im SELBEN Versus-Match (wir erkennen es am gleichen Pool/Charakter-Set)
+        const myPoolHash = (data.pool || []).map(c => c.name).sort().join(',');
+        
+        const peers = allLiveGamesCache.filter(item => {
+            if (item.data.gameType !== 'versus') return false;
+            const theirHash = (item.data.pool || []).map(c => c.name).sort().join(',');
+            return theirHash === myPoolHash;
+        });
+        
+        if (peers.length > 1) {
+            switcher.innerHTML = peers.map(peer => {
+                const isMe = peer.username === username;
+                const border = isMe ? '2px solid #ffd700' : '1px solid #333';
+                const opacity = isMe ? '1' : '0.5';
+                const avatar = peer.data.avatar ? `<img src="${peer.data.avatar}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;">` : `<div style="width:30px;height:30px;border-radius:50%;background:#333;"></div>`;
+                return `
+                    <div class="spec-switcher-btn" data-user="${peer.username}" style="display:flex; align-items:center; gap:5px; padding:5px 10px; border:${border}; border-radius:8px; opacity:${opacity}; cursor:pointer; background:#1a1e29;">
+                        ${avatar} <span style="font-size:0.8rem;">${peer.data.displayName}</span>
+                    </div>
+                `;
+            }).join('');
+            
+            // Buttons klickbar machen, um Modal-Inhalt zu wechseln ohne es zu schließen
+            switcher.querySelectorAll('.spec-switcher-btn').forEach(btn => {
+                btn.onclick = () => {
+                    const nextUser = btn.getAttribute('data-user');
+                    const nextData = allLiveGamesCache.find(p => p.username === nextUser)?.data;
+                    if (nextData && nextUser !== username) {
+                        openSpectatorModal(nextUser, nextData);
+                    }
+                };
+            });
+        }
+    }
+
     const board = document.getElementById('spectator-board');
     board.innerHTML = '';
     
