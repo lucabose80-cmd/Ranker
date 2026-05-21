@@ -1,42 +1,63 @@
 // live.js
 import { db } from './firebase-config.js';
-import { collection, onSnapshot, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { collection, onSnapshot, query, where, Timestamp, getDocs, doc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { trackRead } from './tracker.js';
 import { currentMode } from './mode-state.js';
 
-let liveUnsubscribe = null;
 let activeSpectatedUser = null;
 let currentLiveMode = null;
+let spectatorUnsubscribe = null;
 
-export function initLiveSpectating(force = false) {
-    if (!force && liveUnsubscribe && currentLiveMode === currentMode) {
+export async function initLiveSpectating(force = false) {
+    if (!force && currentLiveMode === currentMode) {
         return;
     }
     currentLiveMode = currentMode;
-    if(liveUnsubscribe) liveUnsubscribe();
     
     const grid = document.getElementById('live-games-grid');
+    if (!grid) return;
     
-    // Nur Spiele der letzten 2 Minuten abrufen (= nur aktive Ranking-Phasen)
-    const twoMinutesAgo = new Date(Date.now() - 120000);
-    const qLive = query(collection(db, "live_games"), where("updatedAt", ">", Timestamp.fromDate(twoMinutesAgo)));
+    // Refresh-Button injizieren, falls noch nicht da
+    const liveSection = document.getElementById('live-content');
+    if (liveSection && !document.getElementById('manual-live-refresh-btn')) {
+        const headerArea = document.createElement('div');
+        headerArea.style.textAlign = 'center';
+        headerArea.style.marginBottom = '20px';
+        headerArea.innerHTML = `<button id="manual-live-refresh-btn" class="action-btn" style="padding:10px 20px; font-size:1.1rem; background-color:#3b82f6;">Live-Spiele suchen</button>`;
+        liveSection.insertBefore(headerArea, grid);
+        
+        document.getElementById('manual-live-refresh-btn').addEventListener('click', () => {
+            fetchLiveGames(grid);
+        });
+    }
+
+    // Beim ersten Öffnen einmal fetchen
+    await fetchLiveGames(grid);
+}
+
+async function fetchLiveGames(grid) {
+    const btn = document.getElementById('manual-live-refresh-btn');
+    if (btn) { btn.textContent = "Suche..."; btn.disabled = true; }
     
-    liveUnsubscribe = onSnapshot(qLive, (snapshot) => {
-        trackRead(snapshot.docChanges().filter(c => c.type !== 'removed').length);
-        if (!grid) return;
+    grid.innerHTML = '<div class="loader"></div><p style="text-align:center;">Lade aktive Spiele...</p>';
+    
+    try {
+        const twoMinutesAgo = new Date(Date.now() - 120000);
+        const qLive = query(collection(db, "live_games"), where("updatedAt", ">", Timestamp.fromDate(twoMinutesAgo)));
+        
+        const snapshot = await getDocs(qLive);
+        trackRead(snapshot.size);
+        
         grid.innerHTML = '';
-        const now = Date.now();
         let activeGames = 0;
 
         snapshot.forEach(docSnap => {
             const data = docSnap.data();
             const username = docSnap.id;
             
-            if (data.updatedAt && (now - data.updatedAt.toMillis()) < 120000) {
-                activeGames++;
-                const avatarImg = data.avatar ? `<img src="${data.avatar}" class="mini-avatar">` : '';
+            activeGames++;
+            const avatarImg = data.avatar ? `<img src="${data.avatar}" class="mini-avatar">` : '';
                 
-                // Mini-Board (platzierte Charaktere)
                 const isAdvanced = data.gameType === 'advanced';
                 const maxSlots = isAdvanced ? 10 : 5;
                 let slotsHtml = '';
@@ -47,7 +68,6 @@ export function initLiveSpectating(force = false) {
                     </div>`;
                 }
 
-                // Fortschritts-Anzeige
                 const placed = Object.values(data.placedCharacters).filter(Boolean).length;
                 const progressHtml = `<div class="live-progress-bar"><div class="live-progress-fill" style="width: ${(placed/maxSlots)*100}%"></div></div>`;
 
@@ -68,37 +88,55 @@ export function initLiveSpectating(force = false) {
                 });
 
                 grid.appendChild(card);
-
-                if (activeSpectatedUser === username) {
-                    updateSpectatorModalContent(data);
-                }
-            }
         });
 
         if (activeGames === 0) {
             grid.innerHTML = '<p class="prompt-text" style="grid-column: 1/-1;">Aktuell rankt niemand live.</p>';
         }
-    });
+    } catch (e) {
+        grid.innerHTML = '<p class="prompt-text" style="grid-column: 1/-1; color:red;">Fehler beim Laden.</p>';
+    } finally {
+        if (btn) { btn.textContent = "Live-Spiele suchen"; btn.disabled = false; }
+    }
 }
 
-// Beendet den Echtzeit-Sync für Live-Spiele, um Reads im Hintergrund zu sparen
 export function stopLiveSpectating() {
-    if (liveUnsubscribe) {
-        liveUnsubscribe();
-        liveUnsubscribe = null;
-        currentLiveMode = null;
+    if (spectatorUnsubscribe) {
+        spectatorUnsubscribe();
+        spectatorUnsubscribe = null;
     }
+    currentLiveMode = null;
 }
 
 function openSpectatorModal(username, data) {
     activeSpectatedUser = username;
     document.getElementById('spectator-modal').classList.remove('hidden');
     updateSpectatorModalContent(data);
+    
+    // Live-Update nur für diesen einen Spieler abonnieren
+    if (spectatorUnsubscribe) spectatorUnsubscribe();
+    spectatorUnsubscribe = onSnapshot(doc(db, "live_games", username), (docSnap) => {
+        if (docSnap.exists() && activeSpectatedUser === username) {
+            trackRead(1);
+            updateSpectatorModalContent(docSnap.data());
+        } else {
+            // Spiel ist wohl vorbei oder Dokument gelöscht
+            document.getElementById('spectator-title').textContent = "Spiel beendet / Spieler offline";
+        }
+    });
 }
 
 export function closeSpectatorModal() {
     activeSpectatedUser = null;
+    if (spectatorUnsubscribe) {
+        spectatorUnsubscribe();
+        spectatorUnsubscribe = null;
+    }
     document.getElementById('spectator-modal').classList.add('hidden');
+    
+    // Refresh Grid wenn man das Modal schließt
+    const grid = document.getElementById('live-games-grid');
+    if (grid) fetchLiveGames(grid);
 }
 
 function updateSpectatorModalContent(data) {
