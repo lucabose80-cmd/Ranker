@@ -218,6 +218,7 @@ function showWaitingRoom(lobbyId) {
         }
         
         const lobby = docSnap.data();
+        lobby.id = docSnap.id;
         const user = getCurrentUser();
         
         const isHost = lobby.hostUid === user.uid;

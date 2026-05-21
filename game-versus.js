@@ -1,7 +1,7 @@
 import { activeCharacterDatabase } from './theme.js';
 import { preloadImages } from './utils.js';
 import { getCurrentUser } from './auth.js';
-import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { doc, getDoc, updateDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { db } from './firebase-config.js';
 
 let activePool = []; 
@@ -129,26 +129,24 @@ async function submitVersusPicks() {
     const lobbyRef = doc(db, "versus_lobbies", currentLobby.id);
     
     try {
-        const snap = await getDoc(lobbyRef);
-        if (snap.exists()) {
+        await runTransaction(db, async (transaction) => {
+            const snap = await transaction.get(lobbyRef);
+            if (!snap.exists()) {
+                throw new Error("Lobby existiert nicht mehr.");
+            }
             const data = snap.data();
             const pIndex = data.players.findIndex(p => p.uid === user.uid);
+            
             if (pIndex !== -1) {
                 data.players[pIndex].picks = picksArray;
                 data.players[pIndex].status = 'finished';
-                
-                await updateDoc(lobbyRef, { players: data.players });
+                transaction.update(lobbyRef, { players: data.players });
             } else {
-                alert("Du bist nicht mehr in der Lobby.");
-                document.getElementById('versus-room-status').innerHTML = "Fehler: Nicht mehr in der Lobby.";
+                throw new Error("Du bist nicht mehr in der Lobby.");
             }
-        } else {
-            alert("Die Lobby existiert nicht mehr.");
-            document.getElementById('versus-room-status').innerHTML = "Fehler: Lobby existiert nicht mehr.";
-        }
+        });
     } catch(e) {
         console.error("Versus Submit Error", e);
-        alert("Fehler beim Senden: " + e.message);
         document.getElementById('versus-room-status').innerHTML = "Fehler beim Senden: " + e.message;
     }
 }
