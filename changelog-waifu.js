@@ -13,7 +13,7 @@ export const patchNotesWaifu = [
         ]
     },
     {
-        version: "v3.0.0",
+        version: "v3.0",
         title: "Multiplayer Update: Versus Modus",
         isHotfix: false,
         changes: [
