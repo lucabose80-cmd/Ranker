@@ -89,9 +89,10 @@ export function initStarWarsdle() {
 function checkGlow() {
     const seed = getDailySeed();
     const saved = localStorage.getItem('starwarsdle_date');
+    const won = localStorage.getItem('starwarsdle_won');
     const glow = document.getElementById('starwarsdle-glow');
     if(glow) {
-        if(saved !== seed) {
+        if(saved !== seed || won !== 'true') {
             glow.style.display = 'block';
         } else {
             glow.style.display = 'none';
@@ -171,6 +172,8 @@ function renderGuess(char, isLoad) {
     let speciesState = char.species === dailyCharacter.species ? "exact" : "none";
     // Faction
     let factionState = compareArrays(char.faction, dailyCharacter.faction);
+    // Planet
+    let planetState = char.planet === dailyCharacter.planet ? "exact" : "none";
     // Era
     let eraState = compareArrays(char.era, dailyCharacter.era);
     // Force
@@ -183,6 +186,7 @@ function renderGuess(char, isLoad) {
         </td>
         <td style="padding: 10px;"><div style="padding: 5px; border-radius: 4px; ${getStyle(genderState)}">${char.gender}</div></td>
         <td style="padding: 10px;"><div style="padding: 5px; border-radius: 4px; ${getStyle(speciesState)}">${char.species}</div></td>
+        <td style="padding: 10px;"><div style="padding: 5px; border-radius: 4px; ${getStyle(planetState)}">${char.planet}</div></td>
         <td style="padding: 10px;"><div style="padding: 5px; border-radius: 4px; ${getStyle(factionState)}">${char.faction.join(', ')}</div></td>
         <td style="padding: 10px;"><div style="padding: 5px; border-radius: 4px; ${getStyle(eraState)}">${char.era.join(', ')}</div></td>
         <td style="padding: 10px;"><div style="padding: 5px; border-radius: 4px; ${getStyle(forceState)}">${char.force ? 'Ja' : 'Nein'}</div></td>

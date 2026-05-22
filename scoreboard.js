@@ -3,7 +3,7 @@ import { currentMode } from './mode-state.js';
 import { getResets } from './resets.js';
 import { getCachedHistory } from './history.js';
 import { db } from './firebase-config.js';
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { trackRead } from './tracker.js';
 
 let isFilterListenerAttached = false;
@@ -25,7 +25,7 @@ function renderScoreboardHTML(sortedCharacters, container) {
                 <img src="${char.img}" alt="${char.name}">
                 <span>${char.name}</span>
             </div>
-            <div class="score-points">${char.score} <span>PKT</span></div>
+            <div class="score-points">${char.score} <span>${char.suffix || 'PKT'}</span></div>
         `;
         container.appendChild(card);
     });
@@ -82,6 +82,69 @@ export async function renderScoreboard() {
             isFilterListenerAttached = true;
         }
 
+        if (selectedType.startsWith('starwarsdle')) {
+            const isDaily = selectedType === 'starwarsdle';
+            
+            const today = new Date();
+            const offset = today.getTimezoneOffset() * 60000;
+            const seed = (new Date(today - offset)).toISOString().slice(0, 10);
+            
+            let q;
+            if (isDaily) {
+                q = query(collection(db, "starwarsdle_scores"), where("date", "==", seed));
+            } else {
+                q = collection(db, "starwarsdle_scores");
+            }
+            
+            trackRead('Scoreboard.StarWarsdle');
+            const snap = await getDocs(q);
+            
+            let results = [];
+            const { userResets } = await getResets();
+            const avatarField = currentMode === 'starwars' ? 'avatarStarWars' : 'avatarWaifu';
+            
+            if (isDaily) {
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    let img = 'https://i.imgur.com/kS5x87t.png';
+                    for(let k in userResets) {
+                        if(userResets[k].displayName === d.username) {
+                            img = userResets[k][avatarField] || img;
+                            break;
+                        }
+                    }
+                    results.push({ name: d.username, score: d.attempts, img: img, suffix: 'VERSUCHE' });
+                });
+                results.sort((a, b) => a.score - b.score);
+            } else {
+                let winsMap = {};
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    winsMap[d.username] = (winsMap[d.username] || 0) + 1;
+                });
+                
+                for(let uname in winsMap) {
+                    let img = 'https://i.imgur.com/kS5x87t.png';
+                    for(let k in userResets) {
+                        if(userResets[k].displayName === uname) {
+                            img = userResets[k][avatarField] || img;
+                            break;
+                        }
+                    }
+                    results.push({ name: uname, score: winsMap[uname], img: img, suffix: 'WINS' });
+                }
+                results.sort((a, b) => b.score - a.score);
+            }
+
+            if (selectedUser !== 'global') {
+                const filtered = results.filter(p => p.name === (userResets[selectedUser]?.displayName || selectedUser));
+                renderScoreboardHTML(filtered, container);
+            } else {
+                renderScoreboardHTML(results, container);
+            }
+            return;
+        }
+
         if (selectedType.startsWith('versus')) {
             // Render Versus Scoreboard (Wins)
             const suffix = selectedType === 'versus_klon' ? '_klon' : '';
@@ -93,7 +156,8 @@ export async function renderScoreboard() {
                 .map(uname => ({
                     name: userResets[uname].displayName || uname,
                     score: userResets[uname][winsField] || 0,
-                    img: userResets[uname][avatarField] || 'https://i.imgur.com/kS5x87t.png'
+                    img: userResets[uname][avatarField] || 'https://i.imgur.com/kS5x87t.png',
+                    suffix: 'WINS'
                 }))
                 .filter(p => p.score > 0)
                 .sort((a, b) => b.score - a.score);

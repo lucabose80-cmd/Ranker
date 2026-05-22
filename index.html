@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="de">
 <head>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -204,6 +204,8 @@
                             <option value="advanced">Advanced (10er)</option>
                             <option value="versus">Versus (Wins)</option>
                             <option value="versus_klon">Versus Klon (Wins)</option>
+                            <option value="starwarsdle">StarWarsdle (Daily)</option>
+                            <option value="starwarsdle_alltime">StarWarsdle (All-Time Wins)</option>
                         </select>
                     </div>
                     <div id="scoreboard-list" class="history-list"></div>
@@ -215,7 +217,16 @@
                 <p class="prompt-text" style="text-align: center;">Errate den täglichen Charakter!</p>
                 
                 <div style="max-width: 800px; margin: 0 auto;">
-                    <div style="display: flex; gap: 10px; margin-bottom: 20px; position: relative;">
+                    
+                    
+                    <div id="starwarsdle-win" style="display: none; text-align: center; margin-bottom: 20px; padding: 20px; background: rgba(46, 213, 115, 0.1); border: 2px solid #2ed573; border-radius: 6px;">
+                        <h2 style="color: #2ed573;">GELÖST!</h2>
+                        <img id="starwarsdle-win-img" src="" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%; border: 3px solid #2ed573; margin: 10px 0;">
+                        <h3 id="starwarsdle-win-name" style="margin: 10px 0;"></h3>
+                        <p>Du hast <span id="starwarsdle-win-attempts" style="font-weight: bold; color: #ffd700;"></span> Versuche gebraucht!</p>
+                        <p style="font-size: 0.9rem; color: #aaa;">Komm morgen für den nächsten Charakter wieder.</p>
+                    </div>
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; position: relative;">
                         <input type="text" id="starwarsdle-input" placeholder="Charaktername eingeben..." autocomplete="off" style="margin-bottom: 0;">
                         <button id="starwarsdle-guess-btn" class="rank-btn" style="width: auto; padding: 0 20px;">Raten</button>
                         <div id="starwarsdle-autocomplete" style="position: absolute; top: 100%; left: 0; right: 100px; background: #1a1e29; border: 1px solid #333; max-height: 200px; overflow-y: auto; z-index: 100; display: none; border-radius: 6px;"></div>
@@ -235,6 +246,7 @@
                                     <th style="padding: 10px;">Charakter</th>
                                     <th style="padding: 10px;">Geschlecht</th>
                                     <th style="padding: 10px;">Spezies</th>
+                                    <th style="padding: 10px;">Heimatplanet</th>
                                     <th style="padding: 10px;">Fraktion</th>
                                     <th style="padding: 10px;">Epoche</th>
                                     <th style="padding: 10px;">Macht</th>
@@ -243,16 +255,7 @@
                             <tbody id="starwarsdle-guesses">
                             </tbody>
                         </table>
-                    </div>
-                    
-                    <div id="starwarsdle-win" style="display: none; text-align: center; margin-top: 30px; padding: 20px; background: rgba(46, 213, 115, 0.1); border: 2px solid #2ed573; border-radius: 6px;">
-                        <h2 style="color: #2ed573;">GELÖST!</h2>
-                        <img id="starwarsdle-win-img" src="" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%; border: 3px solid #2ed573; margin: 10px 0;">
-                        <h3 id="starwarsdle-win-name" style="margin: 10px 0;"></h3>
-                        <p>Du hast <span id="starwarsdle-win-attempts" style="font-weight: bold; color: #ffd700;"></span> Versuche gebraucht!</p>
-                        <p style="font-size: 0.9rem; color: #aaa;">Komm morgen für den nächsten Charakter wieder.</p>
-                    </div>
-                </div>
+                    </div></div>
             </div>
             
             <div id="versus-content" class="tab-content app-container hidden">
@@ -430,6 +433,8 @@
     <script type="module" src="main.js?v=4"></script>
 </body>
 </html>
+
+
 
 
 
