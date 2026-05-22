@@ -10,6 +10,7 @@ const TAG_LABELS = {
     separatist:      { label: '☠️ Separatisten',         color: '#7c3aed' },
     rebell:          { label: '✊ Rebellen',              color: '#16a34a' },
     mandalorian:     { label: '🪬 Mandalorianer',        color: '#b45309' },
+    death_watch:     { label: '⚔️ Death Watch',          color: '#1e293b' },
     schmuggel:       { label: '🃏 Schmuggler',            color: '#ca8a04' },
     kopfgeldjäger:   { label: '🎯 Kopfgeldjäger',         color: '#f59e0b' },
     unterwelt:       { label: '💰 Unterwelt',             color: '#8b5cf6' },
@@ -114,7 +115,7 @@ function _renderByTags(grid, user, discoveredList) {
     const tagOrder = [
         'jedi', 'meister', 'padawan', 'sith', 'inquisitor', 'grau', 'nachtschwester', 'dathomir',
         'klon', '501st', '212th', '104th', 'coruscant_guard', 'bad_batch', 'commander', 'captain', 'arc', 'soldat',
-        'mandalorian', 'kopfgeldjäger', 'unterwelt', 'hutte', 'pirat', 'schmuggel',
+        'mandalorian', 'death_watch', 'kopfgeldjäger', 'unterwelt', 'hutte', 'pirat', 'schmuggel',
         'imperium', 'erste_ordnung', 'separatist', 'rebell', 'widerstand', 'senat',
         'droide', 'monster', 'redet_nicht', 'videospiel', 'heiss', 'anime', 'sonstige'
     ];
