@@ -21,6 +21,14 @@ export async function loginOrRegister(usernameInput, password) {
     
     try {
         const safeName = usernameInput.trim();
+
+        if (safeName.toLowerCase() !== 'admin') {
+            const maintSnap = await getDoc(doc(db, "config", "maintenance"));
+            if (maintSnap.exists() && maintSnap.data().active) {
+                return { success: false, message: 'Wartungsmodus: Wir patchen gerade! Bitte versuche es später noch einmal.' };
+            }
+        }
+        
         const q = query(collection(db, "users"), where("username", "==", safeName.toLowerCase()));
         const snap = await getDocs(q);
         trackRead(snap.size);

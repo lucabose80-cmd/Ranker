@@ -82,6 +82,31 @@ export async function initAdminPanel() {
             }
         });
         
+        const maintBtn = document.getElementById('admin-maintenance-toggle');
+        if (maintBtn) {
+            getDoc(doc(db, "config", "maintenance")).then(docSnap => {
+                const isMaint = docSnap.exists() && docSnap.data().active;
+                maintBtn.textContent = isMaint ? 'Wartungsmodus deaktivieren' : 'Wartungsmodus aktivieren';
+                maintBtn.style.color = isMaint ? '#2ed573' : '#ff9f43';
+                maintBtn.style.borderColor = isMaint ? '#2ed573' : '#ff9f43';
+            });
+            
+            maintBtn.addEventListener('click', async () => {
+                try {
+                    const docSnap = await getDoc(doc(db, "config", "maintenance"));
+                    const currentStatus = docSnap.exists() && docSnap.data().active;
+                    await setDoc(doc(db, "config", "maintenance"), { active: !currentStatus });
+                    
+                    maintBtn.textContent = !currentStatus ? 'Wartungsmodus deaktivieren' : 'Wartungsmodus aktivieren';
+                    maintBtn.style.color = !currentStatus ? '#2ed573' : '#ff9f43';
+                    maintBtn.style.borderColor = !currentStatus ? '#2ed573' : '#ff9f43';
+                    alert(!currentStatus ? 'Wartungsmodus AKTIV. Spieler können sich nicht mehr einloggen.' : 'Wartungsmodus INAKTIV. Login wieder freigegeben.');
+                } catch (e) {
+                    console.error("Fehler beim Umschalten des Wartungsmodus", e);
+                }
+            });
+        }
+        
         document.getElementById('admin-change-password-btn').addEventListener('click', async () => {
             const newPass = document.getElementById('admin-new-password').value;
             if (!newPass || newPass.trim() === '') {
@@ -369,7 +394,6 @@ function initChatModeration() {
                 const id = e.target.closest('[data-id]').dataset.id || e.target.dataset.id;
                 await deleteDoc(doc(db, "chat", id));
             });
-        });
     }, (err) => {
         console.error("Chat-Listener Fehler:", err);
         chatContainer.innerHTML = '<p class="prompt-text" style="color:#ff4757; padding:15px;">Fehler beim Laden des Chats.</p>';
