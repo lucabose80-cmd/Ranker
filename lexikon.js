@@ -37,7 +37,7 @@ const TAG_LABELS = {
     soldat:          { label: '🪖 Soldat',                color: '#94a3b8' },
     hutte:           { label: '🐌 Hutten',                color: '#65a30d' },
     pirat:           { label: '🏴‍☠️ Space Piraten',         color: '#b45309' },
-    heiss:           { label: '🔥 Heiße Waifus',         color: '#f43f5e' },
+    heiss:           { label: '🔥 Hot',         color: '#f43f5e' },
     anime:           { label: '🌸 Anime',                 color: '#f472b6' },
     sonstige:        { label: '🌌 Sonstige',              color: '#555' }
 };
@@ -84,6 +84,8 @@ function _renderAll(grid, user, discoveredList) {
                     ${isNew ? '<b style="color:#ffd700; margin-left:5px;" title="Brandneu!">✨</b>' : ''}
                 </span>
             `;
+            card.style.cursor = 'pointer';
+            card.onclick = () => openTagSuggestionModal(char);
         } else {
             card.className = `lexikon-card locked`;
             card.style.opacity = '0.5';
@@ -153,6 +155,8 @@ function _renderByTags(grid, user, discoveredList) {
                         ${isNew ? '<b style="color:#ffd700; margin-left:5px;" title="Brandneu!">✨</b>' : ''}
                     </span>
                 `;
+                card.style.cursor = 'pointer';
+                card.onclick = () => openTagSuggestionModal(char);
             } else {
                 card.className = `lexikon-card locked`;
                 card.style.opacity = '0.5';
@@ -176,4 +180,47 @@ export function initLexikonTabs() {
             renderLexikon();
         });
     });
+
+    // Tag Suggestion Modal Listeners
+    const modal = document.getElementById('tag-suggestion-modal');
+    if (modal) {
+        document.getElementById('close-tag-suggestion-btn').onclick = () => {
+            modal.classList.add('hidden');
+        };
+        document.getElementById('submit-tag-suggestion-btn').onclick = async () => {
+            const input = document.getElementById('tag-suggestion-input').value;
+            const charName = document.getElementById('tag-suggestion-name').textContent;
+            if (!input.trim()) return alert('Bitte Text eingeben!');
+            
+            try {
+                const { db } = await import('./firebase-config.js');
+                const { collection, addDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+                const user = getCurrentUser();
+                await addDoc(collection(db, 'suggestions'), {
+                    text: `Tag Vorschlag für [${charName}]: ${input}`,
+                    type: 'tag_suggestion',
+                    targetMode: 'starwars',
+                    author: user ? user.username : 'Anonym',
+                    authorDisplay: user ? (user.displayName || user.username) : 'Anonym',
+                    timestamp: serverTimestamp(),
+                    votes: 1,
+                    votedBy: user ? [user.username] : []
+                });
+                alert('Vorschlag gesendet! Danke!');
+                modal.classList.add('hidden');
+            } catch (e) {
+                console.error(e);
+                alert('Fehler beim Senden.');
+            }
+        };
+    }
+}
+
+function openTagSuggestionModal(char) {
+    const modal = document.getElementById('tag-suggestion-modal');
+    if (!modal) return;
+    document.getElementById('tag-suggestion-img').src = char.img;
+    document.getElementById('tag-suggestion-name').textContent = char.name;
+    document.getElementById('tag-suggestion-input').value = '';
+    modal.classList.remove('hidden');
 }

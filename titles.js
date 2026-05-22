@@ -9,7 +9,7 @@ export const TITLES = {
         { id: 'sw_6', name: 'Machtgeist', required: 500 },
         { id: 'sw_secret_1', name: 'Der Auserwählte', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Anakin Skywalker', 'Darth Vader'] } },
         { id: 'sw_secret_2', name: 'Zwillingssonnen', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Luke Skywalker', 'Leia Organa'] } },
-        { id: 'sw_secret_3', name: 'Weeb', required: -1, secret: true, condition: { type: 'has_discovered_characters', chars: ['Fino Bloodstone', 'Monkey D. Ruffy'] } },
+        { id: 'sw_secret_3', name: 'Weeb', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Fino Bloodstone', 'Monkey D. Ruffy'] } },
         { id: 'sw_secret_4', name: 'Gooner', required: -1, secret: true, condition: { type: 'has_tag_in_round', tag: 'heiss', count: 5 } }
     ],
     waifu: [
