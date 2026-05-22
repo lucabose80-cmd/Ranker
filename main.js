@@ -100,7 +100,7 @@ function setupGameUI(user) {
     document.getElementById('logout-btn').addEventListener('click', logout);
 
     // Die Tabs des Spiels (ohne Community, ohne Profil)
-    const tabs = ['game-main-content', 'live-content', 'history-content', 'scoreboard-content', 'lexikon-content', 'suggestions-content', 'versus-content'];
+    const tabs = ['game-main-content', 'live-content', 'history-content', 'scoreboard-content', 'lexikon-content', 'suggestions-content', 'versus-content', 'starwarsdle-content'];
     
     // Tab-Navigation mit erzwungenem Live-Reload bei JEDEM Klick
     document.querySelectorAll('.nav-link').forEach(link => {
@@ -132,6 +132,7 @@ function setupGameUI(user) {
             if (target === 'lexikon-content') renderLexikon();
             if (target === 'live-content') initLiveSpectating();
             if (target === 'versus-content') initVersus();
+    initStarWarsdle();
         });
     });
 
