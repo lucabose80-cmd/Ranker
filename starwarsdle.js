@@ -2,81 +2,6 @@ import { starWarsCharacters } from "./data-starwars.js";
 import { db, auth } from "./firebase-config.js";
 import { collection, addDoc, Timestamp, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-// === 1. DATEN-ANREICHERUNG (ALGORITHMISCH) ===
-function enrichCharacters() {
-    starWarsCharacters.forEach(c => {
-        // Gender
-        let gender = "Männlich";
-        if(c.tags.includes("heiss") || ["Ahsoka Tano", "Leia Organa", "Shaak Ti", "Luminara Unduli", "Aayla Secura", "Bo-Katan Kryze", "Rey Skywalker", "Captain Phasma", "Asajj Ventress", "Merrin", "Morgan Elsbeth", "Mother Talzin", "Duchess Satine", "Ursa Wren", "Koska Reeves", "Jyn Erso", "Mon Mothma", "Hera Syndulla", "Sabine Wren", "Rose Tico", "Vice Admiral Holdo", "Maz Kanata", "Padme Amidala", "Riyo Chuchi", "Cere Junda", "Barriss Offee", "Katooni", "Second Sister", "Third Sister", "Seventh Sister", "Fennec Shand", "Zam Wesell", "Aurra Sing", "Qi'ra", "Oola", "Omega"].includes(c.name)) {
-            gender = "Weiblich";
-        }
-        if(c.tags.includes("droide")) gender = "Droide";
-        if(c.tags.includes("monster") || ["Grogu", "Rancor", "Wampa", "Sarlacc", "Nexu", "Acklay", "Reek", "Rathtar", "Zillo Beast", "Mudhorn"].includes(c.name)) gender = "Unbekannt";
-
-        // Force
-        let force = c.tags.includes("jedi") || ["Grogu", "Emperor Palpatine"].includes(c.name) || c.tags.includes("sith") || c.tags.includes("inquisitor") || c.tags.includes("nachtschwester") || c.tags.includes("grau");
-
-        // Species
-        let species = "Mensch";
-        if(c.tags.includes("klon")) species = "Mensch (Klon)";
-        if(c.tags.includes("droide")) species = "Droide";
-        if(["Ahsoka Tano", "Shaak Ti"].includes(c.name)) species = "Togruta";
-        if(["Yoda", "Grogu", "Yaddle"].includes(c.name)) species = "Yodas Spezies";
-        if(["Darth Maul", "Savage Opress"].includes(c.name)) species = "Zabrak";
-        if(["Chewbacca", "Gungi"].includes(c.name)) species = "Wookiee";
-        if(["Jabba the Hutt", "Rotta the Hutt", "Ziro the Hutt", "Gardulla the Hutt", "The Twins"].includes(c.name) || c.tags.includes("hutte")) species = "Hutt";
-        if(["Plo Koon"].includes(c.name)) species = "Kel Dor";
-        if(["Kit Fisto", "Nahdar Vebb"].includes(c.name)) species = "Nautolaner";
-        if(["Ki-Adi-Mundi"].includes(c.name)) species = "Cereaner";
-        if(["Aayla Secura", "Bib Fortuna", "Hera Syndulla", "Oola"].includes(c.name)) species = "Twi'lek";
-        if(["Asajj Ventress", "Merrin"].includes(c.name)) species = "Dathomirianer";
-        if(c.tags.includes("monster")) species = "Monster";
-        if(["Admiral Ackbar"].includes(c.name)) species = "Mon Calamari";
-        if(["Cad Bane"].includes(c.name)) species = "Duros";
-
-        // Faction
-        let faction = [];
-        if(c.tags.includes("jedi")) faction.push("Jedi-Orden");
-        if(c.tags.includes("sith")) faction.push("Sith");
-        if(c.tags.includes("imperium") || c.tags.includes("inquisitor")) faction.push("Imperium");
-        if(c.tags.includes("rebell") || c.name === "Ahsoka Tano") faction.push("Rebellion");
-        if(c.tags.includes("klon") && !c.tags.includes("imperium")) faction.push("Republik");
-        if(c.tags.includes("separatist")) faction.push("Separatisten");
-        if(c.tags.includes("mandalorian")) faction.push("Mandalorianer");
-        if(c.tags.includes("kopfgeldjäger")) faction.push("Kopfgeldjäger");
-        if(c.tags.includes("erste_ordnung")) faction.push("Erste Ordnung");
-        if(c.tags.includes("widerstand")) faction.push("Widerstand");
-        if(c.tags.includes("unterwelt") || c.tags.includes("schmuggel") || c.tags.includes("pirat") || c.tags.includes("hutte")) faction.push("Unterwelt");
-        if(c.tags.includes("nachtschwester") || c.name === "Savage Opress" || c.name === "Darth Maul") faction.push("Nachtschwestern/Dathomir");
-        if(c.tags.includes("senat")) faction.push("Senat");
-        if(faction.length === 0) faction.push("Neutral");
-
-        // Era
-        let era = [];
-        let p = ["klon", "separatist", "jedi"];
-        if(p.some(t => c.tags.includes(t)) || ["Anakin Skywalker", "Obi-Wan Kenobi", "Padme Amidala", "Darth Maul", "Emperor Palpatine"].includes(c.name)) {
-            era.push("Prequels/Clone Wars");
-        }
-        if(c.tags.includes("erste_ordnung") || c.tags.includes("widerstand") || ["Rey Skywalker", "Kylo Ren", "Luke Skywalker", "Leia Organa", "Han Solo", "Chewbacca"].includes(c.name)) {
-            era.push("Sequels");
-        }
-        if(["Luke Skywalker", "Darth Vader", "Han Solo", "Leia Organa", "Emperor Palpatine", "Boba Fett", "Lando Calrissian"].includes(c.name) || c.tags.includes("imperium") || c.tags.includes("rebell")) {
-            era.push("Originals");
-        }
-        if(c.tags.includes("mandalorian") || ["Grogu", "Moff Gideon", "Ahsoka Tano", "Boba Fett", "Luke Skywalker"].includes(c.name)) {
-            era.push("Mandalorian/Ahsoka");
-        }
-        if(era.length === 0) era.push("Unbekannt");
-
-        // Set enrichment
-        c.gender = gender;
-        c.species = species;
-        c.faction = faction;
-        c.era = era;
-        c.force = force;
-    });
-}
-
 // === 2. DAILY LOGIC ===
 let dailyCharacter = null;
 let currentGuesses = [];
@@ -103,7 +28,7 @@ function selectDailyCharacter() {
 
 // === 3. UI LOGIC ===
 export function initStarWarsdle() {
-    enrichCharacters();
+    
     dailyCharacter = selectDailyCharacter();
     
     const input = document.getElementById('starwarsdle-input');
