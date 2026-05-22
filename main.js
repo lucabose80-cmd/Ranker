@@ -13,6 +13,7 @@ import { renderLexikon, initLexikonTabs } from './lexikon.js';
 import { initProfile, renderAvatarSelection, updateTopbarAvatarElement, applyColorTheme, refreshProfileContent } from './profile.js';
 import { initCommunity, stopCommunity } from './community.js';
 import { initVersus, stopVersus } from './versus.js';
+import { initStarWarsdle } from './starwarsdle.js';
 import { initLiveSpectating, closeSpectatorModal, stopLiveSpectating } from './live.js';
 import { currentGameType, setCurrentGameType, currentMode, currentGameCategory, setCurrentGameCategory } from './mode-state.js';
 import { initTrackerUI } from './tracker.js';
@@ -132,9 +133,10 @@ function setupGameUI(user) {
             if (target === 'lexikon-content') renderLexikon();
             if (target === 'live-content') initLiveSpectating();
             if (target === 'versus-content') initVersus();
-    initStarWarsdle();
         });
     });
+
+    initStarWarsdle();
 
     // Modus-Selector Buttons konfigurieren
     const mClassicBtn = document.getElementById('mode-classic-btn');
