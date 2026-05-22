@@ -1,5 +1,16 @@
 export const patchNotesWaifu = [
     {
+        version: "v4.4.1",
+        title: "System & UI Optimierungen",
+        isHotfix: true,
+        changes: [
+            "Bugfix: Fehler behoben, bei dem gesperrte Titel im Community-Bereich fälschlicherweise als freigeschaltet angezeigt wurden.",
+            "Bugfix: Die Abklingzeit für gezogene Charaktere wurde auf echte 5 Runden (25 Ziehungen) ausgeweitet.",
+            "UI-Update: Admin-Panel Layout-Fehler behoben und für mobile Geräte responsiv gemacht.",
+            "UI-Update: PC-Optimierungs-Info und Registrierungs-Hinweise zum Login-Bildschirm hinzugefügt."
+        ]
+    },
+    {
         version: "v4.4",
         title: "Das Galaktische Farben Update",
         isHotfix: false,
@@ -16,6 +27,7 @@ export const patchNotesWaifu = [
             "Globale Erweiterung: Die Engine für dynamische, kombinierte Charakter-Titel (z.B. Verbündete oder Erzfeinde im selben Spiel) wurde erfolgreich in das Spiel implementiert."
         ]
     },
+
     {
         version: "v4.2",
         title: "System & Balancing Update",

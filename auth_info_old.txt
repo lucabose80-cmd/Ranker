@@ -1,5 +1,0 @@
-            <div class="action-buttons auth-buttons">
-                <button id="login-btn" class="rank-btn auth-btn">Los geht's</button>
-            </div>
-        </div>
-    </div>

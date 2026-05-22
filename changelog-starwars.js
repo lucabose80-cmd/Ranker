@@ -1,5 +1,17 @@
 export const patchNotesStarWars = [
     {
+        version: "v4.4.1",
+        title: "System & UI Optimierungen",
+        isHotfix: true,
+        changes: [
+            "Bugfix: Fehler behoben, bei dem gesperrte Titel im Community-Bereich fälschlicherweise als freigeschaltet angezeigt wurden.",
+            "Bugfix: Die Abklingzeit für gezogene Charaktere (besonders im Klon-Modus) wurde auf echte 5 Runden (25 Ziehungen) ausgeweitet.",
+            "Bugfix: Der Klon-Modus nutzt nun strikt seine eigene Ziehungshistorie.",
+            "UI-Update: Admin-Panel Layout-Fehler behoben und für mobile Geräte responsiv gemacht.",
+            "UI-Update: PC-Optimierungs-Info und Registrierungs-Hinweise zum Login-Bildschirm hinzugefügt."
+        ]
+    },
+    {
         version: "v4.4",
         title: "Das Galaktische Farben Update",
         isHotfix: false,
@@ -18,6 +30,7 @@ export const patchNotesStarWars = [
             "Rätselhaft: Wie man diese Titel freischaltet, bleibt streng geheim. Ein kleiner Tipp: Manche berühmten Kombinationen von Verbündeten oder Erzfeinden im selben Spiel könnten etwas auslösen!"
         ]
     },
+
     {
         version: "v4.2",
         title: "System & Balancing Update",
