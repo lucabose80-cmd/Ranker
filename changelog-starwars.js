@@ -1,4 +1,17 @@
-export const patchNotesStarWars = [
+﻿export const patchNotesStarWars = [
+    {
+        version: "v5.0",
+        title: "Das STARWARSDLE Update",
+        isHotfix: false,
+        changes: [
+            "Neuer Spielmodus: STARWARSDLE! Errate täglich einen galaktischen Charakter anhand spezifischer Hinweise (Geschlecht, Spezies, Planet, Fraktion, Epoche, Macht).",
+            "Tägliche Herausforderung: Jeden Tag um Mitternacht gibt es einen neuen Charakter. Schaffst du es, die Identität vor allen anderen zu lüften?",
+            "Visuelle Hinweise: Wie beim klassischen Wordle färben sich die Kästchen grün (exakt), gelb (teilweise) oder rot (falsch), um dir auf die Sprünge zu helfen.",
+            "Tipps & Autocomplete: Nach 5 Fehlversuchen werden Charakter-Bilder als Tipp freigeschaltet. Zudem zeigt dir eine intelligente Suchleiste direkt an, welche Charaktere existieren.",
+            "Neues Datenbank-Attribut 'Heimatplanet': Alle 191 Charaktere wurden um ihren Heimatplaneten (z.B. Tatooine, Kamino, Geonosis) erweitert.",
+            "Scoreboard & Historie: Das Scoreboard wurde erweitert! Du kannst nun die All-Time-Wins sowie die schnellsten Rate-Versuche für das tägliche StarWarsdle einsehen."
+        ]
+    },
     {
         version: "v4.4.1",
         title: "System & UI Optimierungen",
