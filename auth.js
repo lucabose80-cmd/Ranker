@@ -24,20 +24,14 @@ export function restoreUserStorage(user) {
     const today = new Date();
     const offset = today.getTimezoneOffset() * 60000;
     const todaySeed = (new Date(today - offset)).toISOString().slice(0, 10);
-    
-    // Restore Starwarsdle daily state if date matches today
     const localDate = localStorage.getItem('starwarsdle_date');
-    if (user.starwarsdleDate === todaySeed) {
+
+    // Do not restore StarWarsdle solved/guess state from the server.
+    // Only keep a fresh local daily state in the browser.
+    if (localDate !== todaySeed) {
         localStorage.setItem('starwarsdle_date', todaySeed);
-        localStorage.setItem('starwarsdle_won', (user.starwarsdleWon || false).toString());
-        localStorage.setItem('starwarsdle_guesses', JSON.stringify(user.starwarsdleGuesses || []));
-    } else {
-        // Only clear if local storage is not already set to today (avoids wiping active guesses before first sync completes)
-        if (localDate !== todaySeed) {
-            localStorage.setItem('starwarsdle_date', todaySeed);
-            localStorage.setItem('starwarsdle_won', 'false');
-            localStorage.setItem('starwarsdle_guesses', '[]');
-        }
+        localStorage.setItem('starwarsdle_won', 'false');
+        localStorage.setItem('starwarsdle_guesses', '[]');
     }
 }
 

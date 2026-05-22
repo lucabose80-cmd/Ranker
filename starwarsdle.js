@@ -38,7 +38,6 @@ export async function initStarWarsdle() {
     
     // Load progress
     await loadProgress();
-    checkGlow();
 
     // Input Autocomplete
     input.addEventListener('input', () => {
@@ -103,20 +102,6 @@ export async function initStarWarsdle() {
     });
 }
 
-function checkGlow() {
-    const seed = getDailySeed();
-    const saved = localStorage.getItem('starwarsdle_date');
-    const won = localStorage.getItem('starwarsdle_won');
-    const glow = document.getElementById('starwarsdle-glow');
-    if(glow) {
-        if(saved !== seed || won !== 'true') {
-            glow.style.display = 'block';
-        } else {
-            glow.style.display = 'none';
-        }
-    }
-}
-
 async function loadProgress() {
     const user = await refreshCurrentUser();
     const seed = getDailySeed();
@@ -155,7 +140,6 @@ function makeGuess(char) {
     if(char.name === dailyCharacter.name) {
         hasWonToday = true;
         localStorage.setItem('starwarsdle_won', 'true');
-        document.getElementById('starwarsdle-glow').style.display = 'none';
         showWinScreen(currentGuesses.length, true);
         saveScoreToFirebase(currentGuesses.length);
     } else {
