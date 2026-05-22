@@ -1,5 +1,15 @@
 export const patchNotesWaifu = [
     {
+        version: "v4.2",
+        title: "System & Balancing Update",
+        isHotfix: false,
+        changes: [
+            "Neuer Pity-Timer: Wenn du einen Charakter lange nicht ziehst, steigt seine Wahrscheinlichkeit nun sanft um 1% pro verpasster Runde.",
+            "Zufalls-Cooldown: Das System schließt die letzten 5 gezogenen Charaktere temporär aus, um nervige Dauerschleifen zu verhindern.",
+            "Wartungsmodus: Administratoren können ab sofort das Einloggen für Spieler sperren, während globale Updates aufgespielt werden."
+        ]
+    },
+    {
         version: "v3.7",
         title: "Das Große Lexikon Update",
         isHotfix: false,

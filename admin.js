@@ -394,6 +394,7 @@ function initChatModeration() {
                 const id = e.target.closest('[data-id]').dataset.id || e.target.dataset.id;
                 await deleteDoc(doc(db, "chat", id));
             });
+        });
     }, (err) => {
         console.error("Chat-Listener Fehler:", err);
         chatContainer.innerHTML = '<p class="prompt-text" style="color:#ff4757; padding:15px;">Fehler beim Laden des Chats.</p>';
