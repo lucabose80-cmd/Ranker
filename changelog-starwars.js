@@ -1,4 +1,21 @@
-﻿export const patchNotesStarWars = [
+export const patchNotesStarWars = [
+    {
+        version: "v5.0.2",
+        title: "QoL & Bugfixes",
+        isHotfix: true,
+        changes: [
+            "Bugfix: StarWarsdle-Fortschritt ist jetzt Account-gebunden. Beim Ausloggen wird der lokale Fortschritt gelöscht, sodass beim Account-Wechsel kein fremder Spielstand sichtbar ist.",
+            "Bugfix: Der 'Neues Spiel'-Button ändert nun korrekt seine Hintergrundfarbe passend zum freigeschalteten Farbschema (vorher wurde nur die Schrift eingefärbt).",
+            "Bugfix: Rang-Buttons (Plätze 1-5), der Charakter-Rahmen und die '???'-Anzeige im Spiel ändern sich nun komplett ans Farbthema.",
+            "Bugfix: Chat-Toggle-Button und Bewertungs-Buttons zeigen jetzt in allen Themen korrekt ihre Farbe.",
+            "Feature: Freigeschaltete Titel und Farbthemen erscheinen im Profil jetzt ganz oben, gesperrte dahinter.",
+            "Feature: Enter-Taste im StarWarsdle-Eingabefeld löst jetzt den Rateversuch aus.",
+            "Balancing: Fino & Ruffy erscheinen häufiger als zuvor (ca. 3x seltener statt 20x seltener als normale Charaktere).",
+            "Daten-Fix: Savage Opress hat jetzt die korrekte Epoche (Clone Wars) und Macht-Status.",
+            "Daten-Fix: Kategorie 'Mensch (Klon)' zu 'Klon' vereinfacht.",
+            "Sicherheit: StarWarsdle-Tipp-Bild kann nicht mehr per Rechtsklick oder Drag &amp; Drop im Originalformat geöffnet werden."
+        ]
+    },
     {
         version: "v5.0.1",
         title: "Streak-System & Anpassungen",

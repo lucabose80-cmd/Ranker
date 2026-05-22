@@ -240,6 +240,13 @@ export async function logout() {
             });
         } catch(e) {}
     }
+    // StarWarsdle Fortschritt löschen damit beim Accountwechsel kein fremder Fortschritt sichtbar ist
+    localStorage.removeItem('starwarsdle_date');
+    localStorage.removeItem('starwarsdle_won');
+    localStorage.removeItem('starwarsdle_guesses');
+    localStorage.removeItem('starwarsdle_streak');
+    localStorage.removeItem('starwarsdle_last_win');
+    localStorage.removeItem('starwarsdle_local_reset');
     localStorage.removeItem(CURRENT_USER_KEY);
     location.reload();
 }
