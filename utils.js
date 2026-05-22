@@ -33,7 +33,28 @@ export function drawFromBag(pool, count, bagKey) {
             }
         }
         
-        const chosen = available[Math.floor(Math.random() * available.length)];
+        // Easter Eggs (Anime-Charaktere) extrem selten machen (Weight: 0.05 vs 1.0)
+        let totalWeight = 0;
+        const weightedAvailable = available.map(c => {
+            const isEasterEgg = c.tags && c.tags.includes('anime');
+            const weight = isEasterEgg ? 0.05 : 1.0;
+            totalWeight += weight;
+            return { char: c, weight: weight };
+        });
+
+        let randomVal = Math.random() * totalWeight;
+        let chosen = null;
+        for (const item of weightedAvailable) {
+            randomVal -= item.weight;
+            if (randomVal <= 0) {
+                chosen = item.char;
+                break;
+            }
+        }
+        if (!chosen && weightedAvailable.length > 0) {
+            chosen = weightedAvailable[weightedAvailable.length - 1].char;
+        }
+
         if (chosen) {
             resultNames.push(chosen.name);
             recent.push(chosen.name);
