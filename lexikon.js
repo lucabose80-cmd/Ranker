@@ -3,15 +3,43 @@ import { activeCharacterDatabase } from './theme.js';
 import { getCurrentUser, clearNewlyDiscovered } from './auth.js';
 
 const TAG_LABELS = {
-    jedi:        { label: '⚔️ Jedi',        color: '#3b82f6' },
-    sith:        { label: '🔴 Sith',         color: '#dc2626' },
-    klon:        { label: '🪖 Klone',        color: '#64748b' },
-    droide:      { label: '🤖 Droiden',      color: '#6b7280' },
-    separatist:  { label: '☠️ Separatisten', color: '#7c3aed' },
-    rebell:      { label: '✊ Rebellen',      color: '#16a34a' },
-    mandalorian: { label: '🪬 Mandalorianer', color: '#b45309' },
-    schmuggel:   { label: '🃏 Schmuggler',    color: '#ca8a04' },
-    sonstige:    { label: '🌌 Sonstige',      color: '#555' }
+    jedi:            { label: '⚔️ Jedi',                color: '#3b82f6' },
+    sith:            { label: '🔴 Sith',                 color: '#dc2626' },
+    klon:            { label: '🪖 Klone',                color: '#64748b' },
+    droide:          { label: '🤖 Droiden',              color: '#6b7280' },
+    separatist:      { label: '☠️ Separatisten',         color: '#7c3aed' },
+    rebell:          { label: '✊ Rebellen',              color: '#16a34a' },
+    mandalorian:     { label: '🪬 Mandalorianer',        color: '#b45309' },
+    schmuggel:       { label: '🃏 Schmuggler',            color: '#ca8a04' },
+    kopfgeldjäger:   { label: '🎯 Kopfgeldjäger',         color: '#f59e0b' },
+    unterwelt:       { label: '💰 Unterwelt',             color: '#8b5cf6' },
+    widerstand:      { label: '⭐ Widerstand',            color: '#f97316' },
+    imperium:        { label: '⬛ Imperium',              color: '#1f2937' },
+    erste_ordnung:   { label: '🩸 Erste Ordnung',        color: '#991b1b' },
+    senat:           { label: '🏛️ Senat / Politiker',     color: '#14b8a6' },
+    grau:            { label: '⚪ Graue Machtnutzer',      color: '#a3a3a3' },
+    nachtschwester:  { label: '🔮 Nachtschwestern',       color: '#d946ef' },
+    dathomir:        { label: '🌑 Dathomir',              color: '#be185d' },
+    monster:         { label: '🦖 Monster',               color: '#84cc16' },
+    meister:         { label: '🧠 Jedi-Meister',          color: '#60a5fa' },
+    padawan:         { label: '🎓 Padawan',               color: '#93c5fd' },
+    inquisitor:      { label: '🗡️ Inquisitoren',          color: '#7f1d1d' },
+    videospiel:      { label: '🎮 Videospiele',           color: '#8b5cf6' },
+    redet_nicht:     { label: '🤐 Redet nicht',           color: '#9ca3af' },
+    bad_batch:       { label: '💀 Bad Batch',             color: '#475569' },
+    "501st":         { label: '🔵 501st Legion',          color: '#2563eb' },
+    "212th":         { label: '🟠 212th Battalion',       color: '#f97316' },
+    "104th":         { label: '🐺 104th Battalion',       color: '#64748b' },
+    coruscant_guard: { label: '🔴 Coruscant Wache',       color: '#ef4444' },
+    captain:         { label: '⭐ Captain',               color: '#eab308' },
+    commander:       { label: '⭐⭐ Commander',           color: '#f59e0b' },
+    arc:             { label: '⚡ ARC-Trooper',           color: '#3b82f6' },
+    soldat:          { label: '🪖 Soldat',                color: '#94a3b8' },
+    hutte:           { label: '🐌 Hutten',                color: '#65a30d' },
+    pirat:           { label: '🏴‍☠️ Space Piraten',         color: '#b45309' },
+    heiss:           { label: '🔥 Heiße Waifus',         color: '#f43f5e' },
+    anime:           { label: '🌸 Anime',                 color: '#f472b6' },
+    sonstige:        { label: '🌌 Sonstige',              color: '#555' }
 };
 
 let currentView = 'all'; // 'all' | 'tags'
@@ -81,7 +109,13 @@ function _renderByTags(grid, user, discoveredList) {
     });
 
     // Rendere pro Tag-Gruppe
-    const tagOrder = ['jedi', 'sith', 'klon', 'droide', 'separatist', 'rebell', 'mandalorian', 'schmuggel', 'sonstige'];
+    const tagOrder = [
+        'jedi', 'meister', 'padawan', 'sith', 'inquisitor', 'grau', 'nachtschwester', 'dathomir',
+        'klon', '501st', '212th', '104th', 'coruscant_guard', 'bad_batch', 'commander', 'captain', 'arc', 'soldat',
+        'mandalorian', 'kopfgeldjäger', 'unterwelt', 'hutte', 'pirat', 'schmuggel',
+        'imperium', 'erste_ordnung', 'separatist', 'rebell', 'widerstand', 'senat',
+        'droide', 'monster', 'redet_nicht', 'videospiel', 'heiss', 'anime', 'sonstige'
+    ];
     const newlyDiscovered = user && user.newlyDiscovered ? user.newlyDiscovered : [];
 
     tagOrder.forEach(tag => {
