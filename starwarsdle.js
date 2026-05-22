@@ -1,7 +1,7 @@
 import { starWarsCharacters } from "./data-starwars.js";
 import { db } from "./firebase-config.js";
 import { getCurrentUser, refreshCurrentUser } from "./auth.js";
-import { collection, addDoc, Timestamp, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { collection, addDoc, Timestamp, query, where, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 // === 2. DAILY LOGIC ===
 let dailyCharacter = null;
@@ -85,10 +85,20 @@ export async function initStarWarsdle() {
         }
     });
 
-    input.addEventListener('keypress', (e) => {
+    input.addEventListener('keydown', (e) => {
         if(e.key === 'Enter') {
             e.preventDefault();
-            guessBtn.click();
+            if (autocomplete.style.display !== 'none' && autocomplete.firstChild) {
+                autocomplete.firstChild.click();
+            } else {
+                guessBtn.click();
+            }
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (e.target !== input && e.target !== autocomplete) {
+            autocomplete.style.display = 'none';
         }
     });
 }
@@ -109,16 +119,6 @@ function checkGlow() {
 
 async function loadProgress() {
     const user = await refreshCurrentUser();
-    if(user && user.starwarsdleResetAt) {
-        const localReset = parseInt(localStorage.getItem("starwarsdle_local_reset") || "0");
-        if (user.starwarsdleResetAt.seconds > localReset) {
-            localStorage.setItem("starwarsdle_local_reset", user.starwarsdleResetAt.seconds.toString());
-            localStorage.setItem("starwarsdle_date", "RESET");
-            localStorage.setItem("starwarsdle_won", "false");
-            localStorage.setItem("starwarsdle_guesses", "[]");
-            localStorage.setItem("starwarsdle_streak", "0");
-        }
-    }
     const seed = getDailySeed();
     const savedDate = localStorage.getItem('starwarsdle_date');
     
@@ -162,6 +162,7 @@ function makeGuess(char) {
         if(currentGuesses.length >= 5) {
             showHints();
         }
+        saveDailyStateToFirebase();
     }
 }
 
@@ -255,54 +256,35 @@ function showHints() {
     }
 }
 
-function updateAndGetStreak(isNewWin) {
-    const today = new Date();
-    const offset = today.getTimezoneOffset() * 60000;
-    const todaySeed = (new Date(today - offset)).toISOString().slice(0, 10);
-    
-    let streak = parseInt(localStorage.getItem('starwarsdle_streak') || '0');
-    const lastWin = localStorage.getItem('starwarsdle_last_win');
-
-    if (isNewWin) {
-        if (!lastWin) {
-            streak = 1;
-        } else if (lastWin !== todaySeed) {
-            let isBroken = false;
-            let checkDate = new Date(lastWin);
-            checkDate.setUTCDate(checkDate.getUTCDate() + 1);
-            const todayDate = new Date(todaySeed);
-            
-            while (checkDate < todayDate) {
-                const dayOfWeek = checkDate.getUTCDay();
-                if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-                    isBroken = true;
-                    break;
-                }
-                checkDate.setUTCDate(checkDate.getUTCDate() + 1);
-            }
-            
-            if (isBroken) {
-                streak = 1;
-            } else {
-                streak++;
-            }
-        }
-        localStorage.setItem('starwarsdle_streak', streak.toString());
-        localStorage.setItem('starwarsdle_last_win', todaySeed);
-    }
-    return streak;
-}
-
-function showWinScreen(attempts, isNewWin = false) {
-    const streak = updateAndGetStreak(isNewWin);
+function showWinScreen(attempts) {
     document.getElementById('starwarsdle-win').style.display = 'block';
     document.getElementById('starwarsdle-win-img').src = dailyCharacter.img;
     document.getElementById('starwarsdle-win-name').textContent = dailyCharacter.name;
     document.getElementById('starwarsdle-win-attempts').textContent = attempts;
-    const streakEl = document.getElementById('starwarsdle-win-streak');
-    if(streakEl) streakEl.textContent = streak;
     document.getElementById('starwarsdle-input').disabled = true;
     document.getElementById('starwarsdle-guess-btn').disabled = true;
+}
+
+async function saveDailyStateToFirebase() {
+    const user = getCurrentUser();
+    if(!user || user.role === 'admin' || user.isTestUser) return;
+    
+    const seed = getDailySeed();
+    const guesses = JSON.parse(localStorage.getItem('starwarsdle_guesses') || '[]');
+    const won = localStorage.getItem('starwarsdle_won') === 'true';
+    
+    try {
+        await updateDoc(doc(db, "users", user.uid), {
+            starwarsdleGuesses: guesses,
+            starwarsdleWon: won,
+            starwarsdleDate: seed
+        });
+        localStorage.setItem("starwarsdle_last_sync_status", "success_" + Date.now());
+    } catch(e) {
+        console.error("Error saving daily state:", e);
+        alert("Firestore Fehler beim Speichern des StarWarsdle-Status: " + e.message);
+        localStorage.setItem("starwarsdle_last_sync_status", "error_" + e.message + "_" + Date.now());
+    }
 }
 
 async function saveScoreToFirebase(attempts) {
@@ -317,16 +299,15 @@ async function saveScoreToFirebase(attempts) {
         // Check if already submitted today
         const q = query(collection(db, "starwarsdle_scores"), where("userId", "==", userId), where("date", "==", seed));
         const snap = await getDocs(q);
-        if(!snap.empty) return; // already saved
         
-        await addDoc(collection(db, "starwarsdle_scores"), {
-            userId, username, attempts, date: seed, timestamp: Timestamp.now()
-        });
+        if (snap.empty) {
+            await addDoc(collection(db, "starwarsdle_scores"), {
+                userId, username, attempts, date: seed, timestamp: Timestamp.now()
+            });
+        }
         
-        const streak = parseInt(localStorage.getItem('starwarsdle_streak') || '0');
-        await updateDoc(doc(db, "users", userId), {
-            starwarsdleStreak: streak
-        });
+        await saveDailyStateToFirebase();
+        await refreshCurrentUser();
     } catch(e) {
         console.error("Error saving score: ", e);
     }

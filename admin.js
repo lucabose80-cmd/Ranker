@@ -1,4 +1,4 @@
-﻿// admin.js
+// admin.js
 import { logout, getCurrentUser, updateUserProfile } from './auth.js';
 import { db } from './firebase-config.js';
 import { collection, getDocs, deleteDoc, doc, updateDoc, setDoc, onSnapshot, query, orderBy, limit, Timestamp, where, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
@@ -295,11 +295,11 @@ async function renderUserList() {
                     snap.forEach(d => promises.push(deleteDoc(d.ref)));
                     await Promise.all(promises);
                     await updateDoc(userRef, { 
-                        starwarsdleResetAt: Timestamp.now(),
-                        starwarsdleStreak: 0,
-                        waifudleStreak: 0
+                        starwarsdleGuesses: [],
+                        starwarsdleWon: false,
+                        starwarsdleDate: ""
                     });
-                    alert('StarWarsdle Scores und Streaks gelöscht.');
+                    alert('StarWarsdle Scores gelöscht.');
                     await refreshAdminPanel();
                 }
             }

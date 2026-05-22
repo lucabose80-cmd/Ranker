@@ -1,4 +1,4 @@
-﻿export const patchNotesStarWars = [
+export const patchNotesStarWars = [
     {
         version: "v5.0.3",
         title: "Chat-Reaktionen & QoL-Features",
@@ -8,9 +8,10 @@
             "Feature: Administratoren können Reaktionen im Admin-Panel separat löschen (ohne die Nachricht zu entfernen).",
             "Feature: Wochenend-Streak-Modus eingeführt. Am Wochenende (Sa/So) frieren Streaks mit einem Eis-Symbol (❄️) ein (sie verfallen nicht bei Inaktivität, steigen aber auch nicht an).",
             "Feature: StarWarsdle Streaks werden jetzt auch bei Offline-Spielern in der Online-Leiste angezeigt.",
-            "Feature: Der Profil-Button zeigt einen kleinen gelben Punkt (🟡), wenn neue Titel oder Farbschemen freigeschaltet wurden.",
+            "Feature: Der Profil-Button zeigt einen kleinen gelben Punkt (🟡), wenn neue Avatare, Titel oder Farbschemen freigeschaltet/entdeckt wurden. Im Profil selbst markiert nun ein Punkt (●) auf dem jeweiligen Tab, in welchem Bereich sich ungesehene Neuerungen befinden, und die neuen Elemente sind mit einem 'NEU'-Badge markiert.",
             "QoL: Der Chat scrollt beim Öffnen jetzt automatisch ganz nach unten zu den neuesten Nachrichten.",
             "QoL: Die drei StarWarsdle Tipps erscheinen nun exakt nach 5, 10 und 15 Fehlversuchen.",
+            "QoL: Responsive Neugestaltung der Sticky-Navigationsleiste am oberen Bildschirmrand. Das Layout wechselt bei kleineren Bildschirmen automatisch in einen zweizeiligen Modus und bietet horizontales Scrollen der Tabs, um Überlappungen von Profil, Tabs und Buttons zu verhindern.",
             "QoL: Die Lesbarkeit von Knöpfen und Elementen wurde verbessert: Bei sehr hellen Themen (Klon, Padawan, Droide, Senat, 212th) wird die Textfarbe automatisch dunkel gefärbt.",
             "Sicherheit: Der Bild-Tipp bei StarWarsdle wird nun über ein Canvas-Element gerendert – dadurch ist der Bildpfad in den DevTools nicht mehr sichtbar (Cheat-Schutz). Die Bildunschärfe wurde zudem auf 2px reduziert."
         ]

@@ -18,6 +18,29 @@ async function hashPassword(password) {
     return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
+export function restoreUserStorage(user) {
+    if (!user) return;
+    
+    const today = new Date();
+    const offset = today.getTimezoneOffset() * 60000;
+    const todaySeed = (new Date(today - offset)).toISOString().slice(0, 10);
+    
+    // Restore Starwarsdle daily state if date matches today
+    const localDate = localStorage.getItem('starwarsdle_date');
+    if (user.starwarsdleDate === todaySeed) {
+        localStorage.setItem('starwarsdle_date', todaySeed);
+        localStorage.setItem('starwarsdle_won', (user.starwarsdleWon || false).toString());
+        localStorage.setItem('starwarsdle_guesses', JSON.stringify(user.starwarsdleGuesses || []));
+    } else {
+        // Only clear if local storage is not already set to today (avoids wiping active guesses before first sync completes)
+        if (localDate !== todaySeed) {
+            localStorage.setItem('starwarsdle_date', todaySeed);
+            localStorage.setItem('starwarsdle_won', 'false');
+            localStorage.setItem('starwarsdle_guesses', '[]');
+        }
+    }
+}
+
 export async function loginOrRegister(usernameInput, password) {
     if (!usernameInput || !password) return { success: false, message: 'Bitte alles ausfüllen.' };
     
@@ -58,6 +81,7 @@ export async function loginOrRegister(usernameInput, password) {
                 
                 const { password: _, ...safeUser } = user;
                 localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(safeUser));
+                restoreUserStorage(user);
                 startPresenceHeartbeat(); 
                 return { success: true, user, message: 'Erfolgreich eingeloggt.' };
             } else {
@@ -85,6 +109,7 @@ export async function loginOrRegister(usernameInput, password) {
             trackWrite(1);
             const { password: _, ...safeNewUser } = newUser;
             localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(safeNewUser));
+            restoreUserStorage(safeNewUser);
             startPresenceHeartbeat();
             return { success: true, user: newUser, message: 'Account erstellt!' };
         }
@@ -143,11 +168,9 @@ export function startPresenceHeartbeat() {
     
     const sendHeartbeat = async () => {
         try { 
-            const swStreak = parseInt(localStorage.getItem('starwarsdle_streak') || '0');
             await updateDoc(doc(db, "users", user.uid), { 
                 lastActive: Timestamp.now(),
-                activeMode: currentMode,
-                starwarsdleStreak: swStreak
+                activeMode: currentMode
             }); 
             trackWrite(1); 
         } catch (e) {}
@@ -244,9 +267,6 @@ export async function logout() {
     localStorage.removeItem('starwarsdle_date');
     localStorage.removeItem('starwarsdle_won');
     localStorage.removeItem('starwarsdle_guesses');
-    localStorage.removeItem('starwarsdle_streak');
-    localStorage.removeItem('starwarsdle_last_win');
-    localStorage.removeItem('starwarsdle_local_reset');
     localStorage.removeItem(CURRENT_USER_KEY);
     location.reload();
 }
@@ -300,6 +320,7 @@ export async function refreshCurrentUser() {
             }
             
             localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updatedUser));
+            restoreUserStorage(updatedUser);
             return updatedUser;
         }
     } catch (e) {

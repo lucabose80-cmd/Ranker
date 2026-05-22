@@ -7,6 +7,7 @@ import { doc, getDoc, collection, query, where, getDocs } from "https://www.gsta
 import { trackRead } from './tracker.js';
 
 let isFilterListenerAttached = false;
+let hasInitializedFilterOptions = false;
 
 // Hilfsfunktion zum Rendern der berechneten Scoreboard-Karten
 function renderScoreboardHTML(sortedCharacters, container) {
@@ -39,7 +40,9 @@ export async function renderScoreboard() {
     const selectedUser = filterSelect.value || 'global'; 
     const selectedType = typeSelect.value || 'classic';
 
-    container.innerHTML = '<p class="prompt-text">Lade Scoreboard...</p>';
+    if (!container.innerHTML || container.innerHTML.trim() === "" || container.querySelector('.prompt-text')) {
+        container.innerHTML = '<p class="prompt-text">Lade Scoreboard...</p>';
+    }
 
     try {
         let displayNames = {};
@@ -62,15 +65,24 @@ export async function renderScoreboard() {
             const nameB = (displayNames[b] || b).toLowerCase();
             return nameA.localeCompare(nameB);
         });
-        
-        filterSelect.innerHTML = '<option value="global">Global (Alle Spieler)</option>';
-        sortedUsersList.forEach(uname => {
+
+        if (!hasInitializedFilterOptions) {
+            filterSelect.innerHTML = '<option value="global">Global (Alle Spieler)</option>';
+            sortedUsersList.forEach(uname => {
+                const option = document.createElement('option');
+                option.value = uname;
+                option.textContent = `Spieler: ${displayNames[uname] || uname}`;
+                filterSelect.appendChild(option);
+            });
+            filterSelect.value = selectedUser;
+            hasInitializedFilterOptions = true;
+        } else if (!filterSelect.querySelector(`option[value="${selectedUser}"]`)) {
             const option = document.createElement('option');
-            option.value = uname;
-            option.textContent = `Spieler: ${displayNames[uname] || uname}`;
+            option.value = selectedUser;
+            option.textContent = `Spieler: ${displayNames[selectedUser] || selectedUser}`;
             filterSelect.appendChild(option);
-        });
-        filterSelect.value = selectedUser;
+            filterSelect.value = selectedUser;
+        }
 
         if (!isFilterListenerAttached) {
             filterSelect.addEventListener('change', () => {

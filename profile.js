@@ -1,3 +1,15 @@
+function getSeenIds() {
+    const raw = localStorage.getItem('seen_unlock_ids') || '';
+    if (raw.startsWith('[')) {
+        try {
+            return JSON.parse(raw);
+        } catch(e) {
+            return [];
+        }
+    }
+    return raw ? raw.split(',') : [];
+}
+
 // profile.js
 import { updateUserProfile, getCurrentUser } from './auth.js';
 import { activeCharacterDatabase } from './theme.js';
@@ -14,14 +26,16 @@ export function renderAvatarSelection() {
     const currentAvatar = currentMode === 'starwars' ? user.avatarStarWars : user.avatarWaifu;
 
     const sortedChars = [...activeCharacterDatabase].sort((a,b) => a.name.localeCompare(b.name));
+    const seenIds = getSeenIds();
     
     sortedChars.forEach(char => {
         const isDiscovered = user.discovered && user.discovered.includes(char.name);
         const card = document.createElement('div');
         
         if (isDiscovered) {
+            const isNew = !seenIds.includes(char.name);
             card.className = `lexikon-card avatar-card ${currentAvatar === char.img ? 'selected' : ''}`;
-            card.innerHTML = `<img src="${char.img}"><span>${char.name}</span>`;
+            card.innerHTML = `<img src="${char.img}"><span>${char.name}${isNew ? ' <span style="background:#ffd700; color:#000; font-size:0.55rem; font-weight:bold; padding:1px 3px; border-radius:3px; margin-left:3px; vertical-align:middle;">NEU</span>' : ''}</span>`;
             
             card.addEventListener('click', async () => {
                 document.querySelectorAll('.avatar-card').forEach(c => c.classList.remove('selected'));
@@ -76,11 +90,13 @@ export function checkProfileUnlockDot(user) {
         ...(user.unlocked_themes_starwars || []),
         ...(user.unlocked_themes_waifu || []),
         ...(user.unlocked_titles_starwars || []),
-        ...(user.unlocked_titles_waifu || [])
-    ].sort().join(',');
-    const seenIds = localStorage.getItem('seen_unlock_ids') || '';
+        ...(user.unlocked_titles_waifu || []),
+        ...(user.discovered || [])
+    ];
+    const seenIds = getSeenIds();
+    const hasNew = currentIds.some(id => !seenIds.includes(id));
     const dot = document.getElementById('profile-unlock-dot');
-    if (dot) dot.style.display = (currentIds !== seenIds) ? 'block' : 'none';
+    if (dot) dot.style.display = hasNew ? 'block' : 'none';
 }
 
 export function clearProfileUnlockDot(user) {
@@ -89,9 +105,10 @@ export function clearProfileUnlockDot(user) {
         ...(user.unlocked_themes_starwars || []),
         ...(user.unlocked_themes_waifu || []),
         ...(user.unlocked_titles_starwars || []),
-        ...(user.unlocked_titles_waifu || [])
-    ].sort().join(',');
-    localStorage.setItem('seen_unlock_ids', currentIds);
+        ...(user.unlocked_titles_waifu || []),
+        ...(user.discovered || [])
+    ];
+    localStorage.setItem('seen_unlock_ids', JSON.stringify(currentIds));
     const dot = document.getElementById('profile-unlock-dot');
     if (dot) dot.style.display = 'none';
 }
@@ -166,6 +183,34 @@ export async function refreshProfileContent() {
 
     renderTitleSelection(user, gamesPlayed);
     renderThemeSelection(user);
+
+    // Update tab labels with notification dots
+    const seenIds = getSeenIds();
+
+    const sortedChars = activeCharacterDatabase;
+    const hasUnseenAvatar = sortedChars.some(char => {
+        const isDiscovered = user.discovered && user.discovered.includes(char.name);
+        return isDiscovered && !seenIds.includes(char.name);
+    });
+
+    const unlockedTitles = currentMode === 'starwars' ? (user.unlocked_titles_starwars || []) : (user.unlocked_titles_waifu || []);
+    const hasUnseenTitle = (TITLES[currentMode] || []).some(t => {
+        const isUnlocked = t.secret ? unlockedTitles.includes(t.id) : gamesPlayed >= t.required;
+        return isUnlocked && !seenIds.includes(t.id);
+    });
+
+    const hasUnseenTheme = (THEMES[currentMode] || []).some(t => {
+        const isUnlocked = isThemeUnlocked(t, user);
+        return isUnlocked && !seenIds.includes(t.id);
+    });
+
+    const tabAvatar = document.getElementById('profile-tab-btn-avatar');
+    const tabTitle = document.getElementById('profile-tab-btn-title');
+    const tabTheme = document.getElementById('profile-tab-btn-theme');
+
+    if (tabAvatar) tabAvatar.innerHTML = `Avatare${hasUnseenAvatar ? ' <span style="color:#ffd700;">●</span>' : ''}`;
+    if (tabTitle) tabTitle.innerHTML = `Titel${hasUnseenTitle ? ' <span style="color:#ffd700;">●</span>' : ''}`;
+    if (tabTheme) tabTheme.innerHTML = `Farbschemas${hasUnseenTheme ? ' <span style="color:#ffd700;">●</span>' : ''}`;
 }
 
 function getCombination(n, r) {
@@ -245,8 +290,10 @@ function renderTitleSelection(user, gamesPlayed) {
         const card = document.createElement('div');
         card.className = `title-card ${activeTitle === t.name ? 'selected' : ''} ${isLocked ? 'locked' : ''}`;
         
+        const seenIds = getSeenIds();
+        const isNew = !isLocked && !seenIds.includes(t.id);
         card.innerHTML = `
-            <div class="title-card-name">${isLocked ? '🔒 ' + t.name : t.name}</div>
+            <div class="title-card-name">${isLocked ? '🔒 ' + t.name : t.name}${isNew ? ' <span style="background:#ffd700; color:#000; font-size:0.55rem; font-weight:bold; padding:1px 3px; border-radius:3px; margin-left:5px; vertical-align:middle;">NEU</span>' : ''}</div>
             <div class="title-card-req">${reqText}</div>
         `;
         
@@ -338,9 +385,11 @@ function renderThemeSelection(user) {
         
         reqText += probHtml;
 
+        const seenIds = getSeenIds();
+        const isNew = unlocked && !seenIds.includes(t.id);
         card.innerHTML = `
             <div style="width:30px; height:30px; border-radius:50%; background:${t.preview}; margin-bottom:8px; border:2px solid rgba(255,255,255,0.2);"></div>
-            <div class="title-card-name" style="color:${t.preview}">${!unlocked ? '🔒 ' : ''}${t.name}</div>
+            <div class="title-card-name" style="color:${t.preview}">${!unlocked ? '🔒 ' : ''}${t.name}${isNew ? ' <span style="background:#ffd700; color:#000; font-size:0.55rem; font-weight:bold; padding:1px 3px; border-radius:3px; margin-left:5px; vertical-align:middle;">NEU</span>' : ''}</div>
             <div class="title-card-req">${reqText}</div>
         `;
 

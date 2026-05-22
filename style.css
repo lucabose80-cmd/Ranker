@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    BASIS LAYOUT (Star Wars Default Theme)
    ========================================================================== */
 body {
@@ -509,21 +509,63 @@ body.waifu-theme .lexikon-card:hover { box-shadow: 0 8px 20px rgba(255, 42, 157,
    ========================================================================== */
 .sticky-nav-container {
     position: fixed; top: 0; left: 0; width: 100%; background-color: #050505; z-index: 1000;
-    padding: 15px 0 10px 0; border-bottom: 2px solid #3b82f6; box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+    border-bottom: 2px solid #3b82f6; box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+    padding: 10px 20px; box-sizing: border-box; min-height: 80px;
 }
 body.waifu-theme .sticky-nav-container { border-bottom-color: #ff2a9d; }
 
-.game-nav { display: flex; justify-content: center; gap: 15px; margin-bottom: 10px; }
-.nav-link { background: none; border: none; color: #888; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: all 0.3s; border-bottom: 3px solid transparent; width: 140px; text-align: center; padding: 10px 0; }
+.game-nav {
+    display: flex; justify-content: flex-start; gap: 10px; margin-bottom: 0;
+    overflow-x: auto; white-space: nowrap; margin: 0 auto;
+    scrollbar-width: none; -ms-overflow-style: none;
+    order: 2; min-width: 0; flex-shrink: 1;
+}
+.game-nav::-webkit-scrollbar { display: none; }
+
+.nav-link {
+    background: none; border: none; color: #888; font-size: 1.05rem; font-weight: bold;
+    cursor: pointer; transition: all 0.3s; border-bottom: 3px solid transparent;
+    padding: 10px 14px; text-align: center; flex-shrink: 0;
+}
 .nav-link:hover { color: #fff; }
 .nav-link.active { color: #3b82f6; border-bottom-color: #3b82f6; }
 body.waifu-theme .nav-link.active { color: #ff2a9d; border-bottom-color: #ff2a9d; }
 
-.top-bar { position: absolute; top: 20px; left: 20px; display: flex; align-items: center; }
+.top-bar { display: flex; align-items: center; flex-shrink: 0; order: 1; }
+.nav-right-actions { display: flex; flex-direction: column; gap: 5px; align-items: flex-end; flex-shrink: 0; order: 3; }
 .logout-btn { color: #ff6b6b; }
 .logout-btn:hover { color: #ff4757; }
 
-.main-scroll-content { margin-top: 150px; padding-bottom: 100px; }
+.main-scroll-content { margin-top: 110px; padding-bottom: 100px; }
+
+@media (max-width: 950px) {
+    .sticky-nav-container {
+        padding: 8px 15px;
+        min-height: auto;
+    }
+    .top-bar {
+        order: 1;
+        width: 50%;
+        justify-content: flex-start;
+    }
+    .nav-right-actions {
+        order: 2;
+        width: 50%;
+        flex-direction: row;
+        justify-content: flex-end;
+        gap: 15px;
+    }
+    .game-nav {
+        order: 3;
+        width: 100%;
+        margin: 8px 0 0 0;
+        justify-content: flex-start;
+    }
+    .main-scroll-content {
+        margin-top: 135px;
+    }
+}
 
 /* ==========================================================================
    ONLINE SIDEBAR (LINKS FIXIERT)

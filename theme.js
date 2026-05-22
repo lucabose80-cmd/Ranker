@@ -31,7 +31,7 @@ export function toggleTheme() {
         activeCharacterDatabase = waifuCharacters;
         activeChangelogDatabase = patchNotesWaifu;
         mainTitle.textContent = "WAIFU RANKING";
-        themeStylesheet.href = "theme-waifu.css"; 
+        themeStylesheet.href = "theme-waifu.css?v=5.0.3"; 
         document.body.classList.add('waifu-theme');
         if (catContainer) catContainer.classList.add('hidden');
     } else {
@@ -39,7 +39,7 @@ export function toggleTheme() {
         activeCharacterDatabase = starWarsCharacters;
         activeChangelogDatabase = patchNotesStarWars;
         mainTitle.textContent = "STAR WARS RANKING";
-        themeStylesheet.href = "theme-starwars.css"; 
+        themeStylesheet.href = "theme-starwars.css?v=5.0.3"; 
         document.body.classList.remove('waifu-theme');
         if (catContainer && currentGameType === 'classic') catContainer.classList.remove('hidden');
     }
