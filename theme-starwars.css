@@ -1,4 +1,4 @@
-/* Da unser style.css bereits auf dem blauen Star Wars Design basiert,
+﻿/* Da unser style.css bereits auf dem blauen Star Wars Design basiert,
    ist diese Datei aktuell leer. Sie wird nur als Platzhalter geladen,
    damit die Modus-Weiche sauber funktioniert. */
 
@@ -74,7 +74,7 @@ body.theme-erste-ordnung { --t-color: #ff0000; --t-border: repeating-linear-grad
 [class*="theme-"] #restart-btn:hover { background-color: var(--t-color) !important; color: white !important; opacity: 0.8; }
 [class*="theme-"] .rate-btn { color: var(--t-color) !important; border-color: var(--t-color) !important; }
 [class*="theme-"] .rate-btn:hover, [class*="theme-"] .rate-btn.selected { background-color: var(--t-color) !important; color: white !important; }
-[class*="theme-"] .current-character-wrapper { border-color: var(--t-color) !important; box-shadow: 0 0 15px var(--t-color) !important; }
+[class*="theme-"] #current-image-container { border-color: var(--t-color) !important; box-shadow: 0 0 15px var(--t-color) !important; }
 
 [class*="theme-"] #chat-toggle-btn { background: var(--t-color) !important; border: 2px solid var(--t-color) !important; }
 
@@ -82,5 +82,5 @@ body.theme-erste-ordnung { --t-color: #ff0000; --t-border: repeating-linear-grad
 [class*="theme-"] .rank-btn { color: var(--t-color) !important; border-color: var(--t-color) !important; }
 [class*="theme-"] .rank-btn:hover { background: var(--t-color) !important; color: white !important; }
 [class*="theme-"] .mystery-name { color: var(--t-color) !important; }
-[class*="theme-"] #current-image-container { border-color: var(--t-color) !important; box-shadow: 0 0 15px var(--t-color) !important; }
 [class*="theme-"] .mode-toggle-btn.active { background: var(--t-color) !important; border-color: var(--t-color) !important; }
+
