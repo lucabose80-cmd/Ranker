@@ -1,4 +1,17 @@
-﻿export const patchNotesStarWars = [
+export const patchNotesStarWars = [
+    {
+        version: "v5.0.1",
+        title: "Streak-System & Anpassungen",
+        isHotfix: true,
+        changes: [
+            "Neues Feature: Streak-System (🔥) für StarWarsdle! Wenn du täglich spielst, steigt dein Streak. Ein verpasster Tag bricht ihn, aber Pausen am Wochenende (Sa/So) unterbrechen deinen Streak nicht.",
+            "UI-Update: Dein aktiver Streak wird nun im Sieges-Bildschirm sowie für alle sichtbar in der Online-Spieler-Liste angezeigt.",
+            "UI-Update: Das Farbschema deines Profils überträgt sich ab sofort auch auf deine Chat-Sprechblasen und den Chat-Button.",
+            "UI-Update: Die End-Screen Buttons (Neues Spiel, Bewertung) und der Charakter-Rahmen passen sich nun dynamisch deinem freigeschalteten Farbschema an.",
+            "Bugfix: Ein Admin-Reset für das StarWarsdle löscht nun auch den lokalen Fortschritt und Streak der Spieler korrekt.",
+            "Daten-Fix: Poggle, Nute Gunray und ca. 25 weitere Charaktere wurden korrigiert und haben nun die exakten Spezies (Geonosianer, Neimoidianer, etc.) statt 'Mensch'."
+        ]
+    },
     {
         version: "v5.0",
         title: "Das STARWARSDLE Update",

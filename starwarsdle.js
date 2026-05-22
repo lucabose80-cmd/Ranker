@@ -109,6 +109,7 @@ async function loadProgress() {
             localStorage.setItem("starwarsdle_date", "RESET");
             localStorage.setItem("starwarsdle_won", "false");
             localStorage.setItem("starwarsdle_guesses", "[]");
+            localStorage.setItem("starwarsdle_streak", "0");
         }
     }
     const seed = getDailySeed();
