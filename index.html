@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="de">
 <head>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -236,7 +236,7 @@
                     <div id="starwarsdle-hints" style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #ffd700; display: none;">
                         <h4 style="color: #ffd700; margin-top: 0;">Hinweise</h4>
                         <div id="starwarsdle-hint-faction" style="display: none; margin-bottom: 10px;">Fraktion: <span id="starwarsdle-hint-faction-text" style="font-weight: bold;"></span></div>
-                        <div id="starwarsdle-hint-image" style="display: none; margin-bottom: 10px;">Bild: <img id="starwarsdle-hint-image-img" src="" style="width: 50px; height: 50px; object-fit: cover; filter: blur(5px) contrast(1.5) saturate(2); border-radius: 4px; vertical-align: middle;"></div>
+                        <div id="starwarsdle-hint-image" style="display: none; margin-bottom: 10px;">Bild: <img id="starwarsdle-hint-image-img" src="" style="width: 50px; height: 50px; object-fit: cover; filter: blur(5px) contrast(1.5) saturate(2); border-radius: 4px; vertical-align: middle; pointer-events: none;" draggable="false" oncontextmenu="return false;"></div>
                         <div id="starwarsdle-hint-letter" style="display: none;">Erster Buchstabe: <span id="starwarsdle-hint-letter-text" style="font-weight: bold; font-size: 1.5rem;"></span></div>
                     </div>
 
@@ -434,6 +434,7 @@
     <script type="module" src="main.js?v=4"></script>
 </body>
 </html>
+
 
 
 

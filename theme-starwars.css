@@ -3,7 +3,11 @@
    damit die Modus-Weiche sauber funktioniert. */
 
 /* Freischaltbare Farbthemen */
-@import url('theme-sith.css');/* NEW THEMES */
+@import url('theme-sith.css');
+body.theme-sith { --t-color: #dc2626; }
+body.theme-klon { --t-color: #e2e8f0; }
+body.theme-rebell { --t-color: #16a34a; }
+/* NEW THEMES */
 body.theme-padawan { --t-color: #87CEFA; }
 body.theme-meister { --t-color: #00008B; }
 body.theme-inquisitor { --t-color: #8B0000; }
@@ -73,4 +77,5 @@ body.theme-erste-ordnung { --t-color: #ff0000; --t-border: repeating-linear-grad
 [class*="theme-"] .current-character-wrapper { border-color: var(--t-color) !important; box-shadow: 0 0 15px var(--t-color) !important; }
 
 [class*="theme-"] #chat-toggle-btn { background: var(--t-color) !important; border: 2px solid var(--t-color) !important; }
+
 
