@@ -1,5 +1,6 @@
 import { starWarsCharacters } from "./data-starwars.js";
-import { db, auth } from "./firebase-config.js";
+import { db } from "./firebase-config.js";
+import { getCurrentUser } from "./auth.js";
 import { collection, addDoc, Timestamp, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 // === 2. DAILY LOGIC ===
@@ -232,11 +233,12 @@ function showWinScreen(attempts) {
 }
 
 async function saveScoreToFirebase(attempts) {
-    if(!auth.currentUser) return;
+    const user = getCurrentUser();
+    if(!user) return;
     
     const seed = getDailySeed();
-    const userId = auth.currentUser.uid;
-    const username = auth.currentUser.displayName || "Unknown";
+    const userId = user.uid;
+    const username = user.displayName || "Unknown";
     
     try {
         // Check if already submitted today
