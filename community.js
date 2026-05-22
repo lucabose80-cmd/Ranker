@@ -282,7 +282,12 @@ function openUserProfileModal(u) {
     let progressHtml = '';
     if (currentMode === 'starwars') {
         const swGames = u.gamesPlayed_starwars || 0;
-        const swTitles = (TITLES['starwars'] || []).filter(t => swGames >= t.required).map(t => t.name);
+        const swUnlockedList = u.unlocked_titles_starwars || [];
+        const swTitles = (TITLES['starwars'] || []).filter(t => {
+            const isUnlocked = swUnlockedList.includes(t.id) || (!t.secret && swGames >= t.required);
+            if (t.secret && !isUnlocked) return false;
+            return isUnlocked;
+        }).map(t => t.name);
         const swThemes = u.unlocked_themes_starwars || [];
         const swThemeNames = (THEMES['starwars'] || []).filter(t => t.id.endsWith('_default') || swThemes.includes(t.id)).map(t => t.name);
         
@@ -296,7 +301,12 @@ function openUserProfileModal(u) {
         `;
     } else {
         const animeGames = u.gamesPlayed_waifu || 0;
-        const animeTitles = (TITLES['waifu'] || []).filter(t => animeGames >= t.required).map(t => t.name);
+        const animeUnlockedList = u.unlocked_titles_waifu || [];
+        const animeTitles = (TITLES['waifu'] || []).filter(t => {
+            const isUnlocked = animeUnlockedList.includes(t.id) || (!t.secret && animeGames >= t.required);
+            if (t.secret && !isUnlocked) return false;
+            return isUnlocked;
+        }).map(t => t.name);
         const animeThemes = u.unlocked_themes_waifu || [];
         const animeThemeNames = (THEMES['waifu'] || []).filter(t => t.id.endsWith('_default') || animeThemes.includes(t.id)).map(t => t.name);
         
