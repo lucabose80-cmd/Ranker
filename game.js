@@ -102,7 +102,7 @@ export function initGame() {
         if (currentMode === 'starwars' && currentGameCategory === 'klon') {
             poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon'));
         }
-        activePool = drawFromBag(poolSource, 5, 'bag_classic_' + currentMode + (window.cloneModeActive ? '_klon' : ''));
+        activePool = drawFromBag(poolSource, 5, 'bag_classic_' + currentMode + (currentGameCategory === 'klon' ? '_klon' : ''));
         localStorage.setItem('punish_pool_' + currentMode + '_' + currentGameCategory + '_classic', JSON.stringify(activePool));
         localStorage.removeItem('punish_state_' + currentMode + '_' + currentGameCategory + '_classic');
         currentIndex = 0;

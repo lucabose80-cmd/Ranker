@@ -134,7 +134,7 @@ async function createVersusLobby() {
     }
     
     // Generiere 5 Charaktere
-    const chars = drawFromBag(poolSource, 5, 'bag_versus_' + currentMode).map(c => c.name);
+    const chars = drawFromBag(poolSource, 5, 'bag_versus_' + currentMode + (category === 'klon' ? '_klon' : '')).map(c => c.name);
     
     const lobbyId = "lobby_" + Date.now().toString(36) + Math.random().toString(36).substring(2);
     
@@ -409,7 +409,7 @@ function showWaitingRoom(lobbyId) {
                                 if (data.mode === 'starwars' && data.category === 'klon') {
                                     poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon'));
                                 }
-                                const newChars = drawFromBag(poolSource, 5, 'bag_versus_' + data.mode).map(c => c.name);
+                                const newChars = drawFromBag(poolSource, 5, 'bag_versus_' + data.mode + (data.category === 'klon' ? '_klon' : '')).map(c => c.name);
                                 
                                 const resetPlayers = data.players.map(p => ({
                                     ...p, status: 'waiting', picks: [], score: 0

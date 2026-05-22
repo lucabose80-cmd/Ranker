@@ -84,8 +84,8 @@ export function drawFromBag(pool, count, bagKey) {
         }
     });
 
-    if (recent.length > 5) {
-        recent = recent.slice(recent.length - 5);
+    if (recent.length > 25) {
+        recent = recent.slice(recent.length - 25);
     }
 
     localStorage.setItem(bagKey, JSON.stringify({ recent, drought }));
