@@ -51,8 +51,8 @@ export function drawFromBag(pool, count, bagKey) {
             }
             
             const droughtCount = drought[c.name] || 0;
-            // Basis-Gewicht 1.0 + 10% mehr für jede Runde ohne Ziehung
-            const weight = 1.0 + (droughtCount * 0.1);
+            // Basis-Gewicht 1.0 + 1% mehr für jede Runde ohne Ziehung
+            const weight = 1.0 + (droughtCount * 0.01);
             totalWeight += weight;
             return { char: c, weight: weight };
         });
