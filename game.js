@@ -1,6 +1,6 @@
 // game.js
 import { activeCharacterDatabase } from './theme.js';
-import { shuffleArray, preloadImages } from './utils.js';
+import { shuffleArray, preloadImages, drawFromBag } from './utils.js';
 import { resetRatingUI } from './rating.js';
 import { saveGameToHistory } from './history.js';
 import { getCurrentUser } from './auth.js';
@@ -102,7 +102,7 @@ export function initGame() {
         if (currentMode === 'starwars' && currentGameCategory === 'klon') {
             poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon'));
         }
-        activePool = shuffleArray(poolSource).slice(0, 5);
+        activePool = drawFromBag(poolSource, 5, 'bag_classic_' + currentMode + (window.cloneModeActive ? '_klon' : ''));
         localStorage.setItem('punish_pool_' + currentMode + '_' + currentGameCategory + '_classic', JSON.stringify(activePool));
         localStorage.removeItem('punish_state_' + currentMode + '_' + currentGameCategory + '_classic');
         currentIndex = 0;

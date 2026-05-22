@@ -1,5 +1,33 @@
 export const patchNotesStarWars = [
     {
+        version: "v4.1.1",
+        title: "Hotfix: Wahrer Zufall",
+        isHotfix: true,
+        changes: [
+            "Bugfix: Der Zufallsgenerator beim Ziehen der Charaktere wurde komplett neu programmiert. Frustrierende Wiederholungen und fehlende Charaktere gehören der Vergangenheit an. Jeder Account hat nun einen echten 'Ziehen ohne Zurücklegen'-Pool (Bag-System)."
+        ]
+    },
+    {
+        version: "v4.1",
+        title: "The Expanded Galaxy Part II",
+        isHotfix: false,
+        changes: [
+            "Gigantische Erweiterung: Es wurden dutzende neue Charaktere hinzugefügt! Darunter 10 neue Monster (z.B. Nexu, Zillo Beast), 15 Droiden (z.B. B1 Battle Droide), zahlreiche Senatoren und eine neue Death Watch Fraktion (inkl. Pre Vizsla).",
+            "Klon-Erweiterung: Commander Appo, Tup, Hardcase und weitere ARC-Trooper vergrößern die Klon-Datenbank massiv.",
+            "Jedi-Erweiterung: Viele neue Meister, Padawane und Inquisitoren sowie Mutter Talzin von Dathomir sind nun im Lexikon zu finden."
+        ]
+    },
+    {
+        version: "v4.0",
+        title: "Das Lexikon & Tag Update",
+        isHotfix: false,
+        changes: [
+            "Neues Feature: Das Lexikon kann nun nach allen neuen spezifischen Fraktionen (wie Kopfgeldjäger, Death Watch, 501st Legion, etc.) gefiltert werden.",
+            "Neues Feature: Direkte Tag-Vorschläge im Lexikon! Klicke auf das Bild eines Charakters, um den Entwicklern ein fehlendes oder falsches Tag zu melden.",
+            "Balancing: Nahezu alle alten Charaktere wurden in neue, präzisere Fraktionen einsortiert (z.B. Asajj Ventress ist nun korrekterweise bei Nachtschwestern und Separatisten statt Sith)."
+        ]
+    },
+    {
         version: "v3.7",
         title: "Das Große Lexikon Update",
         isHotfix: false,

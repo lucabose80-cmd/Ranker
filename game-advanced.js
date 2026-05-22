@@ -1,6 +1,6 @@
 // game-advanced.js
 import { activeCharacterDatabase } from './theme.js';
-import { shuffleArray, preloadImages } from './utils.js';
+import { shuffleArray, preloadImages, drawFromBag } from './utils.js';
 import { resetRatingUI } from './rating.js';
 import { saveGameToHistory } from './history.js';
 import { getCurrentUser } from './auth.js';
@@ -104,7 +104,7 @@ export function initAdvancedGame() {
     }
     
     function startFreshAdvancedGame() {
-        activePool = shuffleArray(activeCharacterDatabase).slice(0, 10);
+        activePool = drawFromBag(activeCharacterDatabase, 10, 'bag_advanced_' + currentMode);
         localStorage.setItem('punish_pool_' + currentMode + '_advanced', JSON.stringify(activePool));
         localStorage.removeItem('punish_state_' + currentMode + '_advanced');
         currentIndex = 0;

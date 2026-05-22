@@ -3,7 +3,7 @@ import { collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot, query, where
 import { getCurrentUser, refreshCurrentUser } from './auth.js';
 import { currentMode } from './mode-state.js';
 import { activeCharacterDatabase } from './theme.js';
-import { shuffleArray } from './utils.js';
+import { shuffleArray, drawFromBag } from './utils.js';
 import { initGameVersus } from './game-versus.js';
 
 let currentLobbyId = null;
@@ -134,7 +134,7 @@ async function createVersusLobby() {
     }
     
     // Generiere 5 Charaktere
-    const chars = shuffleArray(poolSource).slice(0, 5).map(c => c.name);
+    const chars = drawFromBag(poolSource, 5, 'bag_versus_' + currentMode).map(c => c.name);
     
     const lobbyId = "lobby_" + Date.now().toString(36) + Math.random().toString(36).substring(2);
     
@@ -403,13 +403,13 @@ function showWaitingRoom(lobbyId) {
                             if (readyList.length >= data.players.length) {
                                 // Alle bereit -> Neustart!
                                 const { activeCharacterDatabase } = await import('./theme.js');
-                                const { shuffleArray } = await import('./utils.js');
+                                const { drawFromBag } = await import('./utils.js');
                                 
                                 let poolSource = activeCharacterDatabase;
                                 if (data.mode === 'starwars' && data.category === 'klon') {
                                     poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon'));
                                 }
-                                const newChars = shuffleArray(poolSource).slice(0, 5).map(c => c.name);
+                                const newChars = drawFromBag(poolSource, 5, 'bag_versus_' + data.mode).map(c => c.name);
                                 
                                 const resetPlayers = data.players.map(p => ({
                                     ...p, status: 'waiting', picks: [], score: 0
