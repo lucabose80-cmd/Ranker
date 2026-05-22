@@ -84,6 +84,13 @@ export async function initStarWarsdle() {
             alert("Charakter nicht gefunden oder bereits geraten!");
         }
     });
+
+    input.addEventListener('keypress', (e) => {
+        if(e.key === 'Enter') {
+            e.preventDefault();
+            guessBtn.click();
+        }
+    });
 }
 
 function checkGlow() {

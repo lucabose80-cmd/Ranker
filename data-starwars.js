@@ -1,38 +1,38 @@
 ﻿// data-starwars.js
 export const starWarsCharacters = [
   // Klone (501st, 212th, Bad Batch, Commander, ARC, Soldat)
-  { name: "Captain Rex", img: "starwars.bilder/Captain_Rex.jpg", tags: ["klon", "501st", "captain"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Commander Cody", img: "starwars.bilder/cody.jpg", tags: ["klon", "212th", "commander"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Fives", img: "starwars.bilder/fives.jpg", tags: ["klon", "501st", "arc"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Echo", img: "starwars.bilder/echo.jpg", tags: ["klon", "501st", "bad_batch", "arc"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Jesse", img: "starwars.bilder/jesse.jpg", tags: ["klon", "501st", "arc"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Wolffe", img: "starwars.bilder/wolffe.jpg", tags: ["klon", "104th", "commander"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Gregor", img: "starwars.bilder/gregor.jpg", tags: ["klon", "212th", "soldat"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Commander Bly", img: "starwars.bilder/bly.jpg", tags: ["klon", "commander"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Waxer", img: "starwars.bilder/waxer.jpg", tags: ["klon", "212th", "soldat"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Boil", img: "starwars.bilder/Boil.jpg", tags: ["klon", "212th", "soldat"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Commander Thorn", img: "starwars.bilder/thorn.jpg", tags: ["klon", "coruscant_guard", "commander"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Commander Fox", img: "starwars.bilder/fox.jpg", tags: ["klon", "coruscant_guard", "commander"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Kix", img: "starwars.bilder/kix.jpg", tags: ["klon", "501st", "soldat"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Cameron", img: "starwars.bilder/cameron.jpg", tags: ["klon", "soldat"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Commander Gree", img: "starwars.bilder/gree.jpg", tags: ["klon", "commander"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Commander Doom", img: "starwars.bilder/doom.jpg", tags: ["klon", "commander"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Commander Bacara", img: "starwars.bilder/bacara.jpg", tags: ["klon", "commander"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Hevy", img: "starwars.bilder/hevy.jpg", tags: ["klon", "soldat"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Flash", img: "starwars.bilder/flash.jpg", tags: ["klon", "soldat"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Lucky", img: "starwars.bilder/lucky.jpg", tags: ["klon", "soldat"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Scorch", img: "starwars.bilder/scorch.jpg", tags: ["klon", "soldat"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Hunter", img: "starwars.bilder/hunter.jpg", tags: ["klon", "bad_batch", "commander"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Wrecker", img: "starwars.bilder/wrecker.jpg", tags: ["klon", "bad_batch", "soldat"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Tech", img: "starwars.bilder/tech.jpg", tags: ["klon", "bad_batch", "soldat"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Crosshair", img: "starwars.bilder/crosshair.jpg", tags: ["klon", "bad_batch", "imperium", "soldat"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Imperium"], era: ["Prequels/Clone Wars", "Originals"], force: false, planet: 'Kamino' },
-  { name: "Omega", img: "starwars.bilder/omega.jpg", tags: ["klon", "bad_batch"], gender: "Weiblich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Commander Appo", img: "starwars.bilder/appo.jpg", tags: ["klon", "501st", "commander"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' }, // NEU
-  { name: "Tup", img: "starwars.bilder/tup.jpg", tags: ["klon", "501st", "soldat"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' }, // NEU
-  { name: "Hardcase", img: "starwars.bilder/hardcase.jpg", tags: ["klon", "501st", "soldat"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' }, // NEU
-  { name: "Dogma", img: "starwars.bilder/dogma.jpg", tags: ["klon", "501st", "soldat"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' }, // NEU
-  { name: "Havoc", img: "starwars.bilder/havoc.jpg", tags: ["klon", "arc"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' }, // NEU
-  { name: "Colt", img: "starwars.bilder/colt.jpg", tags: ["klon", "arc"], gender: "Männlich", species: "Mensch (Klon)", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' }, // NEU
+  { name: "Captain Rex", img: "starwars.bilder/Captain_Rex.jpg", tags: ["klon", "501st", "captain"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Commander Cody", img: "starwars.bilder/cody.jpg", tags: ["klon", "212th", "commander"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Fives", img: "starwars.bilder/fives.jpg", tags: ["klon", "501st", "arc"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Echo", img: "starwars.bilder/echo.jpg", tags: ["klon", "501st", "bad_batch", "arc"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Jesse", img: "starwars.bilder/jesse.jpg", tags: ["klon", "501st", "arc"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Wolffe", img: "starwars.bilder/wolffe.jpg", tags: ["klon", "104th", "commander"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Gregor", img: "starwars.bilder/gregor.jpg", tags: ["klon", "212th", "soldat"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Commander Bly", img: "starwars.bilder/bly.jpg", tags: ["klon", "commander"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Waxer", img: "starwars.bilder/waxer.jpg", tags: ["klon", "212th", "soldat"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Boil", img: "starwars.bilder/Boil.jpg", tags: ["klon", "212th", "soldat"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Commander Thorn", img: "starwars.bilder/thorn.jpg", tags: ["klon", "coruscant_guard", "commander"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Commander Fox", img: "starwars.bilder/fox.jpg", tags: ["klon", "coruscant_guard", "commander"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Kix", img: "starwars.bilder/kix.jpg", tags: ["klon", "501st", "soldat"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Cameron", img: "starwars.bilder/cameron.jpg", tags: ["klon", "soldat"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Commander Gree", img: "starwars.bilder/gree.jpg", tags: ["klon", "commander"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Commander Doom", img: "starwars.bilder/doom.jpg", tags: ["klon", "commander"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Commander Bacara", img: "starwars.bilder/bacara.jpg", tags: ["klon", "commander"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Hevy", img: "starwars.bilder/hevy.jpg", tags: ["klon", "soldat"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Flash", img: "starwars.bilder/flash.jpg", tags: ["klon", "soldat"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Lucky", img: "starwars.bilder/lucky.jpg", tags: ["klon", "soldat"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Scorch", img: "starwars.bilder/scorch.jpg", tags: ["klon", "soldat"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Hunter", img: "starwars.bilder/hunter.jpg", tags: ["klon", "bad_batch", "commander"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Wrecker", img: "starwars.bilder/wrecker.jpg", tags: ["klon", "bad_batch", "soldat"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Tech", img: "starwars.bilder/tech.jpg", tags: ["klon", "bad_batch", "soldat"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Crosshair", img: "starwars.bilder/crosshair.jpg", tags: ["klon", "bad_batch", "imperium", "soldat"], gender: "Männlich", species: "Klon", faction: ["Imperium"], era: ["Prequels/Clone Wars", "Originals"], force: false, planet: 'Kamino' },
+  { name: "Omega", img: "starwars.bilder/omega.jpg", tags: ["klon", "bad_batch"], gender: "Weiblich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Commander Appo", img: "starwars.bilder/appo.jpg", tags: ["klon", "501st", "commander"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' }, // NEU
+  { name: "Tup", img: "starwars.bilder/tup.jpg", tags: ["klon", "501st", "soldat"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' }, // NEU
+  { name: "Hardcase", img: "starwars.bilder/hardcase.jpg", tags: ["klon", "501st", "soldat"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' }, // NEU
+  { name: "Dogma", img: "starwars.bilder/dogma.jpg", tags: ["klon", "501st", "soldat"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' }, // NEU
+  { name: "Havoc", img: "starwars.bilder/havoc.jpg", tags: ["klon", "arc"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' }, // NEU
+  { name: "Colt", img: "starwars.bilder/colt.jpg", tags: ["klon", "arc"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' }, // NEU
 
   // Jedi
   { name: "Luke Skywalker", img: "starwars.bilder/luke.jpg", tags: ["jedi", "rebell", "meister"], gender: "Männlich", species: "Mensch", faction: ["Jedi-Orden", "Rebellion"], era: ["Prequels/Clone Wars", "Sequels", "Originals", "Mandalorian/Ahsoka"], force: true, planet: 'Tatooine' },
@@ -96,7 +96,7 @@ export const starWarsCharacters = [
 
   // Graue Machtnutzer & Dathomir
   { name: "Asajj Ventress", img: "starwars.bilder/ventress.jpg", tags: ["nachtschwester", "dathomir", "separatist"], gender: "Weiblich", species: "Dathomirianer", faction: ["Separatisten", "Nachtschwestern/Dathomir"], era: ["Prequels/Clone Wars"], force: true, planet: 'Dathomir' },
-  { name: "Savage Opress", img: "starwars.bilder/savageopress.jpg", tags: ["dathomir"], gender: "Männlich", species: "Zabrak", faction: ["Nachtschwestern/Dathomir"], era: ["Unbekannt"], force: false, planet: 'Dathomir' },
+  { name: "Savage Opress", img: "starwars.bilder/savageopress.jpg", tags: ["dathomir", "sith"], gender: "Männlich", species: "Zabrak", faction: ["Nachtschwestern/Dathomir", "Sith"], era: ["Prequels/Clone Wars"], force: true, planet: 'Dathomir' },
   { name: "Baylan Skoll", img: "starwars.bilder/baylan.jpg", tags: ["grau"], gender: "Männlich", species: "Mensch", faction: ["Neutral"], era: ["Unbekannt"], force: true, planet: 'Unbekannt' },
   { name: "Shin Hati", img: "starwars.bilder/shin.jpg", tags: ["grau", "heiss"], gender: "Weiblich", species: "Mensch", faction: ["Neutral"], era: ["Unbekannt"], force: true, planet: 'Unbekannt' },
   { name: "Merrin", img: "starwars.bilder/merrin.jpg", tags: ["nachtschwester", "dathomir", "videospiel", "heiss"], gender: "Weiblich", species: "Dathomirianer", faction: ["Nachtschwestern/Dathomir"], era: ["Unbekannt"], force: true, planet: 'Dathomir' },
@@ -219,5 +219,7 @@ export const starWarsCharacters = [
   { name: "Fino Bloodstone", img: "starwars.bilder/finobloodstone.jpg", tags: ["anime"], gender: "Männlich", species: "Mensch", faction: ["Neutral"], era: ["Unbekannt"], force: false, planet: 'Unbekannt' },
   { name: "Monkey D. Ruffy", img: "starwars.bilder/ruffy.jpg", tags: ["anime"], gender: "Männlich", species: "Mensch", faction: ["Neutral"], era: ["Unbekannt"], force: false, planet: 'Unbekannt' }
 ];
+
+
 
 

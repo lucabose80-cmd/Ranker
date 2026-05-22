@@ -72,4 +72,5 @@ body.theme-erste-ordnung { --t-color: #ff0000; --t-border: repeating-linear-grad
 [class*="theme-"] .rate-btn:hover, [class*="theme-"] .rate-btn.selected { background-color: var(--t-color) !important; color: white !important; }
 [class*="theme-"] .current-character-wrapper { border-color: var(--t-color) !important; box-shadow: 0 0 15px var(--t-color) !important; }
 
-[class*="theme-"] #chat-toggle-btn { background-color: var(--t-color) !important; border-color: var(--t-color) !important; }
+[class*="theme-"] #chat-toggle-btn { background: var(--t-color) !important; border: 2px solid var(--t-color) !important; }
+

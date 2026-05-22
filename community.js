@@ -58,9 +58,9 @@ export function initCommunity() {
                 const themeData = THEMES[msg.userMode || 'starwars']?.find(t => t.id === msg.theme);
                 if (themeData && themeData.preview) {
                     if (themeData.preview.includes('gradient')) {
-                        themeStyle = `border-image: ${themeData.preview} 1; border-width: 2px; border-style: solid;`;
+                        themeStyle = `border-image: ${themeData.preview} 1; border-width: 2px; border-style: solid; background: #1c2331;`;
                     } else {
-                        themeStyle = `border-color: ${themeData.preview}; box-shadow: 0 0 5px ${themeData.preview}40;`;
+                        themeStyle = `border: 2px solid ${themeData.preview}; box-shadow: 0 0 5px ${themeData.preview}40; background: #1c2331;`;
                     }
                 }
             }
@@ -357,4 +357,6 @@ function openUserProfileModal(u) {
     
     modal.classList.remove('hidden');
 }
+
+
 
