@@ -10,7 +10,7 @@ import { initAdminPanel, stopAdminPanel } from './admin.js';
 import { renderHistory, initHistoryListener, stopHistoryListener } from './history.js';
 import { renderScoreboard } from './scoreboard.js';
 import { renderLexikon, initLexikonTabs } from './lexikon.js';
-import { initProfile, renderAvatarSelection, updateTopbarAvatarElement, applyColorTheme, refreshProfileContent } from './profile.js';
+import { initProfile, renderAvatarSelection, updateTopbarAvatarElement, applyColorTheme, refreshProfileContent, clearProfileUnlockDot } from './profile.js';
 import { initCommunity, stopCommunity } from './community.js';
 import { initVersus, stopVersus } from './versus.js';
 import { initStarWarsdle } from './starwarsdle.js';
@@ -191,6 +191,7 @@ function setupGameUI(user) {
     document.getElementById('profile-trigger').addEventListener('click', () => {
         document.getElementById('profile-overlay').classList.remove('hidden');
         refreshProfileContent(); // Baut alles passend zum aktuellen Modus neu auf
+        clearProfileUnlockDot(getCurrentUser()); // Gelben Punkt entfernen
     });
     
     document.getElementById('close-profile-btn').addEventListener('click', closeProfileOverlay);

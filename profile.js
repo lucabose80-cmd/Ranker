@@ -66,6 +66,34 @@ export function updateTopbarAvatarElement(user) {
 
     // Apply active color theme
     applyColorTheme(user);
+    checkProfileUnlockDot(user);
+}
+
+// Zeigt einen gelben Punkt am Profil-Button wenn neue Themes/Titel freigeschaltet wurden
+export function checkProfileUnlockDot(user) {
+    if (!user) return;
+    const currentIds = [
+        ...(user.unlocked_themes_starwars || []),
+        ...(user.unlocked_themes_waifu || []),
+        ...(user.unlocked_titles_starwars || []),
+        ...(user.unlocked_titles_waifu || [])
+    ].sort().join(',');
+    const seenIds = localStorage.getItem('seen_unlock_ids') || '';
+    const dot = document.getElementById('profile-unlock-dot');
+    if (dot) dot.style.display = (currentIds !== seenIds) ? 'block' : 'none';
+}
+
+export function clearProfileUnlockDot(user) {
+    if (!user) return;
+    const currentIds = [
+        ...(user.unlocked_themes_starwars || []),
+        ...(user.unlocked_themes_waifu || []),
+        ...(user.unlocked_titles_starwars || []),
+        ...(user.unlocked_titles_waifu || [])
+    ].sort().join(',');
+    localStorage.setItem('seen_unlock_ids', currentIds);
+    const dot = document.getElementById('profile-unlock-dot');
+    if (dot) dot.style.display = 'none';
 }
 
 export function applyColorTheme(user) {

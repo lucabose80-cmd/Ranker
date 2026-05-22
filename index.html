@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="de">
 <head>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -90,11 +90,12 @@
             </nav>
 
             <div class="top-bar">
-                <div id="profile-trigger" class="profile-trigger" title="Profil öffnen">
+                <div id="profile-trigger" class="profile-trigger" title="Profil öffnen" style="position:relative;">
                     <img id="topbar-avatar" class="mini-avatar hidden" src="" alt="Avatar">
                     <div style="display:flex; flex-direction:column; align-items:flex-start;">
                         <span id="player-greeting" class="prompt-text"></span>
                         <span id="player-title" class="title-badge" style="display:none; font-size:0.7rem; color:#ffd700; margin-top:-5px; font-weight:bold; letter-spacing:1px; text-transform:uppercase;"></span>
+                    <span id="profile-unlock-dot" style="display:none; position:absolute; top:2px; right:2px; width:10px; height:10px; background:#ffd700; border-radius:50%; box-shadow:0 0 6px #ffd700; border:2px solid #0a0e17;"></span>
                     </div>
                 </div>
             </div>
@@ -434,6 +435,8 @@
     <script type="module" src="main.js?v=4"></script>
 </body>
 </html>
+
+
 
 
 
