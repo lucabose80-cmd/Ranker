@@ -194,7 +194,7 @@ export function initLexikonTabs() {
             
             try {
                 const { db } = await import('./firebase-config.js');
-                const { collection, addDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+                const { collection, addDoc, Timestamp } = await import('https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js');
                 const user = getCurrentUser();
                 await addDoc(collection(db, 'suggestions'), {
                     text: `Tag Vorschlag für [${charName}]: ${input}`,
@@ -202,7 +202,7 @@ export function initLexikonTabs() {
                     targetMode: 'starwars',
                     author: user ? user.username : 'Anonym',
                     authorDisplay: user ? (user.displayName || user.username) : 'Anonym',
-                    timestamp: serverTimestamp(),
+                    timestamp: Timestamp.now(),
                     votes: 1,
                     votedBy: user ? [user.username] : []
                 });
