@@ -1,5 +1,13 @@
 export const patchNotesStarWars = [
     {
+        version: "v4.1.2",
+        title: "Hotfix: Easter Egg Rarität",
+        isHotfix: true,
+        changes: [
+            "Balancing: Die Wahrscheinlichkeit, die speziellen Anime-Charaktere ('Monkey D. Ruffy' & 'Fino Bloodstone') im Star Wars Modus zu ziehen, wurde massiv reduziert. Sie tauchen nun 20-mal seltener auf als normale Charaktere und sind echte, seltene Easter Eggs."
+        ]
+    },
+    {
         version: "v4.1.1",
         title: "Hotfix: Wahrer Zufall",
         isHotfix: true,
