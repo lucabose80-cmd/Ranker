@@ -3,6 +3,8 @@ import { db } from './firebase-config.js';
 import { doc, setDoc, getDocs, getDoc, collection, query, where, updateDoc, arrayUnion, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { currentMode } from './mode-state.js';
 import { trackRead, trackWrite } from './tracker.js';
+import { THEMES } from './themes.js';
+import { TITLES } from './titles.js';
 
 const CURRENT_USER_KEY = 'ranking_game_active_user';
 let heartbeatInterval;
@@ -257,10 +259,12 @@ export function getCurrentUser() {
     let user = JSON.parse(localStorage.getItem(CURRENT_USER_KEY));
     if (user && (user.username === 'test1' || user.username === 'test2')) {
         user.isTestUser = true;
-        user.gamesPlayed_starwars = 999;
-        user.gamesPlayed_waifu = 999;
-        user.unlocked_themes_starwars = ['sw_theme_sith', 'sw_theme_klon', 'sw_theme_rebell'];
-        user.unlocked_themes_waifu = [];
+        user.gamesPlayed_starwars = 9999;
+        user.gamesPlayed_waifu = 9999;
+        user.unlocked_themes_starwars = THEMES.starwars ? THEMES.starwars.map(t => t.id) : [];
+        user.unlocked_themes_waifu = THEMES.waifu ? THEMES.waifu.map(t => t.id) : [];
+        user.unlocked_titles_starwars = TITLES.starwars ? TITLES.starwars.map(t => t.id) : [];
+        user.unlocked_titles_waifu = TITLES.waifu ? TITLES.waifu.map(t => t.id) : [];
     }
     return user;
 }
@@ -278,10 +282,12 @@ export async function refreshCurrentUser() {
             
             if (updatedUser.username === 'test1' || updatedUser.username === 'test2') {
                 updatedUser.isTestUser = true;
-                updatedUser.gamesPlayed_starwars = 999;
-                updatedUser.gamesPlayed_waifu = 999;
-                updatedUser.unlocked_themes_starwars = ['sw_theme_sith', 'sw_theme_klon', 'sw_theme_rebell'];
-                updatedUser.unlocked_themes_waifu = [];
+                updatedUser.gamesPlayed_starwars = 9999;
+                updatedUser.gamesPlayed_waifu = 9999;
+                updatedUser.unlocked_themes_starwars = THEMES.starwars ? THEMES.starwars.map(t => t.id) : [];
+                updatedUser.unlocked_themes_waifu = THEMES.waifu ? THEMES.waifu.map(t => t.id) : [];
+                updatedUser.unlocked_titles_starwars = TITLES.starwars ? TITLES.starwars.map(t => t.id) : [];
+                updatedUser.unlocked_titles_waifu = TITLES.waifu ? TITLES.waifu.map(t => t.id) : [];
             }
             
             localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updatedUser));
