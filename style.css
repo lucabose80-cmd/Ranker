@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    BASIS LAYOUT (Star Wars Default Theme)
    ========================================================================== */
 body {
@@ -82,7 +82,7 @@ body.waifu-theme .card-content:has(img) {
 .current-character-wrapper { display: flex; justify-content: center; margin-bottom: 15px; }
 
 #current-image-container {
-    width: 220px; height: 250px; border: 2px solid #3b82f6; border-radius: 8px;
+    width: 260px; height: 250px; border: 2px solid #3b82f6; border-radius: 8px;
     background-color: #000; display: flex; align-items: center; justify-content: center; overflow: hidden;
 }
 #current-image-container img { width: 100%; height: 100%; object-fit: cover; }
@@ -529,7 +529,7 @@ body.waifu-theme .nav-link.active { color: #ff2a9d; border-bottom-color: #ff2a9d
    ONLINE SIDEBAR (LINKS FIXIERT)
    ========================================================================== */
 .online-sidebar {
-    position: fixed; top: 110px; left: 20px; width: 220px; max-height: calc(100vh - 140px);
+    position: fixed; top: 110px; left: 20px; width: 260px; max-height: calc(100vh - 140px);
     background-color: #0a0e17; border: 2px solid #3b82f6; border-radius: 12px; padding: 15px;
     box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); z-index: 500; overflow-y: auto; text-align: left;
 }
@@ -537,7 +537,7 @@ body.waifu-theme .online-sidebar { border-color: #ff2a9d; box-shadow: 0 0 15px r
 
 /* Ajustiert den Hauptinhalt, damit er auf großen Bildschirmen nicht hinter der Sidebar verschwindet */
 @media (min-width: 1250px) {
-    .main-scroll-content { margin-left: 260px; }
+    .main-scroll-content { margin-left: 300px; }
 }
 
 /* ==========================================================================
@@ -973,7 +973,7 @@ body.waifu-theme .mode-toggle-btn.active {
 /* Advanced Spectator Live Mini Board */
 .live-board-mini.advanced-board-mini {
     flex-wrap: wrap;
-    max-width: 220px;
+    max-width: 260px;
     margin: 5px auto;
     gap: 4px;
 }
@@ -1168,7 +1168,7 @@ body.waifu-theme .mode-toggle-btn.active {
 /* Advanced Spectator Live Mini Board */
 .live-board-mini.advanced-board-mini {
     flex-wrap: wrap;
-    max-width: 220px;
+    max-width: 260px;
     margin: 5px auto;
     gap: 4px;
 }
@@ -1334,3 +1334,4 @@ body.waifu-theme #db-tracker-reads {
         grid-template-columns: minmax(0, 1fr);
     }
 }
+

@@ -143,9 +143,11 @@ export function startPresenceHeartbeat() {
     
     const sendHeartbeat = async () => {
         try { 
+            const swStreak = parseInt(localStorage.getItem('starwarsdle_streak') || '0');
             await updateDoc(doc(db, "users", user.uid), { 
                 lastActive: Timestamp.now(),
-                activeMode: currentMode 
+                activeMode: currentMode,
+                starwarsdleStreak: swStreak
             }); 
             trackWrite(1); 
         } catch (e) {}

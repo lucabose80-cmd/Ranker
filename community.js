@@ -1,4 +1,4 @@
-// community.js
+﻿// community.js
 import { db } from './firebase-config.js';
 import { collection, onSnapshot, query, orderBy, limit, addDoc, Timestamp, getDocs, where } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { getCurrentUser } from './auth.js';
@@ -198,7 +198,11 @@ export function initCommunity() {
                                 <span style="flex-shrink:0; color:#888; font-size:0.8rem; margin-left:5px;">(Du)</span>
                             </strong>
                             ${titleHtml}
-                            ${user.starwarsdleStreak ? `<div style="font-size:0.65rem; color:#ff9f43; margin-top:2px; font-weight:bold;">🔥 SW-Streak: ${user.starwarsdleStreak}</div>` : ""}
+                            
+                            ${(function() {
+                                const sw = parseInt(localStorage.getItem("starwarsdle_streak") || "0");
+                                return sw > 0 ? `<div style="font-size:0.65rem; color:#ff9f43; margin-top:2px; font-weight:bold;">🔥 SW-Streak: ${sw}</div>` : "";
+                            })()}
                             ${user.waifudleStreak ? `<div style="font-size:0.65rem; color:#ff6b81; margin-top:2px; font-weight:bold;">🌸 Ani-Streak: ${user.waifudleStreak}</div>` : ""}
                         </div>
                         <span class="chat-mode-tag ${modeClass}" style="margin-left:auto; flex-shrink:0;">${modeText}</span>
@@ -232,7 +236,7 @@ export function initCommunity() {
                         <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;">
                             <strong style="flex: unset; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${u.displayName || u.username}</strong>
                             ${otherTitleHtml}
-                            ${u.starwarsdleStreak ? `<div style="font-size:0.65rem; color:#ff9f43; margin-top:2px; font-weight:bold;">🔥 SW-Streak: ${u.starwarsdleStreak}</div>` : ""}
+                            ${(u.starwarsdleStreak && u.starwarsdleStreak > 0) ? `<div style="font-size:0.65rem; color:#ff9f43; margin-top:2px; font-weight:bold;">🔥 SW-Streak: ${u.starwarsdleStreak}</div>` : ""}
                             ${u.waifudleStreak ? `<div style="font-size:0.65rem; color:#ff6b81; margin-top:2px; font-weight:bold;">🌸 Ani-Streak: ${u.waifudleStreak}</div>` : ""}
                         </div>
                         <span class="chat-mode-tag ${otherModeClass}" style="margin-left:auto; flex-shrink:0;">${otherModeText}</span>
@@ -353,3 +357,4 @@ function openUserProfileModal(u) {
     
     modal.classList.remove('hidden');
 }
+
