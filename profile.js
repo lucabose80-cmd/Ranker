@@ -252,6 +252,12 @@ function renderThemeSelection(user) {
 
     availableThemes.forEach(t => {
         const unlocked = isThemeUnlocked(t, user);
+        
+        // Verstecke geheime Themes, wenn sie noch nicht freigeschaltet sind
+        if (t.secret && !unlocked) {
+            return;
+        }
+
         const isSelected = activeThemeId === t.id || (!activeThemeId && t.id.endsWith('_default'));
         
         const card = document.createElement('div');

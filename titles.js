@@ -10,7 +10,12 @@ export const TITLES = {
         { id: 'sw_secret_1', name: 'Der Auserwählte', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Anakin Skywalker', 'Darth Vader'] } },
         { id: 'sw_secret_2', name: 'Zwillingssonnen', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Luke Skywalker', 'Leia Organa'] } },
         { id: 'sw_secret_3', name: 'Weeb', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Fino Bloodstone', 'Monkey D. Ruffy'] } },
-        { id: 'sw_secret_4', name: 'Gooner', required: -1, secret: true, condition: { type: 'has_tag_in_round', tag: 'heiss', count: 5 } }
+        { id: 'sw_secret_4', name: 'Der Klonkrieg', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Anakin Skywalker', 'Obi-Wan Kenobi', 'Ahsoka Tano', 'Captain Rex', 'Commander Cody'] } },
+        { id: 'sw_secret_5', name: 'Helden der Rebellion', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Luke Skywalker', 'Leia Organa', 'Han Solo', 'Chewbacca', 'C-3PO'] } },
+        { id: 'sw_secret_6', name: 'Regel der Zwei', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Palpatine', 'Darth Vader'] } },
+        { id: 'sw_secret_7', name: 'Clan der Zwei', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Din Djarin', 'Grogu'] } },
+        { id: 'sw_secret_8', name: 'Dathomirs Erbe', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Asajj Ventress', 'Mother Talzin', 'Savage Opress', 'Darth Maul'] } },
+        { id: 'sw_secret_9', name: 'Kopfgeldjäger Elite', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Boba Fett', 'Jango Fett', 'Bossk', 'Cad Bane', 'Aurra Sing'] } }
     ],
     waifu: [
         { id: 'wf_0', name: 'Kein Titel', required: 0 },
