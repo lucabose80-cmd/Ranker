@@ -172,14 +172,13 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
             if (!user[themesField]) user[themesField] = [];
             let unlockedAnyTheme = false;
             
-            Object.entries(tagCountsThisGame).forEach(([tag, count]) => {
-                if (count >= 5) {
-                    const themePrefix = currentMode === 'starwars' ? 'sw_theme_' : 'wf_theme_';
-                    const themeId = `${themePrefix}${tag}`;
-                    // Theme existiert?
-                    const themeObj = (THEMES[currentMode] || []).find(t => t.id === themeId);
-                    if (themeObj && !user[themesField].includes(themeId)) {
-                        user[themesField].push(themeId);
+            const availableThemes = THEMES[currentMode] || [];
+            availableThemes.forEach(themeObj => {
+                if (!user[themesField].includes(themeObj.id) && themeObj.condition && themeObj.condition.type === 'tag_full_team') {
+                    const tag = themeObj.condition.tag;
+                    const reqCount = themeObj.condition.count || 5;
+                    if ((tagCountsThisGame[tag] || 0) >= reqCount) {
+                        user[themesField].push(themeObj.id);
                         unlockedAnyTheme = true;
                         if (window.showUnlockNotification) {
                             window.showUnlockNotification('theme', themeObj.name);

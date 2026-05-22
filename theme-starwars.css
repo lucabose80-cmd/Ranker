@@ -1,6 +1,67 @@
-/* Da unser style.css bereits auf dem blauen Star Wars Design basiert,
+﻿/* Da unser style.css bereits auf dem blauen Star Wars Design basiert,
    ist diese Datei aktuell leer. Sie wird nur als Platzhalter geladen,
    damit die Modus-Weiche sauber funktioniert. */
 
 /* Freischaltbare Farbthemen */
-@import url('theme-sith.css');
+@import url('theme-sith.css');/* NEW THEMES */
+body.theme-padawan { --t-color: #87CEFA; }
+body.theme-meister { --t-color: #00008B; }
+body.theme-inquisitor { --t-color: #8B0000; }
+body.theme-grau { --t-color: #808080; }
+body.theme-nachtschwester { --t-color: #800080; }
+body.theme-dathomir { --t-color: #be185d; }
+body.theme-501st { --t-color: #0000ff; --t-border: repeating-linear-gradient(45deg, #0000ff, #0000ff 10px, #ffffff 10px, #ffffff 20px); }
+body.theme-212th { --t-color: #ffa500; --t-border: repeating-linear-gradient(45deg, #ffa500, #ffa500 10px, #ffffff 10px, #ffffff 20px); }
+body.theme-coruscant-guard { --t-color: #ff0000; --t-border: repeating-linear-gradient(45deg, #ff0000, #ff0000 10px, #ffffff 10px, #ffffff 20px); }
+body.theme-bad-batch { --t-color: #4a4a4a; }
+body.theme-arc { --t-color: #0055ff; --t-anim: pulseBlue 2s infinite; }
+body.theme-mandalorian { --t-color: #FF8C00; }
+body.theme-death-watch { --t-color: #ff0000; --t-border: repeating-linear-gradient(45deg, #ff0000, #ff0000 10px, #000000 10px, #000000 20px); }
+body.theme-kopfgeld { --t-color: #FFA07A; }
+body.theme-unterwelt { --t-color: #8A2BE2; }
+body.theme-hutte { --t-color: #006400; }
+body.theme-imperium { --t-color: #000000; --t-border: repeating-linear-gradient(45deg, #000000, #000000 10px, #ffffff 10px, #ffffff 20px); }
+body.theme-heiss { --t-color: #FF1493; }
+body.theme-monster { --t-color: #8b4513; }
+body.theme-droide { --t-color: #c0c0c0; }
+body.theme-senat { --t-color: #ffd700; }
+body.theme-widerstand { --t-color: #d2691e; }
+body.theme-separatist { --t-color: #00ced1; }
+body.theme-schmuggel { --t-color: #cd853f; }
+body.theme-erste-ordnung { --t-color: #ff0000; --t-border: repeating-linear-gradient(45deg, #000000, #000000 10px, #ff0000 10px, #ff0000 20px); }
+
+@keyframes pulseBlue {
+    0% { box-shadow: 0 0 5px #0055ff; }
+    50% { box-shadow: 0 0 20px #0055ff; }
+    100% { box-shadow: 0 0 5px #0055ff; }
+}
+
+[class*="theme-"] .panel,
+[class*="theme-"] .sticky-nav-container,
+[class*="theme-"] .online-sidebar,
+[class*="theme-"] .chat-widget,
+[class*="theme-"] .chat-header,
+[class*="theme-"] .updates-content {
+    border-color: var(--t-color, inherit) !important;
+}
+
+/* For striped borders, we use border-image if --t-border is defined */
+[class*="theme-"] .panel, [class*="theme-"] .online-sidebar {
+    border-image: var(--t-border, none);
+    border-image-slice: 1;
+    animation: var(--t-anim, none);
+}
+
+[class*="theme-"] .nav-link.active { color: var(--t-color) !important; border-bottom-color: var(--t-color) !important; }
+[class*="theme-"] .sticky-nav-container { border-bottom-color: var(--t-color) !important; }
+[class*="theme-"] .card-content:has(img) { border-color: var(--t-color) !important; box-shadow: 0 0 10px var(--t-color) !important; }
+[class*="theme-"] .mini-avatar { border-color: var(--t-color) !important; }
+[class*="theme-"] .rank-btn { color: var(--t-color) !important; border-color: var(--t-color) !important; }
+[class*="theme-"] .rank-btn:hover:not(:disabled) { background-color: var(--t-color) !important; opacity: 0.8; color: white !important; }
+[class*="theme-"] .changelog-tab.active { background: var(--t-color) !important; border-color: var(--t-color) !important; color: white !important; }
+[class*="theme-"] header h1, [class*="theme-"] .theme-heading { color: var(--t-color) !important; text-shadow: 0 0 10px var(--t-color) !important; }
+[class*="theme-"] .history-card:hover, [class*="theme-"] .score-card:hover { border-color: var(--t-color) !important; }
+[class*="theme-"] .lexikon-card:hover { box-shadow: 0 8px 20px var(--t-color) !important; border-color: var(--t-color) !important; }
+[class*="theme-"] .avatar-card.selected { border-color: var(--t-color) !important; box-shadow: 0 0 15px var(--t-color) !important; }
+[class*="theme-"] input:focus { border-color: var(--t-color) !important; }
+[class*="theme-"] .title-card.selected { border-color: var(--t-color) !important; box-shadow: 0 0 10px var(--t-color) !important; }

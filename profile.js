@@ -263,26 +263,28 @@ function renderThemeSelection(user) {
 
         if (t.condition && t.condition.type === 'tag_full_team') {
             const tag = t.condition.tag;
+            const reqCount = t.condition.count || 5;
             const totalChars = activeCharacterDatabase.length;
-            if (totalChars >= 5) {
+            if (totalChars >= reqCount) {
                 const matchingChars = activeCharacterDatabase.filter(c => c.tags && c.tags.includes(tag)).length;
-                if (matchingChars >= 5) {
+                if (matchingChars >= reqCount) {
                     let prob = 1;
-                    for (let i = 0; i < 5; i++) {
+                    for (let i = 0; i < reqCount; i++) {
                         prob *= (matchingChars - i) / (totalChars - i);
                     }
                     const probPercent = (prob * 100).toFixed(4);
                     probHtml = `<br><span style="font-size:0.75rem; color:#888;">(Chance: <strong style="color:#ffd700">${probPercent}%</strong> - ${matchingChars}/${totalChars} Chars)</span>`;
                 } else {
-                    probHtml = `<br><span style="font-size:0.75rem; color:#ff4757;">(Unmöglich: nur ${matchingChars} Chars mit diesem Tag)</span>`;
+                    probHtml = `<br><span style="font-size:0.75rem; color:#ff4757;">(Unmöglich: nur ${matchingChars}/${reqCount} nötigen Chars vorhanden)</span>`;
                 }
             }
         }
 
         if (!unlocked && t.condition) {
-            const { type, tag } = t.condition;
+            const { type, tag, count } = t.condition;
+            const reqCount = count || 5;
             if (type === 'tag_full_team') {
-                reqText = `Ranke 5 ${tag.charAt(0).toUpperCase() + tag.slice(1)} im selben Spiel`;
+                reqText = `Ranke ${reqCount} ${tag.charAt(0).toUpperCase() + tag.slice(1)} im selben Spiel`;
             }
         } else if (unlocked) {
             reqText = 'Freigeschaltet';
