@@ -210,6 +210,51 @@
                 </div>
             </div>
 
+            <div id="starwarsdle-content" class="tab-content app-container hidden">
+                <h2 class="theme-heading" style="text-align: center;">STARWARSDLE</h2>
+                <p class="prompt-text" style="text-align: center;">Errate den täglichen Charakter!</p>
+                
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px; position: relative;">
+                        <input type="text" id="starwarsdle-input" placeholder="Charaktername eingeben..." autocomplete="off" style="margin-bottom: 0;">
+                        <button id="starwarsdle-guess-btn" class="rank-btn" style="width: auto; padding: 0 20px;">Raten</button>
+                        <div id="starwarsdle-autocomplete" style="position: absolute; top: 100%; left: 0; right: 100px; background: #1a1e29; border: 1px solid #333; max-height: 200px; overflow-y: auto; z-index: 100; display: none; border-radius: 6px;"></div>
+                    </div>
+
+                    <div id="starwarsdle-hints" style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #ffd700; display: none;">
+                        <h4 style="color: #ffd700; margin-top: 0;">Hinweise</h4>
+                        <div id="starwarsdle-hint-faction" style="display: none; margin-bottom: 10px;">Fraktion: <span id="starwarsdle-hint-faction-text" style="font-weight: bold;"></span></div>
+                        <div id="starwarsdle-hint-image" style="display: none; margin-bottom: 10px;">Bild: <img id="starwarsdle-hint-image-img" src="" style="width: 50px; height: 50px; object-fit: cover; filter: blur(10px) contrast(1.5) saturate(2); border-radius: 4px; vertical-align: middle;"></div>
+                        <div id="starwarsdle-hint-letter" style="display: none;">Erster Buchstabe: <span id="starwarsdle-hint-letter-text" style="font-weight: bold; font-size: 1.5rem;"></span></div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; min-width: 600px; text-align: center;" id="starwarsdle-grid">
+                            <thead>
+                                <tr style="border-bottom: 2px solid #333;">
+                                    <th style="padding: 10px;">Charakter</th>
+                                    <th style="padding: 10px;">Geschlecht</th>
+                                    <th style="padding: 10px;">Spezies</th>
+                                    <th style="padding: 10px;">Fraktion</th>
+                                    <th style="padding: 10px;">Epoche</th>
+                                    <th style="padding: 10px;">Macht</th>
+                                </tr>
+                            </thead>
+                            <tbody id="starwarsdle-guesses">
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div id="starwarsdle-win" style="display: none; text-align: center; margin-top: 30px; padding: 20px; background: rgba(46, 213, 115, 0.1); border: 2px solid #2ed573; border-radius: 6px;">
+                        <h2 style="color: #2ed573;">GELÖST!</h2>
+                        <img id="starwarsdle-win-img" src="" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%; border: 3px solid #2ed573; margin: 10px 0;">
+                        <h3 id="starwarsdle-win-name" style="margin: 10px 0;"></h3>
+                        <p>Du hast <span id="starwarsdle-win-attempts" style="font-weight: bold; color: #ffd700;"></span> Versuche gebraucht!</p>
+                        <p style="font-size: 0.9rem; color: #aaa;">Komm morgen für den nächsten Charakter wieder.</p>
+                    </div>
+                </div>
+            </div>
+            
             <div id="versus-content" class="tab-content app-container hidden">
                 <div class="panel history-panel" id="versus-lobby-list-view">
                     <h2 class="theme-heading">VERSUS LOBBYS</h2>
