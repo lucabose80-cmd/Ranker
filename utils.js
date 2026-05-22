@@ -8,30 +8,44 @@ export function shuffleArray(array) {
     return arr;
 }
 
-// "Ziehen ohne Zurücklegen" Bag-System für faire Verteilung
+// Balanced Randomizer: Merkt sich die letzten 15 gezogenen Charaktere und schließt sie (wenn möglich) aus.
 export function drawFromBag(pool, count, bagKey) {
-    let bag = [];
+    let recent = [];
     try {
         const stored = localStorage.getItem(bagKey);
-        if (stored) bag = JSON.parse(stored);
+        if (stored) recent = JSON.parse(stored);
     } catch(e) {}
 
-    // Filtere invalide Charaktere raus (falls DB Update)
-    bag = bag.filter(name => pool.some(c => c.name === name));
-
     const resultNames = [];
-    while (resultNames.length < count) {
-        if (bag.length === 0) {
-            bag = shuffleArray(pool).map(c => c.name);
+    
+    // Wir versuchen aus dem Pool zu ziehen, der NICHT in 'recent' ist.
+    for (let i = 0; i < count; i++) {
+        // Filtere Charaktere, die aktuell in 'recent' oder schon in 'resultNames' sind
+        let available = pool.filter(c => !recent.includes(c.name) && !resultNames.includes(c.name));
+        
+        // Wenn der Pool zu klein ist, leeren wir 'recent' einfach zur Hälfte oder komplett
+        if (available.length === 0) {
+            recent = recent.slice(Math.floor(recent.length / 2)); 
+            available = pool.filter(c => !recent.includes(c.name) && !resultNames.includes(c.name));
+            if (available.length === 0) {
+                recent = []; // Notfall: alles wieder erlauben
+                available = pool.filter(c => !resultNames.includes(c.name));
+            }
         }
-        const nextChar = bag.shift();
-        if (!resultNames.includes(nextChar)) {
-            resultNames.push(nextChar);
+        
+        const chosen = available[Math.floor(Math.random() * available.length)];
+        if (chosen) {
+            resultNames.push(chosen.name);
+            recent.push(chosen.name);
         }
     }
 
-    localStorage.setItem(bagKey, JSON.stringify(bag));
-    // Charaktere anhand Namen aus dem Pool fischen
+    // Behalte maximal die letzten 15 Charaktere im Gedächtnis
+    if (recent.length > 15) {
+        recent = recent.slice(recent.length - 15);
+    }
+
+    localStorage.setItem(bagKey, JSON.stringify(recent));
     return resultNames.map(name => pool.find(c => c.name === name)).filter(c => c !== undefined);
 }
 
