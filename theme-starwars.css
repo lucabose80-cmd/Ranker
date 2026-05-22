@@ -84,3 +84,5 @@ body.theme-erste-ordnung { --t-color: #ff0000; --t-border: repeating-linear-grad
 [class*="theme-"] .mystery-name { color: var(--t-color) !important; }
 [class*="theme-"] .mode-toggle-btn.active { background: var(--t-color) !important; border-color: var(--t-color) !important; }
 
+
+[class*="theme-"] .end-title { color: var(--t-color) !important; text-shadow: 0 0 20px var(--t-color) !important; }
