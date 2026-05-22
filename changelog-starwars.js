@@ -4,7 +4,7 @@ export const patchNotesStarWars = [
         title: "Hotfix: Wahrer Zufall",
         isHotfix: true,
         changes: [
-            "Bugfix: Der Zufallsgenerator beim Ziehen der Charaktere wurde ausbalanciert! Frustrierende Dauer-Wiederholungen gehören der Vergangenheit an. Das System merkt sich nun die letzten 15 gezogenen Charaktere und schließt diese temporär aus, um deutlich mehr Abwechslung zu bieten."
+            "Bugfix: Der Zufallsgenerator beim Ziehen der Charaktere wurde ausbalanciert! Frustrierende Dauer-Wiederholungen gehören der Vergangenheit an. Das System merkt sich nun die letzten 5 gezogenen Charaktere und schließt diese temporär aus, um deutlich mehr Abwechslung zu bieten."
         ]
     },
     {

@@ -8,7 +8,7 @@ export function shuffleArray(array) {
     return arr;
 }
 
-// Balanced Randomizer: Merkt sich die letzten 15 gezogenen Charaktere und schließt sie (wenn möglich) aus.
+// Balanced Randomizer: Merkt sich die letzten 5 gezogenen Charaktere und schließt sie (wenn möglich) aus.
 export function drawFromBag(pool, count, bagKey) {
     let recent = [];
     try {
@@ -40,9 +40,9 @@ export function drawFromBag(pool, count, bagKey) {
         }
     }
 
-    // Behalte maximal die letzten 15 Charaktere im Gedächtnis
-    if (recent.length > 15) {
-        recent = recent.slice(recent.length - 15);
+    // Behalte maximal die letzten 5 Charaktere im Gedächtnis
+    if (recent.length > 5) {
+        recent = recent.slice(recent.length - 5);
     }
 
     localStorage.setItem(bagKey, JSON.stringify(recent));
