@@ -44,10 +44,10 @@ export function drawFromBag(pool, count, bagKey) {
         let totalWeight = 0;
         const weightedAvailable = available.map(c => {
             const isEasterEgg = c.tags && c.tags.includes('anime');
-            // Anime Easter Eggs bekommen keinen Pity-Bonus, fix auf 0.05
+            // Anime Easter Eggs bekommen keinen Pity-Bonus, fix auf 0.3 (ca 3x seltener statt 20x)
             if (isEasterEgg) {
-                totalWeight += 0.05;
-                return { char: c, weight: 0.05 };
+                totalWeight += 0.3;
+                return { char: c, weight: 0.3 };
             }
             
             const droughtCount = drought[c.name] || 0;

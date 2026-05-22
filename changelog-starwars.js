@@ -1,4 +1,4 @@
-export const patchNotesStarWars = [
+﻿export const patchNotesStarWars = [
     {
         version: "v5.0.1",
         title: "Streak-System & Anpassungen",
@@ -63,7 +63,7 @@ export const patchNotesStarWars = [
         isHotfix: false,
         changes: [
             "Neuer Pity-Timer: Wenn du einen Charakter lange nicht ziehst, steigt seine Wahrscheinlichkeit nun sanft um 1% pro verpasster Runde.",
-            "Easter Egg Balancing: Die Anime-Charaktere (Ruffy & Fino) sind nun extrem selten (20-mal seltener) und bekommen absichtlich keinen Pity-Bonus.",
+            "Easter Egg Balancing: Die Anime-Charaktere (Ruffy & Fino) sind nun extrem selten (3-mal seltener) und bekommen absichtlich keinen Pity-Bonus.",
             "Zufalls-Cooldown: Das System schließt die letzten 5 gezogenen Charaktere temporär aus, um nervige Dauerschleifen zu verhindern.",
             "Wartungsmodus: Administratoren können ab sofort das Einloggen für Spieler sperren, während Updates aufgespielt werden."
         ]
@@ -431,3 +431,4 @@ export const patchNotesStarWars = [
     { version: "v1.1", title: "Star Wars Theme", changes: ["Theme-Wechsel: Das Spiel nutzt nun das Star Wars Universum."] },
     { version: "v1.0", title: "Initial Release", changes: ["Grundgerüst des Ranking-Spiels veröffentlicht."] }
 ];
+

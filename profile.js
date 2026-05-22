@@ -155,9 +155,15 @@ function renderTitleSelection(user, gamesPlayed) {
     if (!grid || !user) return;
     grid.innerHTML = '';
     
-    const availableTitles = TITLES[currentMode] || [];
+    let availableTitles = [...(TITLES[currentMode] || [])];
     const activeTitle = currentMode === 'starwars' ? user.activeTitle_starwars : user.activeTitle_waifu;
     
+    availableTitles.sort((a, b) => {
+        const aLocked = a.secret ? !(currentMode === 'starwars' ? (user.unlocked_titles_starwars || []) : (user.unlocked_titles_waifu || [])).includes(a.id) : gamesPlayed < a.required;
+        const bLocked = b.secret ? !(currentMode === 'starwars' ? (user.unlocked_titles_starwars || []) : (user.unlocked_titles_waifu || [])).includes(b.id) : gamesPlayed < b.required;
+        return (aLocked === bLocked) ? 0 : aLocked ? 1 : -1;
+    });
+
     availableTitles.forEach(t => {
         let isLocked = gamesPlayed < t.required;
         
@@ -247,8 +253,14 @@ function renderThemeSelection(user) {
     if (!grid || !user) return;
     grid.innerHTML = '';
 
-    const availableThemes = THEMES[currentMode] || [];
+    let availableThemes = [...(THEMES[currentMode] || [])];
     const activeThemeId = currentMode === 'starwars' ? user.activeTheme_starwars : user.activeTheme_waifu;
+
+    availableThemes.sort((a, b) => {
+        const aLocked = !isThemeUnlocked(a, user);
+        const bLocked = !isThemeUnlocked(b, user);
+        return (aLocked === bLocked) ? 0 : aLocked ? 1 : -1;
+    });
 
     availableThemes.forEach(t => {
         const unlocked = isThemeUnlocked(t, user);
