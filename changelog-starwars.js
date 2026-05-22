@@ -1,5 +1,24 @@
 export const patchNotesStarWars = [
     {
+        version: "v4.4",
+        title: "Das Galaktische Farben Update",
+        isHotfix: false,
+        changes: [
+            "Massive Anpassung: Es wurden über 20 komplett neue, exklusive Farb-Themes (Farbschemas) ins Spiel eingebaut!",
+            "Freischalt-Bedingungen: Ranke bestimmte Fraktionen (z.B. 5 Mandalorianer, 5 Jedi Meister oder die Coruscant Wache) in einem einzigen Spiel, um deren einzigartige Farb-Themes für dein Profil freizuschalten.",
+            "Neue Effekte: Einige besondere Fraktions-Themes kommen mit exklusiven animierten CSS-Glow-Effekten oder speziellen gestreiften Rändern!"
+        ]
+    },
+    {
+        version: "v4.3",
+        title: "Geheimnisse der Galaxis Update",
+        isHotfix: false,
+        changes: [
+            "Neue Herausforderung: Es wurden 15 brandneue geheime Titel in das Spiel eingefügt.",
+            "Rätselhaft: Wie man diese Titel freischaltet, bleibt streng geheim. Ein kleiner Tipp: Manche berühmten Kombinationen von Verbündeten oder Erzfeinden im selben Spiel könnten etwas auslösen!"
+        ]
+    },
+    {
         version: "v4.2",
         title: "System & Balancing Update",
         isHotfix: false,

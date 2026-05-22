@@ -1,5 +1,22 @@
 export const patchNotesWaifu = [
     {
+        version: "v4.4",
+        title: "Das Galaktische Farben Update",
+        isHotfix: false,
+        changes: [
+            "Globale Erweiterung: Die Engine unterstützt nun über 20 neue animierte Farbschemas und CSS-Glow-Effekte für das Profil-System.",
+            "Ausblick: Diese Features werden aktuell im Star Wars Modus getestet und bald auch im Waifu-Modus verfügbar sein."
+        ]
+    },
+    {
+        version: "v4.3",
+        title: "Geheimnisse der Galaxis Update",
+        isHotfix: false,
+        changes: [
+            "Globale Erweiterung: Die Engine für dynamische, kombinierte Charakter-Titel (z.B. Verbündete oder Erzfeinde im selben Spiel) wurde erfolgreich in das Spiel implementiert."
+        ]
+    },
+    {
         version: "v4.2",
         title: "System & Balancing Update",
         isHotfix: false,
