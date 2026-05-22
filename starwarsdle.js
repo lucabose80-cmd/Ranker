@@ -1,4 +1,4 @@
-﻿import { starWarsCharacters } from "./data-starwars.js";
+import { starWarsCharacters } from "./data-starwars.js";
 import { db } from "./firebase-config.js";
 import { getCurrentUser, refreshCurrentUser } from "./auth.js";
 import { collection, addDoc, Timestamp, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
@@ -241,17 +241,33 @@ function updateAndGetStreak(isNewWin) {
     const today = new Date();
     const offset = today.getTimezoneOffset() * 60000;
     const todaySeed = (new Date(today - offset)).toISOString().slice(0, 10);
-    const yesterday = new Date(today.getTime() - 86400000);
-    const yesterdaySeed = (new Date(yesterday - offset)).toISOString().slice(0, 10);
     
     let streak = parseInt(localStorage.getItem('starwarsdle_streak') || '0');
     const lastWin = localStorage.getItem('starwarsdle_last_win');
 
     if (isNewWin) {
-        if (lastWin === yesterdaySeed) {
-            streak++;
-        } else if (lastWin !== todaySeed) {
+        if (!lastWin) {
             streak = 1;
+        } else if (lastWin !== todaySeed) {
+            let isBroken = false;
+            let checkDate = new Date(lastWin);
+            checkDate.setUTCDate(checkDate.getUTCDate() + 1);
+            const todayDate = new Date(todaySeed);
+            
+            while (checkDate < todayDate) {
+                const dayOfWeek = checkDate.getUTCDay();
+                if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                    isBroken = true;
+                    break;
+                }
+                checkDate.setUTCDate(checkDate.getUTCDate() + 1);
+            }
+            
+            if (isBroken) {
+                streak = 1;
+            } else {
+                streak++;
+            }
         }
         localStorage.setItem('starwarsdle_streak', streak.toString());
         localStorage.setItem('starwarsdle_last_win', todaySeed);
@@ -286,11 +302,12 @@ async function saveScoreToFirebase(attempts) {
         if(!snap.empty) return; // already saved
         
         await addDoc(collection(db, "starwarsdle_scores"), {
-            userId: userId,
-            username: username,
-            attempts: attempts,
-            date: seed,
-            timestamp: Timestamp.now()
+            userId, username, attempts, date: seed, timestamp: Timestamp.now()
+        });
+        
+        const streak = parseInt(localStorage.getItem('starwarsdle_streak') || '0');
+        await updateDoc(doc(db, "users", userId), {
+            starwarsdleStreak: streak
         });
     } catch(e) {
         console.error("Error saving score: ", e);

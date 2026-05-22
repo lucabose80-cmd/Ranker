@@ -53,6 +53,18 @@ export function initCommunity() {
             const avatarHtml = msg.avatar ? `<img src="${msg.avatar}">` : `<div class="mini-avatar" style="background:#444"></div>`;
             const titleHtml = msg.title && msg.title !== 'Kein Titel' ? `<span style="font-size:0.6rem; color:#ffd700; font-weight:bold; margin-left:5px; text-transform:uppercase;">${msg.title}</span>` : '';
             
+            let themeStyle = '';
+            if (msg.theme) {
+                const themeData = THEMES[msg.userMode || 'starwars']?.find(t => t.id === msg.theme);
+                if (themeData && themeData.preview) {
+                    if (themeData.preview.includes('gradient')) {
+                        themeStyle = `border-image: ${themeData.preview} 1; border-width: 2px; border-style: solid;`;
+                    } else {
+                        themeStyle = `border-color: ${themeData.preview}; box-shadow: 0 0 5px ${themeData.preview}40;`;
+                    }
+                }
+            }
+            
             chatContainer.innerHTML += `
                 <div class="chat-msg ${isSelf ? 'self' : ''}">
                     ${avatarHtml}
@@ -60,7 +72,7 @@ export function initCommunity() {
                         <span class="chat-username">
                             <span class="chat-mode-tag ${modeClass}">${modeText}</span> ${msg.displayName} ${titleHtml}
                         </span>
-                        <div class="chat-msg-content">${msg.text}</div>
+                        <div class="chat-msg-content" style="${themeStyle}">${msg.text}</div>
                     </div>
                 </div>
             `;
@@ -93,6 +105,7 @@ export function initCommunity() {
                 avatar: activeAvatar || '',
                 userMode: currentMode, // Welches Game der Schreiber gerade offen hat
                 title: currentMode === 'starwars' ? (user.activeTitle_starwars || '') : (user.activeTitle_waifu || ''),
+                theme: currentMode === 'starwars' ? (user.activeTheme_starwars || '') : (user.activeTheme_waifu || ''),
                 text: text,
                 timestamp: Timestamp.now()
             });
@@ -185,6 +198,8 @@ export function initCommunity() {
                                 <span style="flex-shrink:0; color:#888; font-size:0.8rem; margin-left:5px;">(Du)</span>
                             </strong>
                             ${titleHtml}
+                            ${user.starwarsdleStreak ? `<div style="font-size:0.65rem; color:#ff9f43; margin-top:2px; font-weight:bold;">🔥 SW-Streak: ${user.starwarsdleStreak}</div>` : ""}
+                            ${user.waifudleStreak ? `<div style="font-size:0.65rem; color:#ff6b81; margin-top:2px; font-weight:bold;">🌸 Ani-Streak: ${user.waifudleStreak}</div>` : ""}
                         </div>
                         <span class="chat-mode-tag ${modeClass}" style="margin-left:auto; flex-shrink:0;">${modeText}</span>
                     </div>
@@ -217,6 +232,8 @@ export function initCommunity() {
                         <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;">
                             <strong style="flex: unset; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${u.displayName || u.username}</strong>
                             ${otherTitleHtml}
+                            ${u.starwarsdleStreak ? `<div style="font-size:0.65rem; color:#ff9f43; margin-top:2px; font-weight:bold;">🔥 SW-Streak: ${u.starwarsdleStreak}</div>` : ""}
+                            ${u.waifudleStreak ? `<div style="font-size:0.65rem; color:#ff6b81; margin-top:2px; font-weight:bold;">🌸 Ani-Streak: ${u.waifudleStreak}</div>` : ""}
                         </div>
                         <span class="chat-mode-tag ${otherModeClass}" style="margin-left:auto; flex-shrink:0;">${otherModeText}</span>
                     </div>
