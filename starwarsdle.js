@@ -1,6 +1,6 @@
-import { starWarsCharacters } from "./data-starwars.js";
+﻿import { starWarsCharacters } from "./data-starwars.js";
 import { db } from "./firebase-config.js";
-import { getCurrentUser } from "./auth.js";
+import { getCurrentUser, refreshCurrentUser } from "./auth.js";
 import { collection, addDoc, Timestamp, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 // === 2. DAILY LOGIC ===
@@ -28,7 +28,7 @@ function selectDailyCharacter() {
 }
 
 // === 3. UI LOGIC ===
-export function initStarWarsdle() {
+export async function initStarWarsdle() {
     
     dailyCharacter = selectDailyCharacter();
     
@@ -37,7 +37,7 @@ export function initStarWarsdle() {
     const guessBtn = document.getElementById('starwarsdle-guess-btn');
     
     // Load progress
-    loadProgress();
+    await loadProgress();
     checkGlow();
 
     // Input Autocomplete
@@ -100,7 +100,17 @@ function checkGlow() {
     }
 }
 
-function loadProgress() {
+async function loadProgress() {
+    const user = await refreshCurrentUser();
+    if(user && user.starwarsdleResetAt) {
+        const localReset = parseInt(localStorage.getItem("starwarsdle_local_reset") || "0");
+        if (user.starwarsdleResetAt.seconds > localReset) {
+            localStorage.setItem("starwarsdle_local_reset", user.starwarsdleResetAt.seconds.toString());
+            localStorage.setItem("starwarsdle_date", "RESET");
+            localStorage.setItem("starwarsdle_won", "false");
+            localStorage.setItem("starwarsdle_guesses", "[]");
+        }
+    }
     const seed = getDailySeed();
     const savedDate = localStorage.getItem('starwarsdle_date');
     
@@ -138,7 +148,7 @@ function makeGuess(char) {
         hasWonToday = true;
         localStorage.setItem('starwarsdle_won', 'true');
         document.getElementById('starwarsdle-glow').style.display = 'none';
-        showWinScreen(currentGuesses.length);
+        showWinScreen(currentGuesses.length, true);
         saveScoreToFirebase(currentGuesses.length);
     } else {
         if(currentGuesses.length >= 5) {
@@ -227,11 +237,36 @@ function showHints() {
     }
 }
 
-function showWinScreen(attempts) {
+function updateAndGetStreak(isNewWin) {
+    const today = new Date();
+    const offset = today.getTimezoneOffset() * 60000;
+    const todaySeed = (new Date(today - offset)).toISOString().slice(0, 10);
+    const yesterday = new Date(today.getTime() - 86400000);
+    const yesterdaySeed = (new Date(yesterday - offset)).toISOString().slice(0, 10);
+    
+    let streak = parseInt(localStorage.getItem('starwarsdle_streak') || '0');
+    const lastWin = localStorage.getItem('starwarsdle_last_win');
+
+    if (isNewWin) {
+        if (lastWin === yesterdaySeed) {
+            streak++;
+        } else if (lastWin !== todaySeed) {
+            streak = 1;
+        }
+        localStorage.setItem('starwarsdle_streak', streak.toString());
+        localStorage.setItem('starwarsdle_last_win', todaySeed);
+    }
+    return streak;
+}
+
+function showWinScreen(attempts, isNewWin = false) {
+    const streak = updateAndGetStreak(isNewWin);
     document.getElementById('starwarsdle-win').style.display = 'block';
     document.getElementById('starwarsdle-win-img').src = dailyCharacter.img;
     document.getElementById('starwarsdle-win-name').textContent = dailyCharacter.name;
     document.getElementById('starwarsdle-win-attempts').textContent = attempts;
+    const streakEl = document.getElementById('starwarsdle-win-streak');
+    if(streakEl) streakEl.textContent = streak;
     document.getElementById('starwarsdle-input').disabled = true;
     document.getElementById('starwarsdle-guess-btn').disabled = true;
 }
@@ -261,3 +296,6 @@ async function saveScoreToFirebase(attempts) {
         console.error("Error saving score: ", e);
     }
 }
+
+
+

@@ -1,4 +1,4 @@
-// admin.js
+﻿// admin.js
 import { logout, getCurrentUser, updateUserProfile } from './auth.js';
 import { db } from './firebase-config.js';
 import { collection, getDocs, deleteDoc, doc, updateDoc, setDoc, onSnapshot, query, orderBy, limit, Timestamp, where, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
@@ -245,6 +245,7 @@ async function renderUserList() {
                     <button class="rank-btn admin-user-action" data-action="scoreboard" data-id="${user.id}" style="height:auto; padding:5px 8px; flex:1; font-size:0.7rem; min-width:70px; background-color:${scoreColor}; border-color:${scoreColor}; color:white;">🏆 Scoreboard</button>
                     <button class="rank-btn admin-user-action" data-action="title" data-id="${user.id}" style="height:auto; padding:5px 8px; flex:1; font-size:0.7rem; min-width:60px; background-color:${titleColor}; border-color:${titleColor}; color:white;">🏅 Titel</button>
                     <button class="rank-btn admin-user-action" data-action="theme" data-id="${user.id}" style="height:auto; padding:5px 8px; flex:1; font-size:0.7rem; min-width:80px; background-color:${themeColor}; border-color:${themeColor}; color:white;">🎨 Farbschema</button>
+                    <button class="rank-btn admin-user-action" data-action="starwarsdle" data-id="${user.id}" style="height:auto; padding:5px 8px; flex:1; font-size:0.7rem; min-width:80px; background-color:#444; border-color:#444; color:white;">✨ Starwarsdle</button>
                 </div>
             </div>
             `;
@@ -286,6 +287,18 @@ async function renderUserList() {
             const userDoc = allUsersCache.find(u => u.id === uid);
             if (!userDoc) { alert("Benutzer nicht gefunden."); return; }
             
+            if(action === 'starwarsdle') {
+                if(confirm(StarWarsdle Scores für  löschen?)) {
+                    const qDle = query(collection(db, 'starwarsdle_scores'), where('username', 'in', [userDoc.username, userDoc.displayName || userDoc.username]));
+                    const snap = await getDocs(qDle);
+                    let promises = [];
+                    snap.forEach(d => promises.push(deleteDoc(d.ref)));
+                    await Promise.all(promises);
+                    await updateDoc(userRef, { starwarsdleResetAt: Timestamp.now() });
+                    alert('StarWarsdle Scores gelöscht.');
+                    await refreshAdminPanel();
+                }
+            }
             if(action === 'discovery') {
                 if(confirm(`Discovery für ${userDoc.displayName || userDoc.username} in ${currentMode} löschen?`)) {
                     const oldDisc = userDoc.discovered || [];

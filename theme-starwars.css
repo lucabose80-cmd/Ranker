@@ -65,3 +65,9 @@ body.theme-erste-ordnung { --t-color: #ff0000; --t-border: repeating-linear-grad
 [class*="theme-"] .avatar-card.selected { border-color: var(--t-color) !important; box-shadow: 0 0 15px var(--t-color) !important; }
 [class*="theme-"] input:focus { border-color: var(--t-color) !important; }
 [class*="theme-"] .title-card.selected { border-color: var(--t-color) !important; box-shadow: 0 0 10px var(--t-color) !important; }
+
+[class*="theme-"] #restart-btn { color: var(--t-color) !important; border-color: var(--t-color) !important; }
+[class*="theme-"] #restart-btn:hover { background-color: var(--t-color) !important; color: white !important; opacity: 0.8; }
+[class*="theme-"] .rate-btn { color: var(--t-color) !important; border-color: var(--t-color) !important; }
+[class*="theme-"] .rate-btn:hover, [class*="theme-"] .rate-btn.selected { background-color: var(--t-color) !important; color: white !important; }
+[class*="theme-"] .current-character-wrapper { border-color: var(--t-color) !important; box-shadow: 0 0 15px var(--t-color) !important; }
