@@ -1,4 +1,4 @@
-// admin.js
+﻿// admin.js
 import { logout, getCurrentUser, updateUserProfile } from './auth.js';
 import { db } from './firebase-config.js';
 import { collection, getDocs, deleteDoc, doc, updateDoc, setDoc, onSnapshot, query, orderBy, limit, Timestamp, where, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
@@ -386,14 +386,30 @@ function initChatModeration() {
                 : '?';
             const modeTag = msg.userMode === 'starwars' ? '🌌' : '🌸';
             
+            const reactions = msg.reactions || {};
+            let reactionAdminHtml = '';
+            Object.entries(reactions).forEach(([emoji, list]) => {
+                if (list && list.length > 0) {
+                    reactionAdminHtml += `
+                        <span style="display:inline-flex; align-items:center; background:#222; border:1px solid #444; border-radius:3px; padding:1px 4px; font-size:0.75rem; margin-right:4px;">
+                            <span>${emoji} (${list.length})</span>
+                            <span class="delete-reaction-btn" data-id="${d.id}" data-emoji="${emoji}" style="color:#ff4757; margin-left:4px; cursor:pointer; font-weight:bold;">✕</span>
+                        </span>
+                    `;
+                }
+            });
+            
             chatContainer.innerHTML += `
-                <div style="display:flex; justify-content:space-between; align-items:center; padding: 8px 10px; border-bottom: 1px solid #1a1f2e; gap: 8px;">
-                    <div style="font-size: 0.8rem; overflow:hidden; flex:1; min-width:0;">
-                        <span style="color:#555;">[${date}]</span>
-                        ${modeTag} <strong style="color:#ccc;">${msg.displayName || msg.username}</strong>:
-                        <span style="color:#aaa; word-break:break-word;">${msg.text}</span>
+                <div style="display:flex; flex-direction:column; padding: 8px 10px; border-bottom: 1px solid #1a1f2e; gap: 4px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap: 8px;">
+                        <div style="font-size: 0.8rem; overflow:hidden; flex:1; min-width:0;">
+                            <span style="color:#555;">[${date}]</span>
+                            ${modeTag} <strong style="color:#ccc;">${msg.displayName || msg.username}</strong>:
+                            <span style="color:#aaa; word-break:break-word;">${msg.text}</span>
+                        </div>
+                        <button class="text-btn delete-msg-btn" data-id="${d.id}" style="color:#ff4757; font-size:1.1rem; padding:0 5px; flex-shrink:0;">✕</button>
                     </div>
-                    <button class="text-btn delete-msg-btn" data-id="${d.id}" style="color:#ff4757; font-size:1.1rem; padding:0 5px; flex-shrink:0;">✕</button>
+                    ${reactionAdminHtml ? `<div style="display:flex; flex-wrap:wrap; margin-top:2px;">${reactionAdminHtml}</div>` : ''}
                 </div>
             `;
         });
@@ -412,8 +428,23 @@ function initChatModeration() {
                 await deleteDoc(doc(db, "chat", id));
             });
         });
+
+        document.querySelectorAll('.delete-reaction-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const id = btn.dataset.id;
+                const emoji = btn.dataset.emoji;
+                if(confirm(`Reaktionen für ${emoji} auf dieser Nachricht wirklich löschen?`)) {
+                    const msgRef = doc(db, "chat", id);
+                    const updateObj = {};
+                    updateObj[`reactions.${emoji}`] = [];
+                    await updateDoc(msgRef, updateObj);
+                }
+            });
+        });
     }, (err) => {
         console.error("Chat-Listener Fehler:", err);
         chatContainer.innerHTML = '<p class="prompt-text" style="color:#ff4757; padding:15px;">Fehler beim Laden des Chats.</p>';
     });
 }
+

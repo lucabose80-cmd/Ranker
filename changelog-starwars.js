@@ -1,4 +1,20 @@
-export const patchNotesStarWars = [
+﻿export const patchNotesStarWars = [
+    {
+        version: "v5.0.3",
+        title: "Chat-Reaktionen & QoL-Features",
+        isHotfix: true,
+        changes: [
+            "Feature: Emoji-Reaktionen im globalen Chat hinzugefügt. Spieler können Nachrichten mit 👍, 😂, ❤️, 😢, und 😡 versehen.",
+            "Feature: Administratoren können Reaktionen im Admin-Panel separat löschen (ohne die Nachricht zu entfernen).",
+            "Feature: Wochenend-Streak-Modus eingeführt. Am Wochenende (Sa/So) frieren Streaks mit einem Eis-Symbol (❄️) ein (sie verfallen nicht bei Inaktivität, steigen aber auch nicht an).",
+            "Feature: StarWarsdle Streaks werden jetzt auch bei Offline-Spielern in der Online-Leiste angezeigt.",
+            "Feature: Der Profil-Button zeigt einen kleinen gelben Punkt (🟡), wenn neue Titel oder Farbschemen freigeschaltet wurden.",
+            "QoL: Der Chat scrollt beim Öffnen jetzt automatisch ganz nach unten zu den neuesten Nachrichten.",
+            "QoL: Die drei StarWarsdle Tipps erscheinen nun exakt nach 5, 10 und 15 Fehlversuchen.",
+            "QoL: Die Lesbarkeit von Knöpfen und Elementen wurde verbessert: Bei sehr hellen Themen (Klon, Padawan, Droide, Senat, 212th) wird die Textfarbe automatisch dunkel gefärbt.",
+            "Sicherheit: Der Bild-Tipp bei StarWarsdle wird nun über ein Canvas-Element gerendert – dadurch ist der Bildpfad in den DevTools nicht mehr sichtbar (Cheat-Schutz). Die Bildunschärfe wurde zudem auf 2px reduziert."
+        ]
+    },
     {
         version: "v5.0.2",
         title: "QoL & Bugfixes",
@@ -448,4 +464,5 @@ export const patchNotesStarWars = [
     { version: "v1.1", title: "Star Wars Theme", changes: ["Theme-Wechsel: Das Spiel nutzt nun das Star Wars Universum."] },
     { version: "v1.0", title: "Initial Release", changes: ["Grundgerüst des Ranking-Spiels veröffentlicht."] }
 ];
+
 

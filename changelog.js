@@ -1,4 +1,4 @@
-// changelog.js
+﻿// changelog.js
 import { getCurrentUser, markUpdatesAsRead } from './auth.js';
 import { currentMode } from './mode-state.js';
 import { roadmapStarWars, roadmapWaifu } from './roadmap.js';
@@ -143,7 +143,7 @@ export function updateChangelogContent(changelogData) {
         const mainChangesHtml = main ? main.changes.map(c => `
             <div class="cl-change-item">
                 <span class="cl-change-icon">${getChangeIcon(c)}</span>
-                <span class="cl-change-text">${c.replace(/^(Hotfix|Neues Feature|UI-Update|Performance|Visualisierung|Optimierung|QoL|Balancing|Inhalts-Erweiterung|Vielfalt|Design|Globales|Neuer|Ranking Meta|Globale|Backend):\s*/i, '')}</span>
+                <span class="cl-change-text">${c.replace(/^(Hotfix|Neues Feature|Feature|UI-Update|Performance|Visualisierung|Optimierung|QoL|Balancing|Inhalts-Erweiterung|Vielfalt|Design|Globales|Neuer|Ranking Meta|Globale|Backend|Sicherheit|Sicherheits-Update):\s*/i, '')}</span>
             </div>
         `).join('') : '';
 

@@ -1,11 +1,13 @@
-// community.js
+﻿// community.js
 import { db } from './firebase-config.js';
-import { collection, onSnapshot, query, orderBy, limit, addDoc, Timestamp, getDocs, where } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { collection, onSnapshot, query, orderBy, limit, addDoc, Timestamp, getDocs, where, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { getCurrentUser } from './auth.js';
 import { currentMode } from './mode-state.js';
 import { trackRead, trackWrite } from './tracker.js';
 import { TITLES } from './titles.js';
 import { THEMES } from './themes.js';
+
+const REACTION_EMOJIS = ['👍', '😂', '❤️', '😢', '😡'];
 
 let chatUnsubscribe = null;
 let onlineInterval = null;
@@ -37,7 +39,9 @@ export function initCommunity() {
     chatUnsubscribe = onSnapshot(qChat, (snapshot) => {
         trackRead(snapshot.docChanges().filter(c => c.type !== 'removed').length);
         const messages = [];
-        snapshot.forEach(doc => messages.push(doc.data()));
+        snapshot.forEach(d => {
+            messages.push({ id: d.id, ...d.data() });
+        });
         messages.reverse();
         
         chatContainer.innerHTML = '';
@@ -47,7 +51,6 @@ export function initCommunity() {
             const isSelf = msg.username === user.username;
             if (!isSelf && !isFirstLoad) hasNewFromOthers = true;
             
-            // Berechne Modus-Tag Text und Klasse
             const modeText = msg.userMode === 'starwars' ? 'SW' : 'Anime';
             const modeClass = msg.userMode === 'starwars' ? 'tag-sw' : 'tag-anime';
             const avatarHtml = msg.avatar ? `<img src="${msg.avatar}">` : `<div class="mini-avatar" style="background:#444"></div>`;
@@ -65,6 +68,20 @@ export function initCommunity() {
                 }
             }
             
+            // Render reactions
+            const reactions = msg.reactions || {};
+            const reactionHtml = REACTION_EMOJIS.map(emoji => {
+                const list = reactions[emoji] || [];
+                const count = list.length;
+                const userReacted = list.includes(user.username);
+                return `
+                    <button class="chat-reaction-btn${userReacted ? ' active' : ''}" data-emoji="${emoji}" data-msgid="${msg.id}" style="background: rgba(255,255,255,0.05); border: 1px solid ${userReacted ? 'var(--t-color, #ffd700)' : 'rgba(255,255,255,0.1)'}; border-radius: 4px; color: #fff; cursor: pointer; padding: 2px 6px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s;">
+                        <span>${emoji}</span>
+                        ${count > 0 ? `<span style="font-size: 0.75rem; font-weight: bold; color: ${userReacted ? 'var(--t-color, #ffd700)' : '#aaa'}">${count}</span>` : ''}
+                    </button>
+                `;
+            }).join('');
+
             chatContainer.innerHTML += `
                 <div class="chat-msg ${isSelf ? 'self' : ''}">
                     ${avatarHtml}
@@ -73,10 +90,45 @@ export function initCommunity() {
                             <span class="chat-mode-tag ${modeClass}">${modeText}</span> ${msg.displayName} ${titleHtml}
                         </span>
                         <div class="chat-msg-content" style="${themeStyle}">${msg.text}</div>
+                        <div class="chat-reactions" style="display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap;">
+                            ${reactionHtml}
+                        </div>
                     </div>
                 </div>
             `;
         });
+
+        // Add reaction listeners
+        chatContainer.querySelectorAll('.chat-reaction-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const msgId = btn.dataset.msgid;
+                const emoji = btn.dataset.emoji;
+                
+                const targetMsg = messages.find(m => m.id === msgId);
+                if (!targetMsg) return;
+                
+                const currentReactions = targetMsg.reactions || {};
+                const list = currentReactions[emoji] || [];
+                
+                let newList;
+                if (list.includes(user.username)) {
+                    newList = list.filter(u => u !== user.username);
+                } else {
+                    newList = [...list, user.username];
+                }
+                
+                const msgRef = doc(db, "chat", msgId);
+                try {
+                    const updateObj = {};
+                    updateObj[`reactions.${emoji}`] = newList;
+                    await updateDoc(msgRef, updateObj);
+                    trackWrite(1);
+                } catch(e) {
+                    console.error("Fehler beim Speichern der Reaktion:", e);
+                }
+            });
+        });
+
         chatContainer.scrollTop = chatContainer.scrollHeight;
 
         if (hasNewFromOthers) {
@@ -370,6 +422,7 @@ function openUserProfileModal(u) {
     
     modal.classList.remove('hidden');
 }
+
 
 
 
