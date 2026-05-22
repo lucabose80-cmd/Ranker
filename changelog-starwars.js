@@ -1,18 +1,13 @@
 export const patchNotesStarWars = [
     {
-        version: "v4.1.2",
-        title: "Hotfix: Easter Egg Rarität",
-        isHotfix: true,
+        version: "v4.2",
+        title: "System & Balancing Update",
+        isHotfix: false,
         changes: [
-            "Balancing: Die Wahrscheinlichkeit, die speziellen Anime-Charaktere ('Monkey D. Ruffy' & 'Fino Bloodstone') im Star Wars Modus zu ziehen, wurde massiv reduziert. Sie tauchen nun 20-mal seltener auf als normale Charaktere und sind echte, seltene Easter Eggs."
-        ]
-    },
-    {
-        version: "v4.1.1",
-        title: "Hotfix: Wahrer Zufall",
-        isHotfix: true,
-        changes: [
-            "Bugfix: Der Zufallsgenerator beim Ziehen der Charaktere wurde ausbalanciert! Frustrierende Dauer-Wiederholungen gehören der Vergangenheit an. Das System merkt sich nun die letzten 5 gezogenen Charaktere und schließt diese temporär aus, um deutlich mehr Abwechslung zu bieten."
+            "Neuer Pity-Timer: Wenn du einen Charakter lange nicht ziehst, steigt seine Wahrscheinlichkeit nun sanft um 1% pro verpasster Runde.",
+            "Easter Egg Balancing: Die Anime-Charaktere (Ruffy & Fino) sind nun extrem selten (20-mal seltener) und bekommen absichtlich keinen Pity-Bonus.",
+            "Zufalls-Cooldown: Das System schließt die letzten 5 gezogenen Charaktere temporär aus, um nervige Dauerschleifen zu verhindern.",
+            "Wartungsmodus: Administratoren können ab sofort das Einloggen für Spieler sperren, während Updates aufgespielt werden."
         ]
     },
     {
