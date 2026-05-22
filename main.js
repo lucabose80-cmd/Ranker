@@ -204,6 +204,11 @@ function setupGameUI(user) {
     chatToggleBtn.addEventListener('click', () => {
         chatWidget.classList.toggle('hidden');
         chatToggleBtn.classList.remove('has-new');
+        // Immer zum letzten Nachricht scrollen wenn Chat geöffnet wird
+        if (!chatWidget.classList.contains('hidden')) {
+            const msgs = document.getElementById('chat-messages');
+            if (msgs) setTimeout(() => { msgs.scrollTop = msgs.scrollHeight; }, 50);
+        }
     });
     document.getElementById('close-chat-btn').addEventListener('click', () => chatWidget.classList.add('hidden'));
 

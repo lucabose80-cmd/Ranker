@@ -233,8 +233,8 @@ function showHints() {
         document.getElementById('starwarsdle-hint-faction').style.display = 'block';
         document.getElementById('starwarsdle-hint-faction-text').textContent = dailyCharacter.faction.join(', ');
     }
-    // 7 attempts = Hint 2 (Image - rendered on canvas to hide src from DevTools)
-    if(currentGuesses.length >= 7) {
+    // 10 attempts = Hint 2 (Image - rendered on canvas to hide src from DevTools)
+    if(currentGuesses.length >= 10) {
         document.getElementById('starwarsdle-hint-image').style.display = 'block';
         const canvas = document.getElementById('starwarsdle-hint-canvas');
         if(canvas && !canvas.dataset.loaded) {
@@ -248,8 +248,8 @@ function showHints() {
             img.src = dailyCharacter.img;
         }
     }
-    // 9 attempts = Hint 3 (Letter)
-    if(currentGuesses.length >= 9) {
+    // 15 attempts = Hint 3 (Letter)
+    if(currentGuesses.length >= 15) {
         document.getElementById('starwarsdle-hint-letter').style.display = 'block';
         document.getElementById('starwarsdle-hint-letter-text').textContent = dailyCharacter.name.charAt(0).toUpperCase();
     }

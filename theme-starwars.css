@@ -1,21 +1,23 @@
-﻿/* Da unser style.css bereits auf dem blauen Star Wars Design basiert,
+/* Da unser style.css bereits auf dem blauen Star Wars Design basiert,
    ist diese Datei aktuell leer. Sie wird nur als Platzhalter geladen,
    damit die Modus-Weiche sauber funktioniert. */
 
 /* Freischaltbare Farbthemen */
+/* Standard-Text auf Theme-Farbe: weiß. Für helle Themes wird --t-text auf #111 gesetzt */
+:root { --t-text: #ffffff; }
 @import url('theme-sith.css');
 body.theme-sith { --t-color: #dc2626; }
-body.theme-klon { --t-color: #e2e8f0; }
+body.theme-klon { --t-color: #e2e8f0; --t-text: #111111; }
 body.theme-rebell { --t-color: #16a34a; }
 /* NEW THEMES */
-body.theme-padawan { --t-color: #87CEFA; }
+body.theme-padawan { --t-color: #87CEFA; --t-text: #111111; }
 body.theme-meister { --t-color: #00008B; }
 body.theme-inquisitor { --t-color: #8B0000; }
 body.theme-grau { --t-color: #808080; }
 body.theme-nachtschwester { --t-color: #800080; }
 body.theme-dathomir { --t-color: #be185d; }
 body.theme-501st { --t-color: #0000ff; --t-border: repeating-linear-gradient(45deg, #0000ff, #0000ff 10px, #ffffff 10px, #ffffff 20px); }
-body.theme-212th { --t-color: #ffa500; --t-border: repeating-linear-gradient(45deg, #ffa500, #ffa500 10px, #ffffff 10px, #ffffff 20px); }
+body.theme-212th { --t-color: #ffa500; --t-border: repeating-linear-gradient(45deg, #ffa500, #ffa500 10px, #ffffff 10px, #ffffff 20px); --t-text: #111111; }
 body.theme-coruscant-guard { --t-color: #ff0000; --t-border: repeating-linear-gradient(45deg, #ff0000, #ff0000 10px, #ffffff 10px, #ffffff 20px); }
 body.theme-bad-batch { --t-color: #4a4a4a; }
 body.theme-arc { --t-color: #0055ff; --t-anim: pulseBlue 2s infinite; }
@@ -27,8 +29,8 @@ body.theme-hutte { --t-color: #006400; }
 body.theme-imperium { --t-color: #000000; --t-border: repeating-linear-gradient(45deg, #000000, #000000 10px, #ffffff 10px, #ffffff 20px); }
 body.theme-heiss { --t-color: #FF1493; }
 body.theme-monster { --t-color: #8b4513; }
-body.theme-droide { --t-color: #c0c0c0; }
-body.theme-senat { --t-color: #ffd700; }
+body.theme-droide { --t-color: #c0c0c0; --t-text: #111111; }
+body.theme-senat { --t-color: #ffd700; --t-text: #111111; }
 body.theme-widerstand { --t-color: #d2691e; }
 body.theme-separatist { --t-color: #00ced1; }
 body.theme-schmuggel { --t-color: #cd853f; }
@@ -70,19 +72,19 @@ body.theme-erste-ordnung { --t-color: #ff0000; --t-border: repeating-linear-grad
 [class*="theme-"] input:focus { border-color: var(--t-color) !important; }
 [class*="theme-"] .title-card.selected { border-color: var(--t-color) !important; box-shadow: 0 0 10px var(--t-color) !important; }
 
-[class*="theme-"] #restart-btn { background-color: var(--t-color) !important; color: white !important; border: 2px solid var(--t-color) !important; }
-[class*="theme-"] #restart-btn:hover { background-color: var(--t-color) !important; color: white !important; opacity: 0.8; }
-[class*="theme-"] .rate-btn { color: var(--t-color) !important; border-color: var(--t-color) !important; }
-[class*="theme-"] .rate-btn:hover, [class*="theme-"] .rate-btn.selected { background-color: var(--t-color) !important; color: white !important; }
+[class*="theme-"] #restart-btn { background-color: var(--t-color) !important; color: var(--t-text) !important; border: 2px solid var(--t-color) !important; }
+[class*="theme-"] #restart-btn:hover { background-color: var(--t-color) !important; color: var(--t-text) !important; opacity: 0.8; }
+[class*="theme-"] .rate-btn { color: var(--t-color) !important; border-color: var(--t-color) !important; background: transparent !important; }
+[class*="theme-"] .rate-btn:hover, [class*="theme-"] .rate-btn.selected { background-color: var(--t-color) !important; color: var(--t-text) !important; }
 [class*="theme-"] #current-image-container { border-color: var(--t-color) !important; box-shadow: 0 0 15px var(--t-color) !important; }
 
 [class*="theme-"] #chat-toggle-btn { background: var(--t-color) !important; border: 2px solid var(--t-color) !important; }
 
 
 [class*="theme-"] .rank-btn { color: var(--t-color) !important; border-color: var(--t-color) !important; }
-[class*="theme-"] .rank-btn:hover { background: var(--t-color) !important; color: white !important; }
+[class*="theme-"] .rank-btn:hover { background: var(--t-color) !important; color: var(--t-text) !important; }
 [class*="theme-"] .mystery-name { color: var(--t-color) !important; }
-[class*="theme-"] .mode-toggle-btn.active { background: var(--t-color) !important; border-color: var(--t-color) !important; }
+[class*="theme-"] .mode-toggle-btn.active { background: var(--t-color) !important; border-color: var(--t-color) !important; color: var(--t-text) !important; }
 
 
 [class*="theme-"] .end-title { color: var(--t-color) !important; text-shadow: 0 0 20px var(--t-color) !important; }
