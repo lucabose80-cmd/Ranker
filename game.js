@@ -62,6 +62,11 @@ export function initGame() {
     document.getElementById('action-prompt').classList.remove('hidden');
     document.getElementById('rank-buttons-container').classList.remove('hidden');
     
+    const sameRestartBtn = document.getElementById('restart-same-btn');
+    if (sameRestartBtn) {
+        sameRestartBtn.style.display = 'inline-block';
+    }
+    
     resetRatingUI();
     
     // Live Game Dokument aufräumen beim Neustart
@@ -123,11 +128,22 @@ export function initGame() {
     showNextCharacter();
 }
 
+export function restartSameClassicGame() {
+    localStorage.removeItem('punish_state_' + currentMode + '_' + currentGameCategory + '_classic');
+    initGame();
+}
+
 export function showNextCharacter() {
     if (currentIndex < 5) {
         document.getElementById('progress-text').textContent = `CHARAKTER ${currentIndex + 1} / 5`;
         const currentChar = activePool[currentIndex];
         const imgContainer = document.getElementById('current-image-container');
+        
+        if (!currentChar) {
+            console.warn('Kein aktueller Charakter gefunden, initiiere neues klassisches Spiel.');
+            initGame();
+            return;
+        }
         
         imgContainer.innerHTML = `<img src="${currentChar.img}" alt="Charakter Bild">`;
         
@@ -157,7 +173,13 @@ export function showNextCharacter() {
 export function revealNames() {
     for (let i = 1; i <= 5; i++) {
         const labelSpan = document.querySelector(`#slot-${i} .card-label span`);
-        labelSpan.textContent = placedCharacters[i].name;
+        const placedChar = placedCharacters[i];
+        if (!labelSpan) continue;
+        if (placedChar && placedChar.name) {
+            labelSpan.textContent = placedChar.name;
+        } else {
+            labelSpan.textContent = '???';
+        }
         labelSpan.classList.add('revealed-name');
     }
 }

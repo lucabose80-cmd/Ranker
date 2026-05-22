@@ -319,6 +319,7 @@ export function initCommunity() {
     }
 
     updateOnlineTracker();
+    onlineInterval = setInterval(() => updateOnlineTracker(), 60000);
 }
 
 function openUserProfileModal(u) {
