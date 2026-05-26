@@ -37,6 +37,9 @@ export function renderAvatarSelection() {
             card.className = `lexikon-card avatar-card ${currentAvatar === char.img ? 'selected' : ''}`;
             card.innerHTML = `<img src="${char.img}"><span>${char.name}${isNew ? ' <span style="background:#ffd700; color:#000; font-size:0.55rem; font-weight:bold; padding:1px 3px; border-radius:3px; margin-left:3px; vertical-align:middle;">NEU</span>' : ''}</span>`;
             
+            if (isNew) {
+                card.addEventListener('mouseenter', () => markAsSeen(char.name, card), { once: true });
+            }
             card.addEventListener('click', async () => {
                 document.querySelectorAll('.avatar-card').forEach(c => c.classList.remove('selected'));
                 card.classList.add('selected');
@@ -185,7 +188,13 @@ export async function refreshProfileContent() {
     renderThemeSelection(user);
 
     // Update tab labels with notification dots
+    updateTabNotificationDots(user);
+}
+
+export function updateTabNotificationDots(user) {
+    if (!user) return;
     const seenIds = getSeenIds();
+    const gamesPlayed = currentMode === 'starwars' ? (user.gamesPlayed_starwars || 0) : (user.gamesPlayed_waifu || 0);
 
     const sortedChars = activeCharacterDatabase;
     const hasUnseenAvatar = sortedChars.some(char => {
@@ -211,6 +220,25 @@ export async function refreshProfileContent() {
     if (tabAvatar) tabAvatar.innerHTML = `Avatare${hasUnseenAvatar ? ' <span style="color:#ffd700;">●</span>' : ''}`;
     if (tabTitle) tabTitle.innerHTML = `Titel${hasUnseenTitle ? ' <span style="color:#ffd700;">●</span>' : ''}`;
     if (tabTheme) tabTheme.innerHTML = `Farbschemas${hasUnseenTheme ? ' <span style="color:#ffd700;">●</span>' : ''}`;
+    
+    checkProfileUnlockDot(user);
+}
+
+function markAsSeen(id, cardElement) {
+    const seenIds = getSeenIds();
+    if (!seenIds.includes(id)) {
+        seenIds.push(id);
+        localStorage.setItem('seen_unlock_ids', JSON.stringify(seenIds));
+        
+        const badge = cardElement.querySelector('span[style*="background:#ffd700"]');
+        if (badge) {
+            badge.style.transition = 'opacity 0.2s ease';
+            badge.style.opacity = '0';
+            setTimeout(() => badge.remove(), 200);
+        }
+        
+        updateTabNotificationDots(getCurrentUser());
+    }
 }
 
 function getCombination(n, r) {
@@ -297,6 +325,9 @@ function renderTitleSelection(user, gamesPlayed) {
             <div class="title-card-req">${reqText}</div>
         `;
         
+        if (isNew) {
+            card.addEventListener('mouseenter', () => markAsSeen(t.id, card), { once: true });
+        }
         if (!isLocked) {
             card.addEventListener('click', async () => {
                 document.querySelectorAll('.title-card').forEach(c => c.classList.remove('selected'));
@@ -393,6 +424,9 @@ function renderThemeSelection(user) {
             <div class="title-card-req">${reqText}</div>
         `;
 
+        if (isNew) {
+            card.addEventListener('mouseenter', () => markAsSeen(t.id, card), { once: true });
+        }
         if (unlocked) {
             card.addEventListener('click', async () => {
                 document.querySelectorAll('#theme-grid .title-card').forEach(c => c.classList.remove('selected'));
