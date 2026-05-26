@@ -57,7 +57,7 @@ export function initShop() {
     const user = getCurrentUser();
     if (!user) return;
 
-    const isAdmin = (user.username === 'Test1' || user.username === 'Test2');
+    const isAdmin = (user.username && (user.username.toLowerCase() === 'test1' || user.username.toLowerCase() === 'test2'));
     document.getElementById('shop-credits-display').textContent = isAdmin ? '∞' : (user.credits || 0);
 
     const container = document.getElementById('booster-packs-container');
@@ -118,7 +118,7 @@ async function openBooster(booster, pool) {
     const user = getCurrentUser();
     if (!user) return;
 
-    const isAdmin = (user.username === 'Test1' || user.username === 'Test2');
+    const isAdmin = (user.username && (user.username.toLowerCase() === 'test1' || user.username.toLowerCase() === 'test2'));
     
     if (!isAdmin && (user.credits || 0) < booster.cost) {
         if (window.showUnlockNotification) window.showUnlockNotification('title', "Nicht genügend Credits!");
