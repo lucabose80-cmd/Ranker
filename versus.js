@@ -23,6 +23,15 @@ export function stopVersus() {
 export async function initVersus() {
     const user = await refreshCurrentUser();
     if (!user) return;
+    
+    try {
+        const { getDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+        const snap = await getDoc(doc(db, "config", "maintenance"));
+        if (snap.exists() && snap.data().versus) {
+            document.getElementById('versus-lobby-list-view').innerHTML = `<p class="prompt-text" style="color:#ff4757;">Versus Modus ist derzeit wegen Wartungsarbeiten deaktiviert.</p>`;
+            return;
+        }
+    } catch(e) {}
 
     const gamesPlayed = currentMode === 'starwars' ? (user.gamesPlayed_starwars || 0) : (user.gamesPlayed_waifu || 0);
     const container = document.getElementById('versus-lobby-list-view');

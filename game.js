@@ -12,7 +12,23 @@ export let activePool = [];
 export let currentIndex = 0;
 export let placedCharacters = { 1: null, 2: null, 3: null, 4: null, 5: null };
 
-export function initGame() {
+export async function initGame() {
+    const { getDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+    try {
+        const snap = await getDoc(doc(db, "config", "maintenance"));
+        if (snap.exists()) {
+            const data = snap.data();
+            if (data.classic) {
+                alert("Der klassische Modus ist derzeit wegen Wartungsarbeiten deaktiviert.");
+                return;
+            }
+            if (data['cat_' + currentGameCategory]) {
+                alert(`Die Kategorie '${currentGameCategory}' ist derzeit wegen Wartungsarbeiten deaktiviert.`);
+                return;
+            }
+        }
+    } catch(e) {}
+    
     // We will initialize currentIndex and placedCharacters inside the state check below
     
     const board = document.getElementById('ranking-board');

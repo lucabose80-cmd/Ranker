@@ -27,6 +27,17 @@ function selectDailyCharacter() {
 }
 
 export async function initStarWarsdle() {
+    try {
+        const { getDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+        const snap = await getDoc(doc(db, "config", "maintenance"));
+        if (snap.exists() && snap.data().starwarsdle) {
+            document.getElementById('starwarsdle-guesses').innerHTML = `<tr><td colspan="6" style="padding: 20px; color: #ff4757; text-align: center;">StarWarsdle ist derzeit wegen Wartungsarbeiten deaktiviert.</td></tr>`;
+            document.getElementById('starwarsdle-input').disabled = true;
+            document.getElementById('starwarsdle-guess-btn').disabled = true;
+            return;
+        }
+    } catch(e) {}
+
     document.getElementById('starwarsdle-guesses').innerHTML = '';
     dailyCharacter = selectDailyCharacter();
     currentGuesses = [];

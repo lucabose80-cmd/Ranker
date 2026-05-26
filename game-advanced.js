@@ -14,7 +14,19 @@ export let placedCharacters = {};
 export let jokerUsed = false;
 let selectedJokerSlot = null;
 
-export function initAdvancedGame() {
+export async function initAdvancedGame() {
+    const { getDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+    try {
+        const snap = await getDoc(doc(db, "config", "maintenance"));
+        if (snap.exists()) {
+            const data = snap.data();
+            if (data.advanced) {
+                alert("Der Advanced Modus ist derzeit wegen Wartungsarbeiten deaktiviert.");
+                return;
+            }
+        }
+    } catch(e) {}
+    
     // We will initialize currentIndex, jokerUsed and placedCharacters inside the state check below
     
     // Board-Klassen anpassen
