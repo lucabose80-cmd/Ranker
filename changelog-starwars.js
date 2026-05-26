@@ -1,5 +1,15 @@
 export const patchNotesStarWars = [
     {
+        version: "v5.0.4",
+        title: "Code-Modernisierung & Performance-Update",
+        isHotfix: false,
+        changes: [
+            "Performance: Massive Überarbeitung der gesamten Code-Basis unter der Haube. Alte Schleifenstrukturen wurden durch hochmoderne, schnelle Array-Funktionen (wie map, reduce und find) ausgetauscht.",
+            "Performance: Das Laden von Statistiken, Scoreboards und der Chat-Verlauf ist dadurch jetzt noch schneller und ressourcenschonender.",
+            "Aufräumarbeit: Zahlreiche alte, ungenutzte Skripte und redundante Code-Abschnitte (wie etwa veraltete Testdateien) wurden restlos gelöscht, um die App schlank zu halten."
+        ]
+    },
+    {
         version: "v5.0.3",
         title: "Chat-Reaktionen & QoL-Features",
         isHotfix: true,

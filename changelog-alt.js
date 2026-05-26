@@ -1,5 +1,15 @@
 export const patchNotesWaifu = [
     {
+        version: "v5.0.4",
+        title: "Code-Modernisierung & Performance-Update",
+        isHotfix: false,
+        changes: [
+            "Performance: Massive Überarbeitung der gesamten Code-Basis unter der Haube. Alte Schleifenstrukturen wurden durch hochmoderne, schnelle Array-Funktionen ausgetauscht.",
+            "Sicherheit: Verdeckte Optimierungen wurden vorgenommen, um die Code-Struktur besser vor dem Auslesen durch Browser-Entwicklertools zu schützen.",
+            "Aufräumarbeit: Zahlreiche alte, ungenutzte Skripte und redundante Code-Abschnitte wurden restlos gelöscht, um die Dateigrößen zu minimieren."
+        ]
+    },
+    {
         version: "v4.4.1",
         title: "System & UI Optimierungen",
         isHotfix: true,
