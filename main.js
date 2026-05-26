@@ -63,29 +63,74 @@ async function bootApp() {
 function setupAuthUI() {
     showView('auth-view');
     
-    // Autocomplete füllen - erst aus Cache, dann aus Firestore
-    const fillAutocomplete = (userResets) => {
-        const datalist = document.getElementById('auth-username-list');
-        if (!datalist) return;
-        datalist.innerHTML = '';
-        Object.keys(userResets).forEach(uname => {
-            if (uname !== 'admin' && !uname.startsWith('test')) {
-                const opt = document.createElement('option');
-                opt.value = uname;
-                datalist.appendChild(opt);
-            }
-        });
+    // --- Custom Autocomplete Setup ---
+    let allUsernames = [];
+    let activeIndex = -1;
+
+    const input = document.getElementById('auth-username');
+    const dropdown = document.getElementById('auth-autocomplete-dropdown');
+
+    const closeDropdown = () => {
+        dropdown.classList.add('hidden');
+        dropdown.innerHTML = '';
+        activeIndex = -1;
     };
 
-    // Versuche erst den lokalen Cache
-    let filledFromCache = false;
+    const renderDropdown = (query) => {
+        if (!query || query.length < 1) { closeDropdown(); return; }
+        const matches = allUsernames.filter(u => u.toLowerCase().startsWith(query.toLowerCase()));
+        if (matches.length === 0) { closeDropdown(); return; }
+
+        dropdown.innerHTML = '';
+        activeIndex = -1;
+        matches.forEach(uname => {
+            const item = document.createElement('div');
+            item.className = 'auth-autocomplete-item';
+            item.textContent = uname;
+            item.addEventListener('mousedown', (e) => {
+                e.preventDefault(); // verhindert blur vor click
+                input.value = uname;
+                closeDropdown();
+            });
+            dropdown.appendChild(item);
+        });
+        dropdown.classList.remove('hidden');
+    };
+
+    input.addEventListener('input', () => renderDropdown(input.value));
+
+    input.addEventListener('keydown', (e) => {
+        const items = dropdown.querySelectorAll('.auth-autocomplete-item');
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            activeIndex = Math.min(activeIndex + 1, items.length - 1);
+            items.forEach((el, i) => el.classList.toggle('active', i === activeIndex));
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            activeIndex = Math.max(activeIndex - 1, 0);
+            items.forEach((el, i) => el.classList.toggle('active', i === activeIndex));
+        } else if (e.key === 'Enter' && activeIndex >= 0) {
+            e.preventDefault();
+            input.value = items[activeIndex].textContent;
+            closeDropdown();
+        } else if (e.key === 'Escape') {
+            closeDropdown();
+        }
+    });
+
+    input.addEventListener('blur', () => { setTimeout(closeDropdown, 150); });
+
+    // Usernames aus Cache laden
+    const loadUsernames = (userResets) => {
+        allUsernames = Object.keys(userResets).filter(u => u !== 'admin' && !u.startsWith('test'));
+    };
+
     try {
         const cacheStr = localStorage.getItem('ranker_resets_cache');
         if (cacheStr) {
             const cache = JSON.parse(cacheStr);
             if (cache.userResets && Object.keys(cache.userResets).length > 0) {
-                fillAutocomplete(cache.userResets);
-                filledFromCache = true;
+                loadUsernames(cache.userResets);
             }
         }
     } catch (e) {}
@@ -93,9 +138,7 @@ function setupAuthUI() {
     // Immer auch frisch aus Firestore laden (im Hintergrund)
     import('./resets.js').then(({ getResets }) => {
         getResets().then(({ userResets }) => {
-            if (userResets && Object.keys(userResets).length > 0) {
-                fillAutocomplete(userResets);
-            }
+            if (userResets && Object.keys(userResets).length > 0) loadUsernames(userResets);
         }).catch(() => {});
     });
 

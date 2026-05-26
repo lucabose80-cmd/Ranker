@@ -16,8 +16,10 @@
         <div class="panel auth-panel">
             <h2 class="theme-heading">LOGIN</h2>
             <p id="auth-feedback" class="prompt-text hidden"></p>
-            <input type="text" id="auth-username" placeholder="Benutzername" autocomplete="off" list="auth-username-list">
-            <datalist id="auth-username-list"></datalist>
+            <div class="auth-autocomplete-wrapper">
+                <input type="text" id="auth-username" placeholder="Benutzername" autocomplete="off">
+                <div id="auth-autocomplete-dropdown" class="auth-autocomplete-dropdown hidden"></div>
+            </div>
             <div class="password-wrapper">
                 <input type="password" id="auth-password" placeholder="Passwort">
                 <span id="toggle-password" class="eye-icon" title="Passwort anzeigen">

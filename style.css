@@ -374,6 +374,25 @@ input { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 6px; bor
 input:focus { border-color: #3b82f6; outline: none; }
 input[type="password"]::-ms-reveal, input[type="password"]::-ms-clear { display: none; }
 
+/* Custom Autocomplete */
+.auth-autocomplete-wrapper { position: relative; width: 100%; }
+.auth-autocomplete-wrapper input { margin-bottom: 0; }
+.auth-autocomplete-dropdown {
+    position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+    background: #1a1e29; border: 1px solid #3b82f6; border-radius: 6px;
+    z-index: 1000; max-height: 200px; overflow-y: auto;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+.auth-autocomplete-dropdown.hidden { display: none; }
+.auth-autocomplete-item {
+    padding: 10px 14px; cursor: pointer; color: #e2e8f0;
+    font-size: 0.95rem; transition: background 0.15s;
+}
+.auth-autocomplete-item:hover, .auth-autocomplete-item.active {
+    background: rgba(59,130,246,0.25); color: #fff;
+}
+
+
 .password-wrapper { position: relative; width: 100%; margin-bottom: 20px; }
 .password-wrapper input { margin-bottom: 0; padding-right: 40px; }
 .eye-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #888; width: 20px; height: 20px; display: flex; align-items: center; }
