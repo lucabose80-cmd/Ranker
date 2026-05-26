@@ -53,15 +53,10 @@ export function initGame() {
     document.getElementById('action-prompt').classList.remove('hidden');
     document.getElementById('rank-buttons-container').classList.remove('hidden');
     
-    const sameRestartBtn = document.getElementById('restart-same-btn');
-    if (sameRestartBtn) {
-        sameRestartBtn.classList.remove('hidden');
-    }
-    
+
     resetRatingUI();
     
     // Live Game Dokument aufräumen beim Neustart
-    const user = getCurrentUser();
     if (user) {
         deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
     }
@@ -102,7 +97,11 @@ export function initGame() {
                 poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('peak'));
             } else if (currentGameCategory === 'vehicle') {
                 poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('vehicle'));
+            } else {
+                poolSource = activeCharacterDatabase.filter(c => !c.tags || !c.tags.includes('vehicle'));
             }
+        } else {
+            poolSource = activeCharacterDatabase.filter(c => !c.tags || !c.tags.includes('vehicle'));
         }
         const suffix = currentGameCategory === 'normal' ? '' : '_' + currentGameCategory;
         activePool = drawFromBag(poolSource, 5, 'bag_classic_' + currentMode + suffix);
@@ -126,10 +125,7 @@ export function initGame() {
     showNextCharacter();
 }
 
-export function restartSameClassicGame() {
-    localStorage.removeItem('punish_state_' + currentMode + '_' + currentGameCategory + '_classic');
-    initGame();
-}
+
 
 export function showNextCharacter() {
     if (currentIndex < 5) {

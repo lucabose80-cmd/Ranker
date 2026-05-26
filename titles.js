@@ -34,7 +34,8 @@ export const TITLES = {
         { id: 'sw_secret_25', name: 'Glückspilz', required: -1, secret: true, condition: { type: 'special_top5' } },
         { id: 'sw_secret_26', name: 'Pechvogel', required: -1, secret: true, condition: { type: 'special_bottom5' } },
         { id: 'sw_secret_27', name: 'Seelenverwandte', required: -1, secret: true, condition: { type: 'special_versus_match' } },
-        { id: 'sw_secret_28', name: 'Absolute Gegensätze', required: -1, secret: true, condition: { type: 'special_versus_opposite' } }
+        { id: 'sw_secret_28', name: 'Absolute Gegensätze', required: -1, secret: true, condition: { type: 'special_versus_opposite' } },
+        { id: 'sw_secret_29', name: 'Perfektion', required: -1, secret: true, condition: { type: 'special_versus_perfect' } }
     ],
     waifu: [
         { id: 'wf_0', name: 'Kein Titel', required: 0 },
@@ -48,6 +49,7 @@ export const TITLES = {
         { id: 'wf_secret_2', name: 'Glückspilz', required: -1, secret: true, condition: { type: 'special_top5' } },
         { id: 'wf_secret_3', name: 'Pechvogel', required: -1, secret: true, condition: { type: 'special_bottom5' } },
         { id: 'wf_secret_4', name: 'Seelenverwandte', required: -1, secret: true, condition: { type: 'special_versus_match' } },
-        { id: 'wf_secret_5', name: 'Absolute Gegensätze', required: -1, secret: true, condition: { type: 'special_versus_opposite' } }
+        { id: 'wf_secret_5', name: 'Perfektion', required: -1, secret: true, condition: { type: 'special_versus_perfect' } },
+        { id: 'wf_secret_6', name: 'Absolute Gegensätze', required: -1, secret: true, condition: { type: 'special_versus_opposite' } }
     ]
 };

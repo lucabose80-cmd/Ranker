@@ -141,27 +141,57 @@ export async function initAdminPanel() {
         });
         
         const maintBtn = document.getElementById('admin-maintenance-toggle');
+        const maintBtns = document.querySelectorAll('.maint-btn');
         if (maintBtn) {
             getDoc(doc(db, "config", "maintenance")).then(docSnap => {
-                const isMaint = docSnap.exists() && docSnap.data().active;
-                maintBtn.textContent = isMaint ? 'Wartungsmodus deaktivieren' : 'Wartungsmodus aktivieren';
+                const data = docSnap.exists() ? docSnap.data() : { active: false };
+                const isMaint = data.active;
+                maintBtn.textContent = isMaint ? 'Wartungsmodus (Komplette Seite) deaktivieren' : 'Wartungsmodus (Komplette Seite) aktivieren';
                 maintBtn.style.color = isMaint ? '#2ed573' : '#ff9f43';
                 maintBtn.style.borderColor = isMaint ? '#2ed573' : '#ff9f43';
+                
+                maintBtns.forEach(btn => {
+                    const mode = btn.dataset.maint;
+                    const isModeMaint = data[mode];
+                    btn.textContent = isModeMaint ? `Wartung: ${mode.toUpperCase()} (Deaktivieren)` : `Wartung: ${mode.toUpperCase()}`;
+                    btn.style.color = isModeMaint ? '#2ed573' : '#ff9f43';
+                    btn.style.borderColor = isModeMaint ? '#2ed573' : '#ff9f43';
+                });
             });
             
             maintBtn.addEventListener('click', async () => {
                 try {
                     const docSnap = await getDoc(doc(db, "config", "maintenance"));
-                    const currentStatus = docSnap.exists() && docSnap.data().active;
-                    await setDoc(doc(db, "config", "maintenance"), { active: !currentStatus });
+                    const data = docSnap.exists() ? docSnap.data() : {};
+                    const currentStatus = data.active;
+                    await setDoc(doc(db, "config", "maintenance"), { ...data, active: !currentStatus });
                     
-                    maintBtn.textContent = !currentStatus ? 'Wartungsmodus deaktivieren' : 'Wartungsmodus aktivieren';
+                    maintBtn.textContent = !currentStatus ? 'Wartungsmodus (Komplette Seite) deaktivieren' : 'Wartungsmodus (Komplette Seite) aktivieren';
                     maintBtn.style.color = !currentStatus ? '#2ed573' : '#ff9f43';
                     maintBtn.style.borderColor = !currentStatus ? '#2ed573' : '#ff9f43';
                     alert(!currentStatus ? 'Wartungsmodus AKTIV. Spieler können sich nicht mehr einloggen.' : 'Wartungsmodus INAKTIV. Login wieder freigegeben.');
                 } catch (e) {
                     console.error("Fehler beim Umschalten des Wartungsmodus", e);
                 }
+            });
+            
+            maintBtns.forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    try {
+                        const mode = btn.dataset.maint;
+                        const docSnap = await getDoc(doc(db, "config", "maintenance"));
+                        const data = docSnap.exists() ? docSnap.data() : {};
+                        const currentStatus = data[mode];
+                        await setDoc(doc(db, "config", "maintenance"), { ...data, [mode]: !currentStatus });
+                        
+                        btn.textContent = !currentStatus ? `Wartung: ${mode.toUpperCase()} (Deaktivieren)` : `Wartung: ${mode.toUpperCase()}`;
+                        btn.style.color = !currentStatus ? '#2ed573' : '#ff9f43';
+                        btn.style.borderColor = !currentStatus ? '#2ed573' : '#ff9f43';
+                        alert(!currentStatus ? `${mode.toUpperCase()} in Wartung!` : `${mode.toUpperCase()} Wartung beendet!`);
+                    } catch (e) {
+                        console.error("Fehler beim Umschalten des Wartungsmodus", e);
+                    }
+                });
             });
         }
         

@@ -1,5 +1,5 @@
 // main.js
-import { initGame, handleRankSelection, restartSameClassicGame } from './game.js';
+import { initGame, handleRankSelection } from './game.js';
 import { initAdvancedGame } from './game-advanced.js';
 import { toggleTheme } from './theme.js';
 import { initRatingSystem } from './rating.js';
@@ -248,6 +248,21 @@ function setupGameUI(user) {
     const mClassicBtn = document.getElementById('mode-classic-btn');
     const mAdvancedBtn = document.getElementById('mode-advanced-btn');
     
+    // Initialize state
+    if (currentGameType === 'advanced') {
+        mAdvancedBtn.classList.add('active');
+        mClassicBtn.classList.remove('active');
+        const catContainer = document.getElementById('category-selector-container');
+        if (catContainer) catContainer.classList.add('hidden');
+        document.getElementById('game-subtitle').textContent = "Ordne 10 Charaktere blind ein. Wo landen sie und nutze deinen Joker!";
+    } else {
+        mClassicBtn.classList.add('active');
+        mAdvancedBtn.classList.remove('active');
+        const catContainer = document.getElementById('category-selector-container');
+        if (catContainer && currentMode === 'starwars') catContainer.classList.remove('hidden');
+        document.getElementById('game-subtitle').textContent = "Ordne 5 Charaktere blind ein. Wo landen sie?";
+    }
+    
     mClassicBtn.addEventListener('click', () => {
         if (currentGameType === 'classic') return;
         setCurrentGameType('classic');
@@ -307,6 +322,9 @@ function setupGameUI(user) {
         attachCatListener(catPeakBtn, 'peak');
         attachCatListener(catVehicleBtn, 'vehicle');
         attachCatListener(catHardcoreBtn, 'hardcore');
+        
+        // Initialize state
+        updateCatButtons(currentGameCategory);
     }
 
     // Profil Overlay öffnen
@@ -368,11 +386,7 @@ function setupGameUI(user) {
         }
     });
 
-    document.getElementById('restart-same-btn').addEventListener('click', () => {
-        if (currentGameType === 'classic') {
-            restartSameClassicGame();
-        }
-    });
+
     
     // Tastenanschläge abfangen (Entf = Moduswechsel, Esc = Profil / Zuschauen schließen)
     document.addEventListener('keydown', (e) => { 
@@ -509,12 +523,23 @@ window.showUnlockNotification = function(type, desc) {
     let titleText = 'Titel freigeschaltet!';
     if (type === 'theme') titleText = 'Farbschema freigeschaltet!';
     else if (type === 'credits') titleText = 'Belohnung erhalten!';
+    else if (type === 'error') titleText = 'Achtung!';
     
     document.getElementById('unlock-title').textContent = titleText;
     document.getElementById('unlock-desc').textContent = desc;
     
+    if (type === 'error') {
+        notif.style.background = 'linear-gradient(135deg, rgba(150,0,0,0.95), rgba(80,0,0,0.95))';
+        notif.style.border = '2px solid #ff4757';
+    } else {
+        notif.style.background = 'rgba(20, 24, 34, 0.95)';
+        notif.style.border = '2px solid #ffd700';
+    }
+    
     // 8-bit Soundeffekt abspielen
-    window.playStarWars8BitTheme();
+    if (type !== 'error' && window.playStarWars8BitTheme) {
+        window.playStarWars8BitTheme();
+    }
 
     notif.classList.remove('hidden');
     // Force reflow

@@ -121,7 +121,7 @@ async function openBooster(booster, pool) {
     const isAdmin = (user.username && (user.username.toLowerCase() === 'test1' || user.username.toLowerCase() === 'test2'));
     
     if (!isAdmin && (user.credits || 0) < booster.cost) {
-        if (window.showUnlockNotification) window.showUnlockNotification('title', "Nicht genügend Credits!");
+        if (window.showUnlockNotification) window.showUnlockNotification('error', "Nicht genügend Credits!");
         else alert("Nicht genügend Credits!");
         return;
     }

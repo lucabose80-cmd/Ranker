@@ -388,19 +388,28 @@ function showWaitingRoom(lobbyId) {
             }
             
             // Versus Titles Check
+            const me = lobby.players.find(p => p.uid === user.uid);
+            let newlyUnlocked = false;
+            const titlesField = `unlocked_titles_${lobby.mode}`;
+            const currentUnlocked = user[titlesField] || [];
+            
+            const { TITLES } = await import('./titles.js');
+            const titles = TITLES[lobby.mode] || [];
+
+            if (me && me.score === 0) {
+                const perfectTitle = titles.find(t => t.condition?.type === 'special_versus_perfect');
+                if (perfectTitle && !currentUnlocked.includes(perfectTitle.id)) {
+                    currentUnlocked.push(perfectTitle.id); newlyUnlocked = true;
+                    if (window.showUnlockNotification) window.showUnlockNotification('title', perfectTitle.name);
+                }
+            }
+
             if (lobby.players.length === 2) {
                 const p1 = lobby.players[0].picks || [];
                 const p2 = lobby.players[1].picks || [];
                 if (p1.length === 5 && p2.length === 5) {
                     const isSame = p1.every((char, i) => char === p2[i]);
                     const isOpposite = p1.every((char, i) => char === p2[4 - i]);
-                    
-                    const titlesField = `unlocked_titles_${lobby.mode}`;
-                    const currentUnlocked = user[titlesField] || [];
-                    let newlyUnlocked = false;
-                    
-                    const { TITLES } = await import('./titles.js');
-                    const titles = TITLES[lobby.mode] || [];
                     
                     const matchTitle = titles.find(t => t.condition?.type === 'special_versus_match');
                     const oppTitle = titles.find(t => t.condition?.type === 'special_versus_opposite');
@@ -413,14 +422,14 @@ function showWaitingRoom(lobbyId) {
                         currentUnlocked.push(oppTitle.id); newlyUnlocked = true;
                         if (window.showUnlockNotification) window.showUnlockNotification('title', oppTitle.name);
                     }
-                    
-                    if (newlyUnlocked) {
-                        const { updateDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
-                        user[titlesField] = currentUnlocked;
-                        updateDoc(doc(db, "users", user.uid), { [titlesField]: currentUnlocked }).catch(e=>console.log(e));
-                        localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
-                    }
                 }
+            }
+            
+            if (newlyUnlocked) {
+                const { updateDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+                user[titlesField] = currentUnlocked;
+                updateDoc(doc(db, "users", user.uid), { [titlesField]: currentUnlocked }).catch(e=>console.log(e));
+                localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
             }
             
             const readyCount = lobby.readyForRestart ? lobby.readyForRestart.length : 0;

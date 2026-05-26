@@ -21,8 +21,9 @@ function selectDailyCharacter() {
         hash = (hash << 5) - hash + seed.charCodeAt(i);
         hash |= 0; 
     }
-    const index = Math.abs(hash) % activeCharacterDatabase.length;
-    return activeCharacterDatabase[index];
+    const pool = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('peak'));
+    const index = Math.abs(hash) % pool.length;
+    return pool[index];
 }
 
 export async function initStarWarsdle() {

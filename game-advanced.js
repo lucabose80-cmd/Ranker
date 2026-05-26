@@ -58,10 +58,7 @@ export function initAdvancedGame() {
     document.getElementById('action-prompt').classList.remove('hidden');
     document.getElementById('rank-buttons-container').classList.remove('hidden');
 
-    const sameRestartBtn = document.getElementById('restart-same-btn');
-    if (sameRestartBtn) {
-        sameRestartBtn.classList.add('hidden');
-    }
+
     
     resetRatingUI();
     
@@ -101,7 +98,8 @@ export function initAdvancedGame() {
     }
     
     function startFreshAdvancedGame() {
-        activePool = drawFromBag(activeCharacterDatabase, 10, 'bag_advanced_' + currentMode);
+        const poolSource = activeCharacterDatabase.filter(c => !c.tags || !c.tags.includes('vehicle'));
+        activePool = drawFromBag(poolSource, 10, 'bag_advanced_' + currentMode);
         localStorage.setItem('punish_pool_' + currentMode + '_advanced', JSON.stringify(activePool));
         localStorage.removeItem('punish_state_' + currentMode + '_advanced');
         currentIndex = 0;
