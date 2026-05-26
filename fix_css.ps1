@@ -1,0 +1,1 @@
+$content = Get-Content -Path style.css -Encoding Unicode; $content = $content -replace "\.hardcore-silhouette.*", ""; Set-Content -Path style.css -Value $content -Encoding Unicode; Add-Content -Path style.css -Value ".hardcore-silhouette { filter: brightness(0) !important; transition: filter 0.5s ease; }" -Encoding Unicode

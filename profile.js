@@ -529,9 +529,11 @@ function renderStatsSelection(user) {
                 </div>
             </div>
 
+            <div id="inline-machtverirrung-area"></div>
+
             <div style="text-align:center; margin-top:10px;">
                 <button id="btn-generate-tierlist" class="btn primary-btn" style="width:100%; max-width:300px;">
-                    📊 Tiefergehende Analyse generieren
+                    📊 Tier-List Grafik generieren
                 </button>
             </div>
             <div id="analytics-result-area" style="margin-top:20px;"></div>
@@ -543,6 +545,9 @@ function renderStatsSelection(user) {
     });
 
     document.getElementById('btn-generate-tierlist').addEventListener('click', () => { window.generateDeepAnalytics(user); });
+
+    // Load Machtverirrung asynchronously
+    setTimeout(() => { window.loadMachtverirrung(user, 'inline-machtverirrung-area'); }, 100);
 }
 
 window.openShowcaseModal = function(user, slotIndex) {
@@ -578,8 +583,8 @@ window.openShowcaseModal = function(user, slotIndex) {
     };
     list.appendChild(emptyBtn);
 
-    if (window.TITLES && window.TITLES[currentMode]) {
-        window.TITLES[currentMode].forEach(t => {
+    if (TITLES && TITLES[currentMode]) {
+        TITLES[currentMode].forEach(t => {
             if (unlockedTitles.includes(t.id)) {
                 const btn = document.createElement('button');
                 btn.style.cssText = 'background:#2d3748; color:#ffd700; border:1px solid #4a5568; padding:10px; border-radius:5px; cursor:pointer; text-align:left; font-weight:bold;';
@@ -593,8 +598,8 @@ window.openShowcaseModal = function(user, slotIndex) {
         });
     }
 
-    if (window.THEMES && window.THEMES[currentMode]) {
-        window.THEMES[currentMode].forEach(t => {
+    if (THEMES && THEMES[currentMode]) {
+        THEMES[currentMode].forEach(t => {
             if (unlockedThemes.includes(t.id)) {
                 const btn = document.createElement('button');
                 btn.style.cssText = 'background:#2d3748; color:#2ed573; border:1px solid #4a5568; padding:10px; border-radius:5px; cursor:pointer; text-align:left; font-weight:bold;';
@@ -633,13 +638,13 @@ window.generateDeepAnalytics = async function(user) {
     const { db } = await import('./firebase-config.js');
     const { collection, query, where, getDocs, doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
     
-    const qGames = query(collection(db, "games"), where("username", "==", user.username), where("mode", "==", currentMode));
+    const qGames = query(collection(db, "history"), where("username", "==", user.username), where("mode", "==", currentMode));
     const snapGames = await getDocs(qGames);
     
     if (snapGames.empty) {
         area.innerHTML = '<div style="color:#ff4757; text-align:center;">Noch keine Spiele in diesem Modus gespielt!</div>';
         btn.disabled = false;
-        btn.textContent = '📊 Tiefergehende Analyse generieren';
+        btn.textContent = '📊 Tier-List Grafik generieren';
         return;
     }
     
@@ -697,24 +702,6 @@ window.generateDeepAnalytics = async function(user) {
         }
     }
 
-    let delusionHtml = '';
-    if (delusionChar) {
-        const diffDesc = delusionUserAvg < delusionGlobalAvg 
-            ? "Du bewertest ihn <strong>viel besser</strong> als der Rest der Community!" 
-            : "Du bewertest ihn <strong>viel schlechter</strong> als der Rest der Community!";
-            
-        delusionHtml = `
-            <div style="background: rgba(156, 39, 176, 0.2); padding: 15px; border-radius: 8px; border: 1px solid #9c27b0; text-align:center; margin-bottom: 20px;">
-                <h4 style="margin:0 0 10px 0; color:#e056fd;">🌌 Machtverirrung (Größte Abweichung)</h4>
-                <div style="color:#fff; font-size:1.2rem; font-weight:bold; margin-bottom:5px;">${delusionChar}</div>
-                <div style="font-size:0.9rem; color:#e2e8f0; margin-top:5px; background:rgba(0,0,0,0.5); padding:8px; border-radius:4px; display:inline-block;">
-                    Dein Schnitt: <strong>Platz ${delusionUserAvg.toFixed(1)}</strong> &nbsp;|&nbsp; Community: <strong>Platz ${delusionGlobalAvg.toFixed(1)}</strong>
-                </div>
-                <div style="color:#ffd700; margin-top:10px; font-weight:bold;">${diffDesc}</div>
-            </div>
-        `;
-    }
-
     const getImg = (name) => {
         const c = activeCharacterDatabase.find(x => x.name === name);
         return c ? c.img : '';
@@ -746,7 +733,7 @@ window.generateDeepAnalytics = async function(user) {
         </button>
     `;
 
-    area.innerHTML = delusionHtml + tierListHtml;
+    area.innerHTML = tierListHtml;
     btn.style.display = 'none';
 
     if (typeof html2canvas === 'undefined') {
@@ -778,5 +765,85 @@ window.generateDeepAnalytics = async function(user) {
                 setTimeout(() => { downloadBtn.textContent = '📥 Tier-List als Bild speichern'; downloadBtn.disabled = false; }, 2000);
             });
         });
+    }
+}
+
+window.loadMachtverirrung = async function(user, targetDivId) {
+    const area = document.getElementById(targetDivId);
+    if (!area) return;
+    area.innerHTML = '<div style="text-align:center; color:#94a3b8; font-size:0.8rem;">Berechne Machtverirrung...</div>';
+
+    const { db } = await import('./firebase-config.js');
+    const { collection, query, where, getDocs, doc, getDoc, limit, orderBy } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+    
+    // Analyze up to 50 recent games to keep reads low but accurate
+    const qGames = query(collection(db, "history"), where("username", "==", user.username), where("mode", "==", currentMode), orderBy("timestamp", "desc"), limit(50));
+    const snapGames = await getDocs(qGames);
+    
+    if (snapGames.empty) {
+        area.innerHTML = ''; return;
+    }
+    
+    const charRanks = {}; 
+    snapGames.forEach(docSnap => {
+        const game = docSnap.data();
+        if (game.ranking && game.ranking.length > 0) {
+            game.ranking.forEach((char, idx) => {
+                if (!charRanks[char.name]) charRanks[char.name] = { sum: 0, count: 0 };
+                const maxIdx = game.ranking.length - 1;
+                const normalizedRank = maxIdx > 0 ? ((idx / maxIdx) * 4) + 1 : 1;
+                charRanks[char.name].sum += normalizedRank;
+                charRanks[char.name].count++;
+            });
+        }
+    });
+
+    let globalRanks = {};
+    try {
+        const snapGlobal = await getDoc(doc(db, "scores", `${currentMode}_classic_global`));
+        if (snapGlobal.exists()) {
+            const chars = Object.values(snapGlobal.data().characters || {});
+            chars.forEach(c => {
+                const globalScore = c.score / (c.count || 1); 
+                globalRanks[c.name] = 6 - globalScore;
+            });
+        }
+    } catch(e) {}
+
+    let maxDiff = -1;
+    let delusionChar = null;
+    let delusionUserAvg = 0;
+    let delusionGlobalAvg = 0;
+
+    for (const [name, stats] of Object.entries(charRanks)) {
+        const userAvg = stats.sum / stats.count;
+        if (globalRanks[name]) {
+            const diff = Math.abs(userAvg - globalRanks[name]);
+            if (stats.count >= 2 && diff > maxDiff) {
+                maxDiff = diff;
+                delusionChar = name;
+                delusionUserAvg = userAvg;
+                delusionGlobalAvg = globalRanks[name];
+            }
+        }
+    }
+
+    if (delusionChar) {
+        const diffDesc = delusionUserAvg < delusionGlobalAvg 
+            ? "Du bewertest ihn <strong>viel besser</strong> als der Rest der Community!" 
+            : "Du bewertest ihn <strong>viel schlechter</strong> als der Rest der Community!";
+            
+        area.innerHTML = `
+            <div style="background: rgba(156, 39, 176, 0.2); padding: 15px; border-radius: 8px; border: 1px solid #9c27b0; text-align:center; margin-bottom: 20px;">
+                <h4 style="margin:0 0 10px 0; color:#e056fd;">🌌 Machtverirrung (Größte Abweichung)</h4>
+                <div style="color:#fff; font-size:1.2rem; font-weight:bold; margin-bottom:5px;">${delusionChar}</div>
+                <div style="font-size:0.9rem; color:#e2e8f0; margin-top:5px; background:rgba(0,0,0,0.5); padding:8px; border-radius:4px; display:inline-block;">
+                    ${user.displayName || user.username}s Schnitt: <strong>Platz ${delusionUserAvg.toFixed(1)}</strong> &nbsp;|&nbsp; Community: <strong>Platz ${delusionGlobalAvg.toFixed(1)}</strong>
+                </div>
+                <div style="color:#ffd700; margin-top:10px; font-weight:bold;">${diffDesc}</div>
+            </div>
+        `;
+    } else {
+        area.innerHTML = '';
     }
 }

@@ -363,6 +363,13 @@ function openUserProfileModal(u) {
         let topNem = null, topNemCount = 0;
         for (const [name, count] of Object.entries(nems)) { if (count > topNemCount) { topNemCount = count; topNem = name; } }
         
+        const matchups = u.versusMatchups || {};
+        let meister = null, meisterLosses = 0, schueler = null, schuelerWins = 0;
+        for (const [oppName, stats] of Object.entries(matchups)) {
+            if (stats.losses > meisterLosses) { meisterLosses = stats.losses; meister = oppName; }
+            if (stats.wins > schuelerWins) { schuelerWins = stats.wins; schueler = oppName; }
+        }
+        
         progressHtml = `
             <div style="background:#11151f; padding:15px; border-radius:8px; border:1px solid #2a3142;">
                 <h4 style="margin:0 0 10px 0; color:#e2e8f0; border-bottom:1px solid #2a3142; padding-bottom:5px;">Star Wars Fortschritt</h4>
@@ -371,6 +378,17 @@ function openUserProfileModal(u) {
                 <div style="font-size:0.85rem; color:#94a3b8; margin-bottom:5px;">Freigeschaltete Themes: <span style="color:#fff">${swThemeNames.join(', ') || '-'}</span></div>
                 <div style="font-size:0.85rem; color:#2ed573; margin-bottom:5px;">Lieblingscharakter: <span style="color:#fff">${topFav ? `${topFav} (${topFavCount}x auf Platz 1)` : '-'}</span></div>
                 <div style="font-size:0.85rem; color:#ff4757;">Nemesis: <span style="color:#fff">${topNem ? `${topNem} (${topNemCount}x auf Platz 5)` : '-'}</span></div>
+                
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <div style="flex:1; font-size:0.85rem; color:#ff9f43; background:rgba(0,0,0,0.3); padding:8px; border-radius:4px; text-align:center;">
+                        Meister<br><span style="color:#fff; font-weight:bold;">${meister || '-'}</span>
+                    </div>
+                    <div style="flex:1; font-size:0.85rem; color:#0abde3; background:rgba(0,0,0,0.3); padding:8px; border-radius:4px; text-align:center;">
+                        Schüler<br><span style="color:#fff; font-weight:bold;">${schueler || '-'}</span>
+                    </div>
+                </div>
+
+                <div id="community-machtverirrung-${u.username}"></div>
                 
                 <div style="margin-top:15px; border-top:1px solid #2a3142; padding-top:10px;">
                     <h5 style="margin:0 0 10px 0; color:#e2e8f0; font-size:0.8rem; text-align:center;">Trophäenschrank</h5>
@@ -406,6 +424,13 @@ function openUserProfileModal(u) {
         let topNem = null, topNemCount = 0;
         for (const [name, count] of Object.entries(nems)) { if (count > topNemCount) { topNemCount = count; topNem = name; } }
         
+        const matchups = u.versusMatchups || {};
+        let meister = null, meisterLosses = 0, schueler = null, schuelerWins = 0;
+        for (const [oppName, stats] of Object.entries(matchups)) {
+            if (stats.losses > meisterLosses) { meisterLosses = stats.losses; meister = oppName; }
+            if (stats.wins > schuelerWins) { schuelerWins = stats.wins; schueler = oppName; }
+        }
+        
         progressHtml = `
             <div style="background:#11151f; padding:15px; border-radius:8px; border:1px solid #2a3142;">
                 <h4 style="margin:0 0 10px 0; color:#e2e8f0; border-bottom:1px solid #2a3142; padding-bottom:5px;">Anime Fortschritt</h4>
@@ -414,6 +439,17 @@ function openUserProfileModal(u) {
                 <div style="font-size:0.85rem; color:#94a3b8; margin-bottom:5px;">Freigeschaltete Themes: <span style="color:#fff">${animeThemeNames.join(', ') || '-'}</span></div>
                 <div style="font-size:0.85rem; color:#2ed573; margin-bottom:5px;">Lieblingscharakter: <span style="color:#fff">${topFav ? `${topFav} (${topFavCount}x auf Platz 1)` : '-'}</span></div>
                 <div style="font-size:0.85rem; color:#ff4757;">Nemesis: <span style="color:#fff">${topNem ? `${topNem} (${topNemCount}x auf Platz 5)` : '-'}</span></div>
+                
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <div style="flex:1; font-size:0.85rem; color:#ff9f43; background:rgba(0,0,0,0.3); padding:8px; border-radius:4px; text-align:center;">
+                        Meister<br><span style="color:#fff; font-weight:bold;">${meister || '-'}</span>
+                    </div>
+                    <div style="flex:1; font-size:0.85rem; color:#0abde3; background:rgba(0,0,0,0.3); padding:8px; border-radius:4px; text-align:center;">
+                        Schüler<br><span style="color:#fff; font-weight:bold;">${schueler || '-'}</span>
+                    </div>
+                </div>
+
+                <div id="community-machtverirrung-${u.username}"></div>
                 
                 <div style="margin-top:15px; border-top:1px solid #2a3142; padding-top:10px;">
                     <h5 style="margin:0 0 10px 0; color:#e2e8f0; font-size:0.8rem; text-align:center;">Trophäenschrank</h5>
@@ -471,7 +507,10 @@ function openUserProfileModal(u) {
         });
     }
     
-    modal.classList.remove('hidden');
+    // Asynchronously load Machtverirrung
+    if (window.loadMachtverirrung) {
+        setTimeout(() => { window.loadMachtverirrung(u, `community-machtverirrung-${u.username}`); }, 100);
+    }
 }
 
 
