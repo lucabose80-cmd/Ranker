@@ -112,4 +112,5 @@ export async function toggleTheme() {
     renderAvatarSelection();
     refreshProfileContent(); // Aktualisiert Titel, Farbschemas & Counter passend zum neuen Modus
     refreshAdminPanel();
+    if (window.updateCreditProgressBars) window.updateCreditProgressBars();
 }

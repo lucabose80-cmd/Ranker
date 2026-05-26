@@ -147,6 +147,7 @@ export function initProfile() {
             document.getElementById('profile-title-panel').classList.toggle('hidden', target !== 'title');
             document.getElementById('profile-theme-panel').classList.toggle('hidden', target !== 'theme');
             document.getElementById('profile-stats-panel').classList.toggle('hidden', target !== 'stats');
+            document.getElementById('profile-album-panel').classList.toggle('hidden', target !== 'album');
         });
     });
 
@@ -188,6 +189,7 @@ export async function refreshProfileContent() {
     renderTitleSelection(user, gamesPlayed);
     renderThemeSelection(user);
     renderStatsSelection(user);
+    renderAlbumTab(user);
 
     // Update tab labels with notification dots
     updateTabNotificationDots(user);
@@ -543,13 +545,6 @@ function renderStatsSelection(user) {
                 </div>
             </div>
 
-            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid #333;">
-                <h4 style="margin:0 0 15px 0; color:#e2e8f0; text-align:center;">Dein Sammelalbum</h4>
-                <div style="font-size:0.8rem; color:#94a3b8; text-align:center; margin-bottom:15px;">Gezogene Karten aus dem Shop.</div>
-                <div id="profile-album-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(80px, 1fr)); gap:10px; max-height:400px; overflow-y:auto; padding-right:5px;">
-                </div>
-            </div>
-
             <div id="inline-machtverirrung-area"></div>
 
             <div style="text-align:center; margin-top:10px;">
@@ -569,71 +564,141 @@ function renderStatsSelection(user) {
 
     // Load Machtverirrung asynchronously
     setTimeout(() => { window.loadMachtverirrung(user, 'inline-machtverirrung-area'); }, 100);
+}
 
-    // Render Sammelalbum
+function renderAlbumTab(user) {
+    const filterSelect = document.getElementById('album-pack-filter');
+    if (filterSelect) {
+        filterSelect.onchange = () => {
+            window.renderCommunityAlbum(user, 'profile-album-grid-tab', filterSelect.value);
+        };
+    }
+    
+    // Render Album Showcase
+    const showcaseContainer = document.getElementById('album-showcase-container');
+    if (showcaseContainer) {
+        const showcaseData = currentMode === 'starwars' ? (user.album_showcase_starwars || []) : (user.album_showcase_waifu || []);
+        let html = '';
+        for (let i = 0; i < 3; i++) {
+            const card = showcaseData[i];
+            if (card) {
+                const charObj = activeCharacterDatabase.find(c => c.name === card.charName);
+                if (charObj) {
+                    const bg = `url('${charObj.img}')`;
+                    let rarityBorder = '3px solid #111';
+                    if (card.rarity === 'rare') rarityBorder = '3px solid #ff9f43';
+                    if (card.rarity === 'epic') rarityBorder = '3px solid #9b59b6';
+                    if (card.rarity === 'legendary') rarityBorder = '3px solid #ffd700';
+                    
+                    html += `<div class="album-showcase-slot" data-slot="${i}" style="width:80px; height:120px; border-radius:8px; background-size:cover; background-position:center; background-image:${bg}; border:${rarityBorder}; position:relative; cursor:pointer; box-shadow:0 5px 15px rgba(0,0,0,0.5);">
+                        <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.8); color:#fff; font-size:0.6rem; text-align:center; padding:3px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">${card.charName}</div>
+                    </div>`;
+                } else {
+                    html += `<div class="album-showcase-slot" data-slot="${i}" style="width:80px; height:120px; border-radius:8px; background:rgba(0,0,0,0.5); border:1px dashed #555; display:flex; align-items:center; justify-content:center; cursor:pointer;"><span style="color:#666; font-size:2rem;">+</span></div>`;
+                }
+            } else {
+                html += `<div class="album-showcase-slot" data-slot="${i}" style="width:80px; height:120px; border-radius:8px; background:rgba(0,0,0,0.5); border:1px dashed #555; display:flex; align-items:center; justify-content:center; cursor:pointer;"><span style="color:#666; font-size:2rem;">+</span></div>`;
+            }
+        }
+        showcaseContainer.innerHTML = html;
+        
+        showcaseContainer.querySelectorAll('.album-showcase-slot').forEach(slot => {
+        slot.addEventListener('click', () => { window.openAlbumShowcaseModal(user, slot.dataset.slot); });
+        });
+    }
+
     if (window.renderCommunityAlbum) {
-        window.renderCommunityAlbum(user, 'profile-album-grid');
+        window.renderCommunityAlbum(user, 'profile-album-grid-tab');
     }
 }
 
-window.renderCommunityAlbum = function(user, containerId) {
+window.renderCommunityAlbum = function(user, containerId, filterPack = 'all') {
     const inventory = currentMode === 'starwars' ? (user.inventory_starwars || []) : (user.inventory_waifu || []);
     const albumGrid = document.getElementById(containerId);
     if (!albumGrid) return;
     
     albumGrid.innerHTML = '';
-    albumGrid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(80px, 1fr)); gap:10px; max-height:400px; overflow-y:auto; padding: 10px;';
+    albumGrid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(100px, 1fr)); gap:25px; max-height:400px; overflow-y:auto; padding: 10px;';
     
-    if (inventory.length === 0) {
-        albumGrid.innerHTML = '<div style="color:#666; grid-column: 1 / -1; text-align:center; padding: 20px;">Noch keine Karten gesammelt.</div>';
-    } else {
-        const counts = {};
-        inventory.forEach(c => {
-            const key = c.charName + '|' + c.rarity;
-            if (!counts[key]) counts[key] = { charName: c.charName, rarity: c.rarity, count: 0 };
-            counts[key].count++;
-        });
+    let filtered = inventory;
+    if (filterPack && filterPack !== 'all') {
+        filtered = inventory.filter(c => c.boosterId === filterPack);
+    }
 
-        const RARITY_BORDERS = {
-            'common': '3px solid #111',
-            'rare': '3px solid #ff9f43',
-            'epic': '3px solid #9b59b6',
-            'legendary': '3px solid #ffd700'
-        };
+    if (filtered.length === 0) {
+        albumGrid.innerHTML = '<div style="color:#666; grid-column: 1 / -1; text-align:center; padding: 20px;">Keine Karten gefunden.</div>';
+        return;
+    }
+    
+    const grouped = {};
+    filtered.forEach(c => {
+        if (!grouped[c.charName]) grouped[c.charName] = [];
+        grouped[c.charName].push(c);
+    });
 
-        const sorted = Object.values(counts).sort((a,b) => {
-            const rarVal = { 'legendary': 4, 'epic': 3, 'rare': 2, 'common': 1 };
-            if (rarVal[b.rarity] !== rarVal[a.rarity]) return rarVal[b.rarity] - rarVal[a.rarity];
-            return b.count - a.count;
-        });
+    const rarVal = { 'legendary': 4, 'epic': 3, 'rare': 2, 'common': 1 };
+    const RARITY_BORDERS = {
+        'common': '3px solid #111',
+        'rare': '3px solid #ff9f43',
+        'epic': '3px solid #9b59b6',
+        'legendary': '3px solid #ffd700'
+    };
 
-        sorted.forEach(c => {
-            const charObj = activeCharacterDatabase.find(dbC => dbC.name === c.charName);
-            if (!charObj) return;
+    const sortedChars = Object.keys(grouped).sort((a,b) => {
+        const highestA = Math.max(...grouped[a].map(c => rarVal[c.rarity]));
+        const highestB = Math.max(...grouped[b].map(c => rarVal[c.rarity]));
+        if (highestA !== highestB) return highestB - highestA;
+        return grouped[b].length - grouped[a].length;
+    });
 
+    sortedChars.forEach(charName => {
+        const charObj = activeCharacterDatabase.find(dbC => dbC.name === charName);
+        if (!charObj) return;
+
+        const cards = grouped[charName];
+        cards.sort((a,b) => rarVal[b.rarity] - rarVal[a.rarity]);
+        
+        const stackContainer = document.createElement('div');
+        const stackOffset = Math.min(20, cards.length * 4);
+        stackContainer.style.cssText = `position:relative; width:100%; aspect-ratio:2/3; margin-bottom: ${stackOffset}px; margin-right: ${stackOffset}px;`;
+        
+        cards.slice(0, 5).forEach((c, idx) => {
             const card = document.createElement('div');
-            card.style.cssText = `position:relative; width:100%; aspect-ratio:2/3; background-image:url('\${charObj.img}'); background-size:cover; background-position:center; border-radius:6px; border:\${RARITY_BORDERS[c.rarity] || '3px solid #111'}; cursor:help; overflow:hidden;`;
-            card.title = `\${c.charName} (\${c.rarity.toUpperCase()})`;
+            const z = cards.length - idx;
+            const offset = idx * 4;
             
-            if (c.rarity === 'epic' || c.rarity === 'legendary') {
+            card.style.cssText = `position:absolute; top:${offset}px; left:${offset}px; width:100%; height:100%; background-image:url('${charObj.img}'); background-size:cover; background-position:center; border-radius:6px; border:${RARITY_BORDERS[c.rarity] || '3px solid #111'}; z-index:${z}; box-shadow: -2px -2px 5px rgba(0,0,0,0.5); overflow:hidden;`;
+            
+            if ((c.rarity === 'epic' || c.rarity === 'legendary') && idx === 0) {
                 const holo = document.createElement('div');
-                holo.style.cssText = 'position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; mix-blend-mode:color-dodge;';
-                holo.style.background = 'linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%)';
-                holo.style.backgroundSize = '200% 200%';
-                holo.style.animation = 'holo-gleam 2.5s infinite linear';
+                holo.style.cssText = 'position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; mix-blend-mode:color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear;';
                 card.appendChild(holo);
             }
             
-            if (c.count > 1) {
-                const badge = document.createElement('div');
-                badge.style.cssText = 'position:absolute; bottom:2px; right:2px; background:rgba(0,0,0,0.8); color:#fff; font-size:0.7rem; font-weight:bold; padding:2px 5px; border-radius:4px; border:1px solid #444;';
-                badge.textContent = 'x' + c.count;
-                card.appendChild(badge);
+            if (idx === 0) {
+                 const badge = document.createElement('div');
+                 badge.style.cssText = 'position:absolute; bottom:2px; right:2px; background:rgba(0,0,0,0.8); color:#fff; font-size:0.7rem; font-weight:bold; padding:2px 5px; border-radius:4px; border:1px solid #444; pointer-events:none;';
+                 badge.textContent = 'x' + cards.length;
+                 card.appendChild(badge);
+                 
+                 const nameBanner = document.createElement('div');
+                 nameBanner.style.cssText = 'position:absolute; bottom:25px; left:0; right:0; background:rgba(0,0,0,0.8); text-align:center; font-size:0.6rem; color:#fff; padding:3px; pointer-events:none; text-transform:uppercase; font-weight:bold;';
+                 nameBanner.textContent = charName;
+                 card.appendChild(nameBanner);
+                 
+                 stackContainer.title = `${charName} (${cards.length}x)`;
+                 
+                 const topBanner = document.createElement('div');
+                 const col = c.rarity === 'legendary' ? '#ffd700' : (c.rarity === 'epic' ? '#9b59b6' : (c.rarity === 'rare' ? '#ff9f43' : '#888'));
+                 topBanner.style.cssText = `position:absolute; top:0; left:0; right:0; height:4px; background:${col};`;
+                 card.appendChild(topBanner);
             }
             
-            albumGrid.appendChild(card);
+            stackContainer.appendChild(card);
         });
-    }
+        
+        albumGrid.appendChild(stackContainer);
+    });
 }
 
 window.openShowcaseModal = function(user, slotIndex) {
@@ -715,6 +780,92 @@ window.updateShowcaseSlot = async function(user, slotIndex, itemData) {
     
     await updateDoc(doc(db, "users", user.uid), { [field]: showcase });
     renderStatsSelection(user);
+};
+
+window.openAlbumShowcaseModal = function(user, slotIndex) {
+    const inventory = currentMode === 'starwars' ? (user.inventory_starwars || []) : (user.inventory_waifu || []);
+    
+    let modal = document.getElementById('album-showcase-selector-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'album-showcase-selector-modal';
+        modal.className = 'modal hidden';
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width:500px; background:#1e293b; color:#fff; padding:20px; border-radius:12px; max-height:80vh; overflow-y:auto;">
+                <h3 style="margin-top:0;">Karte für Showcase wählen</h3>
+                <div id="album-showcase-items-list" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(80px, 1fr)); gap:10px;"></div>
+                <button id="close-album-showcase-modal" class="btn secondary-btn" style="margin-top:20px; width:100%;">Schließen</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        document.getElementById('close-album-showcase-modal').addEventListener('click', () => modal.classList.add('hidden'));
+    }
+    
+    const list = document.getElementById('album-showcase-items-list');
+    list.innerHTML = '';
+    
+    const emptyBtn = document.createElement('button');
+    emptyBtn.className = 'btn';
+    emptyBtn.style.cssText = 'grid-column: 1 / -1; background:#333; color:#fff; border:none; padding:10px; border-radius:5px; cursor:pointer; text-align:center; margin-bottom:10px;';
+    emptyBtn.textContent = '❌ Slot leeren';
+    emptyBtn.onclick = async () => {
+        await window.updateAlbumShowcaseSlot(user, slotIndex, null);
+        modal.classList.add('hidden');
+    };
+    list.appendChild(emptyBtn);
+
+    // Get unique highest cards
+    const grouped = {};
+    inventory.forEach(c => {
+        if (!grouped[c.charName]) grouped[c.charName] = [];
+        grouped[c.charName].push(c);
+    });
+
+    const rarVal = { 'legendary': 4, 'epic': 3, 'rare': 2, 'common': 1 };
+    const RARITY_BORDERS = {
+        'common': '3px solid #111', 'rare': '3px solid #ff9f43',
+        'epic': '3px solid #9b59b6', 'legendary': '3px solid #ffd700'
+    };
+
+    Object.keys(grouped).forEach(charName => {
+        const charObj = activeCharacterDatabase.find(dbC => dbC.name === charName);
+        if (!charObj) return;
+
+        const cards = grouped[charName];
+        cards.sort((a,b) => rarVal[b.rarity] - rarVal[a.rarity]);
+        const bestCard = cards[0];
+
+        const cardEl = document.createElement('div');
+        cardEl.style.cssText = `width:100%; aspect-ratio:2/3; background-image:url('${charObj.img}'); background-size:cover; background-position:center; border-radius:6px; border:${RARITY_BORDERS[bestCard.rarity] || '3px solid #111'}; cursor:pointer; overflow:hidden; position:relative;`;
+        
+        const nameBanner = document.createElement('div');
+        nameBanner.style.cssText = 'position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.8); text-align:center; font-size:0.6rem; color:#fff; padding:3px; pointer-events:none;';
+        nameBanner.textContent = charName;
+        cardEl.appendChild(nameBanner);
+
+        cardEl.onclick = async () => {
+            await window.updateAlbumShowcaseSlot(user, slotIndex, { charName: bestCard.charName, rarity: bestCard.rarity });
+            modal.classList.add('hidden');
+        };
+        list.appendChild(cardEl);
+    });
+    
+    modal.classList.remove('hidden');
+};
+
+window.updateAlbumShowcaseSlot = async function(user, slotIndex, itemData) {
+    const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+    const { db } = await import('./firebase-config.js');
+    
+    const field = currentMode === 'starwars' ? 'album_showcase_starwars' : 'album_showcase_waifu';
+    const showcase = user[field] || [null, null, null];
+    showcase[slotIndex] = itemData;
+    
+    user[field] = showcase;
+    localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
+    
+    await updateDoc(doc(db, "users", user.uid), { [field]: showcase });
+    renderAlbumTab(user);
 };
 
 window.generateDeepAnalytics = async function(user) {

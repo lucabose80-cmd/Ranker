@@ -155,8 +155,8 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
                 user[catField] = totalEarned + 1;
                 user.credits = (user.credits || 0) + 10;
                 earnedCredits = true;
-                if (window.showUnlockNotification) {
-                    window.showUnlockNotification('credits', `+10 Credits (${user[catField]}/10)`);
+                if (window.updateCreditProgressBars) {
+                    window.updateCreditProgressBars();
                 }
             }
         }

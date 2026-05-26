@@ -396,6 +396,8 @@ function setupGameUI(user) {
         mAdvancedBtn.classList.remove('active');
         initGame();
     }
+    
+    if (window.updateCreditProgressBars) window.updateCreditProgressBars();
 }
 
 function setupAdminUI() {
@@ -527,5 +529,56 @@ window.showUnlockNotification = function(type, desc) {
         };
     }
 }
+
+window.updateCreditProgressBars = function() {
+    const container = document.getElementById('credit-progress-bars-container');
+    if (!container) return;
+    
+    // Check if we are in classic mode and the category container is visible
+    const catContainer = document.getElementById('category-selector-container');
+    if (catContainer && catContainer.classList.contains('hidden')) {
+        container.innerHTML = '';
+        return;
+    }
+
+    // Try to get user from global object or localstorage
+    let user = null;
+    try {
+        const stored = localStorage.getItem('ranking_game_active_user');
+        if (stored) user = JSON.parse(stored);
+    } catch(e) {}
+    if (!user) return;
+
+    // wir brauchen das aus mode-state.js
+    const mode = window.currentModeForBars || (document.body.classList.contains('alt-theme') ? 'waifu' : 'starwars');
+    
+    const categories = [
+        { id: 'normal', name: 'Expanded Universe', color: '#2ed573' },
+        { id: 'klon', name: 'Nur Klone', color: '#3498db' },
+        { id: 'peak', name: 'Peak Ranking', color: '#e67e22' },
+        { id: 'vehicle', name: 'Fahrzeuge', color: '#9b59b6' },
+        { id: 'hardcore', name: 'Hardcore Peak', color: '#e74c3c' }
+    ];
+
+    let html = '<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span style="font-size:0.8rem; color:#94a3b8; text-transform:uppercase;">Daily Booster-Credits Limit</span></div>';
+    
+    categories.forEach(cat => {
+        const field = `credits_earned_${mode}_${cat.id}`;
+        const earned = user[field] || 0;
+        const percent = Math.min(100, (earned / 10) * 100);
+        
+        html += `
+            <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:120px; font-size:0.75rem; color:#e2e8f0; text-align:right;">${cat.name}</div>
+                <div style="flex:1; height:8px; background:rgba(0,0,0,0.5); border-radius:4px; border:1px solid #333; overflow:hidden;">
+                    <div style="width:${percent}%; height:100%; background:${cat.color}; transition:width 0.3s; box-shadow: 0 0 5px ${cat.color};"></div>
+                </div>
+                <div style="width:30px; font-size:0.7rem; color:#94a3b8; text-align:left;">${earned}/10</div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
+};
 
 bootApp();

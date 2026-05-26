@@ -151,10 +151,14 @@ async function openBooster(booster, pool) {
         const currentInventory = user[field] || [];
         
         pulledCards.forEach(cardInfo => {
+            const isNew = !currentInventory.some(c => c.charName === cardInfo.char.name && c.rarity === cardInfo.rarity.id);
+            cardInfo.isNew = isNew;
+
             currentInventory.push({
                 charName: cardInfo.char.name,
                 rarity: cardInfo.rarity.id,
-                timestamp: Date.now()
+                timestamp: Date.now(),
+                boosterId: booster.id
             });
         });
         
@@ -175,6 +179,48 @@ async function openBooster(booster, pool) {
 
     // Show animation modal with 5 cards
     showPullAnimation(pulledCards, isGodPack);
+}
+
+function playFlipSound() {
+    try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const actx = new AudioContext();
+        const osc = actx.createOscillator();
+        const gain = actx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(400, actx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(800, actx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.1, actx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.1);
+        osc.connect(gain); gain.connect(actx.destination);
+        osc.start(); osc.stop(actx.currentTime + 0.1);
+    } catch(e) {}
+}
+
+function playGachaSound(rarity) {
+    try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const actx = new AudioContext();
+        const now = actx.currentTime;
+        function playTone(freq, time, dur, type='square') {
+            const osc = actx.createOscillator();
+            const gain = actx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, time);
+            gain.gain.setValueAtTime(0.1, time);
+            gain.gain.exponentialRampToValueAtTime(0.001, time + dur - 0.05);
+            osc.connect(gain); gain.connect(actx.destination);
+            osc.start(time); osc.stop(time + dur);
+        }
+        
+        if (rarity === 'legendary') {
+            playTone(440, now, 0.1); playTone(554.37, now + 0.1, 0.1); playTone(659.25, now + 0.2, 0.1); playTone(880, now + 0.3, 0.4);
+        } else if (rarity === 'epic') {
+            playTone(523.25, now, 0.1); playTone(659.25, now + 0.1, 0.1); playTone(783.99, now + 0.2, 0.3);
+        } else if (rarity === 'rare') {
+            playTone(440, now, 0.15, 'triangle'); playTone(523.25, now + 0.15, 0.2, 'triangle');
+        }
+    } catch(e) {}
 }
 
 function showPullAnimation(pulledCards, isGodPack) {
@@ -251,6 +297,7 @@ function showPullAnimation(pulledCards, isGodPack) {
                             </div>
                             <div class="pull-card-back" style="background-image: url('${info.char.img}'); border: ${info.rarity.border};">
                                 ${info.rarity.holo ? `<div style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; mix-blend-mode: color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear;"></div>` : ''}
+                                ${info.isNew ? `<div style="position:absolute; top:10px; right:10px; background:#ff4757; color:#fff; font-size:0.7rem; font-weight:bold; padding:3px 8px; border-radius:12px; transform:rotate(15deg); border:2px solid #fff; box-shadow:0 2px 5px rgba(0,0,0,0.5); z-index: 20;">NEU!</div>` : ''}
                                 <div style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.7), transparent); padding:20px 10px 10px 10px; color:#fff; text-align:center;">
                                     <h3 style="margin:0 0 5px 0; font-size:1.1rem; text-transform:uppercase; text-shadow: 2px 2px 4px #000;">${info.char.name}</h3>
                                     <div style="font-size:0.8rem; font-weight:bold; text-transform:uppercase; letter-spacing: 1px; color: ${info.rarity.color};">${info.rarity.name}</div>
@@ -278,9 +325,13 @@ function showPullAnimation(pulledCards, isGodPack) {
             inner.style.transform = 'rotateY(180deg)';
             flippedCount++;
             
+            playFlipSound();
+            if (info.rarity.id !== 'common') {
+                setTimeout(() => { playGachaSound(info.rarity.id); }, 200);
+            }
+            
             if (info.rarity.id === 'legendary') {
                 console.log("Legendäre gezogen!");
-                // TODO: Voice line playing logic
             }
 
             container.removeEventListener('click', flipCard);

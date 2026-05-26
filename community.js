@@ -405,6 +405,28 @@ function openUserProfileModal(u) {
                         }).join('')}
                     </div>
                 </div>
+
+                <div style="margin-top:15px; border-top:1px solid #2a3142; padding-top:10px;">
+                    <h5 style="margin:0 0 10px 0; color:#e2e8f0; font-size:0.8rem; text-align:center;">Karten Showcase</h5>
+                    <div style="display:flex; gap:10px; justify-content:center;">
+                        ${[0,1,2].map(i => {
+                            const item = (u.album_showcase_starwars || [])[i];
+                            if (item) {
+                                const dbObj = activeCharacterDatabase.find(c => c.name === item.charName);
+                                if (dbObj) {
+                                    let border = '2px solid #111';
+                                    if(item.rarity==='rare') border='2px solid #ff9f43';
+                                    if(item.rarity==='epic') border='2px solid #9b59b6';
+                                    if(item.rarity==='legendary') border='2px solid #ffd700';
+                                    return `<div style="width:60px; height:90px; border-radius:6px; background-image:url('${dbObj.img}'); background-size:cover; background-position:center; border:${border}; position:relative; box-shadow:0 2px 5px rgba(0,0,0,0.5);">
+                                        <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.8); color:#fff; font-size:0.5rem; text-align:center; padding:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.charName}</div>
+                                    </div>`;
+                                }
+                            }
+                            return `<div style="width:60px; height:90px; border-radius:6px; background:rgba(0,0,0,0.5); border:1px dashed #444; display:flex; align-items:center; justify-content:center;"><span style="color:#444; font-size:1.5rem;">+</span></div>`;
+                        }).join('')}
+                    </div>
+                </div>
                 
                 <div id="community-album-sw-${u.username}"></div>
             </div>
@@ -465,6 +487,28 @@ function openUserProfileModal(u) {
                                 else if (item.type === 'theme') content = `<div style="color:#2ed573; font-size:0.6rem; font-weight:bold; text-transform:uppercase;">Theme</div><div style="color:#fff; font-size:0.75rem; margin-top:2px; text-align:center;">${item.name}</div>`;
                             }
                             return `<div style="flex:1; max-width:80px; height:60px; background: rgba(0,0,0,0.5); border: 1px dashed #444; border-radius: 6px; display:flex; flex-direction:column; align-items:center; justify-content:center;">${content}</div>`;
+                        }).join('')}
+                    </div>
+                </div>
+
+                <div style="margin-top:15px; border-top:1px solid #2a3142; padding-top:10px;">
+                    <h5 style="margin:0 0 10px 0; color:#e2e8f0; font-size:0.8rem; text-align:center;">Karten Showcase</h5>
+                    <div style="display:flex; gap:10px; justify-content:center;">
+                        ${[0,1,2].map(i => {
+                            const item = (u.album_showcase_waifu || [])[i];
+                            if (item) {
+                                const dbObj = activeCharacterDatabase.find(c => c.name === item.charName);
+                                if (dbObj) {
+                                    let border = '2px solid #111';
+                                    if(item.rarity==='rare') border='2px solid #ff9f43';
+                                    if(item.rarity==='epic') border='2px solid #9b59b6';
+                                    if(item.rarity==='legendary') border='2px solid #ffd700';
+                                    return `<div style="width:60px; height:90px; border-radius:6px; background-image:url('${dbObj.img}'); background-size:cover; background-position:center; border:${border}; position:relative; box-shadow:0 2px 5px rgba(0,0,0,0.5);">
+                                        <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.8); color:#fff; font-size:0.5rem; text-align:center; padding:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.charName}</div>
+                                    </div>`;
+                                }
+                            }
+                            return `<div style="width:60px; height:90px; border-radius:6px; background:rgba(0,0,0,0.5); border:1px dashed #444; display:flex; align-items:center; justify-content:center;"><span style="color:#444; font-size:1.5rem;">+</span></div>`;
                         }).join('')}
                     </div>
                 </div>

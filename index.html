@@ -176,6 +176,7 @@
                     <button id="cat-vehicle-btn" class="mode-toggle-btn" style="font-size: 0.8rem; padding: 5px 15px;">Fahrzeuge</button>
                     <button id="cat-hardcore-btn" class="mode-toggle-btn" style="font-size: 0.8rem; padding: 5px 15px;">Hardcore Peak</button>
                 </div>
+                <div id="credit-progress-bars-container" style="display:flex; flex-direction:column; gap:5px; margin-bottom: 20px; margin-top: 10px; max-width: 600px; margin-left: auto; margin-right: auto;"></div>
 
                 <div class="panel ranking-panel">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -428,6 +429,7 @@
                             <button id="profile-tab-btn-title" class="changelog-tab profile-tab-btn" data-tab="title">Titel</button>
                             <button id="profile-tab-btn-theme" class="changelog-tab profile-tab-btn" data-tab="theme">Farbschemas</button>
                             <button id="profile-tab-btn-stats" class="changelog-tab profile-tab-btn" data-tab="stats">Statistiken</button>
+                            <button id="profile-tab-btn-album" class="changelog-tab profile-tab-btn" data-tab="album">Sammelalbum</button>
                         </div>
                         
                         <div id="profile-avatar-panel" class="profile-panel-content">
@@ -446,6 +448,25 @@
                         <div id="profile-theme-panel" class="profile-panel-content hidden">
                             <p class="prompt-text">Farbschema wählen. Schalte neue Themes durch Erfolge frei.</p>
                             <div id="theme-grid" class="title-grid"></div>
+                        </div>
+                        
+                        <div id="profile-album-panel" class="profile-panel-content hidden" style="text-align:left;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                                <p class="prompt-text" style="margin:0;">Dein Sammelalbum. Sortiere und wähle 3 Showcase-Karten aus.</p>
+                                <select id="album-pack-filter" style="padding:8px; border-radius:4px; background:rgba(0,0,0,0.5); color:#fff; border:1px solid #444;">
+                                    <option value="all">Alle Packs</option>
+                                    <option value="starwars_all">Galaktisches Standard-Pack</option>
+                                    <option value="starwars_klon">Klonkrieger Elite-Pack</option>
+                                    <option value="starwars_jedi_sith">Machtanwender Pack</option>
+                                </select>
+                            </div>
+                            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid #333; margin-bottom:15px;">
+                                <h4 style="margin:0 0 10px 0; color:#e2e8f0; text-align:center;">Karten Showcase</h4>
+                                <div style="display:flex; gap:15px; flex-wrap:wrap; justify-content:center;" id="album-showcase-container">
+                                    <!-- 3 Slots for cards -->
+                                </div>
+                            </div>
+                            <div id="profile-album-grid-tab" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(100px, 1fr)); gap:15px; max-height:400px; overflow-y:auto; padding-right:5px; padding-bottom:20px;"></div>
                         </div>
                     </div>
                 </div>
