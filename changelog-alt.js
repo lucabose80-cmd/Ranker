@@ -1,5 +1,18 @@
 export const patchNotesWaifu = [
     {
+        version: "v7.0",
+        title: "GACHA & SAMMELALBUM UPDATE",
+        isHotfix: false,
+        changes: [
+            "Feature: Gacha-System! Verdiene Credits im klassischen Modus (bis zu 10x pro Kategorie) und kaufe damit Booster-Packs im neuen Shop.",
+            "Feature: Booster-Packs! Öffne Packs und erweitere deine Sammlung stetig.",
+            "Feature: Seltenheitsstufen! Ziehe Karten von Gewöhnlich bis Legendär. Die 5. Karte eines jeden Packs hat eine garantierte Mindest-Seltenheit.",
+            "Feature: Profil-Sammelalbum! Betrachte deine gesamte Kollektion, sortiere sie nach Seltenheit, Menge oder Pack und zeige sie anderen Spielern.",
+            "Feature: Karten-Showcase! Stelle deine drei wertvollsten Lieblingskarten im Profil (Online-Tab) für die Community zur Schau.",
+            "Feature: Atemberaubende Effekte! Epische Karten besitzen glänzende Holo-Effekte. Legendäre Karten flackern golden und spielen beim Auspacken exklusive Sound-Effekte ab (inklusive Artwork-Transformation)."
+        ]
+    },
+    {
         version: "v6.4",
         title: "WICHTIGE ANKÜNDIGUNG",
         isHotfix: false,
