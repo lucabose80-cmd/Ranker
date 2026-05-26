@@ -1,6 +1,7 @@
 import { db } from './firebase-config.js';
 import { getCurrentUser, refreshCurrentUser } from './auth.js';
-import { currentMode, activeCharacterDatabase } from './mode-state.js';
+import { currentMode } from './mode-state.js';
+import { activeCharacterDatabase } from './theme.js';
 import { collection, addDoc, Timestamp, query, where, getDocs, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
 
 let dailyCharacter = null;
