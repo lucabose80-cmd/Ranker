@@ -1,0 +1,303 @@
+import { getCurrentUser } from './auth.js';
+import { activeCharacterDatabase } from './theme.js';
+import { currentMode } from './mode-state.js';
+
+let isShopInitialized = false;
+
+const RARITIES = {
+    COMMON: { id: 'common', name: 'Gewöhnlich', color: '#888888', dropRate: 0.60, border: '5px solid #111' },
+    RARE: { id: 'rare', name: 'Selten', color: '#ff9f43', dropRate: 0.30, border: '5px solid #ff9f43' },
+    EPIC: { id: 'epic', name: 'Episch', color: '#9b59b6', dropRate: 0.08, border: '5px solid #9b59b6', holo: true },
+    LEGENDARY: { id: 'legendary', name: 'Legendär', color: '#ffd700', dropRate: 0.02, border: '5px solid #ffd700', holo: true }
+};
+
+const BOOSTERS = [
+    {
+        id: 'starwars_all',
+        name: 'Galaktisches Standard-Pack',
+        cost: 10,
+        filter: (char) => true
+    },
+    {
+        id: 'starwars_klon',
+        name: 'Klonkrieger Elite-Pack',
+        cost: 10,
+        filter: (char) => char.tags && char.tags.includes('klon')
+    },
+    {
+        id: 'starwars_jedi_sith',
+        name: 'Machtanwender Pack',
+        cost: 10,
+        filter: (char) => {
+            if (char.tags && (char.tags.includes('jedi') || char.tags.includes('sith'))) return true;
+            if (char.name === 'General Grievous' || char.name === 'Asajj Ventress') return true;
+            return false;
+        }
+    }
+];
+
+export function initShop() {
+    const user = getCurrentUser();
+    if (!user) return;
+
+    document.getElementById('shop-credits-display').textContent = user.credits || 0;
+
+    const container = document.getElementById('booster-packs-container');
+    container.innerHTML = '';
+
+    if (currentMode !== 'starwars') {
+        container.innerHTML = '<div style="color:#94a3b8; text-align:center; width:100%; font-size:1.2rem;">Booster-Packs sind derzeit nur im Star Wars Modus verfügbar.</div>';
+        return;
+    }
+
+    BOOSTERS.forEach(booster => {
+        const pool = activeCharacterDatabase.filter(booster.filter);
+        if (pool.length === 0) return;
+
+        const el = document.createElement('div');
+        el.className = 'booster-pack-card';
+        el.style.cssText = 'background: rgba(0,0,0,0.5); border: 1px solid #333; border-radius: 8px; padding: 15px; width: 280px; text-align: center; display: flex; flex-direction: column; align-items: center; position: relative; overflow: hidden;';
+        
+        el.innerHTML = `
+            <h3 style="margin:0 0 10px 0; color:#ffd700; text-transform:uppercase;">${booster.name}</h3>
+            <div style="width:100%; height:180px; background:linear-gradient(135deg, #0f172a, #1e293b); border-radius:6px; margin-bottom:15px; border:2px solid #555; display:flex; justify-content:center; align-items:center; font-size:4rem; box-shadow: inset 0 0 20px rgba(0,0,0,0.8);">📦</div>
+            <p style="font-size:0.85rem; color:#94a3b8; margin:0 0 15px 0;">Mögliche Charaktere: <span style="color:#fff">${pool.length}</span></p>
+            
+            <div style="width:100%; background:rgba(0,0,0,0.3); border-radius:4px; padding:10px; margin-bottom:15px; display:flex; flex-direction:column; gap:5px;">
+                <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
+                    <span style="color:${RARITIES.COMMON.color}">${RARITIES.COMMON.name}</span>
+                    <span>${(RARITIES.COMMON.dropRate * 100).toFixed(0)}%</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
+                    <span style="color:${RARITIES.RARE.color}">${RARITIES.RARE.name}</span>
+                    <span>${(RARITIES.RARE.dropRate * 100).toFixed(0)}%</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
+                    <span style="color:${RARITIES.EPIC.color}">${RARITIES.EPIC.name}</span>
+                    <span>${(RARITIES.EPIC.dropRate * 100).toFixed(0)}%</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:bold;">
+                    <span style="color:${RARITIES.LEGENDARY.color}">${RARITIES.LEGENDARY.name}</span>
+                    <span style="color:#ffd700;">${(RARITIES.LEGENDARY.dropRate * 100).toFixed(0)}%</span>
+                </div>
+            </div>
+
+            <button class="rank-btn buy-booster-btn" style="width:100%; padding:15px; margin:0; font-size:1.1rem; border-color:#2ed573; color:#2ed573;" data-id="${booster.id}">
+                🛒 ${booster.cost} Credits
+            </button>
+        `;
+
+        el.querySelector('.buy-booster-btn').addEventListener('click', () => openBooster(booster, pool));
+        container.appendChild(el);
+    });
+
+    isShopInitialized = true;
+}
+
+async function openBooster(booster, pool) {
+    const user = getCurrentUser();
+    if (!user) return;
+
+    if ((user.credits || 0) < booster.cost) {
+        if (window.showUnlockNotification) window.showUnlockNotification('title', "Nicht genügend Credits!");
+        else alert("Nicht genügend Credits!");
+        return;
+    }
+
+    // Godpack Check (0.5% chance)
+    const isGodPack = Math.random() < 0.005;
+    
+    // Generate 5 cards
+    const pulledCards = [];
+    
+    const getRarity = (rates) => {
+        const rand = Math.random();
+        let acc = 0;
+        for (const key of Object.keys(rates)) {
+            acc += rates[key].dropRate;
+            if (rand <= acc) return rates[key];
+        }
+        return rates.COMMON || RARITIES.COMMON;
+    };
+
+    for (let i = 0; i < 5; i++) {
+        let rarity;
+        if (isGodPack) {
+            // Godpack: 80% Epic, 20% Legendary
+            rarity = Math.random() < 0.2 ? RARITIES.LEGENDARY : RARITIES.EPIC;
+        } else if (i === 4) {
+            // 5th card: Guaranteed Rare or better
+            // E.g., 80% Rare, 15% Epic, 5% Legendary
+            rarity = getRarity({
+                RARE: { ...RARITIES.RARE, dropRate: 0.80 },
+                EPIC: { ...RARITIES.EPIC, dropRate: 0.15 },
+                LEGENDARY: { ...RARITIES.LEGENDARY, dropRate: 0.05 }
+            });
+        } else {
+            // Standard drop rates
+            rarity = getRarity(RARITIES);
+        }
+
+        const char = pool[Math.floor(Math.random() * pool.length)];
+        pulledCards.push({ char, rarity });
+    }
+
+    // Save to Firebase
+    try {
+        const { doc, updateDoc, increment } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+        const { db } = await import('./firebase-config.js');
+        
+        const field = `inventory_${currentMode}`;
+        const currentInventory = user[field] || [];
+        
+        pulledCards.forEach(cardInfo => {
+            currentInventory.push({
+                charName: cardInfo.char.name,
+                rarity: cardInfo.rarity.id,
+                timestamp: Date.now()
+            });
+        });
+        
+        user[field] = currentInventory;
+        user.credits -= booster.cost;
+        document.getElementById('shop-credits-display').textContent = user.credits;
+        
+        localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
+
+        await updateDoc(doc(db, "users", user.uid), {
+            credits: increment(-booster.cost),
+            [field]: currentInventory
+        });
+        
+    } catch(e) {
+        console.error("Fehler beim Speichern der Karte:", e);
+    }
+
+    // Show animation modal with 5 cards
+    showPullAnimation(pulledCards, isGodPack);
+}
+
+function showPullAnimation(pulledCards, isGodPack) {
+    let modal = document.getElementById('pull-animation-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'pull-animation-modal';
+        modal.className = 'modal hidden';
+        document.body.appendChild(modal);
+
+        if (!document.getElementById('holo-style')) {
+            const style = document.createElement('style');
+            style.id = 'holo-style';
+            style.textContent = `
+                @keyframes holo-gleam {
+                    0% { background-position: 200% 0; }
+                    100% { background-position: -200% 0; }
+                }
+                @keyframes pulse {
+                    0% { opacity: 0.5; }
+                    50% { opacity: 1; }
+                    100% { opacity: 0.5; }
+                }
+                @keyframes godpack-glow {
+                    0% { box-shadow: 0 0 50px rgba(255, 215, 0, 0.5); }
+                    50% { box-shadow: 0 0 100px rgba(255, 215, 0, 1); }
+                    100% { box-shadow: 0 0 50px rgba(255, 215, 0, 0.5); }
+                }
+                .pull-card-container {
+                    perspective: 1000px; 
+                    width: 200px; 
+                    height: 300px; 
+                    cursor: pointer;
+                    transition: transform 0.2s;
+                }
+                .pull-card-container:hover {
+                    transform: scale(1.05);
+                }
+                .pull-card-inner {
+                    position:relative; 
+                    width:100%; 
+                    height:100%; 
+                    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+                    transform-style: preserve-3d;
+                }
+                .pull-card-front {
+                    position:absolute; width:100%; height:100%; backface-visibility:hidden; 
+                    background:linear-gradient(135deg, #1e293b, #0f172a); 
+                    border: 2px solid #333; border-radius:15px; display:flex; justify-content:center; align-items:center; 
+                    font-size:4rem; box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+                }
+                .pull-card-back {
+                    position:absolute; width:100%; height:100%; backface-visibility:hidden; 
+                    transform: rotateY(180deg); border-radius:15px; overflow:hidden; 
+                    background-size: cover; background-position: center; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+
+    const godpackStyle = isGodPack ? "animation: godpack-glow 2s infinite;" : "";
+    const godpackText = isGodPack ? "<h2 style='color:#ffd700; text-transform:uppercase; text-shadow: 0 0 20px #ffd700; margin-bottom: 20px;'>✨ GODPACK ✨</h2>" : "";
+
+    modal.innerHTML = `
+        <div class="modal-content" style="background:rgba(10, 14, 23, 0.95); border:1px solid #333; box-shadow:0 0 50px rgba(0,0,0,0.8); text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 40px; border-radius: 12px; backdrop-filter: blur(10px); min-width: 80vw; min-height: 60vh; ${godpackStyle}">
+            ${godpackText}
+            <div id="pull-cards-wrapper" style="display:flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+                ${pulledCards.map((info, index) => `
+                    <div class="pull-card-container" id="card-container-${index}" data-index="${index}">
+                        <div class="pull-card-inner" id="card-inner-${index}">
+                            <div class="pull-card-front">
+                                📦
+                            </div>
+                            <div class="pull-card-back" style="background-image: url('${info.char.img}'); border: ${info.rarity.border};">
+                                ${info.rarity.holo ? `<div style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; mix-blend-mode: color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear;"></div>` : ''}
+                                <div style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.7), transparent); padding:20px 10px 10px 10px; color:#fff; text-align:center;">
+                                    <h3 style="margin:0 0 5px 0; font-size:1.1rem; text-transform:uppercase; text-shadow: 2px 2px 4px #000;">${info.char.name}</h3>
+                                    <div style="font-size:0.8rem; font-weight:bold; text-transform:uppercase; letter-spacing: 1px; color: ${info.rarity.color};">${info.rarity.name}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+            <p id="pull-click-prompt" style="color:#fff; font-size:1.2rem; margin-top:30px; font-weight:bold; letter-spacing:1px; animation: pulse 1.5s infinite;">Klicke auf die Karten, um sie aufzudecken!</p>
+            <button id="close-pull-btn" class="rank-btn hidden" style="margin-top: 30px; width: 200px;">Abschließen</button>
+        </div>
+    `;
+
+    modal.classList.remove('hidden');
+
+    let flippedCount = 0;
+    const totalCards = pulledCards.length;
+
+    pulledCards.forEach((info, index) => {
+        const container = document.getElementById(`card-container-${index}`);
+        const inner = document.getElementById(`card-inner-${index}`);
+
+        const flipCard = () => {
+            inner.style.transform = 'rotateY(180deg)';
+            flippedCount++;
+            
+            if (info.rarity.id === 'legendary') {
+                console.log("Legendäre gezogen!");
+                // TODO: Voice line playing logic
+            }
+
+            container.removeEventListener('click', flipCard);
+            container.style.cursor = 'default';
+
+            if (flippedCount === totalCards) {
+                document.getElementById('pull-click-prompt').classList.add('hidden');
+                setTimeout(() => {
+                    document.getElementById('close-pull-btn').classList.remove('hidden');
+                }, 800);
+            }
+        };
+
+        container.addEventListener('click', flipCard);
+    });
+
+    document.getElementById('close-pull-btn').addEventListener('click', () => {
+        modal.classList.add('hidden');
+    });
+}

@@ -128,6 +128,7 @@
                 <button class="nav-link" data-target="scoreboard-content">SCOREBOARD</button>
                 <button class="nav-link" data-target="lexikon-content">LEXIKON</button>
                 <button class="nav-link" data-target="suggestions-content">VORSCHLÄGE</button>
+                <button class="nav-link" data-target="shop-content">SHOP & KARTEN</button>
             </nav>
 
             <div class="top-bar">
@@ -387,6 +388,22 @@
                         <button id="suggestion-update-submit-btn" class="rank-btn" style="width: 100%; padding: 12px; margin-top: 10px;">Update Vorschlag Einreichen</button>
                     </div>
                     <div id="suggestions-list" class="history-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                </div>
+            </div>
+
+            <div id="shop-content" class="tab-content app-container hidden">
+                <div class="panel history-panel">
+                    <h2 class="theme-heading">SHOP & KARTEN</h2>
+                    <p class="prompt-text">Öffne Booster-Packs und sammle exklusive Karten!</p>
+                    
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background:rgba(0,0,0,0.3); padding:15px; border-radius:8px; border:1px solid #333;">
+                        <h3 style="margin:0; color:#e2e8f0; font-size:1.2rem;">Konto: <span id="shop-credits-display" style="color:#00d2d3;">0</span> Credits</h3>
+                        <div style="font-size:0.8rem; color:#94a3b8;">Verdiene Credits durch Spielen im Klassisch-Modus.</div>
+                    </div>
+
+                    <div id="booster-packs-container" style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;">
+                        <!-- Booster packs rendered here -->
+                    </div>
                 </div>
             </div>
 

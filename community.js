@@ -405,6 +405,8 @@ function openUserProfileModal(u) {
                         }).join('')}
                     </div>
                 </div>
+                
+                <div id="community-album-sw-${u.username}"></div>
             </div>
         `;
     } else {
@@ -466,6 +468,8 @@ function openUserProfileModal(u) {
                         }).join('')}
                     </div>
                 </div>
+                
+                <div id="community-album-waifu-${u.username}"></div>
             </div>
         `;
     }
@@ -508,10 +512,11 @@ function openUserProfileModal(u) {
         });
     }
     
-    // Asynchronously load Machtverirrung
-    if (window.loadMachtverirrung) {
-        setTimeout(() => { window.loadMachtverirrung(u, `community-machtverirrung-${u.username}`); }, 100);
-    }
+    // Asynchronously load Machtverirrung and Album
+    setTimeout(() => { 
+        if (window.loadMachtverirrung) window.loadMachtverirrung(u, `community-machtverirrung-${u.username}`);
+        if (window.renderCommunityAlbum) window.renderCommunityAlbum(u, currentMode === 'starwars' ? `community-album-sw-${u.username}` : `community-album-waifu-${u.username}`);
+    }, 100);
 }
 
 

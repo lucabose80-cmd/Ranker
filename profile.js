@@ -480,8 +480,22 @@ function renderStatsSelection(user) {
 
     container.innerHTML = `
         <div style="display:flex; flex-direction:column; gap:20px;">
-            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid #333;">
-                <h3 style="margin:0 0 10px 0; color:#e2e8f0; font-size:1rem;">Gesamte Spiele gespielt: <span style="color:#ffd700;">${gamesPlayed}</span></h3>
+            <div style="display:flex; gap:20px; flex-wrap:wrap;">
+                <div style="flex:1; min-width:200px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid #333;">
+                    <h3 style="margin:0 0 10px 0; color:#e2e8f0; font-size:1rem;">Gesamte Spiele gespielt: <span style="color:#ffd700;">${gamesPlayed}</span></h3>
+                </div>
+                <div style="flex:2; min-width:300px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid #333; display: flex; flex-direction: column; justify-content: center;">
+                    <h3 style="margin:0 0 5px 0; color:#e2e8f0; font-size:1.2rem; display:flex; align-items:center; justify-content:space-between;">
+                        <span>Konto: <span style="color:#00d2d3;">${user.credits || 0} Credits</span></span>
+                    </h3>
+                    <div style="display: flex; gap: 5px; font-size: 0.75rem; flex-wrap: wrap; margin-top:5px;">
+                        <div style="background: rgba(0,0,0,0.5); padding: 3px 8px; border-radius: 4px; border: 1px solid #444;">Classic: ${user['credits_earned_' + currentMode + '_normal'] || 0}/10</div>
+                        <div style="background: rgba(0,0,0,0.5); padding: 3px 8px; border-radius: 4px; border: 1px solid #444;">Klon: ${user['credits_earned_' + currentMode + '_klon'] || 0}/10</div>
+                        <div style="background: rgba(0,0,0,0.5); padding: 3px 8px; border-radius: 4px; border: 1px solid #444;">Peak: ${user['credits_earned_' + currentMode + '_peak'] || 0}/10</div>
+                        <div style="background: rgba(0,0,0,0.5); padding: 3px 8px; border-radius: 4px; border: 1px solid #444;">Vehicle: ${user['credits_earned_' + currentMode + '_vehicle'] || 0}/10</div>
+                        <div style="background: rgba(0,0,0,0.5); padding: 3px 8px; border-radius: 4px; border: 1px solid #444;">Hardcore: ${user['credits_earned_' + currentMode + '_hardcore'] || 0}/10</div>
+                    </div>
+                </div>
             </div>
             
             <div style="display:flex; gap:20px; flex-wrap:wrap;">
@@ -529,6 +543,13 @@ function renderStatsSelection(user) {
                 </div>
             </div>
 
+            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid #333;">
+                <h4 style="margin:0 0 15px 0; color:#e2e8f0; text-align:center;">Dein Sammelalbum</h4>
+                <div style="font-size:0.8rem; color:#94a3b8; text-align:center; margin-bottom:15px;">Gezogene Karten aus dem Shop.</div>
+                <div id="profile-album-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(80px, 1fr)); gap:10px; max-height:400px; overflow-y:auto; padding-right:5px;">
+                </div>
+            </div>
+
             <div id="inline-machtverirrung-area"></div>
 
             <div style="text-align:center; margin-top:10px;">
@@ -548,6 +569,71 @@ function renderStatsSelection(user) {
 
     // Load Machtverirrung asynchronously
     setTimeout(() => { window.loadMachtverirrung(user, 'inline-machtverirrung-area'); }, 100);
+
+    // Render Sammelalbum
+    if (window.renderCommunityAlbum) {
+        window.renderCommunityAlbum(user, 'profile-album-grid');
+    }
+}
+
+window.renderCommunityAlbum = function(user, containerId) {
+    const inventory = currentMode === 'starwars' ? (user.inventory_starwars || []) : (user.inventory_waifu || []);
+    const albumGrid = document.getElementById(containerId);
+    if (!albumGrid) return;
+    
+    albumGrid.innerHTML = '';
+    albumGrid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(80px, 1fr)); gap:10px; max-height:400px; overflow-y:auto; padding: 10px;';
+    
+    if (inventory.length === 0) {
+        albumGrid.innerHTML = '<div style="color:#666; grid-column: 1 / -1; text-align:center; padding: 20px;">Noch keine Karten gesammelt.</div>';
+    } else {
+        const counts = {};
+        inventory.forEach(c => {
+            const key = c.charName + '|' + c.rarity;
+            if (!counts[key]) counts[key] = { charName: c.charName, rarity: c.rarity, count: 0 };
+            counts[key].count++;
+        });
+
+        const RARITY_BORDERS = {
+            'common': '3px solid #111',
+            'rare': '3px solid #ff9f43',
+            'epic': '3px solid #9b59b6',
+            'legendary': '3px solid #ffd700'
+        };
+
+        const sorted = Object.values(counts).sort((a,b) => {
+            const rarVal = { 'legendary': 4, 'epic': 3, 'rare': 2, 'common': 1 };
+            if (rarVal[b.rarity] !== rarVal[a.rarity]) return rarVal[b.rarity] - rarVal[a.rarity];
+            return b.count - a.count;
+        });
+
+        sorted.forEach(c => {
+            const charObj = activeCharacterDatabase.find(dbC => dbC.name === c.charName);
+            if (!charObj) return;
+
+            const card = document.createElement('div');
+            card.style.cssText = `position:relative; width:100%; aspect-ratio:2/3; background-image:url('\${charObj.img}'); background-size:cover; background-position:center; border-radius:6px; border:\${RARITY_BORDERS[c.rarity] || '3px solid #111'}; cursor:help; overflow:hidden;`;
+            card.title = `\${c.charName} (\${c.rarity.toUpperCase()})`;
+            
+            if (c.rarity === 'epic' || c.rarity === 'legendary') {
+                const holo = document.createElement('div');
+                holo.style.cssText = 'position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; mix-blend-mode:color-dodge;';
+                holo.style.background = 'linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%)';
+                holo.style.backgroundSize = '200% 200%';
+                holo.style.animation = 'holo-gleam 2.5s infinite linear';
+                card.appendChild(holo);
+            }
+            
+            if (c.count > 1) {
+                const badge = document.createElement('div');
+                badge.style.cssText = 'position:absolute; bottom:2px; right:2px; background:rgba(0,0,0,0.8); color:#fff; font-size:0.7rem; font-weight:bold; padding:2px 5px; border-radius:4px; border:1px solid #444;';
+                badge.textContent = 'x' + c.count;
+                card.appendChild(badge);
+            }
+            
+            albumGrid.appendChild(card);
+        });
+    }
 }
 
 window.openShowcaseModal = function(user, slotIndex) {
