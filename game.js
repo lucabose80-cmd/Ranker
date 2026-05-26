@@ -155,7 +155,14 @@ export function showNextCharacter() {
             imgContainer.classList.remove('gold-glow');
         }
 
+        if (window.top5GlobalChars && window.top5GlobalChars.includes(currentChar.name)) {
+            imgContainer.classList.add('rainbow-border');
+        } else {
+            imgContainer.classList.remove('rainbow-border');
+        }
+
     } else {
+        if (window.playFinishListSound) window.playFinishListSound();
         // Wenn das Spiel zu Ende ist, Live-Status löschen
         const user = getCurrentUser();
         if (user) {
@@ -183,6 +190,7 @@ export function revealNames() {
 }
 
 export async function handleRankSelection(rank, buttonElement) {
+    if (window.playRankSound) window.playRankSound();
     // The user has placed a character, but we only remove the punishment when they finish rating or start a new game.
     // Actually, we remove it when the game is finished (all 5 placed) so they can't reload during the game.
     

@@ -69,7 +69,65 @@ export async function initAdminPanel() {
             }
         });
 
+        document.getElementById('admin-reset-all-btn')?.addEventListener('click', async () => {
+            if(confirm(`Bist du sicher? Das wird ALLE globalen und persönlichen Scoreboards sowie Historien für ${currentMode} komplett zurücksetzen.`)) {
+                try {
+                    const adminUid = getCurrentUser()?.uid;
+                    if (!adminUid) throw new Error('Kein Admin eingeloggt.');
+                    
+                    const obj = {}; 
+                    obj[`globalHistoryReset_${currentMode}`] = Timestamp.now();
+                    obj[`globalScoreboardReset_${currentMode}`] = Timestamp.now();
+                    await updateDoc(doc(db, "users", adminUid), obj);
 
+                    const scoresSnap = await getDocs(collection(db, "scores"));
+                    const deletes = [];
+                    scoresSnap.forEach(d => {
+                        if (d.id.startsWith(currentMode)) {
+                            deletes.push(deleteDoc(doc(db, "scores", d.id)));
+                        }
+                    });
+                    await Promise.all(deletes);
+                    
+                    invalidateAllCaches();
+                    alert(`ALLES für ${currentMode} vollständig zurückgesetzt.`);
+                    refreshAdminPanel();
+                } catch(e) { console.error(e); alert(`Fehler: ${e.message}`); }
+            }
+        });
+
+        document.getElementById('admin-reset-mode-btn')?.addEventListener('click', async () => {
+            const modeVal = document.getElementById('admin-reset-mode-select').value;
+            if(confirm(`Bist du sicher? Alle Scoreboard-Einträge für den ausgewählten Spielmodus "${modeVal}" werden gelöscht.`)) {
+                try {
+                    const scoresSnap = await getDocs(collection(db, "scores"));
+                    const deletes = [];
+                    scoresSnap.forEach(d => {
+                        if (d.id.startsWith(`${currentMode}_${modeVal}_`)) {
+                            deletes.push(deleteDoc(doc(db, "scores", d.id)));
+                        }
+                    });
+                    await Promise.all(deletes);
+                    invalidateAllCaches();
+                    alert(`Scoreboard für Spielmodus ${modeVal} zurückgesetzt.`);
+                    refreshAdminPanel();
+                } catch(e) { console.error(e); alert(`Fehler: ${e.message}`); }
+            }
+        });
+
+        document.getElementById('admin-reset-player-btn')?.addEventListener('click', async () => {
+            const playerVal = document.getElementById('admin-reset-player-select').value;
+            const modeVal = document.getElementById('admin-reset-mode-select').value;
+            
+            if(!playerVal) { alert("Bitte wähle zuerst einen Spieler aus der Liste."); return; }
+            
+            if(confirm(`Bist du sicher? Der Spieler ${playerVal} wird aus dem Scoreboard für "${modeVal}" gelöscht.`)) {
+                try {
+                    await deleteDoc(doc(db, "scores", `${currentMode}_${modeVal}_${playerVal}`));
+                    alert(`Spieler ${playerVal} wurde aus ${modeVal} gelöscht.`);
+                } catch(e) { console.error(e); alert(`Fehler: ${e.message}`); }
+            }
+        });
         document.getElementById('admin-clear-chat-btn').addEventListener('click', async () => {
             if(confirm("Gesamten Chat löschen? Dies entfernt alle Nachrichten dauerhaft!")) {
                 try {
@@ -165,6 +223,14 @@ async function renderUserList() {
     // Haupt-Admin aus der Liste filtern (bleibt versteckt)
     const normalUsers = users.filter(u => u.username !== 'admin');
     const adminUser = users.find(u => u.username === 'admin');
+
+    const playerSelect = document.getElementById('admin-reset-player-select');
+    if (playerSelect) {
+        playerSelect.innerHTML = '<option value="">Wähle Spieler...</option>';
+        normalUsers.forEach(u => {
+            playerSelect.innerHTML += `<option value="${u.username}">${u.displayName || u.username}</option>`;
+        });
+    }
 
     // Globale Resets auslesen
     let globalHistReset = 0;

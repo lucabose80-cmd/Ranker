@@ -6,6 +6,7 @@ import { currentMode } from './mode-state.js';
 import { trackRead, trackWrite } from './tracker.js';
 import { TITLES } from './titles.js';
 import { THEMES } from './themes.js';
+import { openPrivateChat } from './private-chat.js';
 
 const REACTION_EMOJIS = ['👍', '😂', '❤️', '😢', '😡'];
 
@@ -308,7 +309,11 @@ export function initCommunity() {
                 clickedUser = allUsersCache.find(u => u.uid === uid);
             }
             if (clickedUser) {
-                openUserProfileModal(clickedUser);
+                if (e.target.closest('.mini-avatar') && uid !== user.uid) {
+                    openPrivateChat(clickedUser);
+                } else {
+                    openUserProfileModal(clickedUser);
+                }
             }
         });
         isOnlineListBound = true;
@@ -391,10 +396,34 @@ function openUserProfileModal(u) {
         <div style="text-align:center;">
             ${avatarHtml}
             <h3 style="margin:0; font-size:1.5rem; color:#fff;">${u.displayName || u.username}</h3>
-            <p style="color:#ffd700; font-weight:bold; margin-top:5px; margin-bottom:20px; text-transform:uppercase; font-size:0.9rem;">${activeTitle}</p>
+            <p style="color:#ffd700; font-weight:bold; margin-top:5px; margin-bottom:10px; text-transform:uppercase; font-size:0.9rem;">${activeTitle}</p>
+            ${user.uid !== u.uid ? `
+                <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;">
+                    <button id="profile-chat-btn" class="rank-btn" style="width: auto; padding: 5px 15px; font-size: 0.8rem; border-color: #3b82f6; color: #3b82f6;">💬 NACHRICHT SENDEN</button>
+                    <button id="profile-challenge-btn" class="rank-btn" style="width: auto; padding: 5px 15px; font-size: 0.8rem; border-color: #ff4757; color: #ff4757;">⚔️ ZUM VERSUS HERAUSFORDERN</button>
+                </div>
+            ` : ''}
         </div>
         ${progressHtml}
     `;
+
+    modal.classList.remove('hidden');
+
+    const challengeBtn = document.getElementById('profile-challenge-btn');
+    if (challengeBtn) {
+        challengeBtn.addEventListener('click', () => {
+            import('./versus.js').then(m => m.sendVersusInvite(u));
+            modal.classList.add('hidden');
+        });
+    }
+    
+    const chatBtn = document.getElementById('profile-chat-btn');
+    if (chatBtn) {
+        chatBtn.addEventListener('click', () => {
+            openPrivateChat(u);
+            modal.classList.add('hidden');
+        });
+    }
     
     modal.classList.remove('hidden');
 }

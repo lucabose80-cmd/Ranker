@@ -1,5 +1,5 @@
 import { db } from './firebase-config.js';
-import { collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot, query, where, orderBy, Timestamp, getDocs, getDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot, query, where, orderBy, Timestamp, getDocs, getDoc, runTransaction, addDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { getCurrentUser, refreshCurrentUser } from './auth.js';
 import { currentMode } from './mode-state.js';
 import { activeCharacterDatabase } from './theme.js';
@@ -382,6 +382,47 @@ function showWaitingRoom(lobbyId) {
             document.getElementById('game-main-content').classList.add('hidden');
             document.getElementById('versus-content').classList.remove('hidden');
             
+            if (lobby.winners && lobby.winners.includes(user.uid) && !window.hasPlayedVersusWinSound) {
+                window.hasPlayedVersusWinSound = true;
+                if (window.playVersusVictorySound) window.playVersusVictorySound();
+            }
+            
+            // Versus Titles Check
+            if (lobby.players.length === 2) {
+                const p1 = lobby.players[0].picks || [];
+                const p2 = lobby.players[1].picks || [];
+                if (p1.length === 5 && p2.length === 5) {
+                    const isSame = p1.every((char, i) => char === p2[i]);
+                    const isOpposite = p1.every((char, i) => char === p2[4 - i]);
+                    
+                    const titlesField = `unlocked_titles_${lobby.mode}`;
+                    const currentUnlocked = user[titlesField] || [];
+                    let newlyUnlocked = false;
+                    
+                    const { TITLES } = await import('./titles.js');
+                    const titles = TITLES[lobby.mode] || [];
+                    
+                    const matchTitle = titles.find(t => t.condition?.type === 'special_versus_match');
+                    const oppTitle = titles.find(t => t.condition?.type === 'special_versus_opposite');
+                    
+                    if (isSame && matchTitle && !currentUnlocked.includes(matchTitle.id)) {
+                        currentUnlocked.push(matchTitle.id); newlyUnlocked = true;
+                        if (window.showUnlockNotification) window.showUnlockNotification('title', matchTitle.name);
+                    }
+                    if (isOpposite && oppTitle && !currentUnlocked.includes(oppTitle.id)) {
+                        currentUnlocked.push(oppTitle.id); newlyUnlocked = true;
+                        if (window.showUnlockNotification) window.showUnlockNotification('title', oppTitle.name);
+                    }
+                    
+                    if (newlyUnlocked) {
+                        const { updateDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+                        user[titlesField] = currentUnlocked;
+                        updateDoc(doc(db, "users", user.uid), { [titlesField]: currentUnlocked }).catch(e=>console.log(e));
+                        localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
+                    }
+                }
+            }
+            
             const readyCount = lobby.readyForRestart ? lobby.readyForRestart.length : 0;
             const isReady = lobby.readyForRestart && lobby.readyForRestart.includes(user.uid);
             
@@ -413,10 +454,17 @@ function showWaitingRoom(lobbyId) {
                                 const { drawFromBag } = await import('./utils.js');
                                 
                                 let poolSource = activeCharacterDatabase;
-                                if (data.mode === 'starwars' && data.category === 'klon') {
-                                    poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon'));
+                                if (data.mode === 'starwars') {
+                                    if (data.category === 'klon') {
+                                        poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon'));
+                                    } else if (data.category === 'peak') {
+                                        poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('peak'));
+                                    } else if (data.category === 'vehicle') {
+                                        poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('vehicle'));
+                                    }
                                 }
-                                const newChars = drawFromBag(poolSource, 5, 'bag_versus_' + data.mode + (data.category === 'klon' ? '_klon' : '')).map(c => c.name);
+                                const suffix = !data.category || data.category === 'normal' ? '' : '_' + data.category;
+                                const newChars = drawFromBag(poolSource, 5, 'bag_versus_' + data.mode + suffix).map(c => c.name);
                                 
                                 const resetPlayers = data.players.map(p => ({
                                     ...p, status: 'waiting', picks: [], score: 0
@@ -566,4 +614,104 @@ async function evaluateVersusMatch(lobbyId, lobby) {
         perfectRanking: perfectRanking,
         winners: winners
     });
+}
+
+export async function sendVersusInvite(targetUser) {
+    const user = getCurrentUser();
+    if (!user) return;
+    
+    // Create lobby if not in one
+    if (!currentLobbyId) {
+        await createVersusLobby();
+        // Wait briefly for lobby creation to complete
+        await new Promise(r => setTimeout(r, 1000));
+    }
+    
+    if (!currentLobbyId) {
+        alert("Fehler beim Erstellen der Lobby für die Einladung.");
+        return;
+    }
+    
+    // Add to versus_invites collection
+    const inviteRef = collection(db, "versus_invites");
+    await addDoc(inviteRef, {
+        from: user.uid,
+        fromName: user.displayName || user.username,
+        to: targetUser.uid,
+        lobbyId: currentLobbyId,
+        mode: currentMode,
+        timestamp: Timestamp.now(),
+        status: 'pending'
+    });
+    
+    alert(`Einladung an ${targetUser.displayName || targetUser.username} gesendet!`);
+}
+
+let inviteListenerUnsub = null;
+export function initVersusInvitesListener() {
+    const user = getCurrentUser();
+    if (!user || user.role === 'admin' || user.isTestUser) return;
+    
+    if (inviteListenerUnsub) inviteListenerUnsub();
+    
+    const q = query(collection(db, "versus_invites"), where("to", "==", user.uid), where("status", "==", "pending"));
+    inviteListenerUnsub = onSnapshot(q, snapshot => {
+        snapshot.docChanges().forEach(change => {
+            if (change.type === 'added') {
+                const invite = change.doc.data();
+                const id = change.doc.id;
+                
+                // Show a global toast notification
+                showInviteToast(invite, id);
+            }
+        });
+    });
+}
+
+function showInviteToast(invite, id) {
+    const toast = document.createElement('div');
+    toast.className = 'invite-toast';
+    toast.style.cssText = 'position:fixed; top:20px; right:20px; background:#1e293b; border:2px solid #ff4757; color:#fff; padding:15px; border-radius:8px; z-index:9999; box-shadow:0 10px 25px rgba(0,0,0,0.5); width: 300px; animation: slideIn 0.3s ease-out;';
+    toast.innerHTML = `
+        <h4 style="margin:0 0 10px 0; color:#ff4757;">Versus Einladung!</h4>
+        <p style="margin:0 0 15px 0; font-size:0.9rem;"><strong>${invite.fromName}</strong> fordert dich heraus!</p>
+        <div style="display:flex; gap:10px;">
+            <button class="rank-btn accept-btn" style="flex:1; padding:5px; font-size:0.8rem; background:#4cd137;">Annehmen</button>
+            <button class="rank-btn decline-btn" style="flex:1; padding:5px; font-size:0.8rem; background:#353b48; border:1px solid #555;">Ablehnen</button>
+        </div>
+    `;
+    document.body.appendChild(toast);
+    
+    toast.querySelector('.accept-btn').onclick = async () => {
+        await updateDoc(doc(db, "versus_invites", id), { status: 'accepted' });
+        document.body.removeChild(toast);
+        
+        // Go to versus tab
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        const vsTab = document.querySelector('.nav-link[data-target="versus-content"]');
+        if (vsTab) vsTab.classList.add('active');
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+        document.getElementById('versus-content').classList.remove('hidden');
+        
+        // Switch mode if needed
+        if (currentMode !== invite.mode) {
+            import('./theme.js').then(m => m.toggleTheme());
+        }
+        
+        await initVersus();
+        await joinVersusLobby(invite.lobbyId);
+    };
+    
+    toast.querySelector('.decline-btn').onclick = async () => {
+        await updateDoc(doc(db, "versus_invites", id), { status: 'declined' });
+        document.body.removeChild(toast);
+    };
+    
+    // Auto-remove after 30s
+    setTimeout(() => {
+        if (document.body.contains(toast)) {
+            document.body.removeChild(toast);
+            updateDoc(doc(db, "versus_invites", id), { status: 'expired' }).catch(()=>{});
+        }
+    }, 30000);
 }

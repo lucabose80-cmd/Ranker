@@ -199,7 +199,7 @@ export function initLexikonTabs() {
                 const user = getCurrentUser();
                 await addDoc(collection(db, 'suggestions'), {
                     text: `Tag Vorschlag für [${charName}]: ${input}`,
-                    type: 'tag_suggestion',
+                    type: 'tag',
                     targetMode: 'starwars',
                     author: user ? user.username : 'Anonym',
                     authorDisplay: user ? (user.displayName || user.username) : 'Anonym',

@@ -19,6 +19,7 @@ import { currentGameType, setCurrentGameType, currentMode, currentGameCategory, 
 import { initTrackerUI } from './tracker.js';
 import { initSuggestions, renderSuggestions, stopSuggestions } from './suggestions.js';
 import { initInactivityWatcher } from './inactivity.js';
+import { initPrivateChat } from './private-chat.js';
 
 const eyeOpenSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
 const eyeClosedSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
@@ -61,6 +62,27 @@ async function bootApp() {
 
 function setupAuthUI() {
     showView('auth-view');
+    
+    // Autocomplete füllen
+    try {
+        const cacheStr = localStorage.getItem('ranker_resets_cache');
+        if (cacheStr) {
+            const cache = JSON.parse(cacheStr);
+            if (cache.userResets) {
+                const datalist = document.getElementById('auth-username-list');
+                if (datalist) {
+                    Object.keys(cache.userResets).forEach(uname => {
+                        if (uname !== 'admin' && !uname.startsWith('test')) {
+                            const opt = document.createElement('option');
+                            opt.value = uname;
+                            datalist.appendChild(opt);
+                        }
+                    });
+                }
+            }
+        }
+    } catch (e) {}
+
     const tBtn = document.getElementById('toggle-password');
     const pInput = document.getElementById('auth-password');
     const lBtn = document.getElementById('login-btn');
@@ -99,6 +121,23 @@ function setupGameUI(user) {
     updateTopbarAvatarElement(user);
     applyColorTheme(user);
     document.getElementById('logout-btn').addEventListener('click', logout);
+
+    window.top5GlobalChars = [];
+    window.fetchTop5Global = async function() {
+        try {
+            const { getDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+            const docRef = doc(db, "scores", `${currentMode}_classic_global`);
+            const snap = await getDoc(docRef);
+            if (snap.exists()) {
+                const chars = Object.values(snap.data().characters || {});
+                chars.sort((a,b) => (b.score / (b.count || 1)) - (a.score / (a.count || 1)));
+                window.top5GlobalChars = chars.slice(0, 5).map(c => c.name);
+            } else {
+                window.top5GlobalChars = [];
+            }
+        } catch(e) {}
+    };
+    window.fetchTop5Global();
 
     // Die Tabs des Spiels (ohne Community, ohne Profil)
     const tabs = ['game-main-content', 'live-content', 'history-content', 'scoreboard-content', 'lexikon-content', 'suggestions-content', 'versus-content', 'starwarsdle-content'];
@@ -248,6 +287,8 @@ function setupGameUI(user) {
     initCommunity();
     initTrackerUI();
     initInactivityWatcher();
+    initPrivateChat();
+    import('./versus.js').then(m => m.initVersusInvitesListener());
 
     document.getElementById('restart-btn').addEventListener('click', () => {
         if (currentGameType === 'advanced') {
@@ -291,6 +332,61 @@ function setupAdminUI() {
     showView('admin-view');
     initAdminPanel(); 
 }
+
+window.playRankSound = function() {
+    try {
+        const actx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = actx.createOscillator();
+        const gain = actx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, actx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(800, actx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.05, actx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.1);
+        osc.connect(gain);
+        gain.connect(actx.destination);
+        osc.start(); osc.stop(actx.currentTime + 0.1);
+    } catch(e) {}
+};
+
+window.playFinishListSound = function() {
+    try {
+        const actx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = actx.createOscillator();
+        const gain = actx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(400, actx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(600, actx.currentTime + 0.15);
+        osc.frequency.setValueAtTime(600, actx.currentTime + 0.15);
+        osc.frequency.exponentialRampToValueAtTime(1000, actx.currentTime + 0.4);
+        gain.gain.setValueAtTime(0.05, actx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.4);
+        osc.connect(gain);
+        gain.connect(actx.destination);
+        osc.start(); osc.stop(actx.currentTime + 0.4);
+    } catch(e) {}
+};
+
+window.playVersusVictorySound = function() {
+    try {
+        const actx = new (window.AudioContext || window.webkitAudioContext)();
+        const playTone = (freq, time, duration) => {
+            const osc = actx.createOscillator();
+            const gain = actx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(freq, time);
+            gain.gain.setValueAtTime(0.1, time);
+            gain.gain.exponentialRampToValueAtTime(0.001, time + duration - 0.05);
+            osc.connect(gain); gain.connect(actx.destination);
+            osc.start(time); osc.stop(time + duration);
+        };
+        const now = actx.currentTime;
+        playTone(523.25, now, 0.15); // C5
+        playTone(659.25, now + 0.15, 0.15); // E5
+        playTone(783.99, now + 0.3, 0.15); // G5
+        playTone(1046.50, now + 0.45, 0.4); // C6
+    } catch(e) {}
+};
 
 window.playStarWars8BitTheme = function() {
     try {

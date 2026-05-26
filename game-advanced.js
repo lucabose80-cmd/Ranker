@@ -141,6 +141,12 @@ export function showNextAdvancedCharacter() {
             imgContainer.classList.remove('gold-glow');
         }
 
+        if (window.top5GlobalChars && window.top5GlobalChars.includes(currentChar.name)) {
+            imgContainer.classList.add('rainbow-border');
+        } else {
+            imgContainer.classList.remove('rainbow-border');
+        }
+
     } else {
         // Alle 10 platziert → Joker-Phase starten!
         startJokerPhase();
@@ -248,6 +254,7 @@ function disableJokerSelection() {
 }
 
 function finishAdvancedGame() {
+    if (window.playFinishListSound) window.playFinishListSound();
     disableJokerSelection();
     document.getElementById('joker-area').classList.add('hidden');
     document.getElementById('active-game-area').classList.add('hidden');
@@ -271,6 +278,7 @@ export function revealAdvancedNames() {
 }
 
 export async function handleAdvancedRankSelection(rank, buttonElement) {
+    if (window.playRankSound) window.playRankSound();
     // The user has placed a character, but we only remove the punishment when they finish rating or start a new game.
     // Actually, we remove it when the game is finished (all 10 placed) so they can't reload during the game.
     

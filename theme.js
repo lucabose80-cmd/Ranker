@@ -48,6 +48,7 @@ export async function toggleTheme() {
     }
     
     updateChangelogContent(activeChangelogDatabase);
+    if (window.fetchTop5Global) window.fetchTop5Global();
     
     const isHistoryVisible = !document.getElementById('history-content').classList.contains('hidden');
     const isScoreboardVisible = !document.getElementById('scoreboard-content').classList.contains('hidden');

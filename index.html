@@ -16,7 +16,8 @@
         <div class="panel auth-panel">
             <h2 class="theme-heading">LOGIN</h2>
             <p id="auth-feedback" class="prompt-text hidden"></p>
-            <input type="text" id="auth-username" placeholder="Benutzername" autocomplete="off">
+            <input type="text" id="auth-username" placeholder="Benutzername" autocomplete="off" list="auth-username-list">
+            <datalist id="auth-username-list"></datalist>
             <div class="password-wrapper">
                 <input type="password" id="auth-password" placeholder="Passwort">
                 <span id="toggle-password" class="eye-icon" title="Passwort anzeigen">
@@ -59,9 +60,12 @@
                     <div style="margin-bottom: 10px;">
                         <select id="admin-suggestion-filter" style="padding: 8px; background: #1a1e29; color: #fff; border: 1px solid #333; border-radius: 4px; width: 100%;">
                             <option value="all">Alle Vorschläge</option>
-                            <option value="starwars">Star Wars Modus</option>
-                            <option value="waifu">Anime Modus</option>
-                            <option value="tag_suggestion">Tag / Charakter Korrekturen</option>
+                            <option value="feature">Features & Allgemeines</option>
+                            <option value="character">Charakter Vorschläge</option>
+                            <option value="tag">Tag Vorschläge</option>
+                            <option value="char_update">Korrekturen (Updates)</option>
+                            <option value="advanced_mode">Advanced Mode Vorschläge</option>
+                            <option value="versus_mode">Versus Mode Vorschläge</option>
                         </select>
                     </div>
                     <div id="admin-suggestions-list" class="user-list" style="max-height: 400px; margin-bottom: 30px; display: flex; flex-direction: column; gap: 10px;"></div>
@@ -75,7 +79,34 @@
                     
                     <h3 style="color: #ffd700; margin-top: 30px; font-size: 1.1rem; text-transform: uppercase;">Sound Testing</h3>
                     <div style="display: flex; flex-direction: column; gap: 10px;">
-                        <button id="admin-test-sound-1" class="rank-btn" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; border-color: #3b82f6; color: #3b82f6;">?? Test: 8-Bit Star Wars Theme</button>
+                        <button id="admin-test-sound-1" class="rank-btn" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; border-color: #3b82f6; color: #3b82f6;">🎵 Test: 8-Bit Star Wars Theme</button>
+                    </div>
+
+                    <h3 class="theme-heading" style="border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 30px;">RESET STEUERUNG</h3>
+                    <div style="display:flex; flex-direction:column; gap:10px;">
+                        <button id="admin-reset-all-btn" class="rank-btn" style="background: #ff4757; border-color:#ff4757; color:white; height: auto; padding: 12px; font-size: 0.9rem; width: 100%;">Alles Resetten (Scoreboard + History)</button>
+                        
+                        <hr style="border: 1px solid #333; margin: 10px 0; width: 100%;">
+                        
+                        <select id="admin-reset-mode-select" class="chat-input" style="width: 100%; box-sizing: border-box; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #1a1e29; color: #fff;">
+                            <option value="classic">Expanded Universe (Klassisch)</option>
+                            <option value="classic_klon">Klon Modus</option>
+                            <option value="classic_peak">Peak Ranking</option>
+                            <option value="classic_vehicle">Fahrzeuge</option>
+                            <option value="advanced">Advanced (10er)</option>
+                            <option value="versus">Versus</option>
+                            <option value="versus_klon">Versus Klon</option>
+                            <option value="versus_peak">Versus Peak</option>
+                            <option value="versus_vehicle">Versus Fahrzeuge</option>
+                        </select>
+                        <button id="admin-reset-mode-btn" class="rank-btn" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; border-color: #ff9f43; color: #ff9f43;">Ausgewählten Modus Scoreboard Resetten</button>
+
+                        <hr style="border: 1px solid #333; margin: 10px 0; width: 100%;">
+
+                        <select id="admin-reset-player-select" class="chat-input" style="width: 100%; box-sizing: border-box; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #1a1e29; color: #fff;">
+                            <option value="">Wähle Spieler...</option>
+                        </select>
+                        <button id="admin-reset-player-btn" class="rank-btn" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; border-color: #ff6b6b; color: #ff6b6b;">Spieler aus ausgewähltem Modus Resetten & Rausnehmen</button>
                     </div>
                 </div>
                 
@@ -116,10 +147,10 @@
         </div>
 
         <div class="online-sidebar panel" id="online-sidebar">
-            <button id="online-sidebar-toggle" class="sidebar-toggle-btn" title="Online Panel einklappen">></button>
             <div class="online-sidebar-header">
                 <h3 class="theme-heading" style="font-size: 0.9rem; letter-spacing: 1px; margin: 0;">ONLINE (<span id="online-count">0</span>)</h3>
-                <button id="refresh-online-btn" class="text-btn refresh-online-btn" title="Online-Liste aktualisieren">AKTUALISIEREN</button>
+                <button id="refresh-online-btn" class="text-btn refresh-online-btn" title="Online-Liste aktualisieren"><span class="refresh-text">AKTUALISIEREN</span></button>
+                <button id="online-sidebar-toggle" class="sidebar-toggle-btn" title="Online Panel einklappen">></button>
             </div>
             <div id="online-users-list" class="online-list"></div>
         </div>
@@ -324,11 +355,12 @@
                     <h2 class="theme-heading">COMMUNITY VORSCHLÄGE</h2>
                     <div class="history-controls">
                         <select id="suggestion-type-filter">
-                            <option value="feature">Features & Allgemeines</option>
-                            <option value="character">Neue Charaktere</option>
-                            <option value="peak">Neue Peak Charaktere</option>
-                            <option value="vehicle">Neue Fahrzeuge</option>
-                            <option value="char_update">Charakter Update (Name/Bild)</option>
+                            <option value="feature">Vorschläge (Allgemein)</option>
+                            <option value="character">Charakter Vorschläge</option>
+                            <option value="tag">Tags Vorschläge</option>
+                            <option value="char_update">Korrekturen</option>
+                            <option value="advanced_mode">Advanced Mode Vorschläge</option>
+                            <option value="versus_mode">Versus Mode Vorschläge</option>
                         </select>
                     </div>
                     <p class="prompt-text">Was wünschst du dir für das Spiel?</p>
@@ -457,6 +489,19 @@
 </div>
     
     <script type="module" src="utils.js"></script>
+    <div id="private-chat-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 400px; padding: 20px;">
+            <h2 id="private-chat-title" class="theme-heading">Chat</h2>
+            <div id="private-chat-messages" style="height: 300px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 10px; margin-bottom: 10px; border-radius: 8px; display: flex; flex-direction: column; gap: 8px;">
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="private-chat-input" placeholder="Nachricht..." style="flex:1;">
+                <button id="private-chat-send" class="rank-btn" style="width: auto; padding: 0 15px;">Senden</button>
+            </div>
+            <button id="private-chat-close" class="rank-btn" style="margin-top: 15px; width: 100%;">Schließen</button>
+        </div>
+    </div>
+
     <script type="module" src="main.js?v=5.0.3"></script>
 </body>
 </html>

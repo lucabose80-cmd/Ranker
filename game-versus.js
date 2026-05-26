@@ -10,6 +10,7 @@ let placedCharacters = { 1: null, 2: null, 3: null, 4: null, 5: null };
 let currentLobby = null;
 
 export function initGameVersus(lobby) {
+    window.hasPlayedVersusWinSound = false;
     currentLobby = lobby;
     currentIndex = 0;
     placedCharacters = { 1: null, 2: null, 3: null, 4: null, 5: null };
@@ -86,7 +87,14 @@ function showNextCharacterVersus() {
         imgContainer.innerHTML = `<img src="${currentChar.img}" alt="Charakter Bild">`;
         imgContainer.classList.remove('gold-glow');
 
+        if (window.top5GlobalChars && window.top5GlobalChars.includes(currentChar.name)) {
+            imgContainer.classList.add('rainbow-border');
+        } else {
+            imgContainer.classList.remove('rainbow-border');
+        }
+
     } else {
+        if (window.playFinishListSound) window.playFinishListSound();
         document.getElementById('active-game-area').classList.add('hidden');
         // Button NICHT mehr verstecken, falls es hängt:
         // document.getElementById('abort-versus-game-btn').classList.add('hidden');
@@ -108,6 +116,7 @@ function revealNamesVersus() {
 }
 
 async function handleRankSelectionVersus(rank, buttonElement) {
+    if (window.playRankSound) window.playRankSound();
     const currentChar = activePool[currentIndex];
     document.querySelector(`#slot-${rank} .card-content`).innerHTML = `<img src="${currentChar.img}" alt="Ranked">`;
     placedCharacters[rank] = currentChar;

@@ -30,7 +30,11 @@ export const TITLES = {
         { id: 'sw_secret_21', name: 'Ghost Crew', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Hera Syndulla', 'Kanan Jarrus', 'Ezra Bridger', 'Sabine Wren', 'Chopper'] } },
         { id: 'sw_secret_22', name: 'Macht der Hexen', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Mother Talzin', 'Merrin', 'Asajj Ventress'] } },
         { id: 'sw_secret_23', name: 'Erzfeinde', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Obi-Wan Kenobi', 'Darth Maul'] } },
-        { id: 'sw_secret_24', name: 'Loyalität zur Republik', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Padme Amidala', 'Bail Organa', 'Mon Mothma'] } }
+        { id: 'sw_secret_24', name: 'Loyalität zur Republik', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Padme Amidala', 'Bail Organa', 'Mon Mothma'] } },
+        { id: 'sw_secret_25', name: 'Glückspilz', required: -1, secret: true, condition: { type: 'special_top5' } },
+        { id: 'sw_secret_26', name: 'Pechvogel', required: -1, secret: true, condition: { type: 'special_bottom5' } },
+        { id: 'sw_secret_27', name: 'Seelenverwandte', required: -1, secret: true, condition: { type: 'special_versus_match' } },
+        { id: 'sw_secret_28', name: 'Absolute Gegensätze', required: -1, secret: true, condition: { type: 'special_versus_opposite' } }
     ],
     waifu: [
         { id: 'wf_0', name: 'Kein Titel', required: 0 },
@@ -40,6 +44,10 @@ export const TITLES = {
         { id: 'wf_4', name: 'Weeb', required: 100 },
         { id: 'wf_5', name: 'Otaku', required: 250 },
         { id: 'wf_6', name: 'Isekai-Gott', required: 500 },
-        { id: 'wf_secret_1', name: 'Tsundere-Meister', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Asuka Langley Soryu', 'Taiga Aisaka'] } }
+        { id: 'wf_secret_1', name: 'Tsundere-Meister', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Asuka Langley Soryu', 'Taiga Aisaka'] } },
+        { id: 'wf_secret_2', name: 'Glückspilz', required: -1, secret: true, condition: { type: 'special_top5' } },
+        { id: 'wf_secret_3', name: 'Pechvogel', required: -1, secret: true, condition: { type: 'special_bottom5' } },
+        { id: 'wf_secret_4', name: 'Seelenverwandte', required: -1, secret: true, condition: { type: 'special_versus_match' } },
+        { id: 'wf_secret_5', name: 'Absolute Gegensätze', required: -1, secret: true, condition: { type: 'special_versus_opposite' } }
     ]
 };

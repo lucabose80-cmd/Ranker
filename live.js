@@ -63,6 +63,7 @@ async function fetchLiveGames(grid) {
             const avatarImg = data.avatar ? `<img src="${data.avatar}" class="mini-avatar">` : '';
                 
                 const isAdvanced = data.gameType === 'advanced';
+                const isVersus = data.gameType === 'versus';
                 const maxSlots = isAdvanced ? 10 : 5;
                 let slotsHtml = '';
                 for(let i = 1; i <= maxSlots; i++) {
@@ -79,7 +80,9 @@ async function fetchLiveGames(grid) {
                 card.className = `live-grid-card ${isAdvanced ? 'advanced-live-card' : ''}`;
                 card.innerHTML = `
                     <div class="live-card-user">
-                        ${avatarImg} <strong>${data.displayName}</strong> ${isAdvanced ? '<span class="chat-mode-tag tag-sw" style="font-size:0.55rem; padding:1px 4px; margin-left:5px; background-color:#ffe81f !important; color:#000 !important; box-shadow:none; vertical-align:middle;">ADV</span>' : ''}
+                        ${avatarImg} <strong>${data.displayName}</strong> 
+                        ${isAdvanced ? '<span class="chat-mode-tag tag-sw" style="font-size:0.55rem; padding:1px 4px; margin-left:5px; background-color:#ffe81f !important; color:#000 !important; box-shadow:none; vertical-align:middle;">ADV</span>' : ''}
+                        ${isVersus ? '<span class="chat-mode-tag tag-anime" style="font-size:0.55rem; padding:1px 4px; margin-left:5px; background-color:#ff4757 !important; color:#fff !important; box-shadow:none; vertical-align:middle;">VERSUS</span>' : ''}
                         <span class="live-placed-count">${placed}/${maxSlots}</span>
                     </div>
                     ${progressHtml}

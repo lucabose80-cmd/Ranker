@@ -236,14 +236,11 @@ export function renderSuggestions() {
     import('./mode-state.js').then(({ currentMode }) => {
         let filtered = suggestionsCache.filter(s => {
             const sType = s.type || 'feature';
-            // Features sind universumsübergreifend, Charaktere sind an den targetMode gebunden!
-            if (selectedType === 'character') {
-                return sType === 'character' && s.targetMode === currentMode;
+            // Features sind universumsübergreifend, der Rest ist an den targetMode gebunden!
+            if (selectedType === 'feature') {
+                return sType === 'feature';
             }
-            if (selectedType === 'char_update') {
-                return sType === 'char_update' && s.targetMode === currentMode;
-            }
-            return sType === 'feature';
+            return sType === selectedType && s.targetMode === currentMode;
         });
 
         if (filtered.length === 0) {
@@ -398,29 +395,31 @@ export function renderAdminSuggestions() {
     const filterSelect = document.getElementById('admin-suggestion-filter');
     const filterValue = filterSelect ? filterSelect.value : 'all';
 
-    const filteredSuggestions = suggestionsCache.filter(sug => {
-        if (filterValue === 'all') return true;
-        if (filterValue === 'tag_suggestion') return sug.isTagSuggestion === true;
-        
-        // Exclude tag suggestions if we are looking for a specific mode and it's a general mode filter
-        if (sug.isTagSuggestion) return false;
-        
-        return sug.targetMode === filterValue;
-    });
+    import('./mode-state.js').then(({ currentMode }) => {
+        const filteredSuggestions = suggestionsCache.filter(sug => {
+            // Charaktere und Modi-Vorschläge sind targetMode-spezifisch
+            if (sug.targetMode && sug.targetMode !== currentMode) return false;
+            
+            if (filterValue === 'all') return true;
+            
+            const sugType = sug.type || 'feature';
+            return sugType === filterValue;
+        });
 
-    if (filteredSuggestions.length === 0) {
-        adminContainer.innerHTML = '<p class="prompt-text">Keine Vorschläge für diesen Filter gefunden.</p>';
-        return;
-    }
+        if (filteredSuggestions.length === 0) {
+            adminContainer.innerHTML = '<p class="prompt-text">Keine Vorschläge für diesen Filter gefunden.</p>';
+            return;
+        }
 
-    filteredSuggestions.forEach(sug => {
+        filteredSuggestions.forEach(sug => {
         const item = document.createElement('div');
         item.className = 'user-list-item';
         item.style.display = 'flex';
         item.style.justifyContent = 'space-between';
         item.style.alignItems = 'center';
         
-        const modeBadge = sug.isTagSuggestion ? '<span style="color:#ff9f43;">[TAG]</span>' : 
+        const modeBadge = sug.type === 'tag' ? '<span style="color:#ff9f43;">[TAG]</span>' : 
+                          sug.type === 'char_update' ? '<span style="color:#eccc68;">[UPDATE]</span>' :
                           (sug.targetMode === 'starwars' ? '<span style="color:#3b82f6;">[SW]</span>' : '<span style="color:#ff2a9d;">[Anime]</span>');
 
         item.innerHTML = `
@@ -463,5 +462,6 @@ export function renderAdminSuggestions() {
         });
         
         adminContainer.appendChild(item);
+    });
     });
 }

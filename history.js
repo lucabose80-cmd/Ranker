@@ -226,10 +226,43 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
             } else {
                 // Regular titles
                 if (oldGamesPlayed < t.required && newGamesPlayed >= t.required) {
-                    if (window.showUnlockNotification) window.showUnlockNotification('title', t.name);
+                    if (!user[titlesField].includes(t.id)) {
+                        user[titlesField].push(t.id);
+                        unlockedAnyTitle = true;
+                        if (window.showUnlockNotification) window.showUnlockNotification('title', t.name);
+                    }
                 }
             }
         });
+
+        // Special Top5 / Bottom5 check
+        const missingSpecialTitles = (TITLES[currentMode] || []).filter(t => t.condition && t.condition.type && t.condition.type.startsWith('special_') && !user[titlesField].includes(t.id));
+        if (missingSpecialTitles.length > 0 && gameType === 'classic' && category === 'normal') {
+            const { getDoc, doc: fDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+            const gScoresSnap = await getDoc(fDoc(db, "scores", `${currentMode}_classic_global`));
+            if (gScoresSnap.exists()) {
+                const chars = Object.values(gScoresSnap.data().characters || {});
+                chars.sort((a,b) => (b.score / (b.count || 1)) - (a.score / (a.count || 1)));
+                
+                if (chars.length >= 5) {
+                    const top5 = chars.slice(0, 5).map(c => c.name);
+                    const bottom5 = chars.slice(-5).map(c => c.name);
+                    
+                    const pickedNames = rankingData.map(r => r.name);
+                    const hasTop5 = pickedNames.every(n => top5.includes(n));
+                    const hasBottom5 = pickedNames.every(n => bottom5.includes(n));
+                    
+                    missingSpecialTitles.forEach(t => {
+                        if (t.condition.type === 'special_top5' && hasTop5) {
+                            user[titlesField].push(t.id); unlockedAnyTitle = true; if (window.showUnlockNotification) window.showUnlockNotification('title', t.name);
+                        }
+                        if (t.condition.type === 'special_bottom5' && hasBottom5) {
+                            user[titlesField].push(t.id); unlockedAnyTitle = true; if (window.showUnlockNotification) window.showUnlockNotification('title', t.name);
+                        }
+                    });
+                }
+            }
+        }
 
         if (unlockedAnyTitle) {
             const { updateDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
@@ -254,6 +287,36 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
         
         updateDoc(doc(db, "users", user.uid), updatePayload).catch(e => console.error(e));
         trackWrite(1);
+
+        // --- ANTI CHEAT SYSTEM ---
+        let skipScoreboardUpdate = false;
+        
+        const lastRatingKey = `antiCheat_lastRating_${currentMode}_${gameType}`;
+        const lastPatternKey = `antiCheat_lastPattern_${currentMode}_${gameType}`;
+        const prevRating = localStorage.getItem(lastRatingKey);
+        const prevPattern = localStorage.getItem(lastPatternKey);
+        
+        let patternStr = "";
+        if (poolData && poolData.length > 0) {
+            rankingData.forEach(item => {
+                const pItem = poolData.find(p => p.name === item.name);
+                if (pItem) patternStr += pItem.order;
+            });
+        }
+        
+        const isLinearPattern = patternStr === "12345" || patternStr === "54321" || patternStr === "12345678910" || patternStr === "10987654321";
+        
+        if (isLinearPattern) skipScoreboardUpdate = true;
+        if (prevRating && prevRating === rating.toString()) skipScoreboardUpdate = true;
+        if (prevPattern && prevPattern === patternStr) skipScoreboardUpdate = true;
+
+        localStorage.setItem(lastRatingKey, rating.toString());
+        if (patternStr) localStorage.setItem(lastPatternKey, patternStr);
+
+        if (skipScoreboardUpdate) {
+            console.log("Anti-Cheat: Scoreboard update übersprungen wegen wiederholtem Muster oder Wertung.");
+            return; // Beende die Funktion hier, damit Scoreboard nicht gefüllt wird
+        }
 
         // --- AGGREGATED SCOREBOARD SYSTEM ---
         const ratingMulti = parseInt(rating) || 1;
