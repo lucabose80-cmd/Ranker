@@ -91,6 +91,7 @@ function setupAuthUI() {
 // Profil Overlay schließen
 const closeProfileOverlay = () => {
     document.getElementById('profile-overlay').classList.add('hidden');
+    clearProfileUnlockDot(getCurrentUser());
 };
 
 function setupGameUI(user) {
@@ -190,7 +191,8 @@ function setupGameUI(user) {
     // Profil Overlay öffnen
     document.getElementById('profile-trigger').addEventListener('click', () => {
         document.getElementById('profile-overlay').classList.remove('hidden');
-        clearProfileUnlockDot(getCurrentUser()); // Gelben Punkt entfernen und NEU-Badges resetten
+        const dot = document.getElementById('profile-unlock-dot');
+        if (dot) dot.style.display = 'none'; // Gelben Punkt nur optisch ausblenden
         refreshProfileContent(); // Baut alles passend zum aktuellen Modus neu auf
     });
     
