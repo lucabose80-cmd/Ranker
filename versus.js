@@ -134,18 +134,23 @@ async function createVersusLobby() {
     
     let poolSource = activeCharacterDatabase;
     if (currentMode === 'starwars') {
-        if (category === 'klon') {
-            const klonGames = user['gamesPlayed_starwars_klon'] || 0;
-            if (klonGames < 10) {
-                alert("Du musst mindestens 10 Spiele im 'Nur Klone' Modus (Klassisch) absolviert haben, um den Klon-Versus Modus zu hosten!");
-                return;
-            }
-            poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon'));
-        } else if (category === 'peak' || category === 'hardcore') {
-            poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('peak'));
-        } else if (category === 'vehicle') {
+        if (category === 'vehicle') {
             poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('vehicle'));
+        } else {
+            poolSource = activeCharacterDatabase.filter(c => !c.tags || !c.tags.includes('vehicle'));
+            if (category === 'klon') {
+                const klonGames = user['gamesPlayed_starwars_klon'] || 0;
+                if (klonGames < 10) {
+                    alert("Du musst mindestens 10 Spiele im 'Nur Klone' Modus (Klassisch) absolviert haben, um den Klon-Versus Modus zu hosten!");
+                    return;
+                }
+                poolSource = poolSource.filter(c => c.tags && c.tags.includes('klon'));
+            } else if (category === 'peak' || category === 'hardcore') {
+                poolSource = poolSource.filter(c => c.tags && c.tags.includes('peak'));
+            }
         }
+    } else {
+        poolSource = activeCharacterDatabase.filter(c => !c.tags || !c.tags.includes('vehicle'));
     }
     
     // Generiere 5 Charaktere
@@ -473,13 +478,18 @@ function showWaitingRoom(lobbyId) {
                                 
                                 let poolSource = activeCharacterDatabase;
                                 if (data.mode === 'starwars') {
-                                    if (data.category === 'klon') {
-                                        poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon'));
-                                    } else if (data.category === 'peak' || data.category === 'hardcore') {
-                                        poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('peak'));
-                                    } else if (data.category === 'vehicle') {
+                                    if (data.category === 'vehicle') {
                                         poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('vehicle'));
+                                    } else {
+                                        poolSource = activeCharacterDatabase.filter(c => !c.tags || !c.tags.includes('vehicle'));
+                                        if (data.category === 'klon') {
+                                            poolSource = poolSource.filter(c => c.tags && c.tags.includes('klon'));
+                                        } else if (data.category === 'peak' || data.category === 'hardcore') {
+                                            poolSource = poolSource.filter(c => c.tags && c.tags.includes('peak'));
+                                        }
                                     }
+                                } else {
+                                    poolSource = activeCharacterDatabase.filter(c => !c.tags || !c.tags.includes('vehicle'));
                                 }
                                 const suffix = !data.category || data.category === 'normal' ? '' : '_' + data.category;
                                 const newChars = drawFromBag(poolSource, 5, 'bag_versus_' + data.mode + suffix).map(c => c.name);

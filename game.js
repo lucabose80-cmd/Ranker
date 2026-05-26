@@ -110,14 +110,15 @@ export async function initGame() {
     function startFreshClassicGame() {
         let poolSource = activeCharacterDatabase;
         if (currentMode === 'starwars') {
-            if (currentGameCategory === 'klon') {
-                poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon'));
-            } else if (currentGameCategory === 'peak' || currentGameCategory === 'hardcore') {
-                poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('peak'));
-            } else if (currentGameCategory === 'vehicle') {
+            if (currentGameCategory === 'vehicle') {
                 poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('vehicle'));
             } else {
                 poolSource = activeCharacterDatabase.filter(c => !c.tags || !c.tags.includes('vehicle'));
+                if (currentGameCategory === 'klon') {
+                    poolSource = poolSource.filter(c => c.tags && c.tags.includes('klon'));
+                } else if (currentGameCategory === 'peak' || currentGameCategory === 'hardcore') {
+                    poolSource = poolSource.filter(c => c.tags && c.tags.includes('peak'));
+                }
             }
         } else {
             poolSource = activeCharacterDatabase.filter(c => !c.tags || !c.tags.includes('vehicle'));

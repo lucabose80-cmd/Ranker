@@ -21,7 +21,7 @@ function selectDailyCharacter() {
         hash = (hash << 5) - hash + seed.charCodeAt(i);
         hash |= 0; 
     }
-    const pool = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('peak'));
+    const pool = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('peak') && !c.tags.includes('vehicle'));
     const index = Math.abs(hash) % pool.length;
     return pool[index];
 }
