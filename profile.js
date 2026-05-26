@@ -589,7 +589,8 @@ function renderAlbumTab(user) {
             if (card) {
                 const charObj = activeCharacterDatabase.find(c => c.name === card.charName);
                 if (charObj) {
-                    const bg = `url('${charObj.img}')`;
+                    const isLegSpecial = card.rarity === 'legendary' && window.LEGENDARY_POOL && window.LEGENDARY_POOL[card.charName];
+                    const bg = `url('${isLegSpecial ? window.LEGENDARY_POOL[card.charName].specialImg : charObj.img}')`;
                     let rarityBorder = '3px solid #111';
                     if (card.rarity === 'rare') rarityBorder = '3px solid #ff9f43';
                     if (card.rarity === 'epic') rarityBorder = '3px solid #9b59b6';
@@ -690,7 +691,11 @@ window.renderCommunityAlbum = function(user, containerId, filterPack = 'all', so
             const z = cards.length - idx;
             const offset = idx * 4;
             
-            card.style.cssText = `position:absolute; top:${offset}px; left:${offset}px; width:100%; height:100%; background-image:url('${charObj.img}'); background-size:cover; background-position:center; border-radius:6px; border:${RARITY_BORDERS[c.rarity] || '3px solid #111'}; z-index:${z}; box-shadow: -2px -2px 5px rgba(0,0,0,0.5); overflow:hidden;`;
+            let cardImg = charObj.img;
+            if (c.rarity === 'legendary' && window.LEGENDARY_POOL && window.LEGENDARY_POOL[charName]) {
+                cardImg = window.LEGENDARY_POOL[charName].specialImg;
+            }
+            card.style.cssText = `position:absolute; top:${offset}px; left:${offset}px; width:100%; height:100%; background-image:url('${cardImg}'); background-size:cover; background-position:center; border-radius:6px; border:${RARITY_BORDERS[c.rarity] || '3px solid #111'}; z-index:${z}; box-shadow: -2px -2px 5px rgba(0,0,0,0.5); overflow:hidden;`;
             
             if ((c.rarity === 'epic' || c.rarity === 'legendary') && idx === 0) {
                 const holo = document.createElement('div');

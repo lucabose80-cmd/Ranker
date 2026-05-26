@@ -11,6 +11,18 @@ const RARITIES = {
     LEGENDARY: { id: 'legendary', name: 'Legendär', color: '#ffd700', dropRate: 0.01, border: '5px solid #ffd700', holo: true }
 };
 
+export const LEGENDARY_POOL = {
+    'Anakin Skywalker': {
+        specialImg: 'anakin.selten.jpg',
+        sound: 'sounds/imperialmarch.mp3'
+    },
+    'Darth Vader': {
+        specialImg: 'Special.Bilder/vader.special.jpg',
+        sound: 'sounds/imperialmarch.mp3'
+    }
+};
+window.LEGENDARY_POOL = LEGENDARY_POOL;
+
 const BOOSTERS = [
     {
         id: 'starwars_all',
@@ -56,6 +68,8 @@ export function initShop() {
     BOOSTERS.forEach(booster => {
         const pool = activeCharacterDatabase.filter(booster.filter);
         if (pool.length === 0) return;
+        
+        const legCount = pool.filter(c => LEGENDARY_POOL[c.name]).length;
 
         const el = document.createElement('div');
         el.className = 'booster-pack-card';
@@ -81,7 +95,7 @@ export function initShop() {
                 </div>
                 <div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:bold;">
                     <span style="color:${RARITIES.LEGENDARY.color}">${RARITIES.LEGENDARY.name}</span>
-                    <span style="color:#ffd700;">${(RARITIES.LEGENDARY.dropRate * 100).toFixed(0)}%</span>
+                    <span style="color:#ffd700;">${(RARITIES.LEGENDARY.dropRate * 100).toFixed(0)}% (${legCount} Karten)</span>
                 </div>
             </div>
 
@@ -101,7 +115,9 @@ async function openBooster(booster, pool) {
     const user = getCurrentUser();
     if (!user) return;
 
-    if ((user.credits || 0) < booster.cost) {
+    const isAdmin = (user.username === 'Test1' || user.username === 'Test2');
+    
+    if (!isAdmin && (user.credits || 0) < booster.cost) {
         if (window.showUnlockNotification) window.showUnlockNotification('title', "Nicht genügend Credits!");
         else alert("Nicht genügend Credits!");
         return;
@@ -109,6 +125,8 @@ async function openBooster(booster, pool) {
 
     // Godpack Check (0.1% chance)
     const isGodPack = Math.random() < 0.001;
+    
+    const legendariesInPool = pool.filter(c => LEGENDARY_POOL[c.name]);
     
     // Generate 5 cards
     const pulledCards = [];
@@ -126,22 +144,35 @@ async function openBooster(booster, pool) {
     for (let i = 0; i < 5; i++) {
         let rarity;
         if (isGodPack) {
-            // Godpack: 80% Epic, 20% Legendary
-            rarity = Math.random() < 0.2 ? RARITIES.LEGENDARY : RARITIES.EPIC;
+            rarity = (Math.random() < 0.2 && legendariesInPool.length > 0) ? RARITIES.LEGENDARY : RARITIES.EPIC;
         } else if (i === 4) {
-            // 5th card: Guaranteed Rare or better
-            // E.g., 88% Rare, 10% Epic, 2% Legendary
-            rarity = getRarity({
+            let rates = {
                 RARE: { ...RARITIES.RARE, dropRate: 0.88 },
-                EPIC: { ...RARITIES.EPIC, dropRate: 0.10 },
-                LEGENDARY: { ...RARITIES.LEGENDARY, dropRate: 0.02 }
-            });
+                EPIC: { ...RARITIES.EPIC, dropRate: 0.10 }
+            };
+            if (legendariesInPool.length > 0) rates.LEGENDARY = { ...RARITIES.LEGENDARY, dropRate: 0.02 };
+            else rates.EPIC.dropRate += 0.02;
+            
+            if (isAdmin && legendariesInPool.length > 0) {
+                rates = { LEGENDARY: { ...RARITIES.LEGENDARY, dropRate: 1.0 } };
+            }
+            
+            rarity = getRarity(rates);
         } else {
-            // Standard drop rates
-            rarity = getRarity(RARITIES);
+            let rates = { ...RARITIES };
+            if (legendariesInPool.length === 0) {
+                delete rates.LEGENDARY;
+                rates.EPIC.dropRate += RARITIES.LEGENDARY.dropRate;
+            }
+            rarity = getRarity(rates);
         }
 
-        const char = pool[Math.floor(Math.random() * pool.length)];
+        let char;
+        if (rarity.id === 'legendary' && legendariesInPool.length > 0) {
+            char = legendariesInPool[Math.floor(Math.random() * legendariesInPool.length)];
+        } else {
+            char = pool[Math.floor(Math.random() * pool.length)];
+        }
         pulledCards.push({ char, rarity });
     }
 
@@ -166,15 +197,17 @@ async function openBooster(booster, pool) {
         });
         
         user[field] = currentInventory;
-        user.credits -= booster.cost;
-        document.getElementById('shop-credits-display').textContent = user.credits;
+        if (!isAdmin) {
+            user.credits -= booster.cost;
+            document.getElementById('shop-credits-display').textContent = user.credits;
+        }
         
         localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
 
-        await updateDoc(doc(db, "users", user.uid), {
-            credits: increment(-booster.cost),
-            [field]: currentInventory
-        });
+        const updates = { [field]: currentInventory };
+        if (!isAdmin) updates.credits = increment(-booster.cost);
+        
+        await updateDoc(doc(db, "users", user.uid), updates);
         
     } catch(e) {
         console.error("Fehler beim Speichern der Karte:", e);
@@ -328,13 +361,29 @@ function showPullAnimation(pulledCards, isGodPack) {
             inner.style.transform = 'rotateY(180deg)';
             flippedCount++;
             
-            playFlipSound();
-            if (info.rarity.id !== 'common') {
-                setTimeout(() => { playGachaSound(info.rarity.id); }, 200);
-            }
+            window.playFlipSound();
             
-            if (info.rarity.id === 'legendary') {
-                console.log("Legendäre gezogen!");
+            const isLegSpecial = (info.rarity.id === 'legendary' && LEGENDARY_POOL[info.char.name]);
+
+            if (isLegSpecial) {
+                const specialData = LEGENDARY_POOL[info.char.name];
+                const audio = new Audio(specialData.sound);
+                audio.volume = 0.5;
+                audio.play().catch(e => console.log("Audio play error", e));
+                
+                const backEl = inner.querySelector('.pull-card-back');
+                setTimeout(() => {
+                    backEl.style.transition = 'filter 0.5s ease-in-out';
+                    backEl.style.filter = 'brightness(2) contrast(1.5) drop-shadow(0 0 20px #ffd700)';
+                    setTimeout(() => {
+                        backEl.style.backgroundImage = `url('${specialData.specialImg}')`;
+                        backEl.style.filter = 'brightness(1) contrast(1)';
+                    }, 500);
+                }, 800);
+            } else {
+                if (info.rarity.id !== 'common') {
+                    setTimeout(() => { window.playGachaSound(info.rarity.id); }, 200);
+                }
             }
 
             container.removeEventListener('click', flipCard);
