@@ -33,17 +33,9 @@ export function initHistoryListener(force = false) {
     
     const handleHistorySnapshot = (snapshot) => {
         trackRead(snapshot.docChanges().filter(c => c.type !== 'removed').length);
-        const games = [];
-        snapshot.forEach((doc) => {
-            games.push(doc.data());
-        });
-
-        // Lokal sortieren nach Timestamp absteigend
-        games.sort((a, b) => {
-            const secondsA = a.timestamp ? a.timestamp.seconds : 0;
-            const secondsB = b.timestamp ? b.timestamp.seconds : 0;
-            return secondsB - secondsA;
-        });
+        
+        const games = snapshot.docs.map(doc => doc.data())
+            .sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
 
         historyCache = games;
         isFirstLoadComplete = true;

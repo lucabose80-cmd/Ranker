@@ -115,37 +115,25 @@ export async function renderScoreboard() {
             const { userResets } = await getResets();
             const avatarField = currentMode === 'starwars' ? 'avatarStarWars' : 'avatarWaifu';
             
+            const userResetsVals = Object.values(userResets);
+
             if (isDaily) {
-                snap.forEach(doc => {
+                results = snap.docs.map(doc => {
                     const d = doc.data();
-                    let img = 'https://i.imgur.com/kS5x87t.png';
-                    for(let k in userResets) {
-                        if(userResets[k].displayName === d.username) {
-                            img = userResets[k][avatarField] || img;
-                            break;
-                        }
-                    }
-                    results.push({ name: d.username, score: d.attempts, img: img, suffix: 'VERSUCHE' });
-                });
-                results.sort((a, b) => a.score - b.score);
+                    const u = userResetsVals.find(ur => ur.displayName === d.username);
+                    return { name: d.username, score: d.attempts, img: u?.[avatarField] || 'https://i.imgur.com/kS5x87t.png', suffix: 'VERSUCHE' };
+                }).sort((a, b) => a.score - b.score);
             } else {
-                let winsMap = {};
-                snap.forEach(doc => {
-                    const d = doc.data();
-                    winsMap[d.username] = (winsMap[d.username] || 0) + 1;
-                });
+                const winsMap = snap.docs.reduce((acc, doc) => {
+                    const uname = doc.data().username;
+                    acc[uname] = (acc[uname] || 0) + 1;
+                    return acc;
+                }, {});
                 
-                for(let uname in winsMap) {
-                    let img = 'https://i.imgur.com/kS5x87t.png';
-                    for(let k in userResets) {
-                        if(userResets[k].displayName === uname) {
-                            img = userResets[k][avatarField] || img;
-                            break;
-                        }
-                    }
-                    results.push({ name: uname, score: winsMap[uname], img: img, suffix: 'WINS' });
-                }
-                results.sort((a, b) => b.score - a.score);
+                results = Object.entries(winsMap).map(([uname, score]) => {
+                    const u = userResetsVals.find(ur => ur.displayName === uname);
+                    return { name: uname, score, img: u?.[avatarField] || 'https://i.imgur.com/kS5x87t.png', suffix: 'WINS' };
+                }).sort((a, b) => b.score - a.score);
             }
 
             if (selectedUser !== 'global') {

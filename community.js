@@ -38,11 +38,7 @@ export function initCommunity() {
 
     chatUnsubscribe = onSnapshot(qChat, (snapshot) => {
         trackRead(snapshot.docChanges().filter(c => c.type !== 'removed').length);
-        const messages = [];
-        snapshot.forEach(d => {
-            messages.push({ id: d.id, ...d.data() });
-        });
-        messages.reverse();
+        const messages = snapshot.docs.map(d => ({ id: d.id, ...d.data() })).reverse();
         
         chatContainer.innerHTML = '';
         let hasNewFromOthers = false;

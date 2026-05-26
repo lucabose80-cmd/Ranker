@@ -22,38 +22,30 @@ export function initAdvancedGame() {
     board.className = "horizontal-board advanced-board";
     
     // Slots generieren
-    board.innerHTML = "";
-    for (let i = 1; i <= 10; i++) {
-        board.innerHTML += `
-            <div class="rank-column" id="slot-${i}">
-                <div class="card-container">
-                    <span class="rank-number">${i}</span>
-                    <div class="card-content">
-                        <span class="placeholder-icon">👤</span>
-                    </div>
-                </div>
-                <div class="card-label"><span>???</span></div>
+    board.innerHTML = Array.from({length: 10}, (_, i) => `
+        <div class="rank-column" id="slot-${i+1}">
+            <div class="card-container">
+                <span class="rank-number">${i+1}</span>
+                <div class="card-content"><span class="placeholder-icon">👤</span></div>
             </div>
-        `;
-    }
+            <div class="card-label"><span>???</span></div>
+        </div>
+    `).join('');
 
     // Buttons generieren
     const btnContainer = document.getElementById('rank-buttons-container');
     btnContainer.innerHTML = "";
-    for (let i = 1; i <= 10; i++) {
+    Array.from({length: 10}, (_, i) => {
         const btn = document.createElement('button');
         btn.className = "rank-btn";
-        btn.setAttribute('data-rank', i);
-        btn.textContent = i;
+        btn.dataset.rank = i + 1;
+        btn.textContent = i + 1;
         btn.addEventListener('click', (e) => {
-            if (!e.isTrusted) {
-                alert("Bot Aktivität blockiert!");
-                return;
-            }
-            handleAdvancedRankSelection(i, btn);
+            if (!e.isTrusted) return alert("Bot Aktivität blockiert!");
+            handleAdvancedRankSelection(i + 1, btn);
         });
         btnContainer.appendChild(btn);
-    }
+    });
     
     document.getElementById('end-screen-area').classList.add('hidden');
     document.getElementById('active-game-area').classList.remove('hidden');

@@ -158,12 +158,7 @@ async function renderUserList() {
     
     // Alle User frisch laden (kein Cache hier, Admin braucht aktuelle Daten)
     const querySnapshot = await getDocs(collection(db, "users"));
-    let users = [];
-    querySnapshot.forEach((d) => {
-        const data = d.data();
-        data.id = d.id;
-        users.push(data);
-    });
+    let users = querySnapshot.docs.map(d => ({ ...d.data(), id: d.id }));
     
     allUsersCache = users; // Für die Action-Buttons cachen
 

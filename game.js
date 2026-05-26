@@ -15,41 +15,32 @@ export let placedCharacters = { 1: null, 2: null, 3: null, 4: null, 5: null };
 export function initGame() {
     // We will initialize currentIndex and placedCharacters inside the state check below
     
-    // Board zurücksetzen und Slots generieren
     const board = document.getElementById('ranking-board');
     board.className = "horizontal-board";
-    board.innerHTML = "";
-    for (let i = 1; i <= 5; i++) {
-        board.innerHTML += `
-            <div class="rank-column" id="slot-${i}">
-                <div class="card-container">
-                    <span class="rank-number">${i}</span>
-                    <div class="card-content">
-                        <span class="placeholder-icon">👤</span>
-                    </div>
-                </div>
-                <div class="card-label"><span>???</span></div>
+    board.innerHTML = Array.from({length: 5}, (_, i) => `
+        <div class="rank-column" id="slot-${i+1}">
+            <div class="card-container">
+                <span class="rank-number">${i+1}</span>
+                <div class="card-content"><span class="placeholder-icon">👤</span></div>
             </div>
-        `;
-    }
+            <div class="card-label"><span>???</span></div>
+        </div>
+    `).join('');
 
     // Buttons generieren
     const btnContainer = document.getElementById('rank-buttons-container');
     btnContainer.innerHTML = "";
-    for (let i = 1; i <= 5; i++) {
+    Array.from({length: 5}, (_, i) => {
         const btn = document.createElement('button');
         btn.className = "rank-btn";
-        btn.setAttribute('data-rank', i);
-        btn.textContent = i;
+        btn.dataset.rank = i + 1;
+        btn.textContent = i + 1;
         btn.addEventListener('click', (e) => {
-            if (!e.isTrusted) {
-                alert("Bot Aktivität blockiert!");
-                return;
-            }
-            handleRankSelection(i, btn);
+            if (!e.isTrusted) return alert("Bot Aktivität blockiert!");
+            handleRankSelection(i + 1, btn);
         });
         btnContainer.appendChild(btn);
-    }
+    });
     
     document.getElementById('end-screen-area').classList.add('hidden');
     document.getElementById('active-game-area').classList.remove('hidden');

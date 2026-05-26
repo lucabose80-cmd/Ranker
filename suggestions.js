@@ -26,12 +26,7 @@ export function initSuggestions() {
     suggestionsUnsubscribe = onSnapshot(q, (snapshot) => {
         trackRead(snapshot.docChanges().filter(c => c.type !== 'removed').length);
         
-        let newSuggestions = [];
-        snapshot.forEach((doc) => {
-            newSuggestions.push({ id: doc.id, ...doc.data() });
-        });
-        
-        suggestionsCache = newSuggestions;
+        suggestionsCache = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         isLoaded = true;
         
         renderSuggestions();

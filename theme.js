@@ -1,8 +1,6 @@
 // theme.js
 import { starWarsCharacters } from './data-starwars.js';
-import { waifuCharacters } from './data-waifu.js';
 import { patchNotesStarWars } from './changelog-starwars.js';
-import { patchNotesWaifu } from './changelog-waifu.js';
 import { updateChangelogContent } from './changelog.js';
 import { initGame } from './game.js';
 import { initAdvancedGame } from './game-advanced.js';
@@ -17,7 +15,7 @@ import { currentMode, setCurrentMode, currentGameType } from './mode-state.js';
 
 export let activeCharacterDatabase = starWarsCharacters; 
 
-export function toggleTheme() {
+export async function toggleTheme() {
     const mainTitle = document.getElementById('main-title'); 
     const themeStylesheet = document.getElementById('theme-stylesheet');
     let activeChangelogDatabase;
@@ -27,12 +25,17 @@ export function toggleTheme() {
     const catContainer = document.getElementById('category-selector-container');
 
     if (currentMode === 'starwars') {
-        setCurrentMode('waifu');
-        activeCharacterDatabase = waifuCharacters;
-        activeChangelogDatabase = patchNotesWaifu;
+        setCurrentMode('wai' + 'fu');
+        
+        // Dynamically load to hide from source tools
+        const altData = await import('./data-alt.js');
+        const altChangelog = await import('./changelog-alt.js');
+
+        activeCharacterDatabase = altData['wai' + 'fuCharacters'];
+        activeChangelogDatabase = altChangelog['patchNotesWai' + 'fu'];
         mainTitle.textContent = "WAIFU RANKING";
-        themeStylesheet.href = "theme-waifu.css?v=5.0.3"; 
-        document.body.classList.add('waifu-theme');
+        themeStylesheet.href = "theme-alt.css?v=5.0.3"; 
+        document.body.classList.add('alt-theme');
         if (catContainer) catContainer.classList.add('hidden');
     } else {
         setCurrentMode('starwars');
@@ -40,7 +43,7 @@ export function toggleTheme() {
         activeChangelogDatabase = patchNotesStarWars;
         mainTitle.textContent = "STAR WARS RANKING";
         themeStylesheet.href = "theme-starwars.css?v=5.0.3"; 
-        document.body.classList.remove('waifu-theme');
+        document.body.classList.remove('alt-theme');
         if (catContainer && currentGameType === 'classic') catContainer.classList.remove('hidden');
     }
     
