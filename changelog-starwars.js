@@ -1,5 +1,13 @@
 export const patchNotesStarWars = [
     {
+        version: "v6.1.1",
+        title: "Hotfix: Spieler-Profil",
+        isHotfix: true,
+        changes: [
+            "Bugfix: Ein JavaScript-Fehler verhinderte, dass Spieler im Online-Tab angeklickt werden konnten. Das Profil-Modal und alle Stats, Titel und Spielstatistiken werden wieder korrekt angezeigt."
+        ]
+    },
+    {
         version: "v6.1",
         title: "Community & Login Update",
         isHotfix: true,

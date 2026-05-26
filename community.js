@@ -341,6 +341,8 @@ function openUserProfileModal(u) {
 
     const modal = document.getElementById('public-profile-modal');
     const content = document.getElementById('public-profile-content');
+    const user = getCurrentUser();
+    if (!user) return;
     
     let progressHtml = '';
     if (currentMode === 'starwars') {
