@@ -78,7 +78,6 @@ export async function initAdvancedGame() {
     resetRatingUI();
     
     // Live Game Dokument aufräumen beim Neustart
-    const user = getCurrentUser();
     if (user) {
         deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
     }
