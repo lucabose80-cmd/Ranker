@@ -104,8 +104,8 @@ async function openBooster(booster, pool) {
         return;
     }
 
-    // Godpack Check (0.5% chance)
-    const isGodPack = Math.random() < 0.005;
+    // Godpack Check (0.1% chance)
+    const isGodPack = Math.random() < 0.001;
     
     // Generate 5 cards
     const pulledCards = [];
@@ -127,11 +127,11 @@ async function openBooster(booster, pool) {
             rarity = Math.random() < 0.2 ? RARITIES.LEGENDARY : RARITIES.EPIC;
         } else if (i === 4) {
             // 5th card: Guaranteed Rare or better
-            // E.g., 80% Rare, 15% Epic, 5% Legendary
+            // E.g., 94% Rare, 5% Epic, 1% Legendary
             rarity = getRarity({
-                RARE: { ...RARITIES.RARE, dropRate: 0.80 },
-                EPIC: { ...RARITIES.EPIC, dropRate: 0.15 },
-                LEGENDARY: { ...RARITIES.LEGENDARY, dropRate: 0.05 }
+                RARE: { ...RARITIES.RARE, dropRate: 0.94 },
+                EPIC: { ...RARITIES.EPIC, dropRate: 0.05 },
+                LEGENDARY: { ...RARITIES.LEGENDARY, dropRate: 0.01 }
             });
         } else {
             // Standard drop rates
