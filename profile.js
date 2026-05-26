@@ -568,11 +568,16 @@ function renderStatsSelection(user) {
 
 function renderAlbumTab(user) {
     const filterSelect = document.getElementById('album-pack-filter');
-    if (filterSelect) {
-        filterSelect.onchange = () => {
-            window.renderCommunityAlbum(user, 'profile-album-grid-tab', filterSelect.value);
-        };
-    }
+    const sortSelect = document.getElementById('album-sort-filter');
+    
+    const updateAlbum = () => {
+        const pack = filterSelect ? filterSelect.value : 'all';
+        const sort = sortSelect ? sortSelect.value : 'rarity_desc';
+        window.renderCommunityAlbum(user, 'profile-album-grid-tab', pack, sort);
+    };
+
+    if (filterSelect) filterSelect.onchange = updateAlbum;
+    if (sortSelect) sortSelect.onchange = updateAlbum;
     
     // Render Album Showcase
     const showcaseContainer = document.getElementById('album-showcase-container');
@@ -608,11 +613,13 @@ function renderAlbumTab(user) {
     }
 
     if (window.renderCommunityAlbum) {
-        window.renderCommunityAlbum(user, 'profile-album-grid-tab');
+        const initialPack = filterSelect ? filterSelect.value : 'all';
+        const initialSort = sortSelect ? sortSelect.value : 'rarity_desc';
+        window.renderCommunityAlbum(user, 'profile-album-grid-tab', initialPack, initialSort);
     }
 }
 
-window.renderCommunityAlbum = function(user, containerId, filterPack = 'all') {
+window.renderCommunityAlbum = function(user, containerId, filterPack = 'all', sortMode = 'rarity_desc') {
     const inventory = currentMode === 'starwars' ? (user.inventory_starwars || []) : (user.inventory_waifu || []);
     const albumGrid = document.getElementById(containerId);
     if (!albumGrid) return;
@@ -647,6 +654,21 @@ window.renderCommunityAlbum = function(user, containerId, filterPack = 'all') {
     const sortedChars = Object.keys(grouped).sort((a,b) => {
         const highestA = Math.max(...grouped[a].map(c => rarVal[c.rarity]));
         const highestB = Math.max(...grouped[b].map(c => rarVal[c.rarity]));
+        
+        if (sortMode === 'rarity_desc') {
+            if (highestA !== highestB) return highestB - highestA;
+            return grouped[b].length - grouped[a].length;
+        } else if (sortMode === 'rarity_asc') {
+            if (highestA !== highestB) return highestA - highestB;
+            return grouped[a].length - grouped[b].length;
+        } else if (sortMode === 'count_desc') {
+            if (grouped[a].length !== grouped[b].length) return grouped[b].length - grouped[a].length;
+            return highestB - highestA;
+        } else if (sortMode === 'name_asc') {
+            return a.localeCompare(b);
+        }
+        
+        // Default
         if (highestA !== highestB) return highestB - highestA;
         return grouped[b].length - grouped[a].length;
     });
@@ -659,8 +681,9 @@ window.renderCommunityAlbum = function(user, containerId, filterPack = 'all') {
         cards.sort((a,b) => rarVal[b.rarity] - rarVal[a.rarity]);
         
         const stackContainer = document.createElement('div');
+        stackContainer.className = 'album-stack-container';
         const stackOffset = Math.min(20, cards.length * 4);
-        stackContainer.style.cssText = `position:relative; width:100%; aspect-ratio:2/3; margin-bottom: ${stackOffset}px; margin-right: ${stackOffset}px;`;
+        stackContainer.style.cssText = `position:relative; width:100%; aspect-ratio:2/3; margin-bottom: ${stackOffset}px; margin-right: ${stackOffset}px; cursor:help;`;
         
         cards.slice(0, 5).forEach((c, idx) => {
             const card = document.createElement('div');
@@ -686,15 +709,18 @@ window.renderCommunityAlbum = function(user, containerId, filterPack = 'all') {
                  nameBanner.textContent = charName;
                  card.appendChild(nameBanner);
                  
-                 const tooltipLines = [`${charName} (${cards.length} Gesamt)`];
+                 const tooltipLines = [`<strong style="color:#2ed573;">${charName}</strong>`, `<span style="color:#aaa;">${cards.length} Gesamt</span>`];
                  const rarityCounts = {};
                  cards.forEach(c => rarityCounts[c.rarity] = (rarityCounts[c.rarity] || 0) + 1);
-                 if (rarityCounts['legendary']) tooltipLines.push(`Legendär: ${rarityCounts['legendary']}x`);
-                 if (rarityCounts['epic']) tooltipLines.push(`Episch: ${rarityCounts['epic']}x`);
-                 if (rarityCounts['rare']) tooltipLines.push(`Selten: ${rarityCounts['rare']}x`);
-                 if (rarityCounts['common']) tooltipLines.push(`Gewöhnlich: ${rarityCounts['common']}x`);
+                 if (rarityCounts['legendary']) tooltipLines.push(`<span style="color:#ffd700;">Legendär: ${rarityCounts['legendary']}x</span>`);
+                 if (rarityCounts['epic']) tooltipLines.push(`<span style="color:#9b59b6;">Episch: ${rarityCounts['epic']}x</span>`);
+                 if (rarityCounts['rare']) tooltipLines.push(`<span style="color:#ff9f43;">Selten: ${rarityCounts['rare']}x</span>`);
+                 if (rarityCounts['common']) tooltipLines.push(`<span style="color:#888;">Gewöhnlich: ${rarityCounts['common']}x</span>`);
                  
-                 stackContainer.title = tooltipLines.join('\n');
+                 const tooltip = document.createElement('div');
+                 tooltip.className = 'album-stack-tooltip';
+                 tooltip.innerHTML = tooltipLines.join('<br>');
+                 stackContainer.appendChild(tooltip);
                  
                  const topBanner = document.createElement('div');
                  const col = c.rarity === 'legendary' ? '#ffd700' : (c.rarity === 'epic' ? '#9b59b6' : (c.rarity === 'rare' ? '#ff9f43' : '#888'));

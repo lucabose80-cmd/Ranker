@@ -16,18 +16,21 @@ const BOOSTERS = [
         id: 'starwars_all',
         name: 'Galaktisches Standard-Pack',
         cost: 10,
+        img: 'Boosterpack.Bilder/starwars.jpg',
         filter: (char) => true
     },
     {
         id: 'starwars_klon',
         name: 'Klonkrieger Elite-Pack',
         cost: 10,
+        img: 'Boosterpack.Bilder/klone.jpg',
         filter: (char) => char.tags && char.tags.includes('klon')
     },
     {
         id: 'starwars_jedi_sith',
         name: 'Machtanwender Pack',
         cost: 10,
+        img: 'Boosterpack.Bilder/machtanwender.jpg',
         filter: (char) => {
             if (char.tags && (char.tags.includes('jedi') || char.tags.includes('sith'))) return true;
             if (char.name === 'General Grievous' || char.name === 'Asajj Ventress') return true;
@@ -60,7 +63,7 @@ export function initShop() {
         
         el.innerHTML = `
             <h3 style="margin:0 0 10px 0; color:#ffd700; text-transform:uppercase;">${booster.name}</h3>
-            <div style="width:100%; height:180px; background:linear-gradient(135deg, #0f172a, #1e293b); border-radius:6px; margin-bottom:15px; border:2px solid #555; display:flex; justify-content:center; align-items:center; font-size:4rem; box-shadow: inset 0 0 20px rgba(0,0,0,0.8);">📦</div>
+            ${booster.img ? `<img src="${booster.img}" style="width:100%; height:280px; object-fit:cover; border-radius:6px; margin-bottom:15px; border:2px solid #555; box-shadow: inset 0 0 20px rgba(0,0,0,0.8);">` : `<div style="width:100%; height:180px; background:linear-gradient(135deg, #0f172a, #1e293b); border-radius:6px; margin-bottom:15px; border:2px solid #555; display:flex; justify-content:center; align-items:center; font-size:4rem; box-shadow: inset 0 0 20px rgba(0,0,0,0.8);">📦</div>`}
             <p style="font-size:0.85rem; color:#94a3b8; margin:0 0 15px 0;">Mögliche Charaktere: <span style="color:#fff">${pool.length}</span></p>
             
             <div style="width:100%; background:rgba(0,0,0,0.3); border-radius:4px; padding:10px; margin-bottom:15px; display:flex; flex-direction:column; gap:5px;">
