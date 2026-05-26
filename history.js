@@ -197,43 +197,45 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
         const oldGamesPlayed = (user[gamesPlayedField] || 1) - 1;
         const newGamesPlayed = user[gamesPlayedField];
 
-        (TITLES[currentMode] || []).forEach(t => {
-            if (t.secret) {
-                // Check secret conditions
-                if (t.condition && t.condition.type === 'has_characters') {
-                    const hasAll = t.condition.chars.every(charName => rankingData.some(r => r.name === charName));
-                    if (hasAll && !user[titlesField].includes(t.id)) {
-                        user[titlesField].push(t.id);
-                        unlockedAnyTitle = true;
-                        if (window.showUnlockNotification) window.showUnlockNotification('title', t.name);
+        if (gameType === 'classic' && category === 'normal') {
+            (TITLES[currentMode] || []).forEach(t => {
+                if (t.secret) {
+                    // Check secret conditions
+                    if (t.condition && t.condition.type === 'has_characters') {
+                        const hasAll = t.condition.chars.every(charName => rankingData.some(r => r.name === charName));
+                        if (hasAll && !user[titlesField].includes(t.id)) {
+                            user[titlesField].push(t.id);
+                            unlockedAnyTitle = true;
+                            if (window.showUnlockNotification) window.showUnlockNotification('title', t.name);
+                        }
+                    } else if (t.condition && t.condition.type === 'has_discovered_characters') {
+                        const discoveredList = user.discovered || [];
+                        const hasAll = t.condition.chars.every(charName => discoveredList.includes(charName));
+                        if (hasAll && !user[titlesField].includes(t.id)) {
+                            user[titlesField].push(t.id);
+                            unlockedAnyTitle = true;
+                            if (window.showUnlockNotification) window.showUnlockNotification('title', t.name);
+                        }
+                    } else if (t.condition && t.condition.type === 'has_tag_in_round') {
+                        const count = rankingData.filter(r => r.tags && r.tags.includes(t.condition.tag)).length;
+                        if (count >= t.condition.count && !user[titlesField].includes(t.id)) {
+                            user[titlesField].push(t.id);
+                            unlockedAnyTitle = true;
+                            if (window.showUnlockNotification) window.showUnlockNotification('title', t.name);
+                        }
                     }
-                } else if (t.condition && t.condition.type === 'has_discovered_characters') {
-                    const discoveredList = user.discovered || [];
-                    const hasAll = t.condition.chars.every(charName => discoveredList.includes(charName));
-                    if (hasAll && !user[titlesField].includes(t.id)) {
-                        user[titlesField].push(t.id);
-                        unlockedAnyTitle = true;
-                        if (window.showUnlockNotification) window.showUnlockNotification('title', t.name);
-                    }
-                } else if (t.condition && t.condition.type === 'has_tag_in_round') {
-                    const count = rankingData.filter(r => r.tags && r.tags.includes(t.condition.tag)).length;
-                    if (count >= t.condition.count && !user[titlesField].includes(t.id)) {
-                        user[titlesField].push(t.id);
-                        unlockedAnyTitle = true;
-                        if (window.showUnlockNotification) window.showUnlockNotification('title', t.name);
+                } else {
+                    // Regular titles
+                    if (newGamesPlayed >= t.required) {
+                        if (!user[titlesField].includes(t.id)) {
+                            user[titlesField].push(t.id);
+                            unlockedAnyTitle = true;
+                            if (window.showUnlockNotification) window.showUnlockNotification('title', t.name);
+                        }
                     }
                 }
-            } else {
-                // Regular titles
-                if (oldGamesPlayed < t.required && newGamesPlayed >= t.required) {
-                    if (!user[titlesField].includes(t.id)) {
-                        user[titlesField].push(t.id);
-                        unlockedAnyTitle = true;
-                        if (window.showUnlockNotification) window.showUnlockNotification('title', t.name);
-                    }
-                }
-            }
-        });
+            });
+        }
 
         // Special Top5 / Bottom5 check
         const missingSpecialTitles = (TITLES[currentMode] || []).filter(t => t.condition && t.condition.type && t.condition.type.startsWith('special_') && !user[titlesField].includes(t.id));
