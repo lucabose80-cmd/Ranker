@@ -64,7 +64,7 @@ export function initGame() {
     
     const sameRestartBtn = document.getElementById('restart-same-btn');
     if (sameRestartBtn) {
-        sameRestartBtn.style.display = 'inline-block';
+        sameRestartBtn.classList.remove('hidden');
     }
     
     resetRatingUI();

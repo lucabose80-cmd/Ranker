@@ -1,5 +1,5 @@
 // main.js
-import { initGame, handleRankSelection } from './game.js';
+import { initGame, handleRankSelection, restartSameClassicGame } from './game.js';
 import { initAdvancedGame } from './game-advanced.js';
 import { toggleTheme } from './theme.js';
 import { initRatingSystem } from './rating.js';
@@ -190,8 +190,8 @@ function setupGameUI(user) {
     // Profil Overlay öffnen
     document.getElementById('profile-trigger').addEventListener('click', () => {
         document.getElementById('profile-overlay').classList.remove('hidden');
+        clearProfileUnlockDot(getCurrentUser()); // Gelben Punkt entfernen und NEU-Badges resetten
         refreshProfileContent(); // Baut alles passend zum aktuellen Modus neu auf
-        clearProfileUnlockDot(getCurrentUser()); // Gelben Punkt entfernen
     });
     
     document.getElementById('close-profile-btn').addEventListener('click', closeProfileOverlay);
@@ -227,6 +227,12 @@ function setupGameUI(user) {
             initAdvancedGame();
         } else {
             initGame();
+        }
+    });
+
+    document.getElementById('restart-same-btn').addEventListener('click', () => {
+        if (currentGameType === 'classic') {
+            restartSameClassicGame();
         }
     });
     

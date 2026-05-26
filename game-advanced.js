@@ -65,6 +65,11 @@ export function initAdvancedGame() {
     document.querySelector('.mystery-name').classList.remove('hidden');
     document.getElementById('action-prompt').classList.remove('hidden');
     document.getElementById('rank-buttons-container').classList.remove('hidden');
+
+    const sameRestartBtn = document.getElementById('restart-same-btn');
+    if (sameRestartBtn) {
+        sameRestartBtn.classList.add('hidden');
+    }
     
     resetRatingUI();
     
