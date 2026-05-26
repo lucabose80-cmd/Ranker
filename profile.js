@@ -691,11 +691,25 @@ window.renderCommunityAlbum = function(user, containerId, filterPack = 'all', so
             const z = cards.length - idx;
             const offset = idx * 4;
             
-            let cardImg = charObj.img;
+            let isLegSpecial = false;
+            let specialImg = '';
             if (c.rarity === 'legendary' && window.LEGENDARY_POOL && window.LEGENDARY_POOL[charName]) {
-                cardImg = window.LEGENDARY_POOL[charName].specialImg;
+                isLegSpecial = true;
+                specialImg = window.LEGENDARY_POOL[charName].specialImg;
             }
-            card.style.cssText = `position:absolute; top:${offset}px; left:${offset}px; width:100%; height:100%; background-image:url('${cardImg}'); background-size:cover; background-position:center; border-radius:6px; border:${RARITY_BORDERS[c.rarity] || '3px solid #111'}; z-index:${z}; box-shadow: -2px -2px 5px rgba(0,0,0,0.5); overflow:hidden;`;
+            
+            card.style.cssText = `position:absolute; top:${offset}px; left:${offset}px; width:100%; height:100%; background-image:url('${charObj.img}'); background-size:cover; background-position:center; border-radius:6px; border:${RARITY_BORDERS[c.rarity] || '3px solid #111'}; z-index:${z}; box-shadow: -2px -2px 5px rgba(0,0,0,0.5); overflow:hidden;`;
+            
+            if (isLegSpecial) {
+                setTimeout(() => {
+                    card.style.transition = 'filter 0.5s ease-in-out';
+                    card.style.filter = 'brightness(2) contrast(1.5) drop-shadow(0 0 10px #ffd700)';
+                    setTimeout(() => {
+                        card.style.backgroundImage = `url('${specialImg}')`;
+                        card.style.filter = 'brightness(1) contrast(1)';
+                    }, 500);
+                }, 400 + Math.random() * 400);
+            }
             
             if ((c.rarity === 'epic' || c.rarity === 'legendary') && idx === 0) {
                 const holo = document.createElement('div');

@@ -14,11 +14,13 @@ const RARITIES = {
 export const LEGENDARY_POOL = {
     'Anakin Skywalker': {
         specialImg: 'anakin.selten.jpg',
-        sound: 'sounds/imperialmarch.mp3'
+        sound: 'sounds/imperialmarch.mp3',
+        soundLoops: 1
     },
     'Darth Vader': {
         specialImg: 'Special.Bilder/vader.special.jpg',
-        sound: 'sounds/imperialmarch.mp3'
+        sound: 'sounds/vaderbreathing.mp3',
+        soundLoops: 3
     }
 };
 window.LEGENDARY_POOL = LEGENDARY_POOL;
@@ -369,6 +371,13 @@ function showPullAnimation(pulledCards, isGodPack) {
                 const specialData = LEGENDARY_POOL[info.char.name];
                 const audio = new Audio(specialData.sound);
                 audio.volume = 0.5;
+                let playCount = 1;
+                audio.addEventListener('ended', () => {
+                    if (playCount < (specialData.soundLoops || 1)) {
+                        playCount++;
+                        audio.play();
+                    }
+                });
                 audio.play().catch(e => console.log("Audio play error", e));
                 
                 const backEl = inner.querySelector('.pull-card-back');
