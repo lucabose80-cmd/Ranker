@@ -105,6 +105,9 @@ export function initShop() {
             <button class="rank-btn buy-booster-btn" style="width:100%; padding:15px; margin:0; font-size:1.1rem; border-color:#2ed573; color:#2ed573;" data-id="${booster.id}">
                 🛒 ${booster.cost} Credits
             </button>
+            <div style="margin-top: 10px; font-size: 0.85rem; color: #94a3b8; text-align: center;">
+                Geöffnet: <span id="opened-count-${booster.id}" style="color: #ffd700; font-weight: bold;">${user[`packsOpened_${booster.id}`] || 0}</span>
+            </div>
         `;
 
         el.querySelector('.buy-booster-btn').addEventListener('click', () => openBooster(booster, pool));
@@ -199,6 +202,12 @@ async function openBooster(booster, pool) {
             });
         });
         
+        const packCountField = `packsOpened_${booster.id}`;
+        user[packCountField] = (user[packCountField] || 0) + 1;
+        
+        const countSpan = document.getElementById(`opened-count-${booster.id}`);
+        if (countSpan) countSpan.textContent = user[packCountField];
+        
         user[field] = currentInventory;
         if (!isAdmin) {
             user.credits -= booster.cost;
@@ -207,7 +216,7 @@ async function openBooster(booster, pool) {
         
         localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
 
-        const updates = { [field]: currentInventory };
+        const updates = { [field]: currentInventory, [packCountField]: user[packCountField] };
         if (!isAdmin) updates.credits = increment(-booster.cost);
         
         await updateDoc(doc(db, "users", user.uid), updates);
