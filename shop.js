@@ -29,21 +29,21 @@ const BOOSTERS = [
     {
         id: 'starwars_all',
         name: 'Galaktisches Standard-Pack',
-        cost: 10,
+        cost: 100,
         img: 'Boosterpack.Bilder/starwars.jpg',
         filter: (char) => true
     },
     {
         id: 'starwars_klon',
         name: 'Klonkrieger Elite-Pack',
-        cost: 10,
+        cost: 100,
         img: 'Boosterpack.Bilder/klone.jpg',
         filter: (char) => char.tags && char.tags.includes('klon')
     },
     {
         id: 'starwars_jedi_sith',
         name: 'Machtanwender Pack',
-        cost: 10,
+        cost: 100,
         img: 'Boosterpack.Bilder/machtanwender.jpg',
         filter: (char) => {
             if (char.tags && (char.tags.includes('jedi') || char.tags.includes('sith'))) return true;
