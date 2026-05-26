@@ -483,16 +483,16 @@ function renderStatsSelection(user) {
             <div style="display:flex; gap:20px; flex-wrap:wrap;">
                 <div style="flex:1; min-width:200px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid #333; text-align:center;">
                     <h4 style="margin:0 0 15px 0; color:#2ed573;">Dein Lieblingscharakter</h4>
-                    ${favImg ? \`<img src="\${favImg}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid #2ed573;margin:0 auto 10px; display:block;">\` : \`<div style="width:80px;height:80px;border-radius:50%;background:#444;margin:0 auto 10px; display:block;"></div>\`}
-                    <div style="color:#fff; font-weight:bold;">\${topFav || 'Noch keiner'}</div>
-                    <div style="font-size:0.8rem; color:#94a3b8; margin-top:5px;">\${topFavCount > 0 ? \`\${topFavCount}x auf Platz 1\` : ''}</div>
+                    ${favImg ? `<img src="${favImg}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid #2ed573;margin:0 auto 10px; display:block;">` : `<div style="width:80px;height:80px;border-radius:50%;background:#444;margin:0 auto 10px; display:block;"></div>`}
+                    <div style="color:#fff; font-weight:bold;">${topFav || 'Noch keiner'}</div>
+                    <div style="font-size:0.8rem; color:#94a3b8; margin-top:5px;">${topFavCount > 0 ? `${topFavCount}x auf Platz 1` : ''}</div>
                 </div>
                 
                 <div style="flex:1; min-width:200px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid #333; text-align:center;">
                     <h4 style="margin:0 0 15px 0; color:#ff4757;">Dein Nemesis</h4>
-                    ${nemImg ? \`<img src="\${nemImg}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid #ff4757;margin:0 auto 10px; display:block;">\` : \`<div style="width:80px;height:80px;border-radius:50%;background:#444;margin:0 auto 10px; display:block;"></div>\`}
-                    <div style="color:#fff; font-weight:bold;">\${topNem || 'Noch keiner'}</div>
-                    <div style="font-size:0.8rem; color:#94a3b8; margin-top:5px;">\${topNemCount > 0 ? \`\${topNemCount}x auf Platz 5\` : ''}</div>
+                    ${nemImg ? `<img src="${nemImg}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid #ff4757;margin:0 auto 10px; display:block;">` : `<div style="width:80px;height:80px;border-radius:50%;background:#444;margin:0 auto 10px; display:block;"></div>`}
+                    <div style="color:#fff; font-weight:bold;">${topNem || 'Noch keiner'}</div>
+                    <div style="font-size:0.8rem; color:#94a3b8; margin-top:5px;">${topNemCount > 0 ? `${topNemCount}x auf Platz 5` : ''}</div>
                 </div>
             </div>
         </div>
