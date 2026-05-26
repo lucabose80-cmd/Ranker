@@ -95,10 +95,17 @@ export function initGame() {
     
     function startFreshClassicGame() {
         let poolSource = activeCharacterDatabase;
-        if (currentMode === 'starwars' && currentGameCategory === 'klon') {
-            poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon'));
+        if (currentMode === 'starwars') {
+            if (currentGameCategory === 'klon') {
+                poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon'));
+            } else if (currentGameCategory === 'peak') {
+                poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('peak'));
+            } else if (currentGameCategory === 'vehicle') {
+                poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('vehicle'));
+            }
         }
-        activePool = drawFromBag(poolSource, 5, 'bag_classic_' + currentMode + (currentGameCategory === 'klon' ? '_klon' : ''));
+        const suffix = currentGameCategory === 'normal' ? '' : '_' + currentGameCategory;
+        activePool = drawFromBag(poolSource, 5, 'bag_classic_' + currentMode + suffix);
         localStorage.setItem('punish_pool_' + currentMode + '_' + currentGameCategory + '_classic', JSON.stringify(activePool));
         localStorage.removeItem('punish_state_' + currentMode + '_' + currentGameCategory + '_classic');
         currentIndex = 0;

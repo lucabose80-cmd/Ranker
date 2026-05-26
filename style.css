@@ -1446,3 +1446,178 @@ body.alt-theme .nav-link.active { color: #ff2a9d; border-bottom-color: #ff2a9d; 
         margin-top: 135px;
     }
 }
+
+/* Sidebar Toggle Button */
+.sidebar-toggle-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: #7fd1ff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    line-height: 1;
+    z-index: 10;
+}
+.sidebar-toggle-btn:hover {
+    color: #fff;
+}
+.online-sidebar {
+    transition: width 0.3s ease, padding 0.3s ease;
+}
+.online-sidebar.collapsed {
+    width: 75px !important;
+    padding: 15px 5px !important;
+}
+.online-sidebar.collapsed .online-sidebar-header h3 {
+    display: none;
+}
+.online-sidebar.collapsed .sidebar-toggle-btn {
+    position: static;
+    display: block;
+    margin: 0 auto 10px auto;
+    transform: rotate(180deg);
+}
+.online-sidebar.collapsed .refresh-online-btn {
+    font-size: 0;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+.online-sidebar.collapsed .refresh-online-btn::before {
+    content: "↻";
+    font-size: 1.2rem;
+}
+.online-sidebar.collapsed .online-user-info,
+.online-sidebar.collapsed .chat-mode-tag {
+    display: none !important;
+}
+.online-sidebar.collapsed .online-user-card {
+    justify-content: center;
+    padding: 8px 0;
+}
+.online-sidebar.collapsed .online-indicator {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+.online-sidebar.collapsed .online-user-card {
+    position: relative;
+}
+
+/* Responsive Design for Mobile and Tablets */
+@media (max-width: 900px) {
+    .main-content {
+        flex-direction: column;
+    }
+    .online-sidebar {
+        width: 100% !important;
+        max-height: 250px;
+        border-left: none;
+        border-top: 1px solid #333;
+        order: 2; /* Sidebar unten */
+    }
+    .online-sidebar.collapsed {
+        max-height: 60px;
+        padding: 5px !important;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .online-sidebar.collapsed .sidebar-toggle-btn {
+        margin: 0;
+        transform: rotate(90deg);
+    }
+    .online-sidebar.collapsed .online-users-list {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        width: 100%;
+        align-items: center;
+        gap: 10px;
+    }
+    .online-sidebar.collapsed .online-user-card {
+        width: auto;
+        padding: 0;
+    }
+    
+    .horizontal-board {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .advanced-board {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 10px;
+    }
+    
+    .game-nav {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    .nav-link {
+        font-size: 0.9rem;
+        padding: 6px 10px;
+        flex: 1;
+        min-width: 100px;
+    }
+    
+    .live-grid, .lexikon-grid, .history-list {
+        grid-template-columns: 1fr;
+    }
+    
+    .action-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    #rank-buttons-container {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .card-container {
+        width: 50px;
+        height: 65px;
+    }
+    .card-label span {
+        font-size: 0.6rem;
+    }
+    .rank-column {
+        min-width: 50px;
+    }
+    .advanced-board {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    #current-image-container {
+        width: 140px;
+        height: 180px;
+    }
+    .rank-btn {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+    .mode-selector {
+        flex-direction: column;
+        width: 100%;
+        gap: 5px;
+    }
+    .mode-toggle-btn {
+        width: 100%;
+        border-radius: 4px;
+        margin: 0;
+    }
+    .nav-right-actions {
+        flex-direction: column;
+        align-items: flex-end;
+    }
+    #profile-trigger {
+        font-size: 0.9rem;
+    }
+}

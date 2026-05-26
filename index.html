@@ -56,6 +56,14 @@
                     </div>
 
                     <h3 class="theme-heading" style="border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 30px;">VORSCHLÄGE MODERATION</h3>
+                    <div style="margin-bottom: 10px;">
+                        <select id="admin-suggestion-filter" style="padding: 8px; background: #1a1e29; color: #fff; border: 1px solid #333; border-radius: 4px; width: 100%;">
+                            <option value="all">Alle Vorschläge</option>
+                            <option value="starwars">Star Wars Modus</option>
+                            <option value="waifu">Anime Modus</option>
+                            <option value="tag_suggestion">Tag / Charakter Korrekturen</option>
+                        </select>
+                    </div>
                     <div id="admin-suggestions-list" class="user-list" style="max-height: 400px; margin-bottom: 30px; display: flex; flex-direction: column; gap: 10px;"></div>
                 </div>
                 
@@ -107,7 +115,8 @@
             </div>
         </div>
 
-        <div class="online-sidebar panel">
+        <div class="online-sidebar panel" id="online-sidebar">
+            <button id="online-sidebar-toggle" class="sidebar-toggle-btn" title="Online Panel einklappen">></button>
             <div class="online-sidebar-header">
                 <h3 class="theme-heading" style="font-size: 0.9rem; letter-spacing: 1px; margin: 0;">ONLINE (<span id="online-count">0</span>)</h3>
                 <button id="refresh-online-btn" class="text-btn refresh-online-btn" title="Online-Liste aktualisieren">AKTUALISIEREN</button>
@@ -128,8 +137,10 @@
                     <button id="mode-advanced-btn" class="mode-toggle-btn">Advanced (10 Slots)</button>
                 </div>
                 <div id="category-selector-container" class="mode-selector" style="margin-top: 10px;">
-                    <button id="cat-normal-btn" class="mode-toggle-btn active" style="font-size: 0.8rem; padding: 5px 15px;">Normal</button>
+                    <button id="cat-normal-btn" class="mode-toggle-btn active" style="font-size: 0.8rem; padding: 5px 15px;">Expanded Universe</button>
                     <button id="cat-klon-btn" class="mode-toggle-btn" style="font-size: 0.8rem; padding: 5px 15px;">Nur Klone</button>
+                    <button id="cat-peak-btn" class="mode-toggle-btn" style="font-size: 0.8rem; padding: 5px 15px;">Peak Ranking</button>
+                    <button id="cat-vehicle-btn" class="mode-toggle-btn" style="font-size: 0.8rem; padding: 5px 15px;">Fahrzeuge</button>
                 </div>
 
                 <div class="panel ranking-panel">
@@ -185,11 +196,15 @@
                     <h2 class="theme-heading">GALAKTISCHE ARCHIVE</h2>
                     <div class="history-controls">
                         <select id="history-type-filter">
-                            <option value="classic">Klassisch (5er)</option>
+                            <option value="classic">Expanded Universe (5er)</option>
                             <option value="classic_klon">Klon Modus (5er)</option>
+                            <option value="classic_peak">Peak Ranking (5er)</option>
+                            <option value="classic_vehicle">Fahrzeuge (5er)</option>
                             <option value="advanced">Advanced (10er)</option>
-                            <option value="versus">Versus</option>
+                            <option value="versus">Versus (Expanded Universe)</option>
                             <option value="versus_klon">Versus (Klon)</option>
+                            <option value="versus_peak">Versus (Peak)</option>
+                            <option value="versus_vehicle">Versus (Fahrzeuge)</option>
                         </select>
                     </div>
                     <div id="history-list" class="history-list"></div>
@@ -204,11 +219,15 @@
                             <option value="global">Global (Alle)</option>
                         </select>
                         <select id="scoreboard-type-filter">
-                            <option value="classic">Klassisch (5er)</option>
+                            <option value="classic">Expanded Universe (5er)</option>
                             <option value="classic_klon">Klon Modus (5er)</option>
+                            <option value="classic_peak">Peak Ranking (5er)</option>
+                            <option value="classic_vehicle">Fahrzeuge (5er)</option>
                             <option value="advanced">Advanced (10er)</option>
-                            <option value="versus">Versus (Wins)</option>
+                            <option value="versus">Versus (Expanded Universe)</option>
                             <option value="versus_klon">Versus Klon (Wins)</option>
+                            <option value="versus_peak">Versus Peak (Wins)</option>
+                            <option value="versus_vehicle">Versus Fahrzeuge (Wins)</option>
                             <option value="starwarsdle">StarWarsdle (Daily)</option>
                             <option value="starwarsdle_alltime">StarWarsdle (All-Time Wins)</option>
                         </select>
@@ -270,8 +289,10 @@
                     <div style="display: flex; gap: 10px; margin-bottom: 20px;">
                         <button id="create-versus-lobby-btn" class="rank-btn" style="margin: 0; width: auto; padding: 0 20px;">Neue Lobby erstellen</button>
                         <select id="versus-category-select" style="background: rgba(0,0,0,0.3); color: white; border: 1px solid #333; padding: 10px; border-radius: 6px;">
-                            <option value="normal">Klassisch (Normal)</option>
-                            <option value="klon">Klassisch (Nur Klone)</option>
+                            <option value="normal">Expanded Universe</option>
+                            <option value="klon">Nur Klone</option>
+                            <option value="peak">Peak Ranking</option>
+                            <option value="vehicle">Fahrzeuge</option>
                         </select>
                     </div>
                     <div id="versus-lobbies-grid" class="live-grid"></div>
@@ -305,6 +326,8 @@
                         <select id="suggestion-type-filter">
                             <option value="feature">Features & Allgemeines</option>
                             <option value="character">Neue Charaktere</option>
+                            <option value="peak">Neue Peak Charaktere</option>
+                            <option value="vehicle">Neue Fahrzeuge</option>
                             <option value="char_update">Charakter Update (Name/Bild)</option>
                         </select>
                     </div>

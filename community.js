@@ -240,7 +240,7 @@ export function initCommunity() {
                     <div class="online-user-card" style="cursor:pointer;" data-uid="${user.uid}">
                         <div class="online-indicator"></div>
                         ${avatarHtml}
-                        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;">
+                        <div class="online-user-info" style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;">
                             <strong style="flex: unset; display: flex; align-items: center; min-width: 0;">
                                 <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${user.displayName || user.username}</span>
                                 <span style="flex-shrink:0; color:#888; font-size:0.8rem; margin-left:5px;">(Du)</span>
@@ -275,7 +275,7 @@ export function initCommunity() {
                     <div class="online-user-card" style="${offlineCss} cursor:pointer;" data-uid="${u.uid}">
                         <div class="${indicatorClass}"></div>
                         ${otherAvatarHtml}
-                        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;">
+                        <div class="online-user-info" style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;">
                             <strong style="flex: unset; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${u.displayName || u.username}</strong>
                             ${otherTitleHtml}
                         </div>

@@ -124,17 +124,24 @@ async function createVersusLobby() {
     const category = catSelect ? catSelect.value : 'normal';
     
     let poolSource = activeCharacterDatabase;
-    if (currentMode === 'starwars' && category === 'klon') {
-        const klonGames = user['gamesPlayed_starwars_klon'] || 0;
-        if (klonGames < 10) {
-            alert("Du musst mindestens 10 Spiele im 'Nur Klone' Modus (Klassisch) absolviert haben, um den Klon-Versus Modus zu hosten!");
-            return;
+    if (currentMode === 'starwars') {
+        if (category === 'klon') {
+            const klonGames = user['gamesPlayed_starwars_klon'] || 0;
+            if (klonGames < 10) {
+                alert("Du musst mindestens 10 Spiele im 'Nur Klone' Modus (Klassisch) absolviert haben, um den Klon-Versus Modus zu hosten!");
+                return;
+            }
+            poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon'));
+        } else if (category === 'peak') {
+            poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('peak'));
+        } else if (category === 'vehicle') {
+            poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('vehicle'));
         }
-        poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon'));
     }
     
     // Generiere 5 Charaktere
-    const chars = drawFromBag(poolSource, 5, 'bag_versus_' + currentMode + (category === 'klon' ? '_klon' : '')).map(c => c.name);
+    const suffix = category === 'normal' ? '' : '_' + category;
+    const chars = drawFromBag(poolSource, 5, 'bag_versus_' + currentMode + suffix).map(c => c.name);
     
     const lobbyId = "lobby_" + Date.now().toString(36) + Math.random().toString(36).substring(2);
     
@@ -462,7 +469,7 @@ async function evaluateVersusMatch(lobbyId, lobby) {
     if (!shouldEvaluate) return; // Ein anderer Spieler wertet bereits aus
     
     // 1. Hole das globale Scoreboard für den Modus
-    const suffix = lobby.category === 'klon' ? '_klon' : '';
+    const suffix = lobby.category === 'normal' || !lobby.category ? '' : '_' + lobby.category;
     const scoresRef = doc(db, "scores", `${lobby.mode}_classic${suffix}_global`);
     const scoresSnap = await getDoc(scoresRef);
     const globalScores = scoresSnap.exists() ? scoresSnap.data() : {};

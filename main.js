@@ -170,21 +170,34 @@ function setupGameUI(user) {
 
     const catNormalBtn = document.getElementById('cat-normal-btn');
     const catKlonBtn = document.getElementById('cat-klon-btn');
-    if (catNormalBtn && catKlonBtn) {
-        catNormalBtn.addEventListener('click', () => {
-            if (currentGameCategory === 'normal') return;
-            setCurrentGameCategory('normal');
-            catNormalBtn.classList.add('active');
-            catKlonBtn.classList.remove('active');
-            if (currentGameType === 'classic') initGame();
-        });
-        catKlonBtn.addEventListener('click', () => {
-            if (currentGameCategory === 'klon') return;
-            setCurrentGameCategory('klon');
-            catKlonBtn.classList.add('active');
-            catNormalBtn.classList.remove('active');
-            if (currentGameType === 'classic') initGame();
-        });
+    const catPeakBtn = document.getElementById('cat-peak-btn');
+    const catVehicleBtn = document.getElementById('cat-vehicle-btn');
+    
+    if (catNormalBtn) {
+        const updateCatButtons = (activeCat) => {
+            [catNormalBtn, catKlonBtn, catPeakBtn, catVehicleBtn].forEach(btn => {
+                if(btn) btn.classList.remove('active');
+            });
+            if (activeCat === 'normal') catNormalBtn.classList.add('active');
+            if (activeCat === 'klon') catKlonBtn.classList.add('active');
+            if (activeCat === 'peak') catPeakBtn.classList.add('active');
+            if (activeCat === 'vehicle') catVehicleBtn.classList.add('active');
+        };
+
+        const attachCatListener = (btn, cat) => {
+            if (!btn) return;
+            btn.addEventListener('click', () => {
+                if (currentGameCategory === cat) return;
+                setCurrentGameCategory(cat);
+                updateCatButtons(cat);
+                if (currentGameType === 'classic') initGame();
+            });
+        };
+        
+        attachCatListener(catNormalBtn, 'normal');
+        attachCatListener(catKlonBtn, 'klon');
+        attachCatListener(catPeakBtn, 'peak');
+        attachCatListener(catVehicleBtn, 'vehicle');
     }
 
     // Profil Overlay öffnen
@@ -211,6 +224,21 @@ function setupGameUI(user) {
         }
     });
     document.getElementById('close-chat-btn').addEventListener('click', () => chatWidget.classList.add('hidden'));
+
+    // Online Sidebar Toggle
+    const onlineSidebar = document.getElementById('online-sidebar');
+    const onlineSidebarToggle = document.getElementById('online-sidebar-toggle');
+    if (onlineSidebar && onlineSidebarToggle) {
+        // Zustand laden
+        if (localStorage.getItem('online-sidebar-collapsed') === 'true') {
+            onlineSidebar.classList.add('collapsed');
+        }
+        
+        onlineSidebarToggle.addEventListener('click', () => {
+            onlineSidebar.classList.toggle('collapsed');
+            localStorage.setItem('online-sidebar-collapsed', onlineSidebar.classList.contains('collapsed'));
+        });
+    }
 
     initRatingSystem();
     initChangelog();

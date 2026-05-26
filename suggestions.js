@@ -376,6 +376,12 @@ export function renderSuggestions() {
 export function initAdminSuggestions() {
     isAdminContext = true;
     initSuggestions(); // Stellt sicher, dass die Liste geladen wird
+    
+    const filterSelect = document.getElementById('admin-suggestion-filter');
+    if (filterSelect && !filterSelect.hasAttribute('data-listener')) {
+        filterSelect.addEventListener('change', renderAdminSuggestions);
+        filterSelect.setAttribute('data-listener', 'true');
+    }
 }
 
 export function renderAdminSuggestions() {
@@ -389,16 +395,37 @@ export function renderAdminSuggestions() {
         return;
     }
 
-    suggestionsCache.forEach(sug => {
+    const filterSelect = document.getElementById('admin-suggestion-filter');
+    const filterValue = filterSelect ? filterSelect.value : 'all';
+
+    const filteredSuggestions = suggestionsCache.filter(sug => {
+        if (filterValue === 'all') return true;
+        if (filterValue === 'tag_suggestion') return sug.isTagSuggestion === true;
+        
+        // Exclude tag suggestions if we are looking for a specific mode and it's a general mode filter
+        if (sug.isTagSuggestion) return false;
+        
+        return sug.targetMode === filterValue;
+    });
+
+    if (filteredSuggestions.length === 0) {
+        adminContainer.innerHTML = '<p class="prompt-text">Keine Vorschläge für diesen Filter gefunden.</p>';
+        return;
+    }
+
+    filteredSuggestions.forEach(sug => {
         const item = document.createElement('div');
         item.className = 'user-list-item';
         item.style.display = 'flex';
         item.style.justifyContent = 'space-between';
         item.style.alignItems = 'center';
         
+        const modeBadge = sug.isTagSuggestion ? '<span style="color:#ff9f43;">[TAG]</span>' : 
+                          (sug.targetMode === 'starwars' ? '<span style="color:#3b82f6;">[SW]</span>' : '<span style="color:#ff2a9d;">[Anime]</span>');
+
         item.innerHTML = `
             <div>
-                <strong>[${sug.votes} Votes] ${sug.authorDisplay}:</strong>
+                <strong>${modeBadge} [${sug.votes} Votes] ${sug.authorDisplay}:</strong>
                 <div style="font-size: 0.9rem; color: #ccc;">${sug.text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
             </div>
             <div style="display: flex; gap: 5px;">

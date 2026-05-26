@@ -269,6 +269,7 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
             
             characterUpdates[safeName] = {
                 score: increment(totalPoints),
+                count: increment(1),
                 name: item.name,
                 img: item.img
             };
@@ -279,7 +280,7 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
             lastUpdated: Timestamp.now()
         };
 
-        const suffix = category === 'klon' ? '_klon' : '';
+        const suffix = category === 'normal' || !category ? '' : '_' + category;
         
         // Update Global Score
         await setDoc(doc(db, "scores", `${currentMode}_${gameType}${suffix}_global`), updates, { merge: true });
@@ -577,9 +578,13 @@ export async function renderHistory() {
                 let isMatch = false;
                 if (selectedType === 'versus' && isVersus && gameCategory === 'normal') isMatch = true;
                 else if (selectedType === 'versus_klon' && isVersus && gameCategory === 'klon') isMatch = true;
+                else if (selectedType === 'versus_peak' && isVersus && gameCategory === 'peak') isMatch = true;
+                else if (selectedType === 'versus_vehicle' && isVersus && gameCategory === 'vehicle') isMatch = true;
                 else if (selectedType === 'advanced' && isGameAdvanced && !isVersus) isMatch = true;
                 else if (selectedType === 'classic' && !isGameAdvanced && !isVersus && gameCategory === 'normal') isMatch = true;
                 else if (selectedType === 'classic_klon' && !isGameAdvanced && !isVersus && gameCategory === 'klon') isMatch = true;
+                else if (selectedType === 'classic_peak' && !isGameAdvanced && !isVersus && gameCategory === 'peak') isMatch = true;
+                else if (selectedType === 'classic_vehicle' && !isGameAdvanced && !isVersus && gameCategory === 'vehicle') isMatch = true;
                 
                 if (isMatch) filteredGames.push(game);
             }

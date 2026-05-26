@@ -10,7 +10,7 @@ let isFilterListenerAttached = false;
 let hasInitializedFilterOptions = false;
 
 // Hilfsfunktion zum Rendern der berechneten Scoreboard-Karten
-function renderScoreboardHTML(sortedCharacters, container) {
+function renderScoreboardHTML(sortedCharacters, container, isAverageBased = false) {
     if (sortedCharacters.length === 0) {
         container.innerHTML = `<p class="prompt-text">Keine Daten für diesen Filter gefunden.</p>`;
         return;
@@ -20,14 +20,33 @@ function renderScoreboardHTML(sortedCharacters, container) {
     sortedCharacters.forEach((char, index) => {
         const card = document.createElement('div');
         card.className = 'score-card';
-        card.innerHTML = `
-            <div class="score-rank">#${index + 1}</div>
-            <div class="score-info">
-                <img src="${char.img}" alt="${char.name}">
-                <span>${char.name}</span>
-            </div>
-            <div class="score-points">${char.score} <span>${char.suffix || 'PKT'}</span></div>
-        `;
+        
+        if (isAverageBased) {
+            const count = char.count || 1;
+            const avg = (char.score / count).toFixed(2);
+            card.title = `Gesamtpunkte: ${char.score}\nGeranked: ${count}x\nBerechnung: ${char.score} / ${count} = ${avg} Ø`;
+            card.innerHTML = `
+                <div class="score-rank">#${index + 1}</div>
+                <div class="score-info">
+                    <img src="${char.img}" alt="${char.name}">
+                    <span>${char.name}</span>
+                </div>
+                <div class="score-points" style="display:flex; flex-direction:column; align-items:flex-end;">
+                    <div>${avg} <span>Ø PKT</span></div>
+                    <div style="font-size:0.65rem; color:#888; font-weight:normal; margin-top:2px;">${count}x geranked</div>
+                </div>
+            `;
+        } else {
+            card.innerHTML = `
+                <div class="score-rank">#${index + 1}</div>
+                <div class="score-info">
+                    <img src="${char.img}" alt="${char.name}">
+                    <span>${char.name}</span>
+                </div>
+                <div class="score-points">${char.score} <span>${char.suffix || 'PKT'}</span></div>
+            `;
+        }
+        
         container.appendChild(card);
     });
 }
@@ -182,9 +201,19 @@ export async function renderScoreboard() {
         }
 
         const charactersData = docSnap.data().characters;
-        const sortedCharacters = Object.values(charactersData).sort((a, b) => b.score - a.score);
+        const sortedCharacters = Object.values(charactersData).sort((a, b) => {
+            const countA = a.count || 1;
+            const countB = b.count || 1;
+            const avgA = a.score / countA;
+            const avgB = b.score / countB;
+            
+            if (Math.abs(avgB - avgA) < 0.001) {
+                return countB - countA; // Bei gleichem Durchschnitt gewinnt derjenige, der öfter geranked wurde
+            }
+            return avgB - avgA;
+        });
 
-        renderScoreboardHTML(sortedCharacters, container);
+        renderScoreboardHTML(sortedCharacters, container, true);
 
     } catch (error) {
         console.error("Fehler beim Laden des Scoreboards:", error);
