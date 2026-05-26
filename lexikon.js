@@ -12,6 +12,8 @@ const TAG_LABELS = {
     mandalorian:     { label: '🪬 Mandalorianer',        color: '#b45309' },
     death_watch:     { label: '⚔️ Death Watch',          color: '#1e293b' },
     schmuggel:       { label: '🃏 Schmuggler',            color: '#ca8a04' },
+    vehicle:         { label: '🚀 Fahrzeuge',             color: '#9ca3af' },
+    peak:            { label: '🏔️ Peak Modus',            color: '#fbbf24' },
     kopfgeldjäger:   { label: '🎯 Kopfgeldjäger',         color: '#f59e0b' },
     unterwelt:       { label: '💰 Unterwelt',             color: '#8b5cf6' },
     widerstand:      { label: '⭐ Widerstand',            color: '#f97316' },
@@ -55,6 +57,8 @@ export async function renderLexikon() {
 
     if (currentView === 'all') {
         _renderAll(grid, user, discoveredList);
+    } else if (currentView === 'peak') {
+        _renderPeak(grid, user, discoveredList);
     } else {
         _renderByTags(grid, user, discoveredList);
     }
@@ -69,6 +73,39 @@ function _renderAll(grid, user, discoveredList) {
     grid.removeAttribute('style'); // Wichtig: vollständig entfernen, nicht nur leeren
 
     const sortedChars = [...activeCharacterDatabase].sort((a, b) => a.name.localeCompare(b.name));
+    const newlyDiscovered = user && user.newlyDiscovered ? user.newlyDiscovered : [];
+
+    sortedChars.forEach(char => {
+        const isDiscovered = user && user.role !== 'admin' ? discoveredList.includes(char.name) : true;
+        const isNew = newlyDiscovered.includes(char.name);
+
+        const card = document.createElement('div');
+        if (isDiscovered) {
+            card.className = `lexikon-card ${isNew ? 'gold-glow' : ''}`;
+            card.innerHTML = `
+                <img src="${char.img}" alt="${char.name}" loading="lazy">
+                <span>
+                    ${char.name}
+                    ${isNew ? '<b style="color:#ffd700; margin-left:5px;" title="Brandneu!">✨</b>' : ''}
+                </span>
+            `;
+            card.style.cursor = 'pointer';
+            card.onclick = () => openTagSuggestionModal(char);
+        } else {
+            card.className = `lexikon-card locked`;
+            card.style.opacity = '0.5';
+            card.innerHTML = `<div class="lexikon-card-placeholder">?</div><span>???</span>`;
+            card.title = "Noch nicht entdeckt!";
+        }
+        grid.appendChild(card);
+    });
+}
+
+function _renderPeak(grid, user, discoveredList) {
+    grid.className = 'lexikon-grid';
+    grid.removeAttribute('style');
+
+    const sortedChars = [...activeCharacterDatabase].filter(c => c.tags && c.tags.includes('peak')).sort((a, b) => a.name.localeCompare(b.name));
     const newlyDiscovered = user && user.newlyDiscovered ? user.newlyDiscovered : [];
 
     sortedChars.forEach(char => {
@@ -113,11 +150,11 @@ function _renderByTags(grid, user, discoveredList) {
 
     // Rendere pro Tag-Gruppe
     const tagOrder = [
-        'jedi', 'meister', 'padawan', 'sith', 'inquisitor', 'grau', 'nachtschwester', 'dathomir',
+        'peak', 'jedi', 'meister', 'padawan', 'sith', 'inquisitor', 'grau', 'nachtschwester', 'dathomir',
         'klon', '501st', '212th', '104th', 'coruscant_guard', 'bad_batch', 'commander', 'captain', 'arc', 'soldat',
         'mandalorian', 'death_watch', 'kopfgeldjäger', 'unterwelt', 'hutte', 'pirat', 'schmuggel',
         'imperium', 'erste_ordnung', 'separatist', 'rebell', 'widerstand', 'senat',
-        'droide', 'monster', 'redet_nicht', 'videospiel', 'heiss', 'anime', 'sonstige'
+        'droide', 'monster', 'vehicle', 'redet_nicht', 'videospiel', 'heiss', 'anime', 'sonstige'
     ];
     const newlyDiscovered = user && user.newlyDiscovered ? user.newlyDiscovered : [];
 

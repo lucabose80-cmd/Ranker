@@ -1,13 +1,13 @@
-﻿// data-starwars.js
+// data-starwars.js
 export const starWarsCharacters = [
   // Klone (501st, 212th, Bad Batch, Commander, ARC, Soldat)
-  { name: "Captain Rex", img: "starwars.bilder/Captain_Rex.jpg", tags: ["klon", "501st", "captain"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Commander Cody", img: "starwars.bilder/cody.jpg", tags: ["klon", "212th", "commander"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Fives", img: "starwars.bilder/fives.jpg", tags: ["klon", "501st", "arc"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Echo", img: "starwars.bilder/echo.jpg", tags: ["klon", "501st", "bad_batch", "arc"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Captain Rex", img: "starwars.bilder/Captain_Rex.jpg", tags: ["klon", "501st", "captain", "peak"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Commander Cody", img: "starwars.bilder/cody.jpg", tags: ["klon", "212th", "commander", "peak"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Fives", img: "starwars.bilder/fives.jpg", tags: ["klon", "501st", "arc", "peak"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Echo", img: "starwars.bilder/echo.jpg", tags: ["klon", "501st", "bad_batch", "arc", "peak"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
   { name: "Jesse", img: "starwars.bilder/jesse.jpg", tags: ["klon", "501st", "arc"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Wolffe", img: "starwars.bilder/wolffe.jpg", tags: ["klon", "104th", "commander"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Gregor", img: "starwars.bilder/gregor.jpg", tags: ["klon", "212th", "soldat"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Wolffe", img: "starwars.bilder/wolffe.jpg", tags: ["klon", "104th", "commander", "peak"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Gregor", img: "starwars.bilder/gregor.jpg", tags: ["klon", "212th", "soldat", "peak"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
   { name: "Commander Bly", img: "starwars.bilder/bly.jpg", tags: ["klon", "commander"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
   { name: "Waxer", img: "starwars.bilder/waxer.jpg", tags: ["klon", "212th", "soldat"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
   { name: "Boil", img: "starwars.bilder/Boil.jpg", tags: ["klon", "212th", "soldat"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
@@ -22,9 +22,9 @@ export const starWarsCharacters = [
   { name: "Flash", img: "starwars.bilder/flash.jpg", tags: ["klon", "soldat"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
   { name: "Lucky", img: "starwars.bilder/lucky.jpg", tags: ["klon", "soldat"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
   { name: "Scorch", img: "starwars.bilder/scorch.jpg", tags: ["klon", "soldat"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Hunter", img: "starwars.bilder/hunter.jpg", tags: ["klon", "bad_batch", "commander"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Wrecker", img: "starwars.bilder/wrecker.jpg", tags: ["klon", "bad_batch", "soldat"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
-  { name: "Tech", img: "starwars.bilder/tech.jpg", tags: ["klon", "bad_batch", "soldat"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Hunter", img: "starwars.bilder/hunter.jpg", tags: ["klon", "bad_batch", "commander", "peak"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Wrecker", img: "starwars.bilder/wrecker.jpg", tags: ["klon", "bad_batch", "soldat", "peak"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
+  { name: "Tech", img: "starwars.bilder/tech.jpg", tags: ["klon", "bad_batch", "soldat", "peak"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
   { name: "Crosshair", img: "starwars.bilder/crosshair.jpg", tags: ["klon", "bad_batch", "imperium", "soldat"], gender: "Männlich", species: "Klon", faction: ["Imperium"], era: ["Prequels/Clone Wars", "Originals"], force: false, planet: 'Kamino' },
   { name: "Omega", img: "starwars.bilder/omega.jpg", tags: ["klon", "bad_batch"], gender: "Weiblich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' },
   { name: "Commander Appo", img: "starwars.bilder/appo.jpg", tags: ["klon", "501st", "commander"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' }, // NEU
@@ -35,15 +35,15 @@ export const starWarsCharacters = [
   { name: "Colt", img: "starwars.bilder/colt.jpg", tags: ["klon", "arc"], gender: "Männlich", species: "Klon", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kamino' }, // NEU
 
   // Jedi
-  { name: "Luke Skywalker", img: "starwars.bilder/luke.jpg", tags: ["jedi", "rebell", "meister"], gender: "Männlich", species: "Mensch", faction: ["Jedi-Orden", "Rebellion"], era: ["Prequels/Clone Wars", "Sequels", "Originals", "Mandalorian/Ahsoka"], force: true, planet: 'Tatooine' },
-  { name: "Obi-Wan Kenobi", img: "starwars.bilder/obiwan.jpg", tags: ["jedi", "meister", "212th"], gender: "Männlich", species: "Mensch", faction: ["Jedi-Orden"], era: ["Prequels/Clone Wars"], force: true, planet: 'Stewjon' },
-  { name: "Yoda", img: "starwars.bilder/yoda.jpg", tags: ["jedi", "meister"], gender: "Männlich", species: "Yodas Spezies", faction: ["Jedi-Orden"], era: ["Prequels/Clone Wars"], force: true, planet: 'Unbekannt' },
-  { name: "Anakin Skywalker", img: "starwars.bilder/anakin.jpg", tags: ["jedi", "padawan", "501st"], gender: "Männlich", species: "Mensch", faction: ["Jedi-Orden"], era: ["Prequels/Clone Wars"], force: true, planet: 'Tatooine' },
-  { name: "Mace Windu", img: "starwars.bilder/mace.jpg", tags: ["jedi", "meister"], gender: "Männlich", species: "Mensch", faction: ["Jedi-Orden"], era: ["Prequels/Clone Wars"], force: true, planet: 'Haruun Kal' },
-  { name: "Qui-Gon Jinn", img: "starwars.bilder/quigon.jpg", tags: ["jedi", "meister"], gender: "Männlich", species: "Mensch", faction: ["Jedi-Orden"], era: ["Prequels/Clone Wars"], force: true, planet: 'Unbekannt' },
-  { name: "Ahsoka Tano", img: "starwars.bilder/ahsoka.jpg", tags: ["jedi", "grau", "padawan", "501st", "heiss"], gender: "Weiblich", species: "Togruta", faction: ["Jedi-Orden", "Rebellion"], era: ["Prequels/Clone Wars", "Mandalorian/Ahsoka"], force: true, planet: 'Shili' },
+  { name: "Luke Skywalker", img: "starwars.bilder/luke.jpg", tags: ["jedi", "rebell", "meister", "peak"], gender: "Männlich", species: "Mensch", faction: ["Jedi-Orden", "Rebellion"], era: ["Prequels/Clone Wars", "Sequels", "Originals", "Mandalorian/Ahsoka"], force: true, planet: 'Tatooine' },
+  { name: "Obi-Wan Kenobi", img: "starwars.bilder/obiwan.jpg", tags: ["jedi", "meister", "212th", "peak"], gender: "Männlich", species: "Mensch", faction: ["Jedi-Orden"], era: ["Prequels/Clone Wars"], force: true, planet: 'Stewjon' },
+  { name: "Yoda", img: "starwars.bilder/yoda.jpg", tags: ["jedi", "meister", "peak"], gender: "Männlich", species: "Yodas Spezies", faction: ["Jedi-Orden"], era: ["Prequels/Clone Wars"], force: true, planet: 'Unbekannt' },
+  { name: "Anakin Skywalker", img: "starwars.bilder/anakin.jpg", tags: ["jedi", "padawan", "501st", "peak"], gender: "Männlich", species: "Mensch", faction: ["Jedi-Orden"], era: ["Prequels/Clone Wars"], force: true, planet: 'Tatooine' },
+  { name: "Mace Windu", img: "starwars.bilder/mace.jpg", tags: ["jedi", "meister", "peak"], gender: "Männlich", species: "Mensch", faction: ["Jedi-Orden"], era: ["Prequels/Clone Wars"], force: true, planet: 'Haruun Kal' },
+  { name: "Qui-Gon Jinn", img: "starwars.bilder/quigon.jpg", tags: ["jedi", "meister", "peak"], gender: "Männlich", species: "Mensch", faction: ["Jedi-Orden"], era: ["Prequels/Clone Wars"], force: true, planet: 'Unbekannt' },
+  { name: "Ahsoka Tano", img: "starwars.bilder/ahsoka.jpg", tags: ["jedi", "grau", "padawan", "501st", "heiss", "peak"], gender: "Weiblich", species: "Togruta", faction: ["Jedi-Orden", "Rebellion"], era: ["Prequels/Clone Wars", "Mandalorian/Ahsoka"], force: true, planet: 'Shili' },
   { name: "Kit Fisto", img: "starwars.bilder/kitfisto.jpg", tags: ["jedi", "meister"], gender: "Männlich", species: "Nautolaner", faction: ["Jedi-Orden"], era: ["Prequels/Clone Wars"], force: true, planet: 'Unbekannt' },
-  { name: "Plo Koon", img: "starwars.bilder/plokoon.jpg", tags: ["jedi", "meister", "104th"], gender: "Männlich", species: "Kel Dor", faction: ["Jedi-Orden"], era: ["Prequels/Clone Wars"], force: true, planet: 'Dorin' },
+  { name: "Plo Koon", img: "starwars.bilder/plokoon.jpg", tags: ["jedi", "meister", "104th", "peak"], gender: "Männlich", species: "Kel Dor", faction: ["Jedi-Orden"], era: ["Prequels/Clone Wars"], force: true, planet: 'Dorin' },
   { name: "Ki-Adi-Mundi", img: "starwars.bilder/kiadimundi.jpg", tags: ["jedi", "meister"], gender: "Männlich", species: "Cereaner", faction: ["Jedi-Orden"], era: ["Prequels/Clone Wars"], force: true, planet: 'Cerea' },
   { name: "Aayla Secura", img: "starwars.bilder/aaylasecura.jpg", tags: ["jedi", "meister", "heiss"], gender: "Weiblich", species: "Twi'lek", faction: ["Jedi-Orden"], era: ["Prequels/Clone Wars"], force: true, planet: 'Ryloth' },
   { name: "Coleman Trebor", img: "starwars.bilder/colemantrebor.jpg", tags: ["jedi", "meister"], gender: "Männlich", species: "Vurk", faction: ["Jedi-Orden"], era: ["Prequels/Clone Wars"], force: true, planet: 'Unbekannt' },
@@ -65,16 +65,16 @@ export const starWarsCharacters = [
   { name: "Saesee Tiin", img: "starwars.bilder/saeseetiin.jpg", tags: ["jedi", "meister"], gender: "Männlich", species: "Iktotchi", faction: ["Jedi-Orden"], era: ["Prequels/Clone Wars"], force: true, planet: 'Unbekannt' },
 
   // Sith
-  { name: "Darth Vader", img: "starwars.bilder/vader.jpg", tags: ["sith", "imperium", "501st"], gender: "Männlich", species: "Mensch", faction: ["Sith", "Imperium"], era: ["Originals"], force: true, planet: 'Tatooine' },
-  { name: "Emperor Palpatine", img: "starwars.bilder/palpatine.jpg", tags: ["sith", "imperium", "senat"], gender: "Männlich", species: "Mensch", faction: ["Sith", "Imperium", "Senat"], era: ["Prequels/Clone Wars", "Originals"], force: true, planet: 'Naboo' },
-  { name: "Darth Maul", img: "starwars.bilder/maul.jpg", tags: ["sith", "dathomir", "unterwelt"], gender: "Männlich", species: "Zabrak", faction: ["Sith", "Unterwelt", "Nachtschwestern/Dathomir"], era: ["Prequels/Clone Wars"], force: true, planet: 'Dathomir' },
-  { name: "Count Dooku", img: "starwars.bilder/dooku.jpg", tags: ["sith", "separatist"], gender: "Männlich", species: "Mensch", faction: ["Sith", "Separatisten"], era: ["Prequels/Clone Wars"], force: true, planet: 'Serenno' },
+  { name: "Darth Vader", img: "starwars.bilder/vader.jpg", tags: ["sith", "imperium", "501st", "peak"], gender: "Männlich", species: "Mensch", faction: ["Sith", "Imperium"], era: ["Originals"], force: true, planet: 'Tatooine' },
+  { name: "Emperor Palpatine", img: "starwars.bilder/palpatine.jpg", tags: ["sith", "imperium", "senat", "peak"], gender: "Männlich", species: "Mensch", faction: ["Sith", "Imperium", "Senat"], era: ["Prequels/Clone Wars", "Originals"], force: true, planet: 'Naboo' },
+  { name: "Darth Maul", img: "starwars.bilder/maul.jpg", tags: ["sith", "dathomir", "unterwelt", "peak"], gender: "Männlich", species: "Zabrak", faction: ["Sith", "Unterwelt", "Nachtschwestern/Dathomir"], era: ["Prequels/Clone Wars"], force: true, planet: 'Dathomir' },
+  { name: "Count Dooku", img: "starwars.bilder/dooku.jpg", tags: ["sith", "separatist", "peak"], gender: "Männlich", species: "Mensch", faction: ["Sith", "Separatisten"], era: ["Prequels/Clone Wars"], force: true, planet: 'Serenno' },
   { name: "Darth Plagueis", img: "starwars.bilder/plagueis.jpg", tags: ["sith"], gender: "Männlich", species: "Mensch", faction: ["Sith"], era: ["Unbekannt"], force: true, planet: 'Unbekannt' },
 
   // Imperium & Erste Ordnung
   { name: "Kylo Ren", img: "starwars.bilder/kyloren.jpg", tags: ["erste_ordnung"], gender: "Männlich", species: "Mensch", faction: ["Erste Ordnung"], era: ["Sequels"], force: false, planet: 'Chandrila' },
   { name: "Captain Phasma", img: "starwars.bilder/phasma.jpg", tags: ["erste_ordnung"], gender: "Weiblich", species: "Mensch", faction: ["Erste Ordnung"], era: ["Sequels"], force: false, planet: 'Unbekannt' },
-  { name: "Grand Admiral Thrawn", img: "starwars.bilder/thrawn.jpg", tags: ["imperium"], gender: "Männlich", species: "Chiss", faction: ["Imperium"], era: ["Originals"], force: false, planet: 'Csilla' },
+  { name: "Grand Admiral Thrawn", img: "starwars.bilder/thrawn.jpg", tags: ["imperium", "peak"], gender: "Männlich", species: "Chiss", faction: ["Imperium"], era: ["Originals"], force: false, planet: 'Csilla' },
   { name: "Grand Inquisitor", img: "starwars.bilder/grandinquisitor.jpg", tags: ["imperium", "inquisitor"], gender: "Männlich", species: "Pau'aner", faction: ["Imperium"], era: ["Originals"], force: true, planet: 'Unbekannt' },
   { name: "General Hux", img: "starwars.bilder/hux.jpg", tags: ["erste_ordnung"], gender: "Männlich", species: "Mensch", faction: ["Erste Ordnung"], era: ["Sequels"], force: false, planet: 'Unbekannt' },
   { name: "Supreme Leader Snoke", img: "starwars.bilder/snoke.jpg", tags: ["erste_ordnung", "grau"], gender: "Männlich", species: "Strand-Cast", faction: ["Erste Ordnung"], era: ["Sequels"], force: true, planet: 'Unbekannt' },
@@ -95,8 +95,8 @@ export const starWarsCharacters = [
   { name: "Seventh Sister", img: "starwars.bilder/seventhsister.jpg", tags: ["inquisitor", "imperium"], gender: "Weiblich", species: "Mensch", faction: ["Imperium"], era: ["Originals"], force: true, planet: 'Unbekannt' },
 
   // Graue Machtnutzer & Dathomir
-  { name: "Asajj Ventress", img: "starwars.bilder/ventress.jpg", tags: ["nachtschwester", "dathomir", "separatist"], gender: "Weiblich", species: "Dathomirianer", faction: ["Separatisten", "Nachtschwestern/Dathomir"], era: ["Prequels/Clone Wars"], force: true, planet: 'Dathomir' },
-  { name: "Savage Opress", img: "starwars.bilder/savageopress.jpg", tags: ["dathomir", "sith"], gender: "Männlich", species: "Zabrak", faction: ["Nachtschwestern/Dathomir", "Sith"], era: ["Prequels/Clone Wars"], force: true, planet: 'Dathomir' },
+  { name: "Asajj Ventress", img: "starwars.bilder/ventress.jpg", tags: ["nachtschwester", "dathomir", "separatist", "peak"], gender: "Weiblich", species: "Dathomirianer", faction: ["Separatisten", "Nachtschwestern/Dathomir"], era: ["Prequels/Clone Wars"], force: true, planet: 'Dathomir' },
+  { name: "Savage Opress", img: "starwars.bilder/savageopress.jpg", tags: ["dathomir", "sith", "peak"], gender: "Männlich", species: "Zabrak", faction: ["Nachtschwestern/Dathomir", "Sith"], era: ["Prequels/Clone Wars"], force: true, planet: 'Dathomir' },
   { name: "Baylan Skoll", img: "starwars.bilder/baylan.jpg", tags: ["grau"], gender: "Männlich", species: "Mensch", faction: ["Neutral"], era: ["Unbekannt"], force: true, planet: 'Unbekannt' },
   { name: "Shin Hati", img: "starwars.bilder/shin.jpg", tags: ["grau", "heiss"], gender: "Weiblich", species: "Mensch", faction: ["Neutral"], era: ["Unbekannt"], force: true, planet: 'Unbekannt' },
   { name: "Merrin", img: "starwars.bilder/merrin.jpg", tags: ["nachtschwester", "dathomir", "videospiel", "heiss"], gender: "Weiblich", species: "Dathomirianer", faction: ["Nachtschwestern/Dathomir"], era: ["Unbekannt"], force: true, planet: 'Dathomir' },
@@ -105,14 +105,14 @@ export const starWarsCharacters = [
   { name: "Starkiller", img: "starwars.bilder/starkiller.jpg", tags: ["grau", "videospiel"], gender: "Männlich", species: "Mensch", faction: ["Neutral"], era: ["Unbekannt"], force: true, planet: 'Unbekannt' },
 
   // Mandalorianer
-  { name: "Din Djarin", img: "starwars.bilder/mandalorian.jpg", tags: ["mandalorian", "kopfgeldjäger"], gender: "Männlich", species: "Mensch", faction: ["Mandalorianer", "Kopfgeldjäger"], era: ["Mandalorian/Ahsoka"], force: false, planet: 'Aq Vetina' },
-  { name: "Bo-Katan Kryze", img: "starwars.bilder/bokatan.jpg", tags: ["mandalorian", "heiss"], gender: "Weiblich", species: "Mensch", faction: ["Mandalorianer"], era: ["Mandalorian/Ahsoka"], force: false, planet: 'Mandalore' },
-  { name: "Boba Fett", img: "starwars.bilder/boba.jpg", tags: ["mandalorian", "kopfgeldjäger"], gender: "Männlich", species: "Mensch", faction: ["Mandalorianer", "Kopfgeldjäger"], era: ["Originals", "Mandalorian/Ahsoka"], force: false, planet: 'Kamino' },
-  { name: "Jango Fett", img: "starwars.bilder/jangofett.jpg", tags: ["mandalorian", "kopfgeldjäger"], gender: "Männlich", species: "Mensch", faction: ["Mandalorianer", "Kopfgeldjäger"], era: ["Mandalorian/Ahsoka"], force: false, planet: 'Concord Dawn' },
+  { name: "Din Djarin", img: "starwars.bilder/mandalorian.jpg", tags: ["mandalorian", "kopfgeldjäger", "peak"], gender: "Männlich", species: "Mensch", faction: ["Mandalorianer", "Kopfgeldjäger"], era: ["Mandalorian/Ahsoka"], force: false, planet: 'Aq Vetina' },
+  { name: "Bo-Katan Kryze", img: "starwars.bilder/bokatan.jpg", tags: ["mandalorian", "heiss", "peak"], gender: "Weiblich", species: "Mensch", faction: ["Mandalorianer"], era: ["Mandalorian/Ahsoka"], force: false, planet: 'Mandalore' },
+  { name: "Boba Fett", img: "starwars.bilder/boba.jpg", tags: ["mandalorian", "kopfgeldjäger", "peak"], gender: "Männlich", species: "Mensch", faction: ["Mandalorianer", "Kopfgeldjäger"], era: ["Originals", "Mandalorian/Ahsoka"], force: false, planet: 'Kamino' },
+  { name: "Jango Fett", img: "starwars.bilder/jangofett.jpg", tags: ["mandalorian", "kopfgeldjäger", "peak"], gender: "Männlich", species: "Mensch", faction: ["Mandalorianer", "Kopfgeldjäger"], era: ["Mandalorian/Ahsoka"], force: false, planet: 'Concord Dawn' },
   { name: "Duchess Satine", img: "starwars.bilder/satine.jpg", tags: ["mandalorian"], gender: "Weiblich", species: "Mensch", faction: ["Mandalorianer"], era: ["Mandalorian/Ahsoka"], force: false, planet: 'Mandalore' },
   { name: "Paz Vizsla", img: "starwars.bilder/pazvizsla.jpg", tags: ["mandalorian"], gender: "Männlich", species: "Mensch", faction: ["Mandalorianer"], era: ["Mandalorian/Ahsoka"], force: false, planet: 'Unbekannt' },
   { name: "The Armorer", img: "starwars.bilder/armorer.jpg", tags: ["mandalorian"], gender: "Männlich", species: "Mensch", faction: ["Mandalorianer"], era: ["Mandalorian/Ahsoka"], force: false, planet: 'Unbekannt' },
-  { name: "Pre Vizsla", img: "starwars.bilder/previzla.jpg", tags: ["mandalorian", "unterwelt", "death_watch"], gender: "Männlich", species: "Mensch", faction: ["Mandalorianer", "Unterwelt"], era: ["Mandalorian/Ahsoka"], force: false, planet: 'Mandalore' },
+  { name: "Pre Vizsla", img: "starwars.bilder/previzla.jpg", tags: ["mandalorian", "unterwelt", "death_watch", "peak"], gender: "Männlich", species: "Mensch", faction: ["Mandalorianer", "Unterwelt"], era: ["Mandalorian/Ahsoka"], force: false, planet: 'Mandalore' },
   { name: "Ursa Wren", img: "starwars.bilder/ursawren.jpg", tags: ["mandalorian"], gender: "Weiblich", species: "Mensch", faction: ["Mandalorianer"], era: ["Mandalorian/Ahsoka"], force: false, planet: 'Unbekannt' },
   { name: "Koska Reeves", img: "starwars.bilder/koskareeves.jpg", tags: ["mandalorian"], gender: "Weiblich", species: "Mensch", faction: ["Mandalorianer"], era: ["Mandalorian/Ahsoka"], force: false, planet: 'Unbekannt' },
   { name: "Axe Woves", img: "starwars.bilder/axewoves.jpg", tags: ["mandalorian"], gender: "Männlich", species: "Mensch", faction: ["Mandalorianer"], era: ["Mandalorian/Ahsoka"], force: false, planet: 'Unbekannt' },
@@ -123,14 +123,14 @@ export const starWarsCharacters = [
   { name: "Death Watch Warrior", img: "starwars.bilder/deathwatchwarrior.jpg", tags: ["mandalorian", "death_watch"], gender: "Männlich", species: "Mensch", faction: ["Mandalorianer"], era: ["Mandalorian/Ahsoka"], force: false, planet: 'Unbekannt' },
 
   // Droiden
-  { name: "R2-D2", img: "starwars.bilder/r2d2.jpg", tags: ["droide", "rebell", "redet_nicht"], gender: "Droide", species: "Droide", faction: ["Rebellion"], era: ["Originals"], force: false, planet: 'Naboo' },
-  { name: "C-3PO", img: "starwars.bilder/c3po.jpg", tags: ["droide", "rebell"], gender: "Droide", species: "Droide", faction: ["Rebellion"], era: ["Originals"], force: false, planet: 'Tatooine' },
-  { name: "General Grievous", img: "starwars.bilder/grievous.jpg", tags: ["droide", "separatist"], gender: "Droide", species: "Droide", faction: ["Separatisten"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kalee' },
-  { name: "BB-8", img: "starwars.bilder/bb8.jpg", tags: ["droide", "widerstand", "redet_nicht"], gender: "Droide", species: "Droide", faction: ["Widerstand"], era: ["Sequels"], force: false, planet: 'Hosnian Prime' },
-  { name: "K-2SO", img: "starwars.bilder/k2so.jpg", tags: ["droide", "rebell"], gender: "Droide", species: "Droide", faction: ["Rebellion"], era: ["Originals"], force: false, planet: 'Unbekannt' },
+  { name: "R2-D2", img: "starwars.bilder/r2d2.jpg", tags: ["droide", "rebell", "redet_nicht", "peak"], gender: "Droide", species: "Droide", faction: ["Rebellion"], era: ["Originals"], force: false, planet: 'Naboo' },
+  { name: "C-3PO", img: "starwars.bilder/c3po.jpg", tags: ["droide", "rebell", "peak"], gender: "Droide", species: "Droide", faction: ["Rebellion"], era: ["Originals"], force: false, planet: 'Tatooine' },
+  { name: "General Grievous", img: "starwars.bilder/grievous.jpg", tags: ["droide", "separatist", "peak"], gender: "Droide", species: "Droide", faction: ["Separatisten"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kalee' },
+  { name: "BB-8", img: "starwars.bilder/bb8.jpg", tags: ["droide", "widerstand", "redet_nicht", "peak"], gender: "Droide", species: "Droide", faction: ["Widerstand"], era: ["Sequels"], force: false, planet: 'Hosnian Prime' },
+  { name: "K-2SO", img: "starwars.bilder/k2so.jpg", tags: ["droide", "rebell", "peak"], gender: "Droide", species: "Droide", faction: ["Rebellion"], era: ["Originals"], force: false, planet: 'Unbekannt' },
   { name: "Chopper", img: "starwars.bilder/chopper.jpg", tags: ["droide", "rebell", "redet_nicht"], gender: "Droide", species: "Droide", faction: ["Rebellion"], era: ["Originals"], force: false, planet: 'Unbekannt' },
   { name: "B1 Battle Droide", img: "starwars.bilder/b1.jpg", tags: ["droide", "separatist"], gender: "Droide", species: "Droide", faction: ["Separatisten"], era: ["Prequels/Clone Wars"], force: false, planet: 'Unbekannt' },
-  { name: "Kommando Droide", img: "starwars.bilder/kommandodroide.jpg", tags: ["droide", "separatist"], gender: "Droide", species: "Droide", faction: ["Separatisten"], era: ["Prequels/Clone Wars"], force: false, planet: 'Unbekannt' },
+  { name: "Kommando Droide", img: "starwars.bilder/kommandodroide.jpg", tags: ["droide", "separatist", "peak"], gender: "Droide", species: "Droide", faction: ["Separatisten"], era: ["Prequels/Clone Wars"], force: false, planet: 'Unbekannt' },
   { name: "HK-47", img: "starwars.bilder/hk47.jpg", tags: ["droide", "videospiel", "kopfgeldjäger"], gender: "Droide", species: "Droide", faction: ["Kopfgeldjäger"], era: ["Unbekannt"], force: false, planet: 'Unbekannt' },
   { name: "L3-37", img: "starwars.bilder/l337.jpg", tags: ["droide", "schmuggel", "rebell"], gender: "Droide", species: "Droide", faction: ["Rebellion", "Unterwelt"], era: ["Originals"], force: false, planet: 'Unbekannt' },
   { name: "D-O", img: "starwars.bilder/do.jpg", tags: ["droide", "widerstand", "redet_nicht"], gender: "Droide", species: "Droide", faction: ["Widerstand"], era: ["Sequels"], force: false, planet: 'Unbekannt' },
@@ -142,10 +142,10 @@ export const starWarsCharacters = [
   // Rebellen
   { name: "Han Solo", img: "starwars.bilder/han.jpg", tags: ["rebell", "schmuggel", "unterwelt"], gender: "Männlich", species: "Mensch", faction: ["Rebellion", "Unterwelt"], era: ["Sequels", "Originals"], force: false, planet: 'Corellia' },
   { name: "Leia Organa", img: "starwars.bilder/leia.jpg", tags: ["rebell", "widerstand", "senat", "heiss"], gender: "Weiblich", species: "Mensch", faction: ["Rebellion", "Widerstand", "Senat"], era: ["Sequels", "Originals"], force: false, planet: 'Alderaan' },
-  { name: "Chewbacca", img: "starwars.bilder/chewbacca.jpg", tags: ["rebell", "widerstand", "redet_nicht"], gender: "Männlich", species: "Wookiee", faction: ["Rebellion", "Widerstand"], era: ["Sequels", "Originals"], force: false, planet: 'Kashyyyk' },
+  { name: "Chewbacca", img: "starwars.bilder/chewbacca.jpg", tags: ["rebell", "widerstand", "redet_nicht", "peak"], gender: "Männlich", species: "Wookiee", faction: ["Rebellion", "Widerstand"], era: ["Sequels", "Originals"], force: false, planet: 'Kashyyyk' },
   { name: "Lando Calrissian", img: "starwars.bilder/lando.jpg", tags: ["rebell", "schmuggel", "unterwelt"], gender: "Männlich", species: "Mensch", faction: ["Rebellion", "Unterwelt"], era: ["Originals"], force: false, planet: 'Socorro' },
   { name: "Jyn Erso", img: "starwars.bilder/jyn.jpg", tags: ["rebell"], gender: "Weiblich", species: "Mensch", faction: ["Rebellion"], era: ["Originals"], force: false, planet: 'Vallt' },
-  { name: "Cassian Andor", img: "starwars.bilder/cassian.jpg", tags: ["rebell"], gender: "Männlich", species: "Mensch", faction: ["Rebellion"], era: ["Originals"], force: false, planet: 'Fest' },
+  { name: "Cassian Andor", img: "starwars.bilder/cassian.jpg", tags: ["rebell", "peak"], gender: "Männlich", species: "Mensch", faction: ["Rebellion"], era: ["Originals"], force: false, planet: 'Fest' },
   { name: "Saw Gerrera", img: "starwars.bilder/saw.jpg", tags: ["rebell"], gender: "Männlich", species: "Mensch", faction: ["Rebellion"], era: ["Originals"], force: false, planet: 'Unbekannt' },
   { name: "Mon Mothma", img: "starwars.bilder/monmothma.jpg", tags: ["rebell", "senat"], gender: "Weiblich", species: "Mensch", faction: ["Rebellion", "Senat"], era: ["Originals"], force: false, planet: 'Chandrila' },
   { name: "Admiral Ackbar", img: "starwars.bilder/ackbar.jpg", tags: ["rebell", "widerstand"], gender: "Männlich", species: "Mon Calamari", faction: ["Rebellion", "Widerstand"], era: ["Sequels", "Originals"], force: false, planet: 'Unbekannt' },
@@ -171,7 +171,7 @@ export const starWarsCharacters = [
   { name: "General Kalani", img: "starwars.bilder/kalani.jpg", tags: ["separatist", "droide"], gender: "Droide", species: "Droide", faction: ["Separatisten"], era: ["Prequels/Clone Wars"], force: false, planet: 'Unbekannt' },
 
   // Kopfgeldjäger & Unterwelt
-  { name: "Cad Bane", img: "starwars.bilder/cadbane.jpg", tags: ["kopfgeldjäger", "unterwelt"], gender: "Männlich", species: "Duros", faction: ["Kopfgeldjäger", "Unterwelt"], era: ["Unbekannt"], force: false, planet: 'Duro' },
+  { name: "Cad Bane", img: "starwars.bilder/cadbane.jpg", tags: ["kopfgeldjäger", "unterwelt", "peak"], gender: "Männlich", species: "Duros", faction: ["Kopfgeldjäger", "Unterwelt"], era: ["Unbekannt"], force: false, planet: 'Duro' },
   { name: "Jabba the Hutt", img: "starwars.bilder/jabba.jpg", tags: ["unterwelt", "hutte"], gender: "Männlich", species: "Hutt", faction: ["Unterwelt"], era: ["Unbekannt"], force: false, planet: 'Nal Hutta' },
   { name: "Hondo Ohnaka", img: "starwars.bilder/hondo.jpg", tags: ["unterwelt", "pirat"], gender: "Männlich", species: "Weequay", faction: ["Unterwelt"], era: ["Unbekannt"], force: false, planet: 'Unbekannt' },
   { name: "DJ", img: "starwars.bilder/dj.jpg", tags: ["unterwelt", "schmuggel"], gender: "Männlich", species: "Mensch", faction: ["Unterwelt"], era: ["Unbekannt"], force: false, planet: 'Unbekannt' },
@@ -190,15 +190,15 @@ export const starWarsCharacters = [
   { name: "Benthic Two Tubes", img: "starwars.bilder/twotubes.jpg", tags: ["unterwelt", "rebell"], gender: "Männlich", species: "Tognath", faction: ["Rebellion", "Unterwelt"], era: ["Originals"], force: false, planet: 'Unbekannt' },
   { name: "Bib Fortuna", img: "starwars.bilder/bibfortuna.jpg", tags: ["unterwelt"], gender: "Männlich", species: "Twi'lek", faction: ["Unterwelt"], era: ["Unbekannt"], force: false, planet: 'Unbekannt' },
   { name: "Zam Wesell", img: "starwars.bilder/zam.jpg", tags: ["unterwelt", "kopfgeldjäger"], gender: "Weiblich", species: "Clawdite", faction: ["Kopfgeldjäger", "Unterwelt"], era: ["Unbekannt"], force: false, planet: 'Unbekannt' },
-  { name: "Embo", img: "starwars.bilder/embo.jpg", tags: ["kopfgeldjäger", "unterwelt"], gender: "Männlich", species: "Kyuzo", faction: ["Kopfgeldjäger", "Unterwelt"], era: ["Unbekannt"], force: false, planet: 'Unbekannt' },
+  { name: "Embo", img: "starwars.bilder/embo.jpg", tags: ["kopfgeldjäger", "unterwelt", "peak"], gender: "Männlich", species: "Kyuzo", faction: ["Kopfgeldjäger", "Unterwelt"], era: ["Unbekannt"], force: false, planet: 'Unbekannt' },
   { name: "Aurra Sing", img: "starwars.bilder/aurrasing.jpg", tags: ["kopfgeldjäger", "unterwelt"], gender: "Weiblich", species: "Palliduvan", faction: ["Kopfgeldjäger", "Unterwelt"], era: ["Unbekannt"], force: false, planet: 'Unbekannt' },
   { name: "Bossk", img: "starwars.bilder/bossk.jpg", tags: ["kopfgeldjäger", "unterwelt"], gender: "Männlich", species: "Trandoshaner", faction: ["Kopfgeldjäger", "Unterwelt"], era: ["Unbekannt"], force: false, planet: 'Unbekannt' },
   { name: "Fennec Shand", img: "starwars.bilder/fennec.jpg", tags: ["kopfgeldjäger", "unterwelt", "heiss"], gender: "Weiblich", species: "Mensch", faction: ["Kopfgeldjäger", "Unterwelt"], era: ["Unbekannt"], force: false, planet: 'Unbekannt' },
 
   // Republik & Sonstige
-  { name: "Padme Amidala", img: "starwars.bilder/padme.jpg", tags: ["senat", "heiss"], gender: "Weiblich", species: "Mensch", faction: ["Senat"], era: ["Prequels/Clone Wars"], force: false, planet: 'Naboo' },
+  { name: "Padme Amidala", img: "starwars.bilder/padme.jpg", tags: ["senat", "heiss", "peak"], gender: "Weiblich", species: "Mensch", faction: ["Senat"], era: ["Prequels/Clone Wars"], force: false, planet: 'Naboo' },
   { name: "Bail Organa", img: "starwars.bilder/bailorgana.jpg", tags: ["rebell", "senat"], gender: "Männlich", species: "Mensch", faction: ["Rebellion", "Senat"], era: ["Originals"], force: false, planet: 'Alderaan' },
-  { name: "Grogu", img: "starwars.bilder/grogu.jpg", tags: ["mandalorian", "redet_nicht"], gender: "Unbekannt", species: "Yodas Spezies", faction: ["Mandalorianer"], era: ["Mandalorian/Ahsoka"], force: true, planet: 'Unbekannt' },
+  { name: "Grogu", img: "starwars.bilder/grogu.jpg", tags: ["mandalorian", "redet_nicht", "peak"], gender: "Unbekannt", species: "Yodas Spezies", faction: ["Mandalorianer"], era: ["Mandalorian/Ahsoka"], force: true, planet: 'Unbekannt' },
   { name: "Mas Amedda", img: "starwars.bilder/masamedda.jpg", tags: ["senat"], gender: "Männlich", species: "Chagrianer", faction: ["Senat"], era: ["Unbekannt"], force: false, planet: 'Unbekannt' },
   { name: "Valorum", img: "starwars.bilder/valorum.jpg", tags: ["senat"], gender: "Männlich", species: "Mensch", faction: ["Senat"], era: ["Unbekannt"], force: false, planet: 'Unbekannt' },
   { name: "Orn Free Taa", img: "starwars.bilder/ornfreetaa.jpg", tags: ["senat"], gender: "Männlich", species: "Twi'lek", faction: ["Senat"], era: ["Unbekannt"], force: false, planet: 'Unbekannt' },
@@ -217,8 +217,36 @@ export const starWarsCharacters = [
 
   // Anime (Sonder-Charaktere)
   { name: "Fino Bloodstone", img: "starwars.bilder/finobloodstone.jpg", tags: ["anime"], gender: "Männlich", species: "Mensch", faction: ["Neutral"], era: ["Unbekannt"], force: false, planet: 'Unbekannt' },
-  { name: "Monkey D. Ruffy", img: "starwars.bilder/ruffy.jpg", tags: ["anime"], gender: "Männlich", species: "Mensch", faction: ["Neutral"], era: ["Unbekannt"], force: false, planet: 'Unbekannt' }
+  { name: "Monkey D. Ruffy", img: "starwars.bilder/ruffy.jpg", tags: ["anime"], gender: "Männlich", species: "Mensch", faction: ["Neutral"], era: ["Unbekannt"], force: false, planet: 'Unbekannt' },
+
+  // Fahrzeuge
+  { name: "Millennium Falcon", img: "starwars.bilder/falcon.jpg", tags: ["vehicle", "fahrzeug", "rebell", "schmuggel"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Rebellion", "Unterwelt"], era: ["Originals", "Sequels"], force: false, planet: 'Corellia' },
+  { name: "X-Wing Starfighter", img: "starwars.bilder/xwing.jpg", tags: ["vehicle", "fahrzeug", "rebell"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Rebellion"], era: ["Originals", "Sequels"], force: false, planet: 'Unbekannt' },
+  { name: "TIE Fighter", img: "starwars.bilder/tiefighter.jpg", tags: ["vehicle", "fahrzeug", "imperium"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Imperium"], era: ["Originals"], force: false, planet: 'Unbekannt' },
+  { name: "Slave I", img: "starwars.bilder/slave1.jpg", tags: ["vehicle", "fahrzeug", "kopfgeldjäger", "mandalorian"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Kopfgeldjäger"], era: ["Prequels/Clone Wars", "Originals"], force: false, planet: 'Unbekannt' },
+  { name: "AT-AT Walker", img: "starwars.bilder/atat.jpg", tags: ["vehicle", "fahrzeug", "imperium"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Imperium"], era: ["Originals"], force: false, planet: 'Unbekannt' },
+  { name: "AT-ST", img: "starwars.bilder/atst.jpg", tags: ["vehicle", "fahrzeug", "imperium"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Imperium"], era: ["Originals"], force: false, planet: 'Unbekannt' },
+  { name: "Imperial Star Destroyer", img: "starwars.bilder/stardestroyer.jpg", tags: ["vehicle", "fahrzeug", "imperium"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Imperium"], era: ["Originals"], force: false, planet: 'Kuat' },
+  { name: "Death Star", img: "starwars.bilder/deathstar.jpg", tags: ["vehicle", "fahrzeug", "imperium"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Imperium"], era: ["Originals"], force: false, planet: 'Unbekannt' },
+  { name: "Y-Wing Starfighter", img: "starwars.bilder/ywing.jpg", tags: ["vehicle", "fahrzeug", "rebell", "republik"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Republik", "Rebellion"], era: ["Prequels/Clone Wars", "Originals"], force: false, planet: 'Unbekannt' },
+  { name: "A-Wing Starfighter", img: "starwars.bilder/awing.jpg", tags: ["vehicle", "fahrzeug", "rebell"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Rebellion"], era: ["Originals"], force: false, planet: 'Unbekannt' },
+  { name: "B-Wing Starfighter", img: "starwars.bilder/bwing.jpg", tags: ["vehicle", "fahrzeug", "rebell"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Rebellion"], era: ["Originals"], force: false, planet: 'Unbekannt' },
+  { name: "TIE Interceptor", img: "starwars.bilder/tieinterceptor.jpg", tags: ["vehicle", "fahrzeug", "imperium"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Imperium"], era: ["Originals"], force: false, planet: 'Unbekannt' },
+  { name: "TIE Advanced x1", img: "starwars.bilder/tieadvanced.jpg", tags: ["vehicle", "fahrzeug", "imperium", "sith"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Imperium"], era: ["Originals"], force: false, planet: 'Unbekannt' },
+  { name: "Snowspeeder", img: "starwars.bilder/snowspeeder.jpg", tags: ["vehicle", "fahrzeug", "rebell"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Rebellion"], era: ["Originals"], force: false, planet: 'Unbekannt' },
+  { name: "Razor Crest", img: "starwars.bilder/razorcrest.jpg", tags: ["vehicle", "fahrzeug", "mandalorian"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Mandalorianer"], era: ["Mandalorian/Ahsoka"], force: false, planet: 'Unbekannt' },
+  { name: "Jedi Starfighter (Delta-7)", img: "starwars.bilder/jedistarfighter.jpg", tags: ["vehicle", "fahrzeug", "jedi", "republik"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Jedi-Orden", "Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kuat' },
+  { name: "Jedi Interceptor (Eta-2)", img: "starwars.bilder/jediinterceptor.jpg", tags: ["vehicle", "fahrzeug", "jedi", "republik"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Jedi-Orden", "Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kuat' },
+  { name: "Republic Gunship (LAAT)", img: "starwars.bilder/laat.jpg", tags: ["vehicle", "fahrzeug", "republik", "klon"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Rothana' },
+  { name: "AT-TE", img: "starwars.bilder/atte.jpg", tags: ["vehicle", "fahrzeug", "republik", "klon"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Rothana' },
+  { name: "Venator-class Star Destroyer", img: "starwars.bilder/venator.jpg", tags: ["vehicle", "fahrzeug", "republik"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Kuat' },
+  { name: "Naboo N-1 Starfighter", img: "starwars.bilder/n1.jpg", tags: ["vehicle", "fahrzeug", "republik"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Republik"], era: ["Prequels/Clone Wars"], force: false, planet: 'Naboo' },
+  { name: "U-Wing", img: "starwars.bilder/uwing.jpg", tags: ["vehicle", "fahrzeug", "rebell"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Rebellion"], era: ["Originals"], force: false, planet: 'Unbekannt' },
+  { name: "Ghost", img: "starwars.bilder/ghost.jpg", tags: ["vehicle", "fahrzeug", "rebell"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Rebellion"], era: ["Originals"], force: false, planet: 'Lothal' },
+  { name: "Speeder Bike", img: "starwars.bilder/speederbike.jpg", tags: ["vehicle", "fahrzeug", "imperium", "rebell"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Imperium", "Rebellion"], era: ["Originals", "Prequels/Clone Wars"], force: false, planet: 'Unbekannt' },
+  { name: "Imperial Shuttle", img: "starwars.bilder/imperialshuttle.jpg", tags: ["vehicle", "fahrzeug", "imperium"], gender: "Fahrzeug", species: "Fahrzeug", faction: ["Imperium"], era: ["Originals"], force: false, planet: 'Unbekannt' }
 ];
+
 
 
 
