@@ -1,18 +1,40 @@
 export const patchNotesStarWars = [
     {
-        version: "v7.1",
-        title: "STABILITÄT, QOL & WARTUNGSMODI",
-        isHotfix: false,
+        version: "v7.0.7",
+        title: "Hotfix: Shop Tracker & Fahrzeuge",
+        isHotfix: true,
         changes: [
-            "Anti-Cheat & Integrität: Ein Seiten-Reload im aktiven Spiel bricht das Spiel nicht mehr ab. Der Fortschritt bleibt bestehen und der Neustart-Knopf wurde entfernt. Man muss das Ranking zwingend beenden.",
-            "Feature: Neuer gezielter Admin-Wartungsmodus! Admins können nun nicht nur die gesamte Seite, sondern auch einzelne Modi (Klassisch, Advanced, Versus) oder spezifische Kategorien (Peak, Fahrzeuge, Klone) für Wartungsarbeiten temporär deaktivieren.",
-            "Neues Feature: Shop Tracker. Im Shop wird nun unter jedem Pack direkt angezeigt, wie oft du diesen spezifischen Pack-Typ bereits geöffnet hast.",
-            "Neues Feature: 'Perfektion' (Versus-Achievement). Verdiene dir einen exklusiven Titel, indem du in einem Versus-Spiel absolut keine Abweichung vom globalen Ranking hast (Score: 0).",
-            "UI-Update: Das Spielerprofil wurde für Desktop-Nutzer auf ein elegantes horizontales Layout umgebaut, sodass alle Tabs und Inhalte direkt ohne Scrollen zugänglich sind.",
-            "QoL: Das Spiel merkt sich nun über alle Sessions hinweg (und auch nach einem Reload), welches Universum, welchen Modus und welche Kategorie du als Letztes gespielt hast.",
-            "Visualisierung: Wenn du beim Booster-Kauf nicht genug Credits hast, erhältst du nun eine angenehme rote Benachrichtigung, anstatt eines aufdringlichen Alerts.",
-            "Balancing: Fahrzeuge wurden konsequent aus allen Modi (Klassisch, Advanced, Versus, Klone, Peak etc.) verbannt. Sie sind nun ausschließlich im speziellen 'Fahrzeuge'-Modus sowie im täglichen StarWarsdle zu finden.",
-            "Hotfix: Neue Spieler oder Resets werden ab sofort ohne Verzögerung direkt beim Aufruf des Scoreboards geladen und angezeigt."
+            "Neues Feature: Im Shop wird nun unter jedem Pack direkt angezeigt, wie oft du diesen spezifischen Pack-Typ bereits geöffnet hast.",
+            "Balancing: Fahrzeuge wurden konsequent aus allen Modi verbannt und sind nun ausschließlich im speziellen 'Fahrzeuge'-Modus zu finden.",
+            "Hotfix: StarWarsdle nutzt nun wieder den vollständigen Charakterpool inklusive Fahrzeuge."
+        ]
+    },
+    {
+        version: "v7.0.6",
+        title: "Hotfix: Versus Perfektion & Präferenzen",
+        isHotfix: true,
+        changes: [
+            "Neues Feature: 'Perfektion' (Versus-Achievement). Verdiene dir den exklusiven Titel, indem du absolut keine Abweichung hast (Score: 0).",
+            "QoL: Das Spiel merkt sich nun über alle Sessions hinweg, welches Universum, welchen Modus und welche Kategorie du als Letztes gespielt hast."
+        ]
+    },
+    {
+        version: "v7.0.5",
+        title: "Hotfix: UI & Wartungsmodus",
+        isHotfix: true,
+        changes: [
+            "UI-Update: Das Spielerprofil wurde für Desktop-Nutzer auf ein elegantes horizontales Layout umgebaut.",
+            "Feature: Neuer gezielter Admin-Wartungsmodus für einzelne Modi oder spezifische Kategorien."
+        ]
+    },
+    {
+        version: "v7.0.4",
+        title: "Hotfix: Anti-Cheat & Shop-Visuals",
+        isHotfix: true,
+        changes: [
+            "Anti-Cheat & Integrität: Ein Seiten-Reload im aktiven Spiel bricht das Spiel nicht mehr ab. Man muss das Ranking zwingend beenden.",
+            "Visualisierung: Wenn du beim Booster-Kauf nicht genug Credits hast, erhältst du nun eine rote Benachrichtigung anstatt eines Alerts.",
+            "Hotfix: Neue Spieler oder Resets werden ab sofort ohne Verzögerung direkt beim Aufruf des Scoreboards angezeigt."
         ]
     },
     {
