@@ -146,6 +146,7 @@ export function initProfile() {
             document.getElementById('profile-avatar-panel').classList.toggle('hidden', target !== 'avatar');
             document.getElementById('profile-title-panel').classList.toggle('hidden', target !== 'title');
             document.getElementById('profile-theme-panel').classList.toggle('hidden', target !== 'theme');
+            document.getElementById('profile-stats-panel').classList.toggle('hidden', target !== 'stats');
         });
     });
 
@@ -186,6 +187,7 @@ export async function refreshProfileContent() {
 
     renderTitleSelection(user, gamesPlayed);
     renderThemeSelection(user);
+    renderStatsSelection(user);
 
     // Update tab labels with notification dots
     updateTabNotificationDots(user);
@@ -441,4 +443,58 @@ function renderThemeSelection(user) {
 
         grid.appendChild(card);
     });
+}
+
+function renderStatsSelection(user) {
+    const container = document.getElementById('stats-container');
+    if (!container) return;
+
+    const gamesPlayed = currentMode === 'starwars' ? (user.gamesPlayed_starwars || 0) : (user.gamesPlayed_waifu || 0);
+    const favs = currentMode === 'starwars' ? (user.favorites_starwars || {}) : (user.favorites_waifu || {});
+    const nems = currentMode === 'starwars' ? (user.nemesis_starwars || {}) : (user.nemesis_waifu || {});
+
+    let topFav = null;
+    let topFavCount = 0;
+    for (const [name, count] of Object.entries(favs)) {
+        if (count > topFavCount) { topFavCount = count; topFav = name; }
+    }
+
+    let topNem = null;
+    let topNemCount = 0;
+    for (const [name, count] of Object.entries(nems)) {
+        if (count > topNemCount) { topNemCount = count; topNem = name; }
+    }
+
+    const getCharImg = (name) => {
+        if (!name) return '';
+        const char = activeCharacterDatabase.find(c => c.name === name);
+        return char ? char.img : '';
+    };
+
+    const favImg = getCharImg(topFav);
+    const nemImg = getCharImg(topNem);
+
+    container.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:20px;">
+            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid #333;">
+                <h3 style="margin:0 0 10px 0; color:#e2e8f0; font-size:1rem;">Gesamte Spiele gespielt: <span style="color:#ffd700;">${gamesPlayed}</span></h3>
+            </div>
+            
+            <div style="display:flex; gap:20px; flex-wrap:wrap;">
+                <div style="flex:1; min-width:200px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid #333; text-align:center;">
+                    <h4 style="margin:0 0 15px 0; color:#2ed573;">Dein Lieblingscharakter</h4>
+                    ${favImg ? \`<img src="\${favImg}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid #2ed573;margin:0 auto 10px; display:block;">\` : \`<div style="width:80px;height:80px;border-radius:50%;background:#444;margin:0 auto 10px; display:block;"></div>\`}
+                    <div style="color:#fff; font-weight:bold;">\${topFav || 'Noch keiner'}</div>
+                    <div style="font-size:0.8rem; color:#94a3b8; margin-top:5px;">\${topFavCount > 0 ? \`\${topFavCount}x auf Platz 1\` : ''}</div>
+                </div>
+                
+                <div style="flex:1; min-width:200px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid #333; text-align:center;">
+                    <h4 style="margin:0 0 15px 0; color:#ff4757;">Dein Nemesis</h4>
+                    ${nemImg ? \`<img src="\${nemImg}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid #ff4757;margin:0 auto 10px; display:block;">\` : \`<div style="width:80px;height:80px;border-radius:50%;background:#444;margin:0 auto 10px; display:block;"></div>\`}
+                    <div style="color:#fff; font-weight:bold;">\${topNem || 'Noch keiner'}</div>
+                    <div style="font-size:0.8rem; color:#94a3b8; margin-top:5px;">\${topNemCount > 0 ? \`\${topNemCount}x auf Platz 5\` : ''}</div>
+                </div>
+            </div>
+        </div>
+    `;
 }

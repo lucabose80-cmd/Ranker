@@ -132,7 +132,7 @@ async function createVersusLobby() {
                 return;
             }
             poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon'));
-        } else if (category === 'peak') {
+        } else if (category === 'peak' || category === 'hardcore') {
             poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('peak'));
         } else if (category === 'vehicle') {
             poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('vehicle'));
@@ -457,7 +457,7 @@ function showWaitingRoom(lobbyId) {
                                 if (data.mode === 'starwars') {
                                     if (data.category === 'klon') {
                                         poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon'));
-                                    } else if (data.category === 'peak') {
+                                    } else if (data.category === 'peak' || data.category === 'hardcore') {
                                         poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('peak'));
                                     } else if (data.category === 'vehicle') {
                                         poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('vehicle'));

@@ -1664,3 +1664,4 @@ body.alt-theme .nav-link.active { color: #ff2a9d; border-bottom-color: #ff2a9d; 
  } 
   
  
+.hardcore-silhouette { filter: brightness(0); transition: filter 0.5s ease; }

@@ -98,7 +98,7 @@ export function initGame() {
         if (currentMode === 'starwars') {
             if (currentGameCategory === 'klon') {
                 poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon'));
-            } else if (currentGameCategory === 'peak') {
+            } else if (currentGameCategory === 'peak' || currentGameCategory === 'hardcore') {
                 poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('peak'));
             } else if (currentGameCategory === 'vehicle') {
                 poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('vehicle'));
@@ -143,7 +143,53 @@ export function showNextCharacter() {
             return;
         }
         
-        imgContainer.innerHTML = `<img src="${currentChar.img}" alt="Charakter Bild">`;
+        const hardcoreQuotes = {
+            'Captain Rex': 'In my book, experience outranks everything.',
+            'Commander Cody': 'Blast him!',
+            'Fives': 'I am not just another number! None of us are!',
+            'Echo': 'I am a soldier, like you!',
+            'Wolffe': 'We are the Wolfpack.',
+            'Gregor': 'It was an honor to serve with you, Rex.',
+            'Obi-Wan Kenobi': 'Hello there.',
+            'Yoda': 'Do or do not, there is no try.',
+            'Anakin Skywalker': 'This is where the fun begins.',
+            'Mace Windu': 'This party is over.',
+            'Qui-Gon Jinn': 'There is always a bigger fish.',
+            'Ahsoka Tano': 'I am no Jedi.',
+            'Plo Koon': 'Not to me.',
+            'Darth Vader': 'I find your lack of faith disturbing.',
+            'Emperor Palpatine': 'I am the Senate.',
+            'Darth Maul': 'Kenobi!!!',
+            'Count Dooku': 'I have been looking forward to this.',
+            'Grand Admiral Thrawn': 'To defeat an enemy, you must know them.',
+            'Asajj Ventress': 'You are a fool to challenge me.',
+            'Savage Opress': 'Brother, I am an unworthy apprentice.',
+            'Din Djarin': 'This is the Way.',
+            'Bo-Katan Kryze': 'Mandalore will survive.',
+            'Boba Fett': 'I am a simple man making his way through the galaxy.',
+            'Jango Fett': 'I am just a simple man trying to make my way in the universe.',
+            'Pre Vizsla': 'For Mandalore!',
+            'R2-D2': '*Beep boop beep*',
+            'C-3PO': 'I am fluent in over six million forms of communication.',
+            'General Grievous': 'General Kenobi. You are a bold one.',
+            'BB-8': '*Happy beeps*',
+            'K-2SO': 'Congratulations. You are being rescued.',
+            'Kommando Droide': 'Roger roger.',
+            'Chewbacca': '*Wookiee roar*',
+            'Cassian Andor': 'Rebellions are built on hope.',
+            'Cad Bane': 'I will take on any job... for the right price.',
+            'Embo': '*Grunts*',
+            'Padme Amidala': 'So this is how liberty dies... with thunderous applause.',
+            'Grogu': '*Coos*'
+        };
+        
+        const extraClass = currentGameCategory === 'hardcore' ? 'hardcore-silhouette' : '';
+        let quoteHtml = '';
+        if (currentGameCategory === 'hardcore') {
+            const quote = hardcoreQuotes[currentChar.name] || '...';
+            quoteHtml = `<div style="text-align: center; font-style: italic; color: #ffd700; margin-top: 10px; font-size: 0.9rem;">"${quote}"</div>`;
+        }
+        imgContainer.innerHTML = `<img src="${currentChar.img}" alt="Charakter Bild" class="${extraClass}">${quoteHtml}`;
         
         const user = getCurrentUser();
         const discoveredList = user && user.discovered ? user.discovered : [];
@@ -186,6 +232,9 @@ export function revealNames() {
             labelSpan.textContent = '???';
         }
         labelSpan.classList.add('revealed-name');
+        
+        const img = document.querySelector(`#slot-${i} .card-content img`);
+        if (img) img.classList.remove('hardcore-silhouette');
     }
 }
 
@@ -195,7 +244,8 @@ export async function handleRankSelection(rank, buttonElement) {
     // Actually, we remove it when the game is finished (all 5 placed) so they can't reload during the game.
     
     const currentChar = activePool[currentIndex];
-    document.querySelector(`#slot-${rank} .card-content`).innerHTML = `<img src="${currentChar.img}" alt="Ranked">`;
+    const extraClass = currentGameCategory === 'hardcore' ? 'hardcore-silhouette' : '';
+    document.querySelector(`#slot-${rank} .card-content`).innerHTML = `<img src="${currentChar.img}" alt="Ranked" class="${extraClass}">`;
     placedCharacters[rank] = currentChar;
     
     buttonElement.disabled = true;

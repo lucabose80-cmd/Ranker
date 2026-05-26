@@ -356,12 +356,21 @@ function openUserProfileModal(u) {
         const swThemes = u.unlocked_themes_starwars || [];
         const swThemeNames = (THEMES['starwars'] || []).filter(t => t.id.endsWith('_default') || swThemes.includes(t.id)).map(t => t.name);
         
+        const favs = u.favorites_starwars || {};
+        const nems = u.nemesis_starwars || {};
+        let topFav = null, topFavCount = 0;
+        for (const [name, count] of Object.entries(favs)) { if (count > topFavCount) { topFavCount = count; topFav = name; } }
+        let topNem = null, topNemCount = 0;
+        for (const [name, count] of Object.entries(nems)) { if (count > topNemCount) { topNemCount = count; topNem = name; } }
+        
         progressHtml = `
             <div style="background:#11151f; padding:15px; border-radius:8px; border:1px solid #2a3142;">
                 <h4 style="margin:0 0 10px 0; color:#e2e8f0; border-bottom:1px solid #2a3142; padding-bottom:5px;">Star Wars Fortschritt</h4>
                 <div style="font-size:0.85rem; color:#94a3b8; margin-bottom:5px;">Spiele gespielt: <span style="color:#fff">${swGames}</span></div>
                 <div style="font-size:0.85rem; color:#94a3b8; margin-bottom:5px;">Freigeschaltete Titel: <span style="color:#fff">${swTitles.join(', ') || '-'}</span></div>
-                <div style="font-size:0.85rem; color:#94a3b8;">Freigeschaltete Themes: <span style="color:#fff">${swThemeNames.join(', ') || '-'}</span></div>
+                <div style="font-size:0.85rem; color:#94a3b8; margin-bottom:5px;">Freigeschaltete Themes: <span style="color:#fff">${swThemeNames.join(', ') || '-'}</span></div>
+                <div style="font-size:0.85rem; color:#2ed573; margin-bottom:5px;">Lieblingscharakter: <span style="color:#fff">${topFav ? `${topFav} (${topFavCount}x auf Platz 1)` : '-'}</span></div>
+                <div style="font-size:0.85rem; color:#ff4757;">Nemesis: <span style="color:#fff">${topNem ? `${topNem} (${topNemCount}x auf Platz 5)` : '-'}</span></div>
             </div>
         `;
     } else {
@@ -375,12 +384,21 @@ function openUserProfileModal(u) {
         const animeThemes = u.unlocked_themes_waifu || [];
         const animeThemeNames = (THEMES['waifu'] || []).filter(t => t.id.endsWith('_default') || animeThemes.includes(t.id)).map(t => t.name);
         
+        const favs = u.favorites_waifu || {};
+        const nems = u.nemesis_waifu || {};
+        let topFav = null, topFavCount = 0;
+        for (const [name, count] of Object.entries(favs)) { if (count > topFavCount) { topFavCount = count; topFav = name; } }
+        let topNem = null, topNemCount = 0;
+        for (const [name, count] of Object.entries(nems)) { if (count > topNemCount) { topNemCount = count; topNem = name; } }
+        
         progressHtml = `
             <div style="background:#11151f; padding:15px; border-radius:8px; border:1px solid #2a3142;">
                 <h4 style="margin:0 0 10px 0; color:#e2e8f0; border-bottom:1px solid #2a3142; padding-bottom:5px;">Anime Fortschritt</h4>
                 <div style="font-size:0.85rem; color:#94a3b8; margin-bottom:5px;">Spiele gespielt: <span style="color:#fff">${animeGames}</span></div>
                 <div style="font-size:0.85rem; color:#94a3b8; margin-bottom:5px;">Freigeschaltete Titel: <span style="color:#fff">${animeTitles.join(', ') || '-'}</span></div>
-                <div style="font-size:0.85rem; color:#94a3b8;">Freigeschaltete Themes: <span style="color:#fff">${animeThemeNames.join(', ') || '-'}</span></div>
+                <div style="font-size:0.85rem; color:#94a3b8; margin-bottom:5px;">Freigeschaltete Themes: <span style="color:#fff">${animeThemeNames.join(', ') || '-'}</span></div>
+                <div style="font-size:0.85rem; color:#2ed573; margin-bottom:5px;">Lieblingscharakter: <span style="color:#fff">${topFav ? `${topFav} (${topFavCount}x auf Platz 1)` : '-'}</span></div>
+                <div style="font-size:0.85rem; color:#ff4757;">Nemesis: <span style="color:#fff">${topNem ? `${topNem} (${topNemCount}x auf Platz 5)` : '-'}</span></div>
             </div>
         `;
     }

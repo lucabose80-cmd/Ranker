@@ -12,6 +12,7 @@ import { getCurrentUser, startPresenceHeartbeat } from './auth.js';
 import { initLiveSpectating, stopLiveSpectating } from './live.js';
 import { refreshAdminPanel } from './admin.js';
 import { currentMode, setCurrentMode, currentGameType } from './mode-state.js';
+import { initStarWarsdle } from './starwarsdle.js';
 
 export let activeCharacterDatabase = starWarsCharacters; 
 
@@ -37,6 +38,17 @@ export async function toggleTheme() {
         themeStylesheet.href = "theme-alt.css?v=5.0.3"; 
         document.body.classList.add('alt-theme');
         if (catContainer) catContainer.classList.add('hidden');
+        
+        const sdleTab = document.getElementById('nav-starwarsdle');
+        if(sdleTab) sdleTab.innerHTML = 'ANIMEDLE <span id="starwarsdle-glow" style="position: absolute; top: 0; right: 0; width: 10px; height: 10px; background: #ffd700; border-radius: 50%; box-shadow: 0 0 10px #ffd700; display: none;"></span>';
+        const sdleTitle = document.querySelector('#starwarsdle-content h2');
+        if(sdleTitle) sdleTitle.textContent = "ANIMEDLE";
+        
+        const sbDle = document.querySelector('#scoreboard-type-filter option[value="starwarsdle"]');
+        if(sbDle) sbDle.textContent = "Animedle (Daily)";
+        const sbDleAll = document.querySelector('#scoreboard-type-filter option[value="starwarsdle_alltime"]');
+        if(sbDleAll) sbDleAll.textContent = "Animedle (All-Time Wins)";
+        
     } else {
         setCurrentMode('starwars');
         activeCharacterDatabase = starWarsCharacters;
@@ -45,6 +57,16 @@ export async function toggleTheme() {
         themeStylesheet.href = "theme-starwars.css?v=5.0.3"; 
         document.body.classList.remove('alt-theme');
         if (catContainer && currentGameType === 'classic') catContainer.classList.remove('hidden');
+        
+        const sdleTab = document.getElementById('nav-starwarsdle');
+        if(sdleTab) sdleTab.innerHTML = 'STARWARSDLE <span id="starwarsdle-glow" style="position: absolute; top: 0; right: 0; width: 10px; height: 10px; background: #ffd700; border-radius: 50%; box-shadow: 0 0 10px #ffd700; display: none;"></span>';
+        const sdleTitle = document.querySelector('#starwarsdle-content h2');
+        if(sdleTitle) sdleTitle.textContent = "STARWARSDLE";
+        
+        const sbDle = document.querySelector('#scoreboard-type-filter option[value="starwarsdle"]');
+        if(sbDle) sbDle.textContent = "StarWarsdle (Daily)";
+        const sbDleAll = document.querySelector('#scoreboard-type-filter option[value="starwarsdle_alltime"]');
+        if(sbDleAll) sbDleAll.textContent = "StarWarsdle (All-Time Wins)";
     }
     
     updateChangelogContent(activeChangelogDatabase);
@@ -59,6 +81,9 @@ export async function toggleTheme() {
     } else {
         stopHistoryListener();
     }
+    
+    // Also re-init StarWarsdle to switch pools
+    initStarWarsdle();
 
     if (isLiveVisible) {
         initLiveSpectating(true);

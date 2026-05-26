@@ -275,13 +275,25 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
         }
 
 
+        const topChar = rankingData[0].name;
+        const bottomChar = rankingData[rankingData.length - 1].name;
+        
+        const favField = `favorites_${currentMode}`;
+        const nemField = `nemesis_${currentMode}`;
+        if (!user[favField]) user[favField] = {};
+        if (!user[nemField]) user[nemField] = {};
+        user[favField][topChar] = (user[favField][topChar] || 0) + 1;
+        user[nemField][bottomChar] = (user[nemField][bottomChar] || 0) + 1;
+
         localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
         
         // Asynchron das increment absenden
         const { updateDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
         
         const updatePayload = {
-            [gamesPlayedField]: increment(1)
+            [gamesPlayedField]: increment(1),
+            [`${favField}.${topChar}`]: increment(1),
+            [`${nemField}.${bottomChar}`]: increment(1)
         };
         if (category === 'klon') {
             updatePayload[`gamesPlayed_${currentMode}_klon`] = increment(1);

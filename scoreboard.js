@@ -121,10 +121,11 @@ export async function renderScoreboard() {
             const seed = (new Date(today - offset)).toISOString().slice(0, 10);
             
             let q;
+            const collectionName = currentMode + "dle_scores";
             if (isDaily) {
-                q = query(collection(db, "starwarsdle_scores"), where("date", "==", seed));
+                q = query(collection(db, collectionName), where("date", "==", seed));
             } else {
-                q = collection(db, "starwarsdle_scores");
+                q = collection(db, collectionName);
             }
             
             trackRead('Scoreboard.StarWarsdle');

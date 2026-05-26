@@ -276,16 +276,18 @@ function setupGameUI(user) {
     const catKlonBtn = document.getElementById('cat-klon-btn');
     const catPeakBtn = document.getElementById('cat-peak-btn');
     const catVehicleBtn = document.getElementById('cat-vehicle-btn');
+    const catHardcoreBtn = document.getElementById('cat-hardcore-btn');
     
     if (catNormalBtn) {
         const updateCatButtons = (activeCat) => {
-            [catNormalBtn, catKlonBtn, catPeakBtn, catVehicleBtn].forEach(btn => {
+            [catNormalBtn, catKlonBtn, catPeakBtn, catVehicleBtn, catHardcoreBtn].forEach(btn => {
                 if(btn) btn.classList.remove('active');
             });
             if (activeCat === 'normal') catNormalBtn.classList.add('active');
             if (activeCat === 'klon') catKlonBtn.classList.add('active');
             if (activeCat === 'peak') catPeakBtn.classList.add('active');
             if (activeCat === 'vehicle') catVehicleBtn.classList.add('active');
+            if (activeCat === 'hardcore') catHardcoreBtn.classList.add('active');
         };
 
         const attachCatListener = (btn, cat) => {
@@ -302,6 +304,7 @@ function setupGameUI(user) {
         attachCatListener(catKlonBtn, 'klon');
         attachCatListener(catPeakBtn, 'peak');
         attachCatListener(catVehicleBtn, 'vehicle');
+        attachCatListener(catHardcoreBtn, 'hardcore');
     }
 
     // Profil Overlay öffnen

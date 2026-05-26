@@ -173,6 +173,7 @@
                     <button id="cat-klon-btn" class="mode-toggle-btn" style="font-size: 0.8rem; padding: 5px 15px;">Nur Klone</button>
                     <button id="cat-peak-btn" class="mode-toggle-btn" style="font-size: 0.8rem; padding: 5px 15px;">Peak Ranking</button>
                     <button id="cat-vehicle-btn" class="mode-toggle-btn" style="font-size: 0.8rem; padding: 5px 15px;">Fahrzeuge</button>
+                    <button id="cat-hardcore-btn" class="mode-toggle-btn" style="font-size: 0.8rem; padding: 5px 15px;">Hardcore Peak</button>
                 </div>
 
                 <div class="panel ranking-panel">
@@ -231,11 +232,13 @@
                             <option value="classic">Expanded Universe (5er)</option>
                             <option value="classic_klon">Klon Modus (5er)</option>
                             <option value="classic_peak">Peak Ranking (5er)</option>
+                            <option value="classic_hardcore">Hardcore Peak (5er)</option>
                             <option value="classic_vehicle">Fahrzeuge (5er)</option>
                             <option value="advanced">Advanced (10er)</option>
                             <option value="versus">Versus (Expanded Universe)</option>
                             <option value="versus_klon">Versus (Klon)</option>
                             <option value="versus_peak">Versus (Peak)</option>
+                            <option value="versus_hardcore">Versus (Hardcore Peak)</option>
                             <option value="versus_vehicle">Versus (Fahrzeuge)</option>
                         </select>
                     </div>
@@ -254,11 +257,13 @@
                             <option value="classic">Expanded Universe (5er)</option>
                             <option value="classic_klon">Klon Modus (5er)</option>
                             <option value="classic_peak">Peak Ranking (5er)</option>
+                            <option value="classic_hardcore">Hardcore Peak (5er)</option>
                             <option value="classic_vehicle">Fahrzeuge (5er)</option>
                             <option value="advanced">Advanced (10er)</option>
                             <option value="versus">Versus (Expanded Universe)</option>
                             <option value="versus_klon">Versus Klon (Wins)</option>
                             <option value="versus_peak">Versus Peak (Wins)</option>
+                            <option value="versus_hardcore">Versus Hardcore Peak (Wins)</option>
                             <option value="versus_vehicle">Versus Fahrzeuge (Wins)</option>
                             <option value="starwarsdle">StarWarsdle (Daily)</option>
                             <option value="starwarsdle_alltime">StarWarsdle (All-Time Wins)</option>
@@ -297,16 +302,8 @@
 
                     <div style="overflow-x: auto;">
                         <table style="width: 100%; border-collapse: collapse; min-width: 500px; text-align: center; font-size: 0.85rem;" id="starwarsdle-grid">
-                            <thead>
-                                <tr style="border-bottom: 2px solid #333;">
-                                    <th style="padding: 5px;">Charakter</th>
-                                    <th style="padding: 5px;">Geschlecht</th>
-                                    <th style="padding: 5px;">Spezies</th>
-                                    <th style="padding: 5px;">Heimatplanet</th>
-                                    <th style="padding: 5px;">Fraktion</th>
-                                    <th style="padding: 5px;">Epoche</th>
-                                    <th style="padding: 5px;">Macht</th>
-                                </tr>
+                            <thead id="starwarsdle-thead">
+                                <!-- Dynamically generated -->
                             </thead>
                             <tbody id="starwarsdle-guesses">
                             </tbody>
@@ -413,11 +410,15 @@
                             <button id="profile-tab-btn-avatar" class="changelog-tab profile-tab-btn active" data-tab="avatar">Avatare</button>
                             <button id="profile-tab-btn-title" class="changelog-tab profile-tab-btn" data-tab="title">Titel</button>
                             <button id="profile-tab-btn-theme" class="changelog-tab profile-tab-btn" data-tab="theme">Farbschemas</button>
+                            <button id="profile-tab-btn-stats" class="changelog-tab profile-tab-btn" data-tab="stats">Statistiken</button>
                         </div>
                         
                         <div id="profile-avatar-panel" class="profile-panel-content">
                             <p class="prompt-text">Avatar wählen (Speichert sofort für dieses Universum)</p>
                             <div id="avatar-grid" class="lexikon-grid"></div>
+                        </div>
+                        <div id="profile-stats-panel" class="profile-panel-content hidden" style="text-align:left;">
+                            <div id="stats-container"></div>
                         </div>
                         
                         <div id="profile-title-panel" class="profile-panel-content hidden">
