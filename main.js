@@ -63,25 +63,41 @@ async function bootApp() {
 function setupAuthUI() {
     showView('auth-view');
     
-    // Autocomplete füllen
+    // Autocomplete füllen - erst aus Cache, dann aus Firestore
+    const fillAutocomplete = (userResets) => {
+        const datalist = document.getElementById('auth-username-list');
+        if (!datalist) return;
+        datalist.innerHTML = '';
+        Object.keys(userResets).forEach(uname => {
+            if (uname !== 'admin' && !uname.startsWith('test')) {
+                const opt = document.createElement('option');
+                opt.value = uname;
+                datalist.appendChild(opt);
+            }
+        });
+    };
+
+    // Versuche erst den lokalen Cache
+    let filledFromCache = false;
     try {
         const cacheStr = localStorage.getItem('ranker_resets_cache');
         if (cacheStr) {
             const cache = JSON.parse(cacheStr);
-            if (cache.userResets) {
-                const datalist = document.getElementById('auth-username-list');
-                if (datalist) {
-                    Object.keys(cache.userResets).forEach(uname => {
-                        if (uname !== 'admin' && !uname.startsWith('test')) {
-                            const opt = document.createElement('option');
-                            opt.value = uname;
-                            datalist.appendChild(opt);
-                        }
-                    });
-                }
+            if (cache.userResets && Object.keys(cache.userResets).length > 0) {
+                fillAutocomplete(cache.userResets);
+                filledFromCache = true;
             }
         }
     } catch (e) {}
+
+    // Immer auch frisch aus Firestore laden (im Hintergrund)
+    import('./resets.js').then(({ getResets }) => {
+        getResets().then(({ userResets }) => {
+            if (userResets && Object.keys(userResets).length > 0) {
+                fillAutocomplete(userResets);
+            }
+        }).catch(() => {});
+    });
 
     const tBtn = document.getElementById('toggle-password');
     const pInput = document.getElementById('auth-password');
