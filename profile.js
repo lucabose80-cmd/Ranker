@@ -690,16 +690,18 @@ window.generateDeepAnalytics = async function(user) {
         }
     } catch(e) {}
 
-    const tiers = { S: [], A: [], B: [], C: [], D: [] };
+    const tiers = { S: [], A: [], B: [], C: [], D: [], E: [], F: [] };
 
     for (const [name, stats] of Object.entries(charRanks)) {
         const avg = stats.sum / stats.count; 
         
-        let tier = 'D';
-        if (avg <= 1.5) tier = 'S';
-        else if (avg <= 2.2) tier = 'A';
-        else if (avg <= 3.0) tier = 'B';
-        else if (avg <= 3.8) tier = 'C';
+        let tier = 'F';
+        if (avg <= 1.3) tier = 'S';
+        else if (avg <= 1.9) tier = 'A';
+        else if (avg <= 2.5) tier = 'B';
+        else if (avg <= 3.1) tier = 'C';
+        else if (avg <= 3.7) tier = 'D';
+        else if (avg <= 4.3) tier = 'E';
 
         if (tiers[tier]) {
             tiers[tier].push(name);
@@ -733,6 +735,8 @@ window.generateDeepAnalytics = async function(user) {
             ${renderTierRow('B', '#ffff7f', tiers.B)}
             ${renderTierRow('C', '#7fff7f', tiers.C)}
             ${renderTierRow('D', '#7fbfff', tiers.D)}
+            ${renderTierRow('E', '#bf7fff', tiers.E)}
+            ${renderTierRow('F', '#ff7fff', tiers.F)}
             <div style="padding:5px; text-align:center; background:#111; color:#666; font-size:0.7rem;">Generiert von Ranker</div>
         </div>
         <button id="btn-download-tierlist" class="btn" style="background:#2ed573; color:#000; width:100%; font-weight:bold;">

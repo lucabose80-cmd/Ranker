@@ -303,8 +303,9 @@ export function initCommunity() {
             if (!card) return;
             const uid = card.dataset.uid;
             let clickedUser = null;
-            if (uid === user.uid) {
-                clickedUser = user;
+            const freshUser = getCurrentUser();
+            if (uid === freshUser.uid) {
+                clickedUser = freshUser;
             } else {
                 clickedUser = allUsersCache.find(u => u.uid === uid);
             }
