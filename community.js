@@ -425,8 +425,9 @@ function openUserProfileModal(u) {
                                         imgPath = window.LEGENDARY_POOL[item.charName].specialImg;
                                     }
                                     
-                                    const holo = (item.rarity==='epic'||item.rarity==='legendary') ? `<div style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; mix-blend-mode:color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear;"></div>` : '';
-                                    return `<div class="community-showcase-card" style="width:60px; height:90px; border-radius:6px; background-image:url('${imgPath}'); background-size:cover; background-position:center; border:${border}; position:relative; box-shadow:0 2px 5px rgba(0,0,0,0.5);">
+                                    const holo = (item.rarity==='epic') ? `<div style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; mix-blend-mode:color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear;"></div>` : '';
+                                    const legStyle = (item.rarity==='legendary') ? `animation: legendary-flicker 1.5s infinite;` : '';
+                                    return `<div class="community-showcase-card" style="width:60px; height:90px; border-radius:6px; background-image:url('${imgPath}'); background-size:cover; background-position:center; border:${border}; position:relative; box-shadow:0 2px 5px rgba(0,0,0,0.5); ${legStyle}">
                                         ${holo}
                                         <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.8); color:#fff; font-size:0.5rem; text-align:center; padding:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.charName}</div>
                                     </div>`;
@@ -520,8 +521,9 @@ function openUserProfileModal(u) {
                                         imgPath = window.LEGENDARY_POOL[item.charName].specialImg;
                                     }
                                     
-                                    const holo = (item.rarity==='epic'||item.rarity==='legendary') ? `<div style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; mix-blend-mode:color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear;"></div>` : '';
-                                    return `<div class="community-showcase-card" style="width:60px; height:90px; border-radius:6px; background-image:url('${imgPath}'); background-size:cover; background-position:center; border:${border}; position:relative; box-shadow:0 2px 5px rgba(0,0,0,0.5);">
+                                    const holo = (item.rarity==='epic') ? `<div style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; mix-blend-mode:color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear;"></div>` : '';
+                                    const legStyle = (item.rarity==='legendary') ? `animation: legendary-flicker 1.5s infinite;` : '';
+                                    return `<div class="community-showcase-card" style="width:60px; height:90px; border-radius:6px; background-image:url('${imgPath}'); background-size:cover; background-position:center; border:${border}; position:relative; box-shadow:0 2px 5px rgba(0,0,0,0.5); ${legStyle}">
                                         ${holo}
                                         <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.8); color:#fff; font-size:0.5rem; text-align:center; padding:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.charName}</div>
                                     </div>`;

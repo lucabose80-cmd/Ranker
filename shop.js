@@ -288,6 +288,11 @@ function showPullAnimation(pulledCards, isGodPack) {
                     50% { box-shadow: 0 0 100px rgba(255, 215, 0, 1); }
                     100% { box-shadow: 0 0 50px rgba(255, 215, 0, 0.5); }
                 }
+                @keyframes legendary-flicker {
+                    0% { box-shadow: 0 0 10px #ffd700, inset 0 0 10px #ffd700; border-color: #ffd700; }
+                    50% { box-shadow: 0 0 30px #ffea00, inset 0 0 20px #ffea00; border-color: #fff; }
+                    100% { box-shadow: 0 0 10px #ffd700, inset 0 0 10px #ffd700; border-color: #ffd700; }
+                }
                 .pull-card-container {
                     perspective: 1000px; 
                     width: 200px; 
@@ -328,14 +333,20 @@ function showPullAnimation(pulledCards, isGodPack) {
         <div class="modal-content" style="background:rgba(10, 14, 23, 0.95); border:1px solid #333; box-shadow:0 0 50px rgba(0,0,0,0.8); text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 40px; border-radius: 12px; backdrop-filter: blur(10px); min-width: 80vw; min-height: 60vh; ${godpackStyle}">
             ${godpackText}
             <div id="pull-cards-wrapper" style="display:flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
-                ${pulledCards.map((info, index) => `
+                ${pulledCards.map((info, index) => {
+                    const isLeg = info.rarity.id === 'legendary';
+                    const isEpic = info.rarity.id === 'epic';
+                    const showHolo = isEpic; // No holo for legendary, they get border flicker
+                    const customStyle = isLeg ? "animation: legendary-flicker 1.5s infinite;" : "";
+                    
+                    return `
                     <div class="pull-card-container" id="card-container-${index}" data-index="${index}">
                         <div class="pull-card-inner" id="card-inner-${index}">
                             <div class="pull-card-front">
                                 📦
                             </div>
-                            <div class="pull-card-back" style="background-image: url('${info.char.img}'); border: ${info.rarity.border};">
-                                ${info.rarity.holo ? `<div style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; mix-blend-mode: color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear;"></div>` : ''}
+                            <div class="pull-card-back" style="background-image: url('${info.char.img}'); border: ${info.rarity.border}; ${customStyle}">
+                                ${showHolo ? `<div style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; mix-blend-mode: color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear;"></div>` : ''}
                                 ${info.isNew ? `<div style="position:absolute; top:10px; right:10px; background:#ff4757; color:#fff; font-size:0.7rem; font-weight:bold; padding:3px 8px; border-radius:12px; transform:rotate(15deg); border:2px solid #fff; box-shadow:0 2px 5px rgba(0,0,0,0.5); z-index: 20;">NEU!</div>` : ''}
                                 <div style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.7), transparent); padding:20px 10px 10px 10px; color:#fff; text-align:center;">
                                     <h3 style="margin:0 0 5px 0; font-size:1.1rem; text-transform:uppercase; text-shadow: 2px 2px 4px #000;">${info.char.name}</h3>
@@ -344,7 +355,7 @@ function showPullAnimation(pulledCards, isGodPack) {
                             </div>
                         </div>
                     </div>
-                `).join('')}
+                `;}).join('')}
             </div>
             <p id="pull-click-prompt" style="color:#fff; font-size:1.2rem; margin-top:30px; font-weight:bold; letter-spacing:1px; animation: pulse 1.5s infinite;">Klicke auf die Karten, um sie aufzudecken!</p>
             <button id="close-pull-btn" class="rank-btn hidden" style="margin-top: 30px; width: 200px;">Abschließen</button>
@@ -364,7 +375,7 @@ function showPullAnimation(pulledCards, isGodPack) {
             inner.style.transform = 'rotateY(180deg)';
             flippedCount++;
             
-            window.playFlipSound();
+            playFlipSound();
             
             const isLegSpecial = (info.rarity.id === 'legendary' && LEGENDARY_POOL[info.char.name]);
 
@@ -392,7 +403,7 @@ function showPullAnimation(pulledCards, isGodPack) {
                 }, 800);
             } else {
                 if (info.rarity.id !== 'common') {
-                    setTimeout(() => { window.playGachaSound(info.rarity.id); }, 200);
+                    setTimeout(() => { playGachaSound(info.rarity.id); }, 200);
                 }
             }
 

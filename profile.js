@@ -698,7 +698,7 @@ window.renderCommunityAlbum = function(user, containerId, filterPack = 'all', so
                 specialImg = window.LEGENDARY_POOL[charName].specialImg;
             }
             
-            card.style.cssText = `position:absolute; top:${offset}px; left:${offset}px; width:100%; height:100%; background-image:url('${charObj.img}'); background-size:cover; background-position:center; border-radius:6px; border:${RARITY_BORDERS[c.rarity] || '3px solid #111'}; z-index:${z}; box-shadow: -2px -2px 5px rgba(0,0,0,0.5); overflow:hidden;`;
+            card.style.cssText = `position:absolute; top:${offset}px; left:${offset}px; width:100%; height:100%; background-image:url('${charObj.img}'); background-size:cover; background-position:center; border-radius:6px; border:${RARITY_BORDERS[c.rarity] || '3px solid #111'}; z-index:${z}; box-shadow: -2px -2px 5px rgba(0,0,0,0.5); overflow:hidden; ${c.rarity === 'legendary' ? 'animation: legendary-flicker 1.5s infinite;' : ''}`;
             
             if (isLegSpecial) {
                 setTimeout(() => {
@@ -711,7 +711,7 @@ window.renderCommunityAlbum = function(user, containerId, filterPack = 'all', so
                 }, 400 + Math.random() * 400);
             }
             
-            if ((c.rarity === 'epic' || c.rarity === 'legendary') && idx === 0) {
+            if (c.rarity === 'epic' && idx === 0) {
                 const holo = document.createElement('div');
                 holo.style.cssText = 'position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; mix-blend-mode:color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear;';
                 card.appendChild(holo);

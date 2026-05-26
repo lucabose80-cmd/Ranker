@@ -1671,6 +1671,12 @@ body.alt-theme .nav-link.active { color: #ff2a9d; border-bottom-color: #ff2a9d; 
     100% { background-position: -200% 0; }
 }
 
+@keyframes legendary-flicker {
+    0% { box-shadow: 0 0 10px #ffd700, inset 0 0 10px #ffd700; border-color: #ffd700; }
+    50% { box-shadow: 0 0 30px #ffea00, inset 0 0 20px #ffea00; border-color: #fff; }
+    100% { box-shadow: 0 0 10px #ffd700, inset 0 0 10px #ffd700; border-color: #ffd700; }
+}
+
 .album-stack-container .album-stack-tooltip {
     display: none;
     background-color: rgba(0, 0, 0, 0.95);
