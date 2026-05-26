@@ -581,6 +581,24 @@ async function evaluateVersusMatch(lobbyId, lobby) {
                 if (uSnap.exists()) {
                     const data = uSnap.data();
                     const updates = { [gamesField]: (data[gamesField] || 0) + 1 };
+                    
+                    // Rivalitäten & Match-History
+                    const opp = lobby.players.find(p => p.uid !== player.uid);
+                    if (opp) {
+                        const vsStats = data.versusMatchups || {};
+                        const oppName = opp.username;
+                        if (!vsStats[oppName]) vsStats[oppName] = { wins: 0, losses: 0, draws: 0 };
+                        
+                        if (winners.includes(player.uid) && winners.includes(opp.uid)) {
+                            vsStats[oppName].draws++;
+                        } else if (winners.includes(player.uid)) {
+                            vsStats[oppName].wins++;
+                        } else {
+                            vsStats[oppName].losses++;
+                        }
+                        updates.versusMatchups = vsStats;
+                    }
+
                     if (winners.includes(player.uid)) {
                         updates[winField] = (data[winField] || 0) + 1;
                     }

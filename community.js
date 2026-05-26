@@ -371,6 +371,21 @@ function openUserProfileModal(u) {
                 <div style="font-size:0.85rem; color:#94a3b8; margin-bottom:5px;">Freigeschaltete Themes: <span style="color:#fff">${swThemeNames.join(', ') || '-'}</span></div>
                 <div style="font-size:0.85rem; color:#2ed573; margin-bottom:5px;">Lieblingscharakter: <span style="color:#fff">${topFav ? `${topFav} (${topFavCount}x auf Platz 1)` : '-'}</span></div>
                 <div style="font-size:0.85rem; color:#ff4757;">Nemesis: <span style="color:#fff">${topNem ? `${topNem} (${topNemCount}x auf Platz 5)` : '-'}</span></div>
+                
+                <div style="margin-top:15px; border-top:1px solid #2a3142; padding-top:10px;">
+                    <h5 style="margin:0 0 10px 0; color:#e2e8f0; font-size:0.8rem; text-align:center;">Trophäenschrank</h5>
+                    <div style="display:flex; gap:10px; justify-content:center;">
+                        ${[0,1,2].map(i => {
+                            const item = (u.showcase_starwars || [])[i];
+                            let content = '<span style="color:#444; font-size:1.5rem;">+</span>';
+                            if (item) {
+                                if (item.type === 'title') content = \`<div style="color:#ffd700; font-size:0.6rem; font-weight:bold; text-transform:uppercase;">Titel</div><div style="color:#fff; font-size:0.75rem; margin-top:2px; text-align:center;">\${item.name}</div>\`;
+                                else if (item.type === 'theme') content = \`<div style="color:#2ed573; font-size:0.6rem; font-weight:bold; text-transform:uppercase;">Theme</div><div style="color:#fff; font-size:0.75rem; margin-top:2px; text-align:center;">\${item.name}</div>\`;
+                            }
+                            return \`<div style="flex:1; max-width:80px; height:60px; background: rgba(0,0,0,0.5); border: 1px dashed #444; border-radius: 6px; display:flex; flex-direction:column; align-items:center; justify-content:center;">\${content}</div>\`;
+                        }).join('')}
+                    </div>
+                </div>
             </div>
         `;
     } else {
@@ -399,6 +414,21 @@ function openUserProfileModal(u) {
                 <div style="font-size:0.85rem; color:#94a3b8; margin-bottom:5px;">Freigeschaltete Themes: <span style="color:#fff">${animeThemeNames.join(', ') || '-'}</span></div>
                 <div style="font-size:0.85rem; color:#2ed573; margin-bottom:5px;">Lieblingscharakter: <span style="color:#fff">${topFav ? `${topFav} (${topFavCount}x auf Platz 1)` : '-'}</span></div>
                 <div style="font-size:0.85rem; color:#ff4757;">Nemesis: <span style="color:#fff">${topNem ? `${topNem} (${topNemCount}x auf Platz 5)` : '-'}</span></div>
+                
+                <div style="margin-top:15px; border-top:1px solid #2a3142; padding-top:10px;">
+                    <h5 style="margin:0 0 10px 0; color:#e2e8f0; font-size:0.8rem; text-align:center;">Trophäenschrank</h5>
+                    <div style="display:flex; gap:10px; justify-content:center;">
+                        ${[0,1,2].map(i => {
+                            const item = (u.showcase_waifu || [])[i];
+                            let content = '<span style="color:#444; font-size:1.5rem;">+</span>';
+                            if (item) {
+                                if (item.type === 'title') content = \`<div style="color:#ffd700; font-size:0.6rem; font-weight:bold; text-transform:uppercase;">Titel</div><div style="color:#fff; font-size:0.75rem; margin-top:2px; text-align:center;">\${item.name}</div>\`;
+                                else if (item.type === 'theme') content = \`<div style="color:#2ed573; font-size:0.6rem; font-weight:bold; text-transform:uppercase;">Theme</div><div style="color:#fff; font-size:0.75rem; margin-top:2px; text-align:center;">\${item.name}</div>\`;
+                            }
+                            return \`<div style="flex:1; max-width:80px; height:60px; background: rgba(0,0,0,0.5); border: 1px dashed #444; border-radius: 6px; display:flex; flex-direction:column; align-items:center; justify-content:center;">\${content}</div>\`;
+                        }).join('')}
+                    </div>
+                </div>
             </div>
         `;
     }
