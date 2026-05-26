@@ -1,5 +1,20 @@
 export const patchNotesWaifu = [
     {
+        version: "v7.1",
+        title: "STABILITÄT, QOL & WARTUNGSMODI",
+        isHotfix: false,
+        changes: [
+            "Anti-Cheat & Integrität: Ein Seiten-Reload im aktiven Spiel bricht das Spiel nicht mehr ab. Der Fortschritt bleibt bestehen und der Neustart-Knopf wurde entfernt. Man muss das Ranking zwingend beenden.",
+            "Feature: Neuer gezielter Admin-Wartungsmodus! Admins können nun nicht nur die gesamte Seite, sondern auch einzelne Modi (Klassisch, Advanced, Versus) für Wartungsarbeiten temporär deaktivieren.",
+            "Neues Feature: Shop Tracker. Im Shop wird nun unter jedem Pack direkt angezeigt, wie oft du diesen spezifischen Pack-Typ bereits geöffnet hast.",
+            "Neues Feature: 'Perfektion' (Versus-Achievement). Verdiene dir einen exklusiven Titel, indem du in einem Versus-Spiel absolut keine Abweichung vom globalen Ranking hast (Score: 0).",
+            "UI-Update: Das Spielerprofil wurde für Desktop-Nutzer auf ein elegantes horizontales Layout umgebaut, sodass alle Tabs und Inhalte direkt ohne Scrollen zugänglich sind.",
+            "QoL: Das Spiel merkt sich nun über alle Sessions hinweg (und auch nach einem Reload), welches Universum, welchen Modus und welche Kategorie du als Letztes gespielt hast.",
+            "Visualisierung: Wenn du beim Booster-Kauf nicht genug Credits hast, erhältst du nun eine angenehme rote Benachrichtigung, anstatt eines aufdringlichen Alerts.",
+            "Hotfix: Neue Spieler oder Resets werden ab sofort ohne Verzögerung direkt beim Aufruf des Scoreboards geladen und angezeigt."
+        ]
+    },
+    {
         version: "v7.0",
         title: "GACHA & SAMMELALBUM UPDATE",
         isHotfix: false,
