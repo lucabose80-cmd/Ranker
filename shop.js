@@ -5,10 +5,10 @@ import { currentMode } from './mode-state.js';
 let isShopInitialized = false;
 
 const RARITIES = {
-    COMMON: { id: 'common', name: 'Gewöhnlich', color: '#888888', dropRate: 0.60, border: '5px solid #111' },
-    RARE: { id: 'rare', name: 'Selten', color: '#ff9f43', dropRate: 0.30, border: '5px solid #ff9f43' },
-    EPIC: { id: 'epic', name: 'Episch', color: '#9b59b6', dropRate: 0.08, border: '5px solid #9b59b6', holo: true },
-    LEGENDARY: { id: 'legendary', name: 'Legendär', color: '#ffd700', dropRate: 0.02, border: '5px solid #ffd700', holo: true }
+    COMMON: { id: 'common', name: 'Gewöhnlich', color: '#888888', dropRate: 0.80, border: '5px solid #111' },
+    RARE: { id: 'rare', name: 'Selten', color: '#ff9f43', dropRate: 0.15, border: '5px solid #ff9f43' },
+    EPIC: { id: 'epic', name: 'Episch', color: '#9b59b6', dropRate: 0.04, border: '5px solid #9b59b6', holo: true },
+    LEGENDARY: { id: 'legendary', name: 'Legendär', color: '#ffd700', dropRate: 0.01, border: '5px solid #ffd700', holo: true }
 };
 
 const BOOSTERS = [
@@ -127,11 +127,11 @@ async function openBooster(booster, pool) {
             rarity = Math.random() < 0.2 ? RARITIES.LEGENDARY : RARITIES.EPIC;
         } else if (i === 4) {
             // 5th card: Guaranteed Rare or better
-            // E.g., 94% Rare, 5% Epic, 1% Legendary
+            // E.g., 88% Rare, 10% Epic, 2% Legendary
             rarity = getRarity({
-                RARE: { ...RARITIES.RARE, dropRate: 0.94 },
-                EPIC: { ...RARITIES.EPIC, dropRate: 0.05 },
-                LEGENDARY: { ...RARITIES.LEGENDARY, dropRate: 0.01 }
+                RARE: { ...RARITIES.RARE, dropRate: 0.88 },
+                EPIC: { ...RARITIES.EPIC, dropRate: 0.10 },
+                LEGENDARY: { ...RARITIES.LEGENDARY, dropRate: 0.02 }
             });
         } else {
             // Standard drop rates
