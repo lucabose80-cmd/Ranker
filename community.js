@@ -7,6 +7,7 @@ import { trackRead, trackWrite } from './tracker.js';
 import { TITLES } from './titles.js';
 import { THEMES } from './themes.js';
 import { openPrivateChat } from './private-chat.js';
+import { activeCharacterDatabase } from './theme.js';
 
 const REACTION_EMOJIS = ['👍', '😂', '❤️', '😢', '😡'];
 

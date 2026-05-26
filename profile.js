@@ -686,7 +686,15 @@ window.renderCommunityAlbum = function(user, containerId, filterPack = 'all') {
                  nameBanner.textContent = charName;
                  card.appendChild(nameBanner);
                  
-                 stackContainer.title = `${charName} (${cards.length}x)`;
+                 const tooltipLines = [`${charName} (${cards.length} Gesamt)`];
+                 const rarityCounts = {};
+                 cards.forEach(c => rarityCounts[c.rarity] = (rarityCounts[c.rarity] || 0) + 1);
+                 if (rarityCounts['legendary']) tooltipLines.push(`Legendär: ${rarityCounts['legendary']}x`);
+                 if (rarityCounts['epic']) tooltipLines.push(`Episch: ${rarityCounts['epic']}x`);
+                 if (rarityCounts['rare']) tooltipLines.push(`Selten: ${rarityCounts['rare']}x`);
+                 if (rarityCounts['common']) tooltipLines.push(`Gewöhnlich: ${rarityCounts['common']}x`);
+                 
+                 stackContainer.title = tooltipLines.join('\n');
                  
                  const topBanner = document.createElement('div');
                  const col = c.rarity === 'legendary' ? '#ffd700' : (c.rarity === 'epic' ? '#9b59b6' : (c.rarity === 'rare' ? '#ff9f43' : '#888'));
