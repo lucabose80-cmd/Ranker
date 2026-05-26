@@ -1,5 +1,20 @@
 export const patchNotesStarWars = [
     {
+        version: "v6.3",
+        title: "Analytics & Showcase Update",
+        isHotfix: false,
+        changes: [
+            "Feature: Tiefergehende Statistiken (Personal Analytics). Ein Button in deinem Profil generiert ab sofort vollautomatisch eine persönliche Tier-List aus all deinen Spielen.",
+            "Feature: Dynamische Tier-List-Generierung. Deine bewerteten Charaktere werden differenziert in Tiers von S bis F eingeordnet. Die generierte Grafik kann mit einem Klick gespeichert werden.",
+            "Feature: Die neue 'Machtverirrung'-Statistik analysiert, bei welchem Charakter du am extremsten vom globalen Community-Durchschnitt abweichst.",
+            "Feature: Versus-Rivalitäten & Match-History. Dein Profil zeigt jetzt deinen 'Meister' (gegen den du am öftesten verloren hast) und deinen 'Schüler' (gegen den du am meisten gewonnen hast) an.",
+            "Feature: Trophäenschrank (Showcase). In deinem Profil gibt es nun 3 Slots, in denen du stolz deine hart verdienten Titel und seltensten Themes ausstellen kannst. Diese sind auch im Online-Tab für die Community sichtbar.",
+            "Hotfix: Der Trophäenschrank im Online-Tab aktualisiert sich nun sofort live in den Spieler-Visitenkarten ohne Neuladen.",
+            "Hotfix: Das automatische Speichern der Tier-List funktioniert nun absolut zuverlässig (und überspringt leere Bilder ohne Absturz).",
+            "Hotfix: Komplexe Analytics (Machtverirrung und Tier-List) binden nun verlässlich all deine historischen Spielstände aus alten Datenbanken mit ein und sichern fehlende Community-Rankings elegant ab."
+        ]
+    },
+    {
         version: "v6.2",
         title: "Gamification Update",
         isHotfix: false,
