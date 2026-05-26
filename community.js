@@ -419,7 +419,9 @@ function openUserProfileModal(u) {
                                     if(item.rarity==='rare') border='2px solid #ff9f43';
                                     if(item.rarity==='epic') border='2px solid #9b59b6';
                                     if(item.rarity==='legendary') border='2px solid #ffd700';
-                                    return `<div style="width:60px; height:90px; border-radius:6px; background-image:url('${dbObj.img}'); background-size:cover; background-position:center; border:${border}; position:relative; box-shadow:0 2px 5px rgba(0,0,0,0.5);">
+                                    const holo = (item.rarity==='epic'||item.rarity==='legendary') ? `<div style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; mix-blend-mode:color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear;"></div>` : '';
+                                    return `<div class="community-showcase-card" style="width:60px; height:90px; border-radius:6px; background-image:url('${dbObj.img}'); background-size:cover; background-position:center; border:${border}; position:relative; box-shadow:0 2px 5px rgba(0,0,0,0.5);">
+                                        ${holo}
                                         <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.8); color:#fff; font-size:0.5rem; text-align:center; padding:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.charName}</div>
                                     </div>`;
                                 }
@@ -429,7 +431,9 @@ function openUserProfileModal(u) {
                     </div>
                 </div>
                 
-                <div id="community-album-sw-${u.username}"></div>
+                <div style="text-align:center; margin-top:15px;">
+                    <button class="rank-btn btn-sm" onclick='window.showUserAlbumModal(${JSON.stringify(u).replace(/'/g, "&#39;")})' style="font-size:0.8rem; padding:8px 15px;">Sammelalbum ansehen</button>
+                </div>
             </div>
         `;
     } else {
@@ -504,7 +508,9 @@ function openUserProfileModal(u) {
                                     if(item.rarity==='rare') border='2px solid #ff9f43';
                                     if(item.rarity==='epic') border='2px solid #9b59b6';
                                     if(item.rarity==='legendary') border='2px solid #ffd700';
-                                    return `<div style="width:60px; height:90px; border-radius:6px; background-image:url('${dbObj.img}'); background-size:cover; background-position:center; border:${border}; position:relative; box-shadow:0 2px 5px rgba(0,0,0,0.5);">
+                                    const holo = (item.rarity==='epic'||item.rarity==='legendary') ? `<div style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; mix-blend-mode:color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear;"></div>` : '';
+                                    return `<div class="community-showcase-card" style="width:60px; height:90px; border-radius:6px; background-image:url('${dbObj.img}'); background-size:cover; background-position:center; border:${border}; position:relative; box-shadow:0 2px 5px rgba(0,0,0,0.5);">
+                                        ${holo}
                                         <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.8); color:#fff; font-size:0.5rem; text-align:center; padding:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.charName}</div>
                                     </div>`;
                                 }
@@ -514,7 +520,9 @@ function openUserProfileModal(u) {
                     </div>
                 </div>
                 
-                <div id="community-album-waifu-${u.username}"></div>
+                <div style="text-align:center; margin-top:15px;">
+                    <button class="rank-btn btn-sm" onclick='window.showUserAlbumModal(${JSON.stringify(u).replace(/'/g, "&#39;")})' style="font-size:0.8rem; padding:8px 15px;">Sammelalbum ansehen</button>
+                </div>
             </div>
         `;
     }
@@ -557,12 +565,65 @@ function openUserProfileModal(u) {
         });
     }
     
-    // Asynchronously load Machtverirrung and Album
+    // Asynchronously load Machtverirrung
     setTimeout(() => { 
         if (window.loadMachtverirrung) window.loadMachtverirrung(u, `community-machtverirrung-${u.username}`);
-        if (window.renderCommunityAlbum) window.renderCommunityAlbum(u, currentMode === 'starwars' ? `community-album-sw-${u.username}` : `community-album-waifu-${u.username}`);
     }, 100);
 }
+
+window.showUserAlbumModal = function(u) {
+    let modal = document.getElementById('foreign-album-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'foreign-album-modal';
+        modal.className = 'modal hidden';
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width:800px; background:#1e293b; color:#fff; padding:20px; border-radius:12px; max-height:90vh; overflow-y:auto; position:relative;">
+                <button id="close-foreign-album-btn" style="position:absolute; top:10px; right:10px; background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer;">✕</button>
+                <h3 style="margin-top:0; text-align:center; color:#ffd700;">Sammelalbum von <span id="foreign-album-name"></span></h3>
+                
+                <div style="display:flex; justify-content:center; gap:10px; margin-bottom:15px;">
+                    <select id="foreign-album-pack-filter" style="padding:8px; border-radius:4px; background:rgba(0,0,0,0.5); color:#fff; border:1px solid #444;">
+                        <option value="all">Alle Packs</option>
+                        <option value="starwars_all">Galaktisches Standard-Pack</option>
+                        <option value="starwars_klon">Klonkrieger Elite-Pack</option>
+                        <option value="starwars_jedi_sith">Machtanwender Pack</option>
+                    </select>
+                    <select id="foreign-album-sort-filter" style="padding:8px; border-radius:4px; background:rgba(0,0,0,0.5); color:#fff; border:1px solid #444;">
+                        <option value="rarity_desc">Seltenste zuerst</option>
+                        <option value="rarity_asc">Gewöhnlichste zuerst</option>
+                        <option value="count_desc">Meiste zuerst</option>
+                        <option value="name_asc">Name (A-Z)</option>
+                    </select>
+                </div>
+                
+                <div id="foreign-album-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(100px, 1fr)); gap:25px; padding:10px;"></div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        document.getElementById('close-foreign-album-btn').addEventListener('click', () => modal.classList.add('hidden'));
+    }
+    
+    document.getElementById('foreign-album-name').textContent = u.displayName || u.username;
+    
+    const packFilter = document.getElementById('foreign-album-pack-filter');
+    const sortFilter = document.getElementById('foreign-album-sort-filter');
+    
+    const update = () => {
+        if (window.renderCommunityAlbum) {
+            window.renderCommunityAlbum(u, 'foreign-album-grid', packFilter.value, sortFilter.value);
+        }
+    };
+    
+    packFilter.onchange = update;
+    sortFilter.onchange = update;
+    
+    packFilter.value = 'all';
+    sortFilter.value = 'rarity_desc';
+    update();
+    
+    modal.classList.remove('hidden');
+};
 
 
 

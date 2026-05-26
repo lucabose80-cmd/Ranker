@@ -1672,27 +1672,34 @@ body.alt-theme .nav-link.active { color: #ff2a9d; border-bottom-color: #ff2a9d; 
 }
 
 .album-stack-container .album-stack-tooltip {
-    visibility: hidden;
-    background-color: rgba(0, 0, 0, 0.9);
+    display: none;
+    background-color: rgba(0, 0, 0, 0.95);
     color: #fff;
     text-align: center;
     border-radius: 6px;
-    padding: 8px;
+    padding: 10px;
     position: absolute;
-    z-index: 100;
-    bottom: 110%;
+    z-index: 9999;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
-    opacity: 0;
-    transition: opacity 0.3s;
-    white-space: pre-line;
+    transform: translate(-50%, -50%);
     font-size: 0.75rem;
     pointer-events: none;
     border: 1px solid #444;
     min-width: 120px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+}
+.album-stack-container:hover {
+    z-index: 100;
 }
 .album-stack-container:hover .album-stack-tooltip {
-    visibility: visible;
-    opacity: 1;
+    display: block;
+}
+
+.community-showcase-card {
+    transition: transform 0.2s;
+}
+.community-showcase-card:hover {
+    transform: scale(1.3);
+    z-index: 10;
 }

@@ -683,7 +683,7 @@ window.renderCommunityAlbum = function(user, containerId, filterPack = 'all', so
         const stackContainer = document.createElement('div');
         stackContainer.className = 'album-stack-container';
         const stackOffset = Math.min(20, cards.length * 4);
-        stackContainer.style.cssText = `position:relative; width:100%; aspect-ratio:2/3; margin-bottom: ${stackOffset}px; margin-right: ${stackOffset}px; cursor:help;`;
+        stackContainer.style.cssText = `position:relative; width:100%; aspect-ratio:2/3; margin-bottom: ${stackOffset}px; margin-right: ${stackOffset}px; cursor:pointer;`;
         
         cards.slice(0, 5).forEach((c, idx) => {
             const card = document.createElement('div');
