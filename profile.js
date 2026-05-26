@@ -835,14 +835,15 @@ window.loadMachtverirrung = async function(user, targetDivId) {
 
     for (const [name, stats] of Object.entries(charRanks)) {
         const userAvg = stats.sum / stats.count;
-        if (globalRanks[name]) {
-            const diff = Math.abs(userAvg - globalRanks[name]);
-            if (stats.count >= 2 && diff > maxDiff) {
-                maxDiff = diff;
-                delusionChar = name;
-                delusionUserAvg = userAvg;
-                delusionGlobalAvg = globalRanks[name];
-            }
+        let gRank = globalRanks[name];
+        if (gRank === undefined) gRank = 3.0; // Fallback to exact middle if community hasn't ranked it yet
+        
+        const diff = Math.abs(userAvg - gRank);
+        if (stats.count >= 2 && diff > maxDiff) {
+            maxDiff = diff;
+            delusionChar = name;
+            delusionUserAvg = userAvg;
+            delusionGlobalAvg = gRank;
         }
     }
 
