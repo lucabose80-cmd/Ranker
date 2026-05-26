@@ -1,6 +1,36 @@
 export const patchNotesStarWars = [
     {
+        version: "v6.1",
+        title: "Community & Login Update",
+        isHotfix: true,
+        changes: [
+            "Feature: Neues smartes Autocomplete-Feld auf dem Login-Bildschirm. Beim Eintippen des Benutzernamens werden passende bekannte Accounts vorgeschlagen – so passieren keine Tippfehler mehr. Das Dropdown erscheint erst ab dem ersten Buchstaben und zeigt nur passende Treffer.",
+            "Feature: Im Profil anderer Spieler (Community-Tab) gibt es jetzt einen 💬 NACHRICHT SENDEN-Button. Nachrichten können auch an Spieler geschrieben werden, die gerade offline sind.",
+            "Feature: Vorschläge-Kategorien überarbeitet: Es gibt jetzt Vorschläge (Allgemein), Charakter Vorschläge, Tags Vorschläge, Korrekturen und Peak Modus Vorschläge. Jede Kategorie zeigt nur die dazugehörigen Vorschläge.",
+            "Bugfix: Das Online-Panel konnte beim Einklappen den Reload-Button und den Pfeil-Button übereinanderlegen. Die Buttons sind jetzt korrekt im Header-Flex-Layout angeordnet.",
+            "Bugfix: Das Reload-Symbol ↻ war beim Einklappen der Sidebar nach links versetzt. Es ist jetzt zentriert und wird korrekt über dem Pfeil-Button gestapelt."
+        ]
+    },
+    {
+        version: "v6.0",
+        title: "Das Große Community-Update",
+        isHotfix: false,
+        changes: [
+            "Feature: Online-Panel einklappbar! Die Sidebar lässt sich auf ein schmales Icon-Panel reduzieren. Im eingeklappten Zustand sieht man nur noch die Profilbilder mit dem Online-Punkt und ein Reload-Symbol. Per Klick auf den Pfeil wird sie wieder vollständig aufgeklappt.",
+            "Feature: Scoreboard-Gewichtung. Charaktere, die nur selten bewertet wurden, werden nicht mehr automatisch ganz oben angezeigt. Die Punktzahl wird als Durchschnitt (Gesamtpunkte ÷ Anzahl Rankings) berechnet. Bei gleichem Schnitt gewinnt der Charakter mit mehr Rankings. Im Hover-Tooltip sieht man die genaue Berechnung.",
+            "Feature: Vorschläge nach Kategorien getrennt. Im Community-Vorschläge-Tab kann man jetzt zwischen den Kategorien filtern. Im Admin-Panel gibt es denselben Filter.",
+            "Feature: Klassischer Modus erweitert. Zusätzlich zum Expanded Universe gibt es nun den Peak-Ranking-Modus (nur die 'besten' Charaktere) sowie eine eigene Kategorie für Fahrzeuge.",
+            "Feature: Anti-Cheat-Schutz. Wenn ein Spieler wiederholt exakt dieselbe Bewertung (Skala 1–10) für verschiedene Charaktere abgibt oder immer das gleiche lineare Muster (12345, 54321) nutzt, wird die Runde nicht ins Scoreboard gezählt. Der Spieler bemerkt dies nicht.",
+            "Feature: Admin-Panel Reset-Buttons. Admins können jetzt gezielt einzelne Spielmodi (Expanded Universe, Peak, Fahrzeuge, Advanced, Versus usw.) zurücksetzen sowie einzelne Spieler aus einem bestimmten Modus entfernen.",
+            "Feature: Neue Versus-Lobby – Spieler können aus der Community heraus direkt zum Versus-Duell herausgefordert werden.",
+            "Feature: Privater Chat – Spieler können sich gegenseitig private Nachrichten schicken (sichtbar durch Klick auf das Avatar in der Online-Liste).",
+            "Feature: Neue Titel & Achievements für besondere Ereignisse im Versus- und Expanded-Universe-Modus.",
+            "Balancing: Der klassische Modus (Expanded Universe) bleibt der Standard für alle Bewertungen."
+        ]
+    },
+    {
         version: "v5.0.4",
+
         title: "Code-Modernisierung & Performance-Update",
         isHotfix: false,
         changes: [
