@@ -15,6 +15,9 @@ export let jokerUsed = false;
 let selectedJokerSlot = null;
 
 export async function initAdvancedGame() {
+    const user = getCurrentUser();
+    if (!user) return;
+
     const { getDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
     try {
         const snap = await getDoc(doc(db, "config", "maintenance"));

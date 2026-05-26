@@ -13,6 +13,9 @@ export let currentIndex = 0;
 export let placedCharacters = { 1: null, 2: null, 3: null, 4: null, 5: null };
 
 export async function initGame() {
+    const user = getCurrentUser();
+    if (!user) return;
+    
     const { getDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
     try {
         const snap = await getDoc(doc(db, "config", "maintenance"));
