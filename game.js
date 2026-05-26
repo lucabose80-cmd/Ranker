@@ -183,13 +183,13 @@ export function showNextCharacter() {
             'Grogu': '*Coos*'
         };
         
-        const extraClass = currentGameCategory === 'hardcore' ? 'hardcore-silhouette' : '';
+        const extraStyle = currentGameCategory === 'hardcore' ? 'filter: brightness(0);' : '';
         let quoteHtml = '';
         if (currentGameCategory === 'hardcore') {
             const quote = hardcoreQuotes[currentChar.name] || '...';
             quoteHtml = `<div style="text-align: center; font-style: italic; color: #ffd700; margin-top: 10px; font-size: 0.9rem;">"${quote}"</div>`;
         }
-        imgContainer.innerHTML = `<img src="${currentChar.img}" alt="Charakter Bild" class="${extraClass}">${quoteHtml}`;
+        imgContainer.innerHTML = `<img src="${currentChar.img}" alt="Charakter Bild" style="${extraStyle}">${quoteHtml}`;
         
         const user = getCurrentUser();
         const discoveredList = user && user.discovered ? user.discovered : [];
@@ -234,7 +234,7 @@ export function revealNames() {
         labelSpan.classList.add('revealed-name');
         
         const img = document.querySelector(`#slot-${i} .card-content img`);
-        if (img) img.classList.remove('hardcore-silhouette');
+        if (img) img.style.filter = 'none';
     }
 }
 
@@ -244,8 +244,8 @@ export async function handleRankSelection(rank, buttonElement) {
     // Actually, we remove it when the game is finished (all 5 placed) so they can't reload during the game.
     
     const currentChar = activePool[currentIndex];
-    const extraClass = currentGameCategory === 'hardcore' ? 'hardcore-silhouette' : '';
-    document.querySelector(`#slot-${rank} .card-content`).innerHTML = `<img src="${currentChar.img}" alt="Ranked" class="${extraClass}">`;
+    const extraStyle = currentGameCategory === 'hardcore' ? 'filter: brightness(0);' : '';
+    document.querySelector(`#slot-${rank} .card-content`).innerHTML = `<img src="${currentChar.img}" alt="Ranked" style="${extraStyle}">`;
     placedCharacters[rank] = currentChar;
     
     buttonElement.disabled = true;

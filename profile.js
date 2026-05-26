@@ -445,13 +445,19 @@ function renderThemeSelection(user) {
     });
 }
 
-function renderStatsSelection(user) {
+async function renderStatsSelection(user) {
     const container = document.getElementById('stats-container');
     if (!container) return;
 
-    const gamesPlayed = currentMode === 'starwars' ? (user.gamesPlayed_starwars || 0) : (user.gamesPlayed_waifu || 0);
-    const favs = currentMode === 'starwars' ? (user.favorites_starwars || {}) : (user.favorites_waifu || {});
-    const nems = currentMode === 'starwars' ? (user.nemesis_starwars || {}) : (user.nemesis_waifu || {});
+    const gamesPlayed = (user.gamesPlayed_starwars || 0) + (user.gamesPlayed_waifu || 0);
+    
+    const favs = {};
+    for (const [k, v] of Object.entries(user.favorites_starwars || {})) favs[k] = (favs[k] || 0) + v;
+    for (const [k, v] of Object.entries(user.favorites_waifu || {})) favs[k] = (favs[k] || 0) + v;
+
+    const nems = {};
+    for (const [k, v] of Object.entries(user.nemesis_starwars || {})) nems[k] = (nems[k] || 0) + v;
+    for (const [k, v] of Object.entries(user.nemesis_waifu || {})) nems[k] = (nems[k] || 0) + v;
 
     let topFav = null;
     let topFavCount = 0;
@@ -465,9 +471,16 @@ function renderStatsSelection(user) {
         if (count > topNemCount) { topNemCount = count; topNem = name; }
     }
 
+    let allChars = activeCharacterDatabase;
+    try {
+        const altData = await import('./data-alt.js');
+        const swData = await import('./data-starwars.js');
+        allChars = [...(swData.starWarsCharacters || []), ...(altData.waifuCharacters || [])];
+    } catch(e) {}
+
     const getCharImg = (name) => {
         if (!name) return '';
-        const char = activeCharacterDatabase.find(c => c.name === name);
+        const char = allChars.find(c => c.name === name);
         return char ? char.img : '';
     };
 
