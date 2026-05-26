@@ -379,10 +379,10 @@ function openUserProfileModal(u) {
                             const item = (u.showcase_starwars || [])[i];
                             let content = '<span style="color:#444; font-size:1.5rem;">+</span>';
                             if (item) {
-                                if (item.type === 'title') content = \`<div style="color:#ffd700; font-size:0.6rem; font-weight:bold; text-transform:uppercase;">Titel</div><div style="color:#fff; font-size:0.75rem; margin-top:2px; text-align:center;">\${item.name}</div>\`;
-                                else if (item.type === 'theme') content = \`<div style="color:#2ed573; font-size:0.6rem; font-weight:bold; text-transform:uppercase;">Theme</div><div style="color:#fff; font-size:0.75rem; margin-top:2px; text-align:center;">\${item.name}</div>\`;
+                                if (item.type === 'title') content = `<div style="color:#ffd700; font-size:0.6rem; font-weight:bold; text-transform:uppercase;">Titel</div><div style="color:#fff; font-size:0.75rem; margin-top:2px; text-align:center;">${item.name}</div>`;
+                                else if (item.type === 'theme') content = `<div style="color:#2ed573; font-size:0.6rem; font-weight:bold; text-transform:uppercase;">Theme</div><div style="color:#fff; font-size:0.75rem; margin-top:2px; text-align:center;">${item.name}</div>`;
                             }
-                            return \`<div style="flex:1; max-width:80px; height:60px; background: rgba(0,0,0,0.5); border: 1px dashed #444; border-radius: 6px; display:flex; flex-direction:column; align-items:center; justify-content:center;">\${content}</div>\`;
+                            return `<div style="flex:1; max-width:80px; height:60px; background: rgba(0,0,0,0.5); border: 1px dashed #444; border-radius: 6px; display:flex; flex-direction:column; align-items:center; justify-content:center;">${content}</div>`;
                         }).join('')}
                     </div>
                 </div>
@@ -422,10 +422,10 @@ function openUserProfileModal(u) {
                             const item = (u.showcase_waifu || [])[i];
                             let content = '<span style="color:#444; font-size:1.5rem;">+</span>';
                             if (item) {
-                                if (item.type === 'title') content = \`<div style="color:#ffd700; font-size:0.6rem; font-weight:bold; text-transform:uppercase;">Titel</div><div style="color:#fff; font-size:0.75rem; margin-top:2px; text-align:center;">\${item.name}</div>\`;
-                                else if (item.type === 'theme') content = \`<div style="color:#2ed573; font-size:0.6rem; font-weight:bold; text-transform:uppercase;">Theme</div><div style="color:#fff; font-size:0.75rem; margin-top:2px; text-align:center;">\${item.name}</div>\`;
+                                if (item.type === 'title') content = `<div style="color:#ffd700; font-size:0.6rem; font-weight:bold; text-transform:uppercase;">Titel</div><div style="color:#fff; font-size:0.75rem; margin-top:2px; text-align:center;">${item.name}</div>`;
+                                else if (item.type === 'theme') content = `<div style="color:#2ed573; font-size:0.6rem; font-weight:bold; text-transform:uppercase;">Theme</div><div style="color:#fff; font-size:0.75rem; margin-top:2px; text-align:center;">${item.name}</div>`;
                             }
-                            return \`<div style="flex:1; max-width:80px; height:60px; background: rgba(0,0,0,0.5); border: 1px dashed #444; border-radius: 6px; display:flex; flex-direction:column; align-items:center; justify-content:center;">\${content}</div>\`;
+                            return `<div style="flex:1; max-width:80px; height:60px; background: rgba(0,0,0,0.5); border: 1px dashed #444; border-radius: 6px; display:flex; flex-direction:column; align-items:center; justify-content:center;">${content}</div>`;
                         }).join('')}
                     </div>
                 </div>

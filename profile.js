@@ -1,4 +1,4 @@
-﻿function getSeenIds() {
+function getSeenIds() {
     const raw = localStorage.getItem('seen_unlock_ids') || '';
     if (raw.startsWith('[')) {
         try {
@@ -171,7 +171,7 @@ export function initProfile() {
     refreshProfileContent();
 }
 
-// Wird jedes Mal aufgerufen wenn das Profil geÃ¶ffnet wird oder der Modus wechselt
+// Wird jedes Mal aufgerufen wenn das Profil geöffnet wird oder der Modus wechselt
 export async function refreshProfileContent() {
     const { refreshCurrentUser } = await import('./auth.js');
     const user = await refreshCurrentUser();
@@ -219,9 +219,9 @@ export function updateTabNotificationDots(user) {
     const tabTitle = document.getElementById('profile-tab-btn-title');
     const tabTheme = document.getElementById('profile-tab-btn-theme');
 
-    if (tabAvatar) tabAvatar.innerHTML = `Avatare${hasUnseenAvatar ? ' <span style="color:#ffd700;">â—</span>' : ''}`;
-    if (tabTitle) tabTitle.innerHTML = `Titel${hasUnseenTitle ? ' <span style="color:#ffd700;">â—</span>' : ''}`;
-    if (tabTheme) tabTheme.innerHTML = `Farbschemas${hasUnseenTheme ? ' <span style="color:#ffd700;">â—</span>' : ''}`;
+    if (tabAvatar) tabAvatar.innerHTML = `Avatare${hasUnseenAvatar ? ' <span style="color:#ffd700;">●</span>' : ''}`;
+    if (tabTitle) tabTitle.innerHTML = `Titel${hasUnseenTitle ? ' <span style="color:#ffd700;">●</span>' : ''}`;
+    if (tabTheme) tabTheme.innerHTML = `Farbschemas${hasUnseenTheme ? ' <span style="color:#ffd700;">●</span>' : ''}`;
     
     checkProfileUnlockDot(user);
 }
@@ -278,7 +278,7 @@ function renderTitleSelection(user, gamesPlayed) {
             isLocked = false;
         }
         
-        let reqText = isLocked ? `BenÃ¶tigt ${t.required} Spiele` : 'Freigeschaltet';
+        let reqText = isLocked ? `Benötigt ${t.required} Spiele` : 'Freigeschaltet';
         let probHtml = '';
         
         if (t.secret && t.condition && (t.condition.type === 'has_characters' || t.condition.type === 'has_discovered_characters')) {
@@ -291,7 +291,7 @@ function renderTitleSelection(user, gamesPlayed) {
             );
             
             if (!charsExist) {
-                probHtml = `<br><span style="font-size:0.75rem; color:#ff4757;">(Nicht mÃ¶glich)</span>`;
+                probHtml = `<br><span style="font-size:0.75rem; color:#ff4757;">(Nicht möglich)</span>`;
             } else if (totalChars >= 5 && m <= 5) {
                 const waysToPickMfrom5 = getCombination(5, m);
                 const waysToPickMfromTotal = getCombination(totalChars, m);
@@ -304,7 +304,7 @@ function renderTitleSelection(user, gamesPlayed) {
             const k = activeCharacterDatabase.filter(c => c.tags && c.tags.includes(t.condition.tag)).length;
             const m = t.condition.count;
             if (k < m) {
-                probHtml = `<br><span style="font-size:0.75rem; color:#ff4757;">(Nicht mÃ¶glich)</span>`;
+                probHtml = `<br><span style="font-size:0.75rem; color:#ff4757;">(Nicht möglich)</span>`;
             } else if (totalChars >= 5 && m <= 5) {
                 const waysToPickM = getCombination(k, m);
                 const waysToPickRest = getCombination(totalChars - k, 5 - m);
@@ -323,7 +323,7 @@ function renderTitleSelection(user, gamesPlayed) {
         const seenIds = getSeenIds();
         const isNew = !isLocked && !seenIds.includes(t.id);
         card.innerHTML = `
-            <div class="title-card-name">${isLocked ? 'ðŸ”’ ' + t.name : t.name}${isNew ? ' <span style="background:#ffd700; color:#000; font-size:0.55rem; font-weight:bold; padding:1px 3px; border-radius:3px; margin-left:5px; vertical-align:middle;">NEU</span>' : ''}</div>
+            <div class="title-card-name">${isLocked ? '🔒 ' + t.name : t.name}${isNew ? ' <span style="background:#ffd700; color:#000; font-size:0.55rem; font-weight:bold; padding:1px 3px; border-radius:3px; margin-left:5px; vertical-align:middle;">NEU</span>' : ''}</div>
             <div class="title-card-req">${reqText}</div>
         `;
         
@@ -401,7 +401,7 @@ function renderThemeSelection(user) {
                     const probPercent = (prob * 100).toFixed(4);
                     probHtml = `<br><span style="font-size:0.75rem; color:#888;">(Chance: <strong style="color:#ffd700">${probPercent}%</strong> - ${matchingChars}/${totalChars} Chars)</span>`;
                 } else {
-                    probHtml = `<br><span style="font-size:0.75rem; color:#ff4757;">(UnmÃ¶glich: nur ${matchingChars}/${reqCount} nÃ¶tigen Chars vorhanden)</span>`;
+                    probHtml = `<br><span style="font-size:0.75rem; color:#ff4757;">(Unmöglich: nur ${matchingChars}/${reqCount} nötigen Chars vorhanden)</span>`;
                 }
             }
         }
@@ -422,7 +422,7 @@ function renderThemeSelection(user) {
         const isNew = unlocked && !seenIds.includes(t.id);
         card.innerHTML = `
             <div style="width:30px; height:30px; border-radius:50%; background:${t.preview}; margin-bottom:8px; border:2px solid rgba(255,255,255,0.2);"></div>
-            <div class="title-card-name" style="color:${t.preview}">${!unlocked ? 'ðŸ”’ ' : ''}${t.name}${isNew ? ' <span style="background:#ffd700; color:#000; font-size:0.55rem; font-weight:bold; padding:1px 3px; border-radius:3px; margin-left:5px; vertical-align:middle;">NEU</span>' : ''}</div>
+            <div class="title-card-name" style="color:${t.preview}">${!unlocked ? '🔒 ' : ''}${t.name}${isNew ? ' <span style="background:#ffd700; color:#000; font-size:0.55rem; font-weight:bold; padding:1px 3px; border-radius:3px; margin-left:5px; vertical-align:middle;">NEU</span>' : ''}</div>
             <div class="title-card-req">${reqText}</div>
         `;
 
@@ -504,34 +504,34 @@ function renderStatsSelection(user) {
                 <div style="flex:1; min-width:200px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid #333; text-align:center;">
                     <h4 style="margin:0 0 15px 0; color:#ff9f43;">Dein Meister (Versus)</h4>
                     <div style="color:#fff; font-weight:bold;">${meister || 'Noch keiner'}</div>
-                    <div style="font-size:0.8rem; color:#94a3b8; margin-top:5px;">${meisterLosses > 0 ? `${meisterLosses}x gegen dich verloren` : ''}</div>
+                    <div style="font-size:0.8rem; color:#94a3b8; margin-top:5px;">${meisterLosses > 0 ? `${meisterLosses}x gegen dich gewonnen` : ''}</div>
                 </div>
                 <div style="flex:1; min-width:200px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid #333; text-align:center;">
-                    <h4 style="margin:0 0 15px 0; color:#0abde3;">Dein SchÃ¼ler (Versus)</h4>
+                    <h4 style="margin:0 0 15px 0; color:#0abde3;">Dein Schüler (Versus)</h4>
                     <div style="color:#fff; font-weight:bold;">${schueler || 'Noch keiner'}</div>
                     <div style="font-size:0.8rem; color:#94a3b8; margin-top:5px;">${schuelerWins > 0 ? `${schuelerWins}x von dir besiegt` : ''}</div>
                 </div>
             </div>
 
             <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid #333;">
-                <h4 style="margin:0 0 15px 0; color:#e2e8f0; text-align:center;">Dein TrophÃ¤enschrank</h4>
-                <div style="font-size:0.8rem; color:#94a3b8; text-align:center; margin-bottom:15px;">Zeige deine seltensten Titel und Themes. Klicke auf einen Slot.</div>
+                <h4 style="margin:0 0 15px 0; color:#e2e8f0; text-align:center;">Dein Trophäenschrank</h4>
+                <div style="font-size:0.8rem; color:#94a3b8; text-align:center; margin-bottom:15px;">Zeige deine seltensten Titel und Themes.</div>
                 <div style="display:flex; gap:15px; flex-wrap:wrap; justify-content:center;">
                     ${[0, 1, 2].map(i => {
                         const item = showcase[i];
                         let content = '<span style="color:#666; font-size:2rem;">+</span>';
                         if (item) {
-                            if (item.type === 'title') content = \`<div style="color:#ffd700; font-size:0.7rem; font-weight:bold; text-transform:uppercase;">Titel</div><div style="color:#fff; font-size:0.9rem; margin-top:5px; text-align:center;">\${item.name}</div>\`;
-                            else if (item.type === 'theme') content = \`<div style="color:#2ed573; font-size:0.7rem; font-weight:bold; text-transform:uppercase;">Theme</div><div style="color:#fff; font-size:0.9rem; margin-top:5px; text-align:center;">\${item.name}</div>\`;
+                            if (item.type === 'title') content = `<div style="color:#ffd700; font-size:0.7rem; font-weight:bold; text-transform:uppercase;">Titel</div><div style="color:#fff; font-size:0.9rem; margin-top:5px; text-align:center;">${item.name}</div>`;
+                            else if (item.type === 'theme') content = `<div style="color:#2ed573; font-size:0.7rem; font-weight:bold; text-transform:uppercase;">Theme</div><div style="color:#fff; font-size:0.9rem; margin-top:5px; text-align:center;">${item.name}</div>`;
                         }
-                        return \`<div class="showcase-slot" data-slot="\${i}" style="flex:1; min-width:80px; max-width:120px; height:100px; background: rgba(0,0,0,0.5); border: 1px dashed #555; border-radius: 8px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; transition:0.2s;">\${content}</div>\`;
+                        return `<div class="showcase-slot" data-slot="${i}" style="flex:1; min-width:80px; max-width:120px; height:100px; background: rgba(0,0,0,0.5); border: 1px dashed #555; border-radius: 8px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; transition:0.2s;">${content}</div>`;
                     }).join('')}
                 </div>
             </div>
 
             <div style="text-align:center; margin-top:10px;">
                 <button id="btn-generate-tierlist" class="btn primary-btn" style="width:100%; max-width:300px;">
-                    ðŸ“Š Tiefergehende Analyse generieren
+                    📊 Tiefergehende Analyse generieren
                 </button>
             </div>
             <div id="analytics-result-area" style="margin-top:20px;"></div>
@@ -556,9 +556,9 @@ window.openShowcaseModal = function(user, slotIndex) {
         modal.className = 'modal hidden';
         modal.innerHTML = `
             <div class="modal-content" style="max-width:400px; background:#1e293b; color:#fff; padding:20px; border-radius:12px; max-height:80vh; overflow-y:auto;">
-                <h3 style="margin-top:0;">TrophÃ¤e auswÃ¤hlen</h3>
+                <h3 style="margin-top:0;">Trophäe auswählen</h3>
                 <div id="showcase-items-list" style="display:flex; flex-direction:column; gap:10px;"></div>
-                <button id="close-showcase-modal" class="btn secondary-btn" style="margin-top:20px; width:100%;">SchlieÃŸen</button>
+                <button id="close-showcase-modal" class="btn secondary-btn" style="margin-top:20px; width:100%;">Schließen</button>
             </div>
         `;
         document.body.appendChild(modal);
@@ -571,15 +571,15 @@ window.openShowcaseModal = function(user, slotIndex) {
     const emptyBtn = document.createElement('button');
     emptyBtn.className = 'btn';
     emptyBtn.style.cssText = 'background:#333; color:#fff; border:none; padding:10px; border-radius:5px; cursor:pointer; text-align:left;';
-    emptyBtn.textContent = 'âŒ Slot leeren';
+    emptyBtn.textContent = '❌ Slot leeren';
     emptyBtn.onclick = async () => {
         await window.updateShowcaseSlot(user, slotIndex, null);
         modal.classList.add('hidden');
     };
     list.appendChild(emptyBtn);
 
-    if (window.TITLES) {
-        (window.TITLES[currentMode] || []).forEach(t => {
+    if (window.TITLES && window.TITLES[currentMode]) {
+        window.TITLES[currentMode].forEach(t => {
             if (unlockedTitles.includes(t.id)) {
                 const btn = document.createElement('button');
                 btn.style.cssText = 'background:#2d3748; color:#ffd700; border:1px solid #4a5568; padding:10px; border-radius:5px; cursor:pointer; text-align:left; font-weight:bold;';
@@ -593,8 +593,8 @@ window.openShowcaseModal = function(user, slotIndex) {
         });
     }
 
-    if (window.THEMES) {
-        (window.THEMES[currentMode] || []).forEach(t => {
+    if (window.THEMES && window.THEMES[currentMode]) {
+        window.THEMES[currentMode].forEach(t => {
             if (unlockedThemes.includes(t.id)) {
                 const btn = document.createElement('button');
                 btn.style.cssText = 'background:#2d3748; color:#2ed573; border:1px solid #4a5568; padding:10px; border-radius:5px; cursor:pointer; text-align:left; font-weight:bold;';
@@ -639,7 +639,7 @@ window.generateDeepAnalytics = async function(user) {
     if (snapGames.empty) {
         area.innerHTML = '<div style="color:#ff4757; text-align:center;">Noch keine Spiele in diesem Modus gespielt!</div>';
         btn.disabled = false;
-        btn.textContent = 'ðŸ“Š Tiefergehende Analyse generieren';
+        btn.textContent = '📊 Tiefergehende Analyse generieren';
         return;
     }
     
@@ -705,7 +705,7 @@ window.generateDeepAnalytics = async function(user) {
             
         delusionHtml = `
             <div style="background: rgba(156, 39, 176, 0.2); padding: 15px; border-radius: 8px; border: 1px solid #9c27b0; text-align:center; margin-bottom: 20px;">
-                <h4 style="margin:0 0 10px 0; color:#e056fd;">ðŸŒŒ Machtverirrung (GrÃ¶ÃŸte Abweichung)</h4>
+                <h4 style="margin:0 0 10px 0; color:#e056fd;">🌌 Machtverirrung (Größte Abweichung)</h4>
                 <div style="color:#fff; font-size:1.2rem; font-weight:bold; margin-bottom:5px;">${delusionChar}</div>
                 <div style="font-size:0.9rem; color:#e2e8f0; margin-top:5px; background:rgba(0,0,0,0.5); padding:8px; border-radius:4px; display:inline-block;">
                     Dein Schnitt: <strong>Platz ${delusionUserAvg.toFixed(1)}</strong> &nbsp;|&nbsp; Community: <strong>Platz ${delusionGlobalAvg.toFixed(1)}</strong>
@@ -742,7 +742,7 @@ window.generateDeepAnalytics = async function(user) {
             <div style="padding:5px; text-align:center; background:#111; color:#666; font-size:0.7rem;">Generiert von Ranker</div>
         </div>
         <button id="btn-download-tierlist" class="btn" style="background:#2ed573; color:#000; width:100%; font-weight:bold;">
-            ðŸ“¥ Tier-List als Bild speichern
+            📥 Tier-List als Bild speichern
         </button>
     `;
 
@@ -770,14 +770,13 @@ window.generateDeepAnalytics = async function(user) {
                 link.download = `TierList_${user.displayName || user.username}.png`;
                 link.href = canvas.toDataURL("image/png");
                 link.click();
-                downloadBtn.textContent = 'ðŸ“¥ Tier-List als Bild speichern';
+                downloadBtn.textContent = '📥 Tier-List als Bild speichern';
                 downloadBtn.disabled = false;
             }).catch(e => {
                 console.error(e);
                 downloadBtn.textContent = 'Fehler beim Speichern!';
-                setTimeout(() => { downloadBtn.textContent = 'ðŸ“¥ Tier-List als Bild speichern'; downloadBtn.disabled = false; }, 2000);
+                setTimeout(() => { downloadBtn.textContent = '📥 Tier-List als Bild speichern'; downloadBtn.disabled = false; }, 2000);
             });
         });
     }
 }
-
