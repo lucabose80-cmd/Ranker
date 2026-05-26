@@ -309,11 +309,7 @@ export function initCommunity() {
                 clickedUser = allUsersCache.find(u => u.uid === uid);
             }
             if (clickedUser) {
-                if (e.target.closest('.mini-avatar') && uid !== user.uid) {
-                    openPrivateChat(clickedUser);
-                } else {
-                    openUserProfileModal(clickedUser);
-                }
+                openUserProfileModal(clickedUser);
             }
         });
         isOnlineListBound = true;

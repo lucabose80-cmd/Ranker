@@ -48,14 +48,20 @@ function showView(viewId) {
 }
 
 async function bootApp() {
-    const currentUser = getCurrentUser();
+    let currentUser = getCurrentUser();
     if (!currentUser) {
         setupAuthUI();
     } else if (currentUser.role === 'admin') {
         setupAdminUI();
     } else {
+        // Firestore-Daten holen und StarWarsdle-Fortschritt wiederherstellen
+        try {
+            const { refreshCurrentUser, restoreUserStorage } = await import('./auth.js');
+            const freshUser = await refreshCurrentUser();
+            if (freshUser) restoreUserStorage(freshUser);
+        } catch(e) {}
         setupGameUI(currentUser);
-        startPresenceHeartbeat(); // Startet den Online-Status-Ping
+        startPresenceHeartbeat();
     }
     await initAuth(); 
 }

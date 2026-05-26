@@ -26,9 +26,14 @@ export function restoreUserStorage(user) {
     const todaySeed = (new Date(today - offset)).toISOString().slice(0, 10);
     const localDate = localStorage.getItem('starwarsdle_date');
 
-    // Do not restore StarWarsdle solved/guess state from the server.
-    // Only keep a fresh local daily state in the browser.
-    if (localDate !== todaySeed) {
+    // Wenn der User heute schon gespielt hat (laut Firestore-Daten), diesen Stand lokal wiederherstellen
+    if (user.starwarsdleDate === todaySeed) {
+        // Tagesstempel stimmt überein → Fortschritt aus Firestore laden
+        localStorage.setItem('starwarsdle_date', todaySeed);
+        localStorage.setItem('starwarsdle_won', user.starwarsdleWon ? 'true' : 'false');
+        localStorage.setItem('starwarsdle_guesses', JSON.stringify(user.starwarsdleGuesses || []));
+    } else if (localDate !== todaySeed) {
+        // Neuer Tag – alles zurücksetzen
         localStorage.setItem('starwarsdle_date', todaySeed);
         localStorage.setItem('starwarsdle_won', 'false');
         localStorage.setItem('starwarsdle_guesses', '[]');

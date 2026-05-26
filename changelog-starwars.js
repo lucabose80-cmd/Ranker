@@ -20,7 +20,7 @@ export const patchNotesStarWars = [
             "Feature: Scoreboard-Gewichtung. Charaktere, die nur selten bewertet wurden, werden nicht mehr automatisch ganz oben angezeigt. Die Punktzahl wird als Durchschnitt (Gesamtpunkte ÷ Anzahl Rankings) berechnet. Bei gleichem Schnitt gewinnt der Charakter mit mehr Rankings. Im Hover-Tooltip sieht man die genaue Berechnung.",
             "Feature: Vorschläge nach Kategorien getrennt. Im Community-Vorschläge-Tab kann man jetzt zwischen den Kategorien filtern. Im Admin-Panel gibt es denselben Filter.",
             "Feature: Klassischer Modus erweitert. Zusätzlich zum Expanded Universe gibt es nun den Peak-Ranking-Modus (nur die 'besten' Charaktere) sowie eine eigene Kategorie für Fahrzeuge.",
-            "Feature: Anti-Cheat-Schutz. Wenn ein Spieler wiederholt exakt dieselbe Bewertung (Skala 1–10) für verschiedene Charaktere abgibt oder immer das gleiche lineare Muster (12345, 54321) nutzt, wird die Runde nicht ins Scoreboard gezählt. Der Spieler bemerkt dies nicht.",
+            "Feature: Anti-Cheat-Schutz. Ein verstecktes Sicherheitssystem erkennt und filtert auffällige Bewertungsmuster automatisch heraus, um die Integrität des Scoreboards zu schützen.",
             "Feature: Admin-Panel Reset-Buttons. Admins können jetzt gezielt einzelne Spielmodi (Expanded Universe, Peak, Fahrzeuge, Advanced, Versus usw.) zurücksetzen sowie einzelne Spieler aus einem bestimmten Modus entfernen.",
             "Feature: Neue Versus-Lobby – Spieler können aus der Community heraus direkt zum Versus-Duell herausgefordert werden.",
             "Feature: Privater Chat – Spieler können sich gegenseitig private Nachrichten schicken (sichtbar durch Klick auf das Avatar in der Online-Liste).",
