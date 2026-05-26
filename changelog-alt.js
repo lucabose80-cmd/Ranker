@@ -1,5 +1,16 @@
 export const patchNotesWaifu = [
     {
+        version: "v6.2",
+        title: "Gamification Update",
+        isHotfix: false,
+        changes: [
+            "Feature: Neuer täglicher 'Animedle' Modus, um dein Wissen zu testen. Mit täglichem Seed und eigenen Speicherständen.",
+            "Feature: Im Hardcore-Modus werden Charaktere nun komplett versteckt und nur als schwarze Silhouetten angezeigt, ergänzt durch ikonische Zitate als kleine Hilfe.",
+            "Feature: Erweiterte persönliche Analytics in deinem Profil und im Community-Tab. Dein absoluter Lieblingscharakter (und Nemesis) wird nun historienübergreifend berechnet und angezeigt.",
+            "Visualisierung: Getrennte Scoreboards für Hardcore-Rankings eingeführt, damit die regulären Statistiken nicht verfälscht werden."
+        ]
+    },
+    {
         version: "v6.1.1",
         title: "Hotfix: Spieler-Profil",
         isHotfix: true,
