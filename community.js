@@ -356,14 +356,8 @@ function openUserProfileModal(u) {
         const swThemes = u.unlocked_themes_starwars || [];
         const swThemeNames = (THEMES['starwars'] || []).filter(t => t.id.endsWith('_default') || swThemes.includes(t.id)).map(t => t.name);
         
-        const favs = {};
-        for (const [k, v] of Object.entries(u.favorites_starwars || {})) favs[k] = (favs[k] || 0) + v;
-        for (const [k, v] of Object.entries(u.favorites_waifu || {})) favs[k] = (favs[k] || 0) + v;
-        
-        const nems = {};
-        for (const [k, v] of Object.entries(u.nemesis_starwars || {})) nems[k] = (nems[k] || 0) + v;
-        for (const [k, v] of Object.entries(u.nemesis_waifu || {})) nems[k] = (nems[k] || 0) + v;
-        
+        const favs = u.favorites_starwars || {};
+        const nems = u.nemesis_starwars || {};
         let topFav = null, topFavCount = 0;
         for (const [name, count] of Object.entries(favs)) { if (count > topFavCount) { topFavCount = count; topFav = name; } }
         let topNem = null, topNemCount = 0;
@@ -390,14 +384,8 @@ function openUserProfileModal(u) {
         const animeThemes = u.unlocked_themes_waifu || [];
         const animeThemeNames = (THEMES['waifu'] || []).filter(t => t.id.endsWith('_default') || animeThemes.includes(t.id)).map(t => t.name);
         
-        const favs = {};
-        for (const [k, v] of Object.entries(u.favorites_starwars || {})) favs[k] = (favs[k] || 0) + v;
-        for (const [k, v] of Object.entries(u.favorites_waifu || {})) favs[k] = (favs[k] || 0) + v;
-        
-        const nems = {};
-        for (const [k, v] of Object.entries(u.nemesis_starwars || {})) nems[k] = (nems[k] || 0) + v;
-        for (const [k, v] of Object.entries(u.nemesis_waifu || {})) nems[k] = (nems[k] || 0) + v;
-        
+        const favs = u.favorites_waifu || {};
+        const nems = u.nemesis_waifu || {};
         let topFav = null, topFavCount = 0;
         for (const [name, count] of Object.entries(favs)) { if (count > topFavCount) { topFavCount = count; topFav = name; } }
         let topNem = null, topNemCount = 0;
