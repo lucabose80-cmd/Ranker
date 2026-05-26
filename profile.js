@@ -638,11 +638,14 @@ window.generateDeepAnalytics = async function(user) {
     btn.textContent = 'Lade Historie (Dies kann einen Moment dauern)...';
 
     const { db } = await import('./firebase-config.js');
-    const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+    const { collection, query, where, getDocs, doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
     
-    const snapPersonal = await getDoc(doc(db, "scores", `${currentMode}_classic_${user.username}`));
+    const qGamesOld = query(collection(db, "games"), where("username", "==", user.username), where("mode", "==", currentMode));
+    const qGamesNew = query(collection(db, "history"), where("username", "==", user.username), where("mode", "==", currentMode));
     
-    if (!snapPersonal.exists()) {
+    const [snapOld, snapNew] = await Promise.all([getDocs(qGamesOld), getDocs(qGamesNew)]);
+    
+    if (snapOld.empty && snapNew.empty) {
         area.innerHTML = '<div style="color:#ff4757; text-align:center;">Noch keine Spiele in diesem Modus gespielt!</div>';
         btn.disabled = false;
         btn.textContent = '📊 Tier-List Grafik generieren';
@@ -650,12 +653,30 @@ window.generateDeepAnalytics = async function(user) {
     }
     
     const charRanks = {}; 
-    const personalData = snapPersonal.data().characters || {};
-    for (const [key, stats] of Object.entries(personalData)) {
-        if (!stats.name) continue;
-        const avgScore = stats.score / (stats.count || 1);
-        charRanks[stats.name] = { score: avgScore, count: stats.count };
-    }
+    
+    const processGame = (docSnap) => {
+        const game = docSnap.data();
+        let ranking = game.ranking;
+        if (!ranking) {
+            ranking = [];
+            for (let i = 1; i <= 5; i++) {
+                if (game[`character${i}`]) ranking.push({ name: game[`character${i}`], rank: i });
+            }
+        }
+        
+        if (ranking && ranking.length > 0) {
+            ranking.forEach((char, idx) => {
+                if (!charRanks[char.name]) charRanks[char.name] = { sum: 0, count: 0 };
+                const maxIdx = ranking.length - 1;
+                const normalizedRank = maxIdx > 0 ? ((idx / maxIdx) * 4) + 1 : 1;
+                charRanks[char.name].sum += normalizedRank;
+                charRanks[char.name].count++;
+            });
+        }
+    };
+
+    snapOld.forEach(processGame);
+    snapNew.forEach(processGame);
 
     let globalRanks = {};
     try {
@@ -672,15 +693,13 @@ window.generateDeepAnalytics = async function(user) {
     const tiers = { S: [], A: [], B: [], C: [], D: [] };
 
     for (const [name, stats] of Object.entries(charRanks)) {
-        // avgScore is between 1 (worst) and 5 (best).
-        // Let's create S, A, B, C, D tiers based on average.
-        const avg = stats.score; 
+        const avg = stats.sum / stats.count; 
         
         let tier = 'D';
-        if (avg >= 4.5) tier = 'S';
-        else if (avg >= 3.8) tier = 'A';
-        else if (avg >= 3.0) tier = 'B';
-        else if (avg >= 2.2) tier = 'C';
+        if (avg <= 1.5) tier = 'S';
+        else if (avg <= 2.2) tier = 'A';
+        else if (avg <= 3.0) tier = 'B';
+        else if (avg <= 3.8) tier = 'C';
 
         if (tiers[tier]) {
             tiers[tier].push(name);
@@ -762,28 +781,40 @@ window.loadMachtverirrung = async function(user, targetDivId) {
     area.innerHTML = '<div style="text-align:center; color:#94a3b8; font-size:0.8rem;">Berechne Machtverirrung...</div>';
 
     const { db } = await import('./firebase-config.js');
-    const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+    const { collection, query, where, getDocs, doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
     
-    // Instead of querying history and requiring an index, we just read the personal scoreboard!
-    const snapPersonal = await getDoc(doc(db, "scores", `${currentMode}_classic_${user.username}`));
+    const qGamesOld = query(collection(db, "games"), where("username", "==", user.username), where("mode", "==", currentMode));
+    const qGamesNew = query(collection(db, "history"), where("username", "==", user.username), where("mode", "==", currentMode));
     
-    if (!snapPersonal.exists()) {
+    const [snapOld, snapNew] = await Promise.all([getDocs(qGamesOld), getDocs(qGamesNew)]);
+    
+    if (snapOld.empty && snapNew.empty) {
         area.innerHTML = ''; return;
     }
     
     const charRanks = {}; 
-    const personalData = snapPersonal.data().characters || {};
-    for (const [key, stats] of Object.entries(personalData)) {
-        if (!stats.name) continue;
-        // globalScore is calculated as (6 - avg points). Points are 1-5 where 5 is best.
-        // Wait, history.js: totalPoints = basePoints * rating.
-        // basePoints for classic normal is 5 for rank 1, 1 for rank 5.
-        // So average points is between 1 and 5.
-        // Let's normalize it to 1 (best) to 5 (worst) to match global logic:
-        const avgScore = stats.score / (stats.count || 1);
-        const normalizedRank = 6 - avgScore;
-        charRanks[stats.name] = { sum: normalizedRank * stats.count, count: stats.count };
-    }
+    const processGame = (docSnap) => {
+        const game = docSnap.data();
+        let ranking = game.ranking;
+        if (!ranking) {
+            ranking = [];
+            for (let i = 1; i <= 5; i++) {
+                if (game[`character${i}`]) ranking.push({ name: game[`character${i}`], rank: i });
+            }
+        }
+        
+        if (ranking && ranking.length > 0) {
+            ranking.forEach((char, idx) => {
+                if (!charRanks[char.name]) charRanks[char.name] = { sum: 0, count: 0 };
+                const maxIdx = ranking.length - 1;
+                const normalizedRank = maxIdx > 0 ? ((idx / maxIdx) * 4) + 1 : 1;
+                charRanks[char.name].sum += normalizedRank;
+                charRanks[char.name].count++;
+            });
+        }
+    };
+    snapOld.forEach(processGame);
+    snapNew.forEach(processGame);
 
     let globalRanks = {};
     try {
