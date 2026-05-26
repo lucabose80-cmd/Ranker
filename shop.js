@@ -57,7 +57,8 @@ export function initShop() {
     const user = getCurrentUser();
     if (!user) return;
 
-    document.getElementById('shop-credits-display').textContent = user.credits || 0;
+    const isAdmin = (user.username === 'Test1' || user.username === 'Test2');
+    document.getElementById('shop-credits-display').textContent = isAdmin ? '∞' : (user.credits || 0);
 
     const container = document.getElementById('booster-packs-container');
     container.innerHTML = '';

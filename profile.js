@@ -488,7 +488,7 @@ function renderStatsSelection(user) {
                 </div>
                 <div style="flex:2; min-width:300px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid #333; display: flex; flex-direction: column; justify-content: center;">
                     <h3 style="margin:0 0 5px 0; color:#e2e8f0; font-size:1.2rem; display:flex; align-items:center; justify-content:space-between;">
-                        <span>Konto: <span style="color:#00d2d3;">${user.credits || 0} Credits</span></span>
+                        <span>Konto: <span style="color:#00d2d3;">${(user.username === 'Test1' || user.username === 'Test2') ? '∞' : (user.credits || 0)} Credits</span></span>
                     </h3>
                     <div style="display: flex; gap: 5px; font-size: 0.75rem; flex-wrap: wrap; margin-top:5px;">
                         <div style="background: rgba(0,0,0,0.5); padding: 3px 8px; border-radius: 4px; border: 1px solid #444;">Classic: ${user['credits_earned_' + currentMode + '_normal'] || 0}/10</div>
