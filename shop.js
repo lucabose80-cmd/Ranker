@@ -13,7 +13,7 @@ const RARITIES = {
 
 export const LEGENDARY_POOL = {
     'Anakin Skywalker': {
-        specialImg: 'anakin.selten.jpg',
+        specialImg: 'Special.Bilder/anakin.selten.jpg',
         sound: 'sounds/imperialmarch.mp3',
         soundLoops: 1
     },
