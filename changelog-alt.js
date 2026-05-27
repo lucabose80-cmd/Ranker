@@ -1,5 +1,26 @@
 export const patchNotesWaifu = [
     {
+        version: "v7.3.1",
+        title: "Bugfixes & Systemstabilität",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Ein kritischer Fehler wurde behoben, der das Abspielen von Sound-Effekten nach einigen Klicks global blockierte.",
+            "Update: Beim Login-Feld gibt es nun den Hinweis, dass man sich bei einem vergessenen Passwort an den Admin wenden soll."
+        ]
+    },
+    {
+        version: "v7.3",
+        title: "Feature & Progression Update",
+        isHotfix: false,
+        changes: [
+            "Feature: Drag & Drop! Album Karten können jetzt direkt in den Showcase-Bereich gezogen werden.",
+            "Feature: Das Admin-Panel erlaubt es jetzt, vergessene Passwörter für Spieler neu zu setzen.",
+            "Fix: Zwillingssuche! Der Zwillings-Algorithmus wurde komplett überarbeitet und vergleicht nun deine globalen Bewertungen mit allen anderen Spielern für ein faires Ergebnis.",
+            "Fix: Meister & Schüler! Im Profil können nun nicht mehr dieselben Spieler für beide Kategorien angezeigt werden.",
+            "Fix: Versus Modus Preispool! Bei einem Sieg kriegt der Gewinner nun den kompletten Preispool aus den Einsätzen, ein faires Aufteilen passiert nur noch bei Unentschieden."
+        ]
+    },
+    {
         version: "v7.2.1",
         title: "Onboarding & Progression Update",
         isHotfix: false,

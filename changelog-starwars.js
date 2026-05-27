@@ -1,10 +1,21 @@
 export const patchNotesStarWars = [
     {
+        version: "v7.3.1",
+        title: "Bugfixes & Systemstabilität",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Ein kritischer Fehler wurde behoben, der das Abspielen von Sound-Effekten nach einigen Klicks global blockierte.",
+            "Hotfix: Das 'Anpassen'-Menü für legendäre Karten speichert nun korrekt das Profil und übernimmt das Design der Karten sofort nach dem Klicken.",
+            "Hotfix: Admins und Testaccounts können nun immer die Designs für legendäre Charaktere im 'Anpassen'-Menü wählen, sofern sie die Charaktere im Inventar besitzen.",
+            "Update: Beim Login-Feld gibt es nun den Hinweis, dass man sich bei einem vergessenen Passwort an den Admin wenden soll."
+        ]
+    },
+    {
         version: "v7.3",
         title: "Feature & Progression Update",
         isHotfix: false,
         changes: [
-            "Feature: Neue geheime Titel (Commander, Rex, Cody) wurden hinzugefügt.",
+            "Feature: Neue geheime Titel (Commander, Rex & Cody) wurden hinzugefügt.",
             "Feature: Legendäre Avatar-Customization! Man kann im Profil nun die alternativen Spezial-Bilder von legendären Karten als Avatar ausrüsten.",
             "Feature: Drag & Drop! Album Karten können jetzt direkt in den Showcase-Bereich gezogen werden.",
             "Feature: Das Admin-Panel erlaubt es jetzt, vergessene Passwörter für Spieler neu zu setzen.",
