@@ -1,5 +1,13 @@
 export const patchNotesWaifu = [
     {
+        version: "v7.4.1",
+        title: "Feature Update: Shop Tooltip",
+        isHotfix: false,
+        changes: [
+            "Feature: Neuer dynamischer Hover-Tooltip im Shop! Wenn man über die Legendär-Zeile eines Booster-Packs fährt, erscheint nun ein visuelles Info-Fenster, das exakt anzeigt, welche Charaktere in diesem Pack eine legendäre Karte besitzen."
+        ]
+    },
+    {
         version: "v7.4",
         title: "Feature Update: Lexikon Suche",
         isHotfix: false,

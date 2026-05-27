@@ -1,5 +1,16 @@
 export const patchNotesStarWars = [
     {
+        version: "v7.5.3",
+        title: "Feature Update: Shop & Legendäre Klonkrieger",
+        isHotfix: false,
+        changes: [
+            "Feature: Neuer dynamischer Hover-Tooltip im Shop! Wenn man über die Legendär-Zeile eines Booster-Packs fährt, erscheint nun ein visuelles Info-Fenster, das exakt anzeigt, welche Charaktere in diesem Pack eine legendäre Karte besitzen.",
+            "Content: 10 neue Legendäre Karten wurden in das Spiel integriert (inkl. individuelle epische Sounds & Animationen)!",
+            "Balancing: Das 'Machtanwender Pack' kann nun legendäre Versionen von Obi-Wan Kenobi, General Grievous, Darth Maul und Ahsoka Tano droppen.",
+            "Balancing: Das 'Klonkrieger Elite-Pack' wurde massiv aufgewertet und kann nun ebenfalls legendäre Karten droppen (Captain Rex, Commander Cody, Wolffe, Crosshair, Hunter und Wrecker)."
+        ]
+    },
+    {
         version: "v7.5.2",
         title: "Feature Update: Lexikon & UI Cleanup",
         isHotfix: false,
