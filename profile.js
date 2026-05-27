@@ -1,4 +1,4 @@
-﻿import { LEGENDARY_POOL } from './data-starwars.js';
+import { LEGENDARY_POOL } from './data-starwars.js';
 function getSeenIds() {
     const raw = localStorage.getItem('seen_unlock_ids') || '';
     if (raw.startsWith('[')) {
@@ -432,23 +432,32 @@ function renderTitleSelection(user, gamesPlayed) {
     const activeTitle = currentMode === 'starwars' ? user.activeTitle_starwars : user.activeTitle_waifu;
     
     availableTitles.sort((a, b) => {
-        const aLocked = a.secret ? !(currentMode === 'starwars' ? (user.unlocked_titles_starwars || []) : (user.unlocked_titles_waifu || [])).includes(a.id) : gamesPlayed < a.required;
-        const bLocked = b.secret ? !(currentMode === 'starwars' ? (user.unlocked_titles_starwars || []) : (user.unlocked_titles_waifu || [])).includes(b.id) : gamesPlayed < b.required;
+        const aUnlockedList = currentMode === 'starwars' ? (user.unlocked_titles_starwars || []) : (user.unlocked_titles_waifu || []);
+        let aLocked = a.secret ? !aUnlockedList.includes(a.id) : gamesPlayed < a.required;
+        if (a.condition && a.condition.type === 'bot_defeat') aLocked = !aUnlockedList.includes(a.id);
+        const bUnlockedList = currentMode === 'starwars' ? (user.unlocked_titles_starwars || []) : (user.unlocked_titles_waifu || []);
+        let bLocked = b.secret ? !bUnlockedList.includes(b.id) : gamesPlayed < b.required;
+        if (b.condition && b.condition.type === 'bot_defeat') bLocked = !bUnlockedList.includes(b.id);
         return (aLocked === bLocked) ? 0 : aLocked ? 1 : -1;
     });
 
     availableTitles.forEach(t => {
         let isLocked = gamesPlayed < t.required;
+        const unlockedList = currentMode === 'starwars' ? (user.unlocked_titles_starwars || []) : (user.unlocked_titles_waifu || []);
+        if (t.condition && t.condition.type === 'bot_defeat') {
+            isLocked = !unlockedList.includes(t.id);
+        }
         
         if (t.secret) {
             const unlockedList = currentMode === 'starwars' ? (user.unlocked_titles_starwars || []) : (user.unlocked_titles_waifu || []);
-            if (!unlockedList.includes(t.id)) {
-                return; // Verstecke den Titel komplett, wenn er nicht freigeschaltet ist
-            }
+            if (!unlockedList.includes(t.id)) { return; }
             isLocked = false;
         }
         
         let reqText = isLocked ? `Benötigt ${t.required} Spiele` : 'Freigeschaltet';
+        if (t.condition && t.condition.type === 'bot_defeat' && isLocked) {
+            reqText = `Besiege Bot Stufe ${t.condition.level} im Cardgame`;
+        }
         let probHtml = '';
         
         if (t.secret && t.condition && (t.condition.type === 'has_characters' || t.condition.type === 'has_discovered_characters')) {
@@ -1646,6 +1655,8 @@ export async function renderCustomLookSelection() {
 
 
 // Additional call added via script
+
+
 
 
 
