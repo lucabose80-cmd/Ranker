@@ -5,7 +5,9 @@ export const patchNotesWaifu = [
         isHotfix: false,
         changes: [
             "Hotfix: Das Filter-Verhalten im Album wurde verbessert. Gecraftete oder geupgradete Karten sind nun auch in den spezifischen Pack-Filtern korrekt sichtbar.",
-            "Feature: Admin-Tool für den Test-Account 'test1' hinzugefügt (Zieht ab sofort garantiert 4 epische und 1 legendäre Karte aus Boosterpacks)."
+            "Feature: Admin-Tool für den Test-Account 'test1' hinzugefügt (Zieht ab sofort garantiert 4 epische und 1 legendäre Karte aus Boosterpacks).",
+            "Hotfix: Die Ingame-Anleitung wurde aktualisiert und beinhaltet nun alle neuen Gacha-Mechaniken.",
+            "Feature: Das Beanspruchen einer legendären Karte für ein abgeschlossenes Booster-Pack löst nun eine spannende Pack-Öffnungs-Animation aus!"
         ]
     },
     {

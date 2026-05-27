@@ -202,7 +202,7 @@ async function claimPackLegendary(booster, pool) {
         const field = `inventory_${currentMode}`;
         const currentInventory = user[field] || [];
         
-        currentInventory.push({
+        const isNewLegendary = !currentInventory.some(c => c.charName === chosenChar.name && c.rarity === 'legendary'); currentInventory.push({
             charName: chosenChar.name,
             rarity: 'legendary',
             timestamp: Date.now(),
@@ -218,13 +218,7 @@ async function claimPackLegendary(booster, pool) {
             [claimKey]: true
         });
         
-        if (window.showUnlockNotification) {
-            window.showUnlockNotification('legendary', `Legendäre Karte erhalten: ${chosenChar.name}!`);
-        } else {
-            alert(`🌟 Du hast eine legendäre Karte erhalten: ${chosenChar.name}!`);
-        }
-        
-        // Re-render shop to update button state
+        const pulledCards = [{ char: chosenChar, rarity: RARITIES.LEGENDARY, isNew: isNewLegendary }]; showPullAnimation(pulledCards, false); // Re-render shop to update button state
         initShop();
         
     } catch(e) {
@@ -319,7 +313,7 @@ async function openBooster(booster, pool, currentCost) {
                 }
             }
 
-            currentInventory.push({
+            const isNewLegendary = !currentInventory.some(c => c.charName === chosenChar.name && c.rarity === 'legendary'); currentInventory.push({
                 charName: cardInfo.char.name,
                 rarity: cardInfo.rarity.id,
                 timestamp: Date.now(),
@@ -674,5 +668,9 @@ window.processCrafting = async function(charName, user) {
         alert("Ein Fehler ist aufgetreten.");
     }
 };
+
+
+
+
 
 
