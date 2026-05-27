@@ -2,6 +2,7 @@ import { getCurrentUser } from './auth.js';
 import { activeCharacterDatabase } from './theme.js';
 import { db } from './firebase-config.js';
 import { currentMode } from './mode-state.js';
+import { LEGENDARY_POOL } from './data-starwars.js';
 import { doc, getDoc, getDocs, updateDoc, collection, query, where, setDoc, deleteDoc, Timestamp, addDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 let playerDecks = { deck0: [], deck1: [], deck2: [] };
@@ -613,9 +614,27 @@ function playRound(playerCard) {
     // Apply legendary/epic visual effects and initial fanfare almost immediately
     setTimeout(() => {
         if(maxRar === "legendary") {
-            playLegendaryFanfare();
-            document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${pDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(playerCard.rarity)}; ${getLegStyle(playerCard.rarity)}">${getHoloHTML(playerCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${playerCard.charName}</div></div>`;
-            document.getElementById("match-opponent-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${oDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(oppCard.rarity)}; ${getLegStyle(oppCard.rarity)}">${getHoloHTML(oppCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${oppCard.charName}</div></div>`;
+            const pLeg = (playerCard.rarity === "legendary" && typeof LEGENDARY_POOL !== 'undefined' && LEGENDARY_POOL[playerCard.charName]) ? LEGENDARY_POOL[playerCard.charName] : null;
+            const oLeg = (oppCard.rarity === "legendary" && typeof LEGENDARY_POOL !== 'undefined' && LEGENDARY_POOL[oppCard.charName]) ? LEGENDARY_POOL[oppCard.charName] : null;
+
+            if (pLeg || oLeg) {
+                const soundToPlay = pLeg ? pLeg.sound : oLeg.sound;
+                if (soundToPlay) {
+                    const audio = new Audio(soundToPlay);
+                    audio.volume = 0.5;
+                    audio.play().catch(e => console.log('Audio autoplay blocked', e));
+                }
+            } else {
+                playLegendaryFanfare();
+            }
+
+            const pImg = pLeg ? pLeg.specialImg : pDb.img;
+            const oImg = oLeg ? oLeg.specialImg : oDb.img;
+            const pFlicker = pLeg ? 'animation: legendary-flicker 1.5s infinite;' : '';
+            const oFlicker = oLeg ? 'animation: legendary-flicker 1.5s infinite;' : '';
+
+            document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${pImg}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(playerCard.rarity)}; ${getLegStyle(playerCard.rarity)}; ${pFlicker}">${getHoloHTML(playerCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${playerCard.charName}</div></div>`;
+            document.getElementById("match-opponent-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${oImg}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(oppCard.rarity)}; ${getLegStyle(oppCard.rarity)}; ${oFlicker}">${getHoloHTML(oppCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${oppCard.charName}</div></div>`;
         } else if(maxRar === "epic") {
             playEpicFanfare();
             document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${pDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(playerCard.rarity)};">${getHoloHTML(playerCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${playerCard.charName}</div></div>`;
