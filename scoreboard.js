@@ -8,6 +8,8 @@ import { trackRead } from './tracker.js';
 
 let isFilterListenerAttached = false;
 let hasInitializedFilterOptions = false;
+let currentScoreboardData = [];
+let currentIsAverageBased = false;
 
 // Hilfsfunktion zum Rendern der berechneten Scoreboard-Karten
 function renderScoreboardHTML(sortedCharacters, container, isAverageBased = false) {
@@ -110,6 +112,12 @@ export async function renderScoreboard() {
             typeSelect.addEventListener('change', () => {
                 renderScoreboard();
             });
+            const searchInput = document.getElementById('scoreboard-search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', () => {
+                    applyScoreboardSearch();
+                });
+            }
             isFilterListenerAttached = true;
         }
 
@@ -183,11 +191,12 @@ export async function renderScoreboard() {
                 .sort((a, b) => b.score - a.score);
 
             if (selectedUser !== 'global') {
-                const filtered = playersWithWins.filter(p => p.name === (userResets[selectedUser]?.displayName || selectedUser));
-                renderScoreboardHTML(filtered, container);
+                currentScoreboardData = playersWithWins.filter(p => p.name === (userResets[selectedUser]?.displayName || selectedUser));
             } else {
-                renderScoreboardHTML(playersWithWins, container);
+                currentScoreboardData = playersWithWins;
             }
+            currentIsAverageBased = false;
+            applyScoreboardSearch();
             return;
         }
 
@@ -214,10 +223,28 @@ export async function renderScoreboard() {
             return avgB - avgA;
         });
 
-        renderScoreboardHTML(sortedCharacters, container, true);
+        currentScoreboardData = sortedCharacters;
+        currentIsAverageBased = true;
+        applyScoreboardSearch();
 
     } catch (error) {
         console.error("Fehler beim Laden des Scoreboards:", error);
         container.innerHTML = '<p class="prompt-text" style="color: #ff4757;">Fehler beim Laden der Daten.</p>';
+    }
+}
+
+function applyScoreboardSearch() {
+    const container = document.getElementById('scoreboard-list');
+    const searchInput = document.getElementById('scoreboard-search-input');
+    const query = searchInput ? searchInput.value.toLowerCase() : '';
+    
+    if (query.trim() === '') {
+        renderScoreboardHTML(currentScoreboardData, container, currentIsAverageBased);
+    } else {
+        const filtered = currentScoreboardData.filter(char => {
+            const charName = (char.name || char.username || '').toLowerCase();
+            return charName.includes(query);
+        });
+        renderScoreboardHTML(filtered, container, currentIsAverageBased);
     }
 }
