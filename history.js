@@ -523,71 +523,6 @@ export async function openCardgameResultModal(game) {
         modal.id = "cardgame-result-modal";
         modal.className = "modal hidden";
         modal.innerHTML = `
-            <div class="modal-content" style="max-width:800px; max-height:90vh; overflow-y:auto;">
-                <h2 style="color:#ffd700; margin-top:0;">Match Details</h2>
-                <div id="cardgame-result-content"></div>
-                <button id="close-cardgame-result-btn" class="rank-btn" style="margin-top:20px; width:100%;">Schlieﬂen</button>
-            </div>
-        `;
-        document.body.appendChild(modal);
-        document.getElementById("close-cardgame-result-btn").onclick = () => modal.classList.add("hidden");
-    }
-    
-    const content = document.getElementById("cardgame-result-content");
-    content.innerHTML = "<p>Lade Ergebnisse...</p>";
-    modal.classList.remove("hidden");
-
-    const { activeCharacterDatabase } = await import("./theme.js");
-    
-    const getImgForChar = (name) => {
-        const c = activeCharacterDatabase.find(x => x.name === name);
-        return c ? c.img : "https://i.imgur.com/kS5x87t.png";
-    };
-
-    const getRarityColor = (rarity) => {
-        if(rarity === "legendary") return "#ffd700";
-        if(rarity === "epic") return "#9b59b6";
-        if(rarity === "rare") return "#ff9f43";
-        return "#888";
-    };
-
-    const renderDeck = (deck) => {
-        if (!deck || deck.length === 0) return "<p style='color:#888; text-align:center;'>Kein Deck gefunden (Altes Match)</p>";
-        return `<div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:10px;">
-            ${deck.map(c => `
-                <div style="border:2px solid ${getRarityColor(c.rarity)}; border-radius:5px; padding:5px; background:#222; text-align:center;">
-                    <img src="${getImgForChar(c.charName)}" style="width:100%; height:80px; object-fit:cover; border-radius:3px;">
-                    <div style="font-size:0.7rem; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-top:3px;">${c.charName}</div>
-                </div>
-            `).join("")}
-        </div>`;
-    };
-
-    content.innerHTML = `
-        <div style="display:flex; flex-direction:column; gap:20px;">
-            <div style="background:#111; padding:15px; border-radius:8px; border:1px solid #333;">
-                <h3 style="color:#2ed573; margin-top:0; border-bottom:1px solid #333; padding-bottom:5px;">${game.username} (Du)</h3>
-                ${renderDeck(game.playerDeck)}
-            </div>
-            <div style="text-align:center; font-size:1.5rem; font-weight:bold; color:#fff;">
-                SCORE: ${game.score}
-            </div>
-            <div style="background:#111; padding:15px; border-radius:8px; border:1px solid #333;">
-                <h3 style="color:#ff4757; margin-top:0; border-bottom:1px solid #333; padding-bottom:5px;">${game.opponent} (Gegner)</h3>
-                ${renderDeck(game.opponentDeck)}
-            </div>
-        </div>
-    `;
-}
-
-
-export async function openCardgameResultModal(game) {
-    let modal = document.getElementById("cardgame-result-modal");
-    if (!modal) {
-        modal = document.createElement("div");
-        modal.id = "cardgame-result-modal";
-        modal.className = "modal hidden";
-        modal.innerHTML = `
             <div class="modal-content" style="max-width:800px; max-height:90vh; overflow-y:auto; background:#1a1e29; border:1px solid #333;">
                 <h2 style="color:#ffd700; margin-top:0; text-align:center;">Match Details</h2>
                 <div id="cardgame-result-content"></div>
@@ -912,6 +847,7 @@ export async function renderHistory() {
         container.innerHTML = '<p class="prompt-text" style="color: #ff4757;">Fehler beim Laden der Historie.</p>';
     }
 }
+
 
 
 
