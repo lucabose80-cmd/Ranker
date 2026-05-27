@@ -1,33 +1,25 @@
 export const patchNotesWaifu = [
     {
         version: "v7.5.0",
-        title: "Update: Cardgame Live-PvP & Bot Fixes",
+        title: "Update: Cardgame Overhaul & UI Features",
         isHotfix: false,
         changes: [
             "Feature: Das Cardgame unterstützt nun echtes synchrones Live-PvP! Über die neue 'Lobby erstellen'-Funktion können Spieler nun in Echtzeit online gegeneinander antreten.",
-            "Feature: Die Spielhistorie und Statistiken werden nun am Ende eines echten Live-Matches aktualisiert, Siege gewähren 5 Credits.",
-            "Hotfix: Behebung eines Fehlers in der Cardgame-Scoreberechnung, durch den Bots ohne Seltenheits-Tags gespielt haben und somit das Match abstürzen ließen (keine Popups mehr).",
-            "Hotfix: Cardgame-Bots ignorieren nicht länger das Beliebtheits-Ranking und bauen nun wieder konforme Decks.",
-            "Hotfix: Bot-UI aktualisiert: Sobald ein Bot besiegt wurde, verschwindet die 'Erster Sieg' Credit-Anzeige und wird durch einen grünen Haken ersetzt.",
-            "Hotfix: Machtverirrung und neue Cardgame-Basiswerte wurden auf das neue Punkte-basierte Scoreboard angepasst, wodurch neue Karten nicht länger unspielbar schlecht sind.",
-            "Hotfix: Behebung eines Fehlers im Live-PvP, durch den man eine gespielte Karte theoretisch unendlich oft hintereinander spielen konnte (Objekt-Referenz-Fix).",
+            "Feature: Das Bot-System im Cardgame wurde komplett neu programmiert. Es gibt nun 10 verschiedene, ansteigende Schwierigkeitsstufen (von Lvl 1 bis Lvl 10).",
+            "Feature: Höherstufige Bots generieren nun dynamisch Decks basierend auf Community-Beliebtheit (Ranking) und Fraktions-Synergien, statt nur zufällige Karten zu ziehen.",
+            "Feature: Bot-Belohnungssystem implementiert: Der erste Sieg gegen jede der 10 Bot-Stufen belohnt den Spieler nun mit Credits (gestaffelt von 5 bis 500 Credits).",
             "Feature: Im Deckbuilder wird nun für jede Karte der aktuelle Global-Score (Basiswert) als kleines goldenes Badge in der Ecke angezeigt.",
             "Feature: Im Cardgame-Match (Live/Bot) verschwinden gespielte Karten nicht mehr komplett aus der Hand, sondern bleiben als 'ausgegraut' sichtbar, analog zur Anzeige des Gegners.",
-            "Feature: Wrecker, Hunter, Tech und Luke Skywalker haben nun ebenfalls ihre eigenen Zitate im Hardcore Modus.",
-            "Feature: Im Hardcore Modus werden die Zitate der Charaktere nun auch nach dem Aufdecken auf dem End-Screen unter dem Charakter-Namen angezeigt.",
             "Feature: Das Scoreboard hat nun eine Live-Suchleiste (wie das Lexikon), um in der aktuellen Liste blitzschnell nach Charakteren zu suchen, ohne dass das Spiel laggt.",
             "Feature: Ab sofort fließen auch die Ergebnisse aller anderen 5er-Modi (Klon-Modus, Fahrzeuge, Peak, Hardcore Peak) automatisch in das Overall Scoreboard mit ein.",
-            "UI: Der Standard-Modus im Scoreboard wurde von 'Expanded Universe' zu 'Overall Scoreboard (Basis-Werte)' umbenannt, um klarzumachen, dass dies das Master-Ranking für das Cardgame und alle Berechnungen ist."
-        ]
-    },
-    {
-        version: "v7.4.3",
-        title: "Hotfix: Cardgame Bot-Overhaul & Progression",
-        isHotfix: true,
-        changes: [
-            "Hotfix: Das Bot-System im Cardgame wurde komplett neu programmiert. Es gibt nun 10 verschiedene, ansteigende Schwierigkeitsstufen (von Lvl 1 bis Lvl 10).",
-            "Hotfix: Höherstufige Bots generieren nun dynamisch Decks basierend auf Community-Beliebtheit (Ranking) und Fraktions-Synergien, statt nur zufällige Karten zu ziehen.",
-            "Hotfix: Bot-Belohnungssystem implementiert: Der erste Sieg gegen jede der 10 Bot-Stufen belohnt den Spieler nun mit Credits (gestaffelt von 5 bis 500 Credits)."
+            "Feature: Wrecker, Hunter, Tech und Luke Skywalker haben nun ebenfalls ihre eigenen Zitate im Hardcore Modus.",
+            "Feature: Im Hardcore Modus werden die Zitate der Charaktere nun auch nach dem Aufdecken auf dem End-Screen unter dem Charakter-Namen angezeigt.",
+            "Hotfix: Behebung eines Fehlers in der Cardgame-Scoreberechnung, durch den Bots ohne Seltenheits-Tags gespielt haben und somit das Match abstürzen ließen.",
+            "Hotfix: Cardgame-Bots ignorieren nicht länger das Beliebtheits-Ranking und bauen nun wieder konforme Decks.",
+            "Hotfix: Machtverirrung und neue Cardgame-Basiswerte wurden auf das neue Punkte-basierte Scoreboard angepasst, wodurch neue Karten nicht länger unspielbar schlecht sind.",
+            "Hotfix: Behebung eines Fehlers im Live-PvP, durch den man eine gespielte Karte theoretisch unendlich oft hintereinander spielen konnte (Objekt-Referenz-Fix).",
+            "UI: Bot-UI aktualisiert: Sobald ein Bot besiegt wurde, verschwindet die 'Erster Sieg' Credit-Anzeige und wird durch einen grünen Haken ersetzt.",
+            "UI: Der Standard-Modus im Scoreboard wurde von 'Expanded Universe' zu 'Overall Scoreboard (Basis-Werte)' umbenannt, um klarzumachen, dass dies das Master-Ranking für alle Berechnungen ist."
         ]
     },
     {
