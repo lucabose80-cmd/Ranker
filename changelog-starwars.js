@@ -1,5 +1,16 @@
 export const patchNotesStarWars = [
     {
+        version: "v7.5.5",
+        title: "Hotfix: Cardgame Bot-Overhaul & Progression",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Das Bot-System im Cardgame wurde komplett neu programmiert. Es gibt nun 10 verschiedene, ansteigende Schwierigkeitsstufen (von Trainingsdroide bis Yoda).",
+            "Hotfix: Höherstufige Bots generieren nun dynamisch Decks basierend auf Community-Beliebtheit (Ranking) und Fraktions-Synergien, statt nur zufällige Karten zu ziehen.",
+            "Hotfix: Bot-Belohnungssystem implementiert: Der erste Sieg gegen jede der 10 Bot-Stufen belohnt den Spieler nun mit Credits (gestaffelt von 5 bis 500 Credits).",
+            "Hotfix: 10 neue geheime Titel für das Besiegen der Bots hinzugefügt, welche nun im Profil (mit Schloss-Symbol) sichtbar sind, um den Fortschritt zu tracken."
+        ]
+    },
+    {
         version: "v7.5.4",
         title: "Hotfix: Legendäre Effekte im Cardgame",
         isHotfix: true,

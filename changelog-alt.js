@@ -1,5 +1,15 @@
 export const patchNotesWaifu = [
     {
+        version: "v7.4.3",
+        title: "Hotfix: Cardgame Bot-Overhaul & Progression",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Das Bot-System im Cardgame wurde komplett neu programmiert. Es gibt nun 10 verschiedene, ansteigende Schwierigkeitsstufen (von Lvl 1 bis Lvl 10).",
+            "Hotfix: Höherstufige Bots generieren nun dynamisch Decks basierend auf Community-Beliebtheit (Ranking) und Fraktions-Synergien, statt nur zufällige Karten zu ziehen.",
+            "Hotfix: Bot-Belohnungssystem implementiert: Der erste Sieg gegen jede der 10 Bot-Stufen belohnt den Spieler nun mit Credits (gestaffelt von 5 bis 500 Credits)."
+        ]
+    },
+    {
         version: "v7.4.2",
         title: "Hotfix: Cardgame Effekte",
         isHotfix: true,
