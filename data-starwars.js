@@ -302,6 +302,36 @@ export const LEGENDARY_POOL = {
         specialImg: 'Special.Bilder/ahsoka.special.jpg',
         sound: 'sounds/nojediahsoka.mp3',
         soundLoops: 1
+    },
+    'Captain Rex': {
+        specialImg: 'Special.Bilder/rex.special.jpg',
+        sound: 'sounds/rex.mp3',
+        soundLoops: 1
+    },
+    'Commander Cody': {
+        specialImg: 'Special.Bilder/cody.special.jpg',
+        sound: 'sounds/cody.mp3',
+        soundLoops: 1
+    },
+    'Wolffe': {
+        specialImg: 'Special.Bilder/wolffe.special.jpg',
+        sound: 'sounds/wolffe.mp3',
+        soundLoops: 1
+    },
+    'Crosshair': {
+        specialImg: 'Special.Bilder/crosshair.special.jpg',
+        sound: 'sounds/crosshair.mp3',
+        soundLoops: 1
+    },
+    'Hunter': {
+        specialImg: 'Special.Bilder/hunter.special.jpg',
+        sound: 'sounds/hunter.mp3',
+        soundLoops: 1
+    },
+    'Wrecker': {
+        specialImg: 'Special.Bilder/wrecker.special.jpg',
+        sound: 'sounds/wrecker.mp3',
+        soundLoops: 1
     }
 };
 
