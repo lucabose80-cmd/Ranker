@@ -378,7 +378,7 @@ function setupGameUI(user) {
     initPrivateChat();
     import('./versus.js').then(m => m.initVersusInvitesListener());
 
-    document.getElementById('restart-btn').addEventListener('click', () => {
+    document.addEventListener('game:start-new', () => {
         if (currentGameType === 'advanced') {
             initAdvancedGame();
         } else {

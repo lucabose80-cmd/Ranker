@@ -33,10 +33,10 @@ export function initRatingSystem() {
                 submitFinalRating(parseInt(btn.textContent));
             }
             
-            // Neues Spiel Button freischalten
-            const restartBtn = document.getElementById('restart-btn');
-            restartBtn.disabled = false;
-            restartBtn.title = "Starte ein neues Spiel";
+            // Automatisch ein neues Spiel nach 1.5s starten
+            setTimeout(() => {
+                document.dispatchEvent(new CustomEvent('game:start-new'));
+            }, 1500);
         });
     });
 }
@@ -53,9 +53,4 @@ export function resetRatingUI() {
         btn.disabled = false;
     });
     document.getElementById('rating-feedback').classList.add('hidden');
-    
-    // Neues Spiel Button sperren
-    const restartBtn = document.getElementById('restart-btn');
-    restartBtn.disabled = true;
-    restartBtn.title = "Bitte bewerte zuerst die Liste, um ein neues Spiel zu starten";
 }
