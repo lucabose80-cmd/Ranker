@@ -1,5 +1,14 @@
 export const patchNotesStarWars = [
     {
+        version: "v7.8",
+        title: "Update: Gacha Quality of Life & Admin Tools",
+        isHotfix: false,
+        changes: [
+            "Hotfix: Das Filter-Verhalten im Album wurde verbessert. Gecraftete oder geupgradete Karten sind nun auch in den spezifischen Pack-Filtern korrekt sichtbar.",
+            "Feature: Admin-Tool für den Test-Account 'test1' hinzugefügt (Zieht ab sofort garantiert 4 epische und 1 legendäre Karte aus Boosterpacks)."
+        ]
+    },
+    {
         version: "v7.7",
         title: "Update: Gacha Overhaul, Crafting & Trade-Up",
         isHotfix: false,
