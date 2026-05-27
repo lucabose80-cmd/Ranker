@@ -28,8 +28,8 @@ const FACTION_ADVANTAGE = {
     'imperium': 'mandalorianer',
     'mandalorianer': 'klon',
     'klon': 'jedi',
-    'kopfgeldj�ger': 'jedi',
-    'droid': 'kopfgeldj�ger'
+    'kopfgeldj?ger': 'jedi',
+    'droid': 'kopfgeldj?ger'
 };
 
 function getMainFaction(tags) {
@@ -41,7 +41,7 @@ function getMainFaction(tags) {
     if(tg.includes('rebell') || tg.includes('rebellion')) return 'rebell';
     if(tg.includes('imperium')) return 'imperium';
     if(tg.includes('mandalorianer') || tg.includes('mandalorian')) return 'mandalorianer';
-    if(tg.includes('kopfgeldj�ger') || tg.includes('kopfgeldjaeger')) return 'kopfgeldj�ger';
+    if(tg.includes('kopfgeldj?ger') || tg.includes('kopfgeldjaeger')) return 'kopfgeldj?ger';
     if(tg.includes('droid') || tg.includes('droide')) return 'droid';
     return 'neutral';
 }
@@ -446,11 +446,38 @@ function playRound(playerCard) {
     const oppCard = unplayedOpp[Math.floor(Math.random() * unplayedOpp.length)];
     playedOpponentCards.push(oppCard);
     
-    const pDb = activeCharacterDatabase.find(x => x.name === playerCard.charName);
+        const pDb = activeCharacterDatabase.find(x => x.name === playerCard.charName);
     const oDb = activeCharacterDatabase.find(x => x.name === oppCard.charName);
     
-    document.getElementById('match-player-active').innerHTML = `<div style="text-align:center;"><img src="${pDb.img}" style="width:100px; height:100px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(playerCard.rarity)}"><div style="color:#fff; font-size:0.8rem; margin-top:5px;">${playerCard.charName}</div></div>`;
-    document.getElementById('match-opponent-active').innerHTML = `<div style="text-align:center;"><img src="${oDb.img}" style="width:100px; height:100px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(oppCard.rarity)}"><div style="color:#fff; font-size:0.8rem; margin-top:5px;">${oppCard.charName}</div></div>`;
+    const actx = window.getSharedAudioContext ? window.getSharedAudioContext() : (window.sharedAudioContext || new (window.AudioContext || window.webkitAudioContext)());
+    const now = actx.currentTime;
+    function playTone(freq, time, dur, type="square") {
+        try {
+            const osc = actx.createOscillator();
+            const gain = actx.createGain();
+            osc.type = type; osc.frequency.setValueAtTime(freq, time);
+            gain.gain.setValueAtTime(0.1, time); gain.gain.exponentialRampToValueAtTime(0.01, time + dur);
+            osc.connect(gain); gain.connect(actx.destination);
+            osc.start(time); osc.stop(time + dur);
+        } catch(e){}
+    }
+
+    // Play sounds based on highest rarity played
+    const maxRar = RARITY_ORDER[playerCard.rarity] > RARITY_ORDER[oppCard.rarity] ? playerCard.rarity : oppCard.rarity;
+    if(maxRar === "legendary") {
+        playTone(440, now, 0.1); playTone(554.37, now + 0.1, 0.1); playTone(659.25, now + 0.2, 0.1); playTone(880, now + 0.3, 0.4);
+    } else if (maxRar === "epic") {
+        playTone(523.25, now, 0.1); playTone(659.25, now + 0.1, 0.1); playTone(783.99, now + 0.2, 0.3);
+    } else {
+        playTone(440, now, 0.15, "triangle");
+    }
+
+    const getHoloHTML = (rarity) => rarity === "epic" ? `<div style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; mix-blend-mode: color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear; border-radius:5px;"></div>` : "";
+    const getLegStyle = (rarity) => rarity === "legendary" ? "animation: legendary-flicker 1.5s infinite;" : "";
+
+    document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:100px; height:100px;"><img src="${pDb.img}" style="width:100px; height:100px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(playerCard.rarity)}; ${getLegStyle(playerCard.rarity)}">${getHoloHTML(playerCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${playerCard.charName}</div></div>`;
+    document.getElementById("match-opponent-active").innerHTML = `<div style="text-align:center; position:relative; width:100px; height:100px;"><img src="${oDb.img}" style="width:100px; height:100px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(oppCard.rarity)}; ${getLegStyle(oppCard.rarity)}">${getHoloHTML(oppCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${oppCard.charName}</div></div>`;
+
     
     renderOpponentDeckState();
     
@@ -542,4 +569,5 @@ async function finishMatch() {
         }).catch(e => console.error("History save error:", e));
     }
 }
+
 

@@ -58,19 +58,19 @@
                     
                     <h3 class="theme-heading" style="border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 30px;">SPIELMODI WARTUNG</h3>
                     <div style="display: flex; gap: 10px; flex-direction: column;">
-                        <button id="admin-maint-classic" class="rank-btn maint-btn" data-maint="classic" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; color: #ff9f43; border-color: #ff9f43;">Wartung: Klassisch</button>
-                        <button id="admin-maint-advanced" class="rank-btn maint-btn" data-maint="advanced" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; color: #ff9f43; border-color: #ff9f43;">Wartung: Advanced</button>
-                        <button id="admin-maint-versus" class="rank-btn maint-btn" data-maint="versus" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; color: #ff9f43; border-color: #ff9f43;">Wartung: Versus</button>
-                        <button id="admin-maint-starwarsdle" class="rank-btn maint-btn" data-maint="starwarsdle" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; color: #ff9f43; border-color: #ff9f43;">Wartung: StarWarsdle</button>
+                        <button id="admin-maint-classic" class="rank-btn " data-maint="classic" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; color: #ff9f43; border-color: #ff9f43;">Wartung: Klassisch</button>
+                        <button id="admin-maint-advanced" class="rank-btn " data-maint="advanced" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; color: #ff9f43; border-color: #ff9f43;">Wartung: Advanced</button>
+                        <button id="admin-maint-versus" class="rank-btn " data-maint="versus" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; color: #ff9f43; border-color: #ff9f43;">Wartung: Versus</button>
+                        <button id="admin-maint-starwarsdle" class="rank-btn " data-maint="starwarsdle" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; color: #ff9f43; border-color: #ff9f43;">Wartung: StarWarsdle</button>
                     </div>
                     
                     <h3 class="theme-heading" style="border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 30px;">KATEGORIEN WARTUNG</h3>
                     <div style="display: flex; gap: 10px; flex-direction: column;">
-                        <button id="admin-maint-cat-normal" class="rank-btn maint-btn" data-maint="cat_normal" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; color: #ff9f43; border-color: #ff9f43;">Wartung: Standard Pool</button>
-                        <button id="admin-maint-cat-klon" class="rank-btn maint-btn" data-maint="cat_klon" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; color: #ff9f43; border-color: #ff9f43;">Wartung: Nur Klone</button>
-                        <button id="admin-maint-cat-peak" class="rank-btn maint-btn" data-maint="cat_peak" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; color: #ff9f43; border-color: #ff9f43;">Wartung: Peak Ranking</button>
-                        <button id="admin-maint-cat-vehicle" class="rank-btn maint-btn" data-maint="cat_vehicle" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; color: #ff9f43; border-color: #ff9f43;">Wartung: Fahrzeuge</button>
-                        <button id="admin-maint-cat-hardcore" class="rank-btn maint-btn" data-maint="cat_hardcore" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; color: #ff9f43; border-color: #ff9f43;">Wartung: Hardcore</button>
+                        <button id="admin-maint-cat-normal" class="rank-btn " data-maint="cat_normal" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; color: #ff9f43; border-color: #ff9f43;">Wartung: Standard Pool</button>
+                        <button id="admin-maint-cat-klon" class="rank-btn " data-maint="cat_klon" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; color: #ff9f43; border-color: #ff9f43;">Wartung: Nur Klone</button>
+                        <button id="admin-maint-cat-peak" class="rank-btn " data-maint="cat_peak" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; color: #ff9f43; border-color: #ff9f43;">Wartung: Peak Ranking</button>
+                        <button id="admin-maint-cat-vehicle" class="rank-btn " data-maint="cat_vehicle" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; color: #ff9f43; border-color: #ff9f43;">Wartung: Fahrzeuge</button>
+                        <button id="admin-maint-cat-hardcore" class="rank-btn " data-maint="cat_hardcore" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; color: #ff9f43; border-color: #ff9f43;">Wartung: Hardcore</button>
                     </div>
                     
                     <h3 class="theme-heading" style="border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 30px;">ZUGANGSVERWALTUNG</h3>
@@ -271,6 +271,7 @@
                             <option value="versus_peak">Versus (Peak)</option>
                             <option value="versus_hardcore">Versus (Hardcore Peak)</option>
                             <option value="versus_vehicle">Versus (Fahrzeuge)</option>
+                            <option value="cardgame">Cardgame Matches</option>
                         </select>
                     </div>
                     <div id="history-list" class="history-list"></div>
@@ -335,7 +336,7 @@
 
                 <div id="cardgame-deckbuilder" class="hidden">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-                        <button id="cardgame-deck-back" class="rank-btn maint-btn" style="padding: 15px 30px; font-size: 1.1rem; max-width: 300px;">Menu</button>
+                        <button id="cardgame-deck-back" class="rank-btn " style="padding: 15px 30px; font-size: 1.1rem; max-width: 300px;">Menu</button>
                         <select id="cardgame-sort-select" class="chat-input" style="padding:10px; background:#111; color:#fff; border:1px solid #444; border-radius:6px;">
                             <option value="name">Sortieren nach: Name</option>
                             <option value="rarity">Sortieren nach: Seltenheit</option>
@@ -349,17 +350,17 @@
                             <div id="cardgame-deck-slots" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(80px, 1fr)); gap:10px; min-height:100px; padding:10px; border:2px dashed #444; border-radius:8px; margin-bottom:20px;"></div>
                             
                             <h3 style="color:#ffd700;">Dein Inventar</h3>
-                            <div id="cardgame-inventory" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(90px, 1fr)); gap:10px; max-height:400px; overflow-y:auto; padding:10px; border:1px solid #333; border-radius:8px; background:#111;"></div>
+                            <div id="cardgame-inventory" style="display:grid; grid-template-columns:repeat(6, 1fr); gap:10px; max-height:400px; overflow-y:auto; padding:10px; border:1px solid #333; border-radius:8px; background:#111;"></div>
                         </div>
                         <div style="width:280px; background:#1a1e29; padding:20px; border-radius:10px; border:1px solid #333; box-shadow:0 4px 15px rgba(0,0,0,0.5);">
                             <h4 style="margin-top:0; color:#2ed573; text-align:center; border-bottom:1px solid #333; padding-bottom:10px;">Fraktions Boni (+20%)</h4>
                             <div style="font-size:0.8rem; color:#aaa; margin-bottom:20px; display:grid; grid-template-columns:1fr 20px 1fr; gap:5px; align-items:center; text-align:center;">
-                                <span>Jedi</span><span style="color:#ff4757;">??</span><span>Sith</span>
-                                <span>Sith</span><span style="color:#ff4757;">??</span><span>Rebell</span>
-                                <span>Rebell</span><span style="color:#ff4757;">??</span><span>Imperium</span>
-                                <span>Imperium</span><span style="color:#ff4757;">??</span><span>Mandos</span>
-                                <span>Mandos</span><span style="color:#ff4757;">??</span><span>Klon</span>
-                                <span>Klon</span><span style="color:#ff4757;">??</span><span>Jedi</span>
+                                <span>Jedi</span><span style="color:#ff4757;">&#x2694;</span><span>Sith</span>
+                                <span>Sith</span><span style="color:#ff4757;">&#x2694;</span><span>Rebell</span>
+                                <span>Rebell</span><span style="color:#ff4757;">&#x2694;</span><span>Imperium</span>
+                                <span>Imperium</span><span style="color:#ff4757;">&#x2694;</span><span>Mandos</span>
+                                <span>Mandos</span><span style="color:#ff4757;">&#x2694;</span><span>Klon</span>
+                                <span>Klon</span><span style="color:#ff4757;">&#x2694;</span><span>Jedi</span>
                             </div>
                             <h4 style="margin-top:0; color:#ffd700; text-align:center; border-bottom:1px solid #333; padding-bottom:10px;">Aktuelle Synergien</h4>
                             <div id="cardgame-synergy-info" style="font-size:0.85rem; color:#fff; text-align:center; min-height:40px; display:flex; flex-direction:column; gap:5px; justify-content:center;">Keine (0%)</div>
@@ -370,7 +371,7 @@
 
                 
                 <div id="cardgame-bots" class="hidden">
-                    <button id="cardgame-bots-back" class="rank-btn maint-btn" style="margin-bottom: 20px; padding: 15px 30px; font-size: 1.1rem; width: 100%; max-width: 300px;">Menu</button>
+                    <button id="cardgame-bots-back" class="rank-btn " style="margin-bottom: 20px; padding: 15px 30px; font-size: 1.1rem; width: 100%; max-width: 300px;">Menu</button>
                     <h3 style="color:#ffd700; text-align:center;">Bot Gegner finden</h3>
                     <div style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-top:20px;">
                         <div style="background:#1a1e29; padding:20px; border:2px solid #aaa; border-radius:10px; text-align:center; min-width:250px;">
@@ -386,7 +387,7 @@
                     </div>
                 </div>
                 <div id='cardgame-matchmaking' class="hidden">
-                    <button id="cardgame-match-back" class="rank-btn maint-btn" style="margin-bottom: 20px; padding: 15px 30px; font-size: 1.1rem; width: 100%; max-width: 300px;">Menu</button>
+                    <button id="cardgame-match-back" class="rank-btn " style="margin-bottom: 20px; padding: 15px 30px; font-size: 1.1rem; width: 100%; max-width: 300px;">Menu</button>
                     <h3 style="color:#ffd700; text-align:center;">Gegner finden</h3>
                     <div id="cardgame-opponent-list" style="max-width:500px; margin:0 auto; display:flex; flex-direction:column; gap:10px;"></div>
                 </div>
@@ -421,14 +422,14 @@
                             <hr style="border-color:#333; margin:15px 0;">
                             <h5 style="margin-bottom:10px; color:#fff; text-align:center;">Fraktions Boni</h5>
                             <div style="font-size:0.75rem; color:#aaa; margin-bottom:15px; display:grid; grid-template-columns:1fr 20px 1fr; gap:3px; align-items:center; text-align:center;">
-                                <span>Jedi</span><span style="color:#ff4757;">??</span><span>Sith</span>
-                                <span>Sith</span><span style="color:#ff4757;">??</span><span>Rebell</span>
-                                <span>Rebell</span><span style="color:#ff4757;">??</span><span>Imperium</span>
-                                <span>Imperium</span><span style="color:#ff4757;">??</span><span>Mandos</span>
-                                <span>Mandos</span><span style="color:#ff4757;">??</span><span>Klon</span>
-                                <span>Klon</span><span style="color:#ff4757;">??</span><span>Jedi</span>
-                                <span>Bounty</span><span style="color:#ff4757;">??</span><span>Jedi</span>
-                                <span>Droid</span><span style="color:#ff4757;">??</span><span>Bounty</span>
+                                <span>Jedi</span><span style="color:#ff4757;">&#x2694;</span><span>Sith</span>
+                                <span>Sith</span><span style="color:#ff4757;">&#x2694;</span><span>Rebell</span>
+                                <span>Rebell</span><span style="color:#ff4757;">&#x2694;</span><span>Imperium</span>
+                                <span>Imperium</span><span style="color:#ff4757;">&#x2694;</span><span>Mandos</span>
+                                <span>Mandos</span><span style="color:#ff4757;">&#x2694;</span><span>Klon</span>
+                                <span>Klon</span><span style="color:#ff4757;">&#x2694;</span><span>Jedi</span>
+                                <span>Bounty</span><span style="color:#ff4757;">&#x2694;</span><span>Jedi</span>
+                                <span>Droid</span><span style="color:#ff4757;">&#x2694;</span><span>Bounty</span>
                             </div>
                             <hr style="border-color:#333; margin:15px 0;">
                             <p style="font-size:0.85rem; color:#2ed573; margin-bottom:5px;">Deine Synergien:</p>
@@ -804,6 +805,8 @@
     <script type="module" src="main.js?v=7.2"></script>
 </body>
 </html>
+
+
 
 
 

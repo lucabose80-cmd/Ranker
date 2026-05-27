@@ -11,14 +11,14 @@ let historyCache = [];
 let historyUnsubscribe = null;
 let isFirstLoadComplete = false;
 
-// Gibt die aktuell gecachten Historien-Daten zurück
+// Gibt die aktuell gecachten Historien-Daten zur�ck
 export function getCachedHistory() {
     return { data: historyCache, isLoaded: isFirstLoadComplete };
 }
 
 let currentListenerMode = null;
 
-// Startet den Echtzeit-Sync für den aktuellen Modus
+// Startet den Echtzeit-Sync f�r den aktuellen Modus
 export function initHistoryListener(force = false) {
     if (!force && historyUnsubscribe && currentListenerMode === currentMode) {
         return;
@@ -70,7 +70,7 @@ export function initHistoryListener(force = false) {
     historyUnsubscribe = onSnapshot(q, handleHistorySnapshot, handleHistoryError);
 }
 
-// Beendet den Echtzeit-Sync für die Historie, um Reads im Hintergrund zu sparen
+// Beendet den Echtzeit-Sync f�r die Historie, um Reads im Hintergrund zu sparen
 export function stopHistoryListener() {
     if (historyUnsubscribe) {
         historyUnsubscribe();
@@ -114,7 +114,7 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
 
     // Warten bis Charaktere als entdeckt markiert sind (aktualisiert localStorage)
     await markCharactersAsDiscovered(rankingData.map(c => c.name));
-    // Aktuellen User aus localStorage neu laden, damit die Entdeckungen nicht überschrieben werden
+    // Aktuellen User aus localStorage neu laden, damit die Entdeckungen nicht �berschrieben werden
     user = getCurrentUser();
 
     const poolData = pool ? pool.map((c, idx) => ({ order: idx + 1, name: c.name, img: c.img })) : [];
@@ -168,7 +168,7 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
             }
         }
 
-        // Track tags for themes – 5 of the same tag in a single game unlocks the theme
+        // Track tags for themes � 5 of the same tag in a single game unlocks the theme
         if (gameType === 'classic' && category === 'normal') {
             const { activeCharacterDatabase } = await import('./theme.js');
             const { THEMES } = await import('./themes.js');
@@ -357,8 +357,8 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
         if (patternStr) localStorage.setItem(lastPatternKey, patternStr);
 
         if (skipScoreboardUpdate) {
-            console.log("Anti-Cheat: Scoreboard update übersprungen wegen wiederholtem Muster oder Wertung.");
-            return; // Beende die Funktion hier, damit Scoreboard nicht gefüllt wird
+            console.log("Anti-Cheat: Scoreboard update �bersprungen wegen wiederholtem Muster oder Wertung.");
+            return; // Beende die Funktion hier, damit Scoreboard nicht gef�llt wird
         }
 
         // --- AGGREGATED SCOREBOARD SYSTEM ---
@@ -435,7 +435,7 @@ function renderHistoryHTML(games, container, displayNames) {
                     <span class="history-date">${date}</span>
                 </div>
                 <div class="history-images" style="justify-content: center; align-items: center; gap: 15px;">
-                    <span style="font-size: 1.5rem;">⚔️</span>
+                    <span style="font-size: 1.5rem;">&#x1F0CF;</span>
                     <span>${game.players.length} Spieler</span>
                 </div>
             `;
@@ -459,7 +459,7 @@ function renderHistoryHTML(games, container, displayNames) {
                     <span class="history-date">${date}</span>
                 </div>
                 <div class="history-images" style="justify-content: center; align-items: center; gap: 15px;">
-                    <span style="font-size: 1.5rem;">🃏</span>
+                    <span style="font-size: 1.5rem;">&#x1F0CF;</span>
                     <span>Score: ${game.score}</span>
                 </div>
             `;
@@ -615,7 +615,7 @@ export async function openVersusResultModal(game) {
         } else {
             payoutInfo = `
                 <div style="background:rgba(255,255,255,0.05); border:1px solid #666; border-radius:6px; padding:10px; margin-bottom:10px; text-align:center; color:#ccc; font-size:0.85rem;">
-                    Kein Spieler hat richtig getippt. Die Einsätze wurden zurückerstattet.
+                    Kein Spieler hat richtig getippt. Die Eins�tze wurden zur�ckerstattet.
                 </div>
             `;
         }
@@ -636,7 +636,7 @@ export async function openVersusResultModal(game) {
                     ${bets.map(b => {
                         const correct = safeWinners.includes(b.targetUid);
                         const statusColor = correct ? '#2ed573' : '#ff4757';
-                        const statusIcon = correct ? '✓' : '✗';
+                        const statusIcon = correct ? '?' : '?';
                         return `
                             <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
                                 <span>${b.displayName} gewettet auf ${b.targetName} (${b.amount} Credits)</span>
@@ -675,7 +675,7 @@ function openArchiveDetailModal(game) {
                 <div class="card-container">
                     <span class="rank-number">${i}</span>
                     <div class="card-content" style="border-style: ${item ? 'solid' : 'dashed'}">
-                        ${item ? `<img src="${item.img}">` : '<span class="placeholder-icon">👤</span>'}
+                        ${item ? `<img src="${item.img}">` : '<span class="placeholder-icon">??</span>'}
                     </div>
                 </div>
                 <div class="card-label"><span>${item ? item.name : '???'}</span></div>
@@ -765,6 +765,7 @@ export async function renderHistory() {
                 else if (selectedType === 'classic' && !isGameAdvanced && !isVersus && gameCategory === 'normal') isMatch = true;
                 else if (selectedType === 'classic_klon' && !isGameAdvanced && !isVersus && gameCategory === 'klon') isMatch = true;
                 else if (selectedType === 'classic_peak' && !isGameAdvanced && !isVersus && gameCategory === 'peak') isMatch = true;
+                else if (selectedType === 'cardgame' && game.type === 'cardgame') isMatch = true;
                 else if (selectedType === 'classic_vehicle' && !isGameAdvanced && !isVersus && gameCategory === 'vehicle') isMatch = true;
                 
                 if (isMatch) filteredGames.push(game);
@@ -780,3 +781,5 @@ export async function renderHistory() {
         container.innerHTML = '<p class="prompt-text" style="color: #ff4757;">Fehler beim Laden der Historie.</p>';
     }
 }
+
+
