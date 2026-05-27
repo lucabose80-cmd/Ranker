@@ -423,7 +423,7 @@ function startBotMatch(bot) {
     
     const finalDeck = deck.slice(0, 10).map(c => ({ charName: c.name, rarity: c.rarity }));
     isBotMatch = true;
-    startMatch({ username: `BOT: ${bot.name}`, displayName: `BOT: ${bot.name}` }, finalDeck);
+    startMatch({ username: `BOT: ${bot.name}`, displayName: `BOT: ${bot.name}`, botLevel: BOT_LEVELS.indexOf(bot) + 1 }, finalDeck);
 }
 
 async function startMatch(oppData, oppDeckArr) {
@@ -739,14 +739,55 @@ async function finishMatch() {
     let finalRes = "Unentschieden";
     if(playerScore > opponentScore) {
         finalRes = "Sieg";
-        alert(`Du hast das Match ${playerScore}:${opponentScore} gewonnen!`);
-        if(!isBotMatch && user) {
+        
+        if(isBotMatch && user && opponentData.botLevel) {
+            const defeatedField = currentMode === 'starwars' ? 'defeated_bots_starwars' : 'defeated_bots_waifu';
+            const defeatedBots = user[defeatedField] || [];
+            
+            if (!defeatedBots.includes(opponentData.botLevel)) {
+                defeatedBots.push(opponentData.botLevel);
+                user[defeatedField] = defeatedBots;
+                
+                // Credit rewards for level 1 to 10
+                const creditRewards = {1:5, 2:10, 3:20, 4:50, 5:75, 6:100, 7:150, 8:200, 9:300, 10:500};
+                const reward = creditRewards[opponentData.botLevel] || 0;
+                user.credits = (user.credits || 0) + reward;
+                
+                // Unlock Title
+                const titleId = `sw_bot_${opponentData.botLevel}`;
+                const titlesField = currentMode === 'starwars' ? 'unlocked_titles_starwars' : 'unlocked_titles_waifu';
+                let unlockedTitles = user[titlesField] || [];
+                
+                let unlockedNewTitle = false;
+                if (!unlockedTitles.includes(titleId)) {
+                    unlockedTitles.push(titleId);
+                    user[titlesField] = unlockedTitles;
+                    unlockedNewTitle = true;
+                }
+                
+                localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
+                updateDoc(doc(db, "users", user.uid), { 
+                    [defeatedField]: defeatedBots, 
+                    credits: user.credits,
+                    [titlesField]: unlockedTitles 
+                }).catch(console.error);
+                
+                const cb = document.getElementById('topbar-credits');
+                if(cb) cb.innerHTML = `<span style="color:#ffd700;">💳</span> ${user.credits}`;
+                
+                alert(`Du hast das Match ${playerScore}:${opponentScore} gewonnen!\n\nERSTER SIEG GEGEN STUFE ${opponentData.botLevel}!\nDu erhältst ${reward} Credits${unlockedNewTitle ? ' und einen neuen Titel!' : '!'}`);
+            } else {
+                alert(`Du hast das Match ${playerScore}:${opponentScore} gewonnen!`);
+            }
+        } else if(!isBotMatch && user) {
             alert(`Du bekommst 5 Credits fuer den Sieg!`);
             user.credits = (user.credits || 0) + 5;
             localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
             await updateDoc(doc(db, "users", user.uid), { credits: user.credits });
             const cb = document.getElementById('topbar-credits');
-            if(cb) cb.innerHTML = `<span style="color:#ffd700;">?</span> ${user.credits}`;
+            if(cb) cb.innerHTML = `<span style="color:#ffd700;">💳</span> ${user.credits}`;
+        } else {
+            alert(`Du hast das Match ${playerScore}:${opponentScore} gewonnen!`);
         }
     } else if(opponentScore > playerScore) {
         finalRes = "Niederlage";
