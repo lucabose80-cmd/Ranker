@@ -1,5 +1,39 @@
 export const patchNotesStarWars = [
     {
+        version: "v7.4.1",
+        title: "Cardgame Hotfixes",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Doppelte Deklaration der openCardgameResultModal-Funktion in history.js behoben (SyntaxError).",
+            "Hotfix: Encoding-Fehler in history.js behoben, der das Laden der Seite verhinderte.",
+            "Hotfix: Cardgame-Matches werden nun korrekt nur in der 'Cardgame Matches'-Sektion der Historie angezeigt und nicht mehr im Expanded Universe.",
+            "Hotfix: Karten-Scores beziehen sich nun korrekt auf die globale Community-Datenbank statt auf einen Standardwert von 2.5.",
+            "Hotfix: Profilbilder, Historien-Modals und alle Schliessen-Buttons zeigen nun ein korrektes X-Symbol statt einem Fragezeichen.",
+            "Hotfix: Spielanleitung im Cardgame-Modus von Umlauten bereinigt."
+        ]
+    },
+    {
+        version: "v7.4",
+        title: "Cardgame Major Update",
+        isHotfix: false,
+        changes: [
+            "Feature: Cardgame-Matches werden jetzt in der Spielhistorie gespeichert und angezeigt (sowohl Bot- als auch Online-Matches).",
+            "Feature: Deck-Viewer im Histor-Modal - klicke auf einen Cardgame-Eintrag, um die Decks beider Spieler anzusehen.",
+            "Feature: ESC-Taste schliesst alle offenen Modals und Overlays seitenweite.",
+            "Feature: Alle Schliessen-Buttons in Modals wurden durch kompakte X-Buttons oben rechts ersetzt.",
+            "UI: Deckbuilder-Inventar nutzt jetzt ein 6-Spalten-Raster mit voller Breite und 60vh Hoehe fuer mehr Uebersicht.",
+            "UI: Inventar-Karten im Deckbuilder sind groesser (100px statt 70px) und besser lesbar.",
+            "UI: Fraktionsboni werden im Deckbuilder und im Spiel jetzt immer als Text angezeigt ('Jedi +20% vs Sith') statt als Symbol.",
+            "UI: In-Game Layout umgebaut: gespielte Karten (Du links, Gegner rechts) gross nebeneinander in einem eigenen Panel.",
+            "UI: Match-Info-Sidebar ist jetzt immer rechts neben der Hand (sticky), nie darunter.",
+            "UI: Gegner-Deck-Tracker in der Sidebar nutzt jetzt ein Grid mit groesseren Karten (55px).",
+            "UI: Runden-Ergebnis-Popup komplett neu gestaltet: Score-Balken, farbige Multiplikator-Boxen, grosses Ergebnis-Icon.",
+            "Sound: Gewinn- und Verlier-Sounds sind jetzt unterschiedlich (aufsteigendes Dur-Arpeggio vs. abfallendes Moll-Motiv).",
+            "Sound: Legendaere und Epische Karten-Fanfares werden beim Aufdecken des Kartenvergleichs abgespielt.",
+            "Sound: Karten-Effekte (Holo-Gleam, Legendary-Flicker) werden jetzt beim Oeffnen des Ergebnis-Popups ausgeloest, nicht beim Ausspielen."
+        ]
+    },
+    {
         version: "v7.3.1",
         title: "Bugfixes & Systemstabilität",
         isHotfix: true,
