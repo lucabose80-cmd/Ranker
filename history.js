@@ -1,4 +1,4 @@
-ï»¿// history.js
+// history.js
 import { db } from './firebase-config.js';
 import { collection, addDoc, onSnapshot, query, where, limit, orderBy, Timestamp, setDoc, doc, increment } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { getCurrentUser, markCharactersAsDiscovered } from './auth.js';
@@ -11,14 +11,14 @@ let historyCache = [];
 let historyUnsubscribe = null;
 let isFirstLoadComplete = false;
 
-// Gibt die aktuell gecachten Historien-Daten zurï¿½ck
+// Gibt die aktuell gecachten Historien-Daten zur?ck
 export function getCachedHistory() {
     return { data: historyCache, isLoaded: isFirstLoadComplete };
 }
 
 let currentListenerMode = null;
 
-// Startet den Echtzeit-Sync fï¿½r den aktuellen Modus
+// Startet den Echtzeit-Sync f?r den aktuellen Modus
 export function initHistoryListener(force = false) {
     if (!force && historyUnsubscribe && currentListenerMode === currentMode) {
         return;
@@ -70,7 +70,7 @@ export function initHistoryListener(force = false) {
     historyUnsubscribe = onSnapshot(q, handleHistorySnapshot, handleHistoryError);
 }
 
-// Beendet den Echtzeit-Sync fï¿½r die Historie, um Reads im Hintergrund zu sparen
+// Beendet den Echtzeit-Sync f?r die Historie, um Reads im Hintergrund zu sparen
 export function stopHistoryListener() {
     if (historyUnsubscribe) {
         historyUnsubscribe();
@@ -114,7 +114,7 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
 
     // Warten bis Charaktere als entdeckt markiert sind (aktualisiert localStorage)
     await markCharactersAsDiscovered(rankingData.map(c => c.name));
-    // Aktuellen User aus localStorage neu laden, damit die Entdeckungen nicht ï¿½berschrieben werden
+    // Aktuellen User aus localStorage neu laden, damit die Entdeckungen nicht ?berschrieben werden
     user = getCurrentUser();
 
     const poolData = pool ? pool.map((c, idx) => ({ order: idx + 1, name: c.name, img: c.img })) : [];
@@ -168,7 +168,7 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
             }
         }
 
-        // Track tags for themes ï¿½ 5 of the same tag in a single game unlocks the theme
+        // Track tags for themes ? 5 of the same tag in a single game unlocks the theme
         if (gameType === 'classic' && category === 'normal') {
             const { activeCharacterDatabase } = await import('./theme.js');
             const { THEMES } = await import('./themes.js');
@@ -357,8 +357,8 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
         if (patternStr) localStorage.setItem(lastPatternKey, patternStr);
 
         if (skipScoreboardUpdate) {
-            console.log("Anti-Cheat: Scoreboard update ï¿½bersprungen wegen wiederholtem Muster oder Wertung.");
-            return; // Beende die Funktion hier, damit Scoreboard nicht gefï¿½llt wird
+            console.log("Anti-Cheat: Scoreboard update ?bersprungen wegen wiederholtem Muster oder Wertung.");
+            return; // Beende die Funktion hier, damit Scoreboard nicht gef?llt wird
         }
 
         // --- AGGREGATED SCOREBOARD SYSTEM ---
@@ -463,6 +463,8 @@ function renderHistoryHTML(games, container, displayNames) {
                     <span>Score: ${game.score}</span>
                 </div>
             `;
+            card.style.cursor = "pointer";
+            card.addEventListener("click", () => { openCardgameResultModal(game); });
             container.appendChild(card);
             return;
         }
@@ -512,6 +514,135 @@ function renderHistoryHTML(games, container, displayNames) {
         });
         container.appendChild(card);
     });
+}
+
+export async function openCardgameResultModal(game) {
+    let modal = document.getElementById("cardgame-result-modal");
+    if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "cardgame-result-modal";
+        modal.className = "modal hidden";
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width:800px; max-height:90vh; overflow-y:auto;">
+                <h2 style="color:#ffd700; margin-top:0;">Match Details</h2>
+                <div id="cardgame-result-content"></div>
+                <button id="close-cardgame-result-btn" class="rank-btn" style="margin-top:20px; width:100%;">Schließen</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        document.getElementById("close-cardgame-result-btn").onclick = () => modal.classList.add("hidden");
+    }
+    
+    const content = document.getElementById("cardgame-result-content");
+    content.innerHTML = "<p>Lade Ergebnisse...</p>";
+    modal.classList.remove("hidden");
+
+    const { activeCharacterDatabase } = await import("./theme.js");
+    
+    const getImgForChar = (name) => {
+        const c = activeCharacterDatabase.find(x => x.name === name);
+        return c ? c.img : "https://i.imgur.com/kS5x87t.png";
+    };
+
+    const getRarityColor = (rarity) => {
+        if(rarity === "legendary") return "#ffd700";
+        if(rarity === "epic") return "#9b59b6";
+        if(rarity === "rare") return "#ff9f43";
+        return "#888";
+    };
+
+    const renderDeck = (deck) => {
+        if (!deck || deck.length === 0) return "<p style=`"color:#888; text-align:center;`">Kein Deck gefunden (Altes Match)</p>";
+        return `<div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:10px;">
+            ${deck.map(c => `
+                <div style="border:2px solid ${getRarityColor(c.rarity)}; border-radius:5px; padding:5px; background:#222; text-align:center;">
+                    <img src="${getImgForChar(c.charName)}" style="width:100%; height:80px; object-fit:cover; border-radius:3px;">
+                    <div style="font-size:0.7rem; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-top:3px;">${c.charName}</div>
+                </div>
+            `).join("")}
+        </div>`;
+    };
+
+    content.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:20px;">
+            <div style="background:#111; padding:15px; border-radius:8px; border:1px solid #333;">
+                <h3 style="color:#2ed573; margin-top:0; border-bottom:1px solid #333; padding-bottom:5px;">${game.username} (Du)</h3>
+                ${renderDeck(game.playerDeck)}
+            </div>
+            <div style="text-align:center; font-size:1.5rem; font-weight:bold; color:#fff;">
+                SCORE: ${game.score}
+            </div>
+            <div style="background:#111; padding:15px; border-radius:8px; border:1px solid #333;">
+                <h3 style="color:#ff4757; margin-top:0; border-bottom:1px solid #333; padding-bottom:5px;">${game.opponent} (Gegner)</h3>
+                ${renderDeck(game.opponentDeck)}
+            </div>
+        </div>
+    `;
+}
+
+
+export async function openCardgameResultModal(game) {
+    let modal = document.getElementById("cardgame-result-modal");
+    if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "cardgame-result-modal";
+        modal.className = "modal hidden";
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width:800px; max-height:90vh; overflow-y:auto; background:#1a1e29; border:1px solid #333;">
+                <h2 style="color:#ffd700; margin-top:0; text-align:center;">Match Details</h2>
+                <div id="cardgame-result-content"></div>
+                <button id="close-cardgame-result-btn" class="rank-btn" style="margin-top:20px; width:100%;">Schließen</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        document.getElementById("close-cardgame-result-btn").onclick = () => modal.classList.add("hidden");
+    }
+    
+    const content = document.getElementById("cardgame-result-content");
+    content.innerHTML = "<p>Lade Ergebnisse...</p>";
+    modal.classList.remove("hidden");
+
+    const { activeCharacterDatabase } = await import("./theme.js");
+    
+    const getImgForChar = (name) => {
+        const c = activeCharacterDatabase.find(x => x.name === name);
+        return c ? c.img : "https://i.imgur.com/kS5x87t.png";
+    };
+
+    const getRarityColor = (rarity) => {
+        if(rarity === "legendary") return "#ffd700";
+        if(rarity === "epic") return "#9b59b6";
+        if(rarity === "rare") return "#ff9f43";
+        return "#888";
+    };
+
+    const renderDeck = (deck) => {
+        if (!deck || deck.length === 0) return "<p style=`"color:#888; text-align:center;`">Kein Deck gefunden (Altes Match)</p>";
+        return `<div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:10px;">
+            ${deck.map(c => `
+                <div style="border:2px solid ${getRarityColor(c.rarity)}; border-radius:5px; padding:5px; background:#222; text-align:center;">
+                    <img src="${getImgForChar(c.charName)}" style="width:100%; height:80px; object-fit:cover; border-radius:3px;">
+                    <div style="font-size:0.7rem; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-top:3px;">${c.charName}</div>
+                </div>
+            `).join("")}
+        </div>`;
+    };
+
+    content.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:20px;">
+            <div style="background:#111; padding:15px; border-radius:8px; border:1px solid #333;">
+                <h3 style="color:#2ed573; margin-top:0; border-bottom:1px solid #333; padding-bottom:5px;">${game.username} (Du)</h3>
+                ${renderDeck(game.playerDeck)}
+            </div>
+            <div style="text-align:center; font-size:1.5rem; font-weight:bold; color:#fff;">
+                SCORE: ${game.score}
+            </div>
+            <div style="background:#111; padding:15px; border-radius:8px; border:1px solid #333;">
+                <h3 style="color:#ff4757; margin-top:0; border-bottom:1px solid #333; padding-bottom:5px;">${game.opponent} (Gegner)</h3>
+                ${renderDeck(game.opponentDeck)}
+            </div>
+        </div>
+    `;
 }
 
 export async function openVersusResultModal(game) {
@@ -615,7 +746,7 @@ export async function openVersusResultModal(game) {
         } else {
             payoutInfo = `
                 <div style="background:rgba(255,255,255,0.05); border:1px solid #666; border-radius:6px; padding:10px; margin-bottom:10px; text-align:center; color:#ccc; font-size:0.85rem;">
-                    Kein Spieler hat richtig getippt. Die Einsï¿½tze wurden zurï¿½ckerstattet.
+                    Kein Spieler hat richtig getippt. Die Eins?tze wurden zur?ckerstattet.
                 </div>
             `;
         }
@@ -762,7 +893,7 @@ export async function renderHistory() {
                 else if (selectedType === 'versus_peak' && isVersus && gameCategory === 'peak') isMatch = true;
                 else if (selectedType === 'versus_vehicle' && isVersus && gameCategory === 'vehicle') isMatch = true;
                 else if (selectedType === 'advanced' && isGameAdvanced && !isVersus) isMatch = true;
-                else if (selectedType === 'classic' && !isGameAdvanced && !isVersus && gameCategory === 'normal') isMatch = true;
+                else if (selectedType === 'classic' && !isGameAdvanced && !isVersus && game.type !== 'cardgame' && gameCategory === 'normal') isMatch = true;
                 else if (selectedType === 'classic_klon' && !isGameAdvanced && !isVersus && gameCategory === 'klon') isMatch = true;
                 else if (selectedType === 'classic_peak' && !isGameAdvanced && !isVersus && gameCategory === 'peak') isMatch = true;
                 else if (selectedType === 'cardgame' && game.type === 'cardgame') isMatch = true;
@@ -781,5 +912,8 @@ export async function renderHistory() {
         container.innerHTML = '<p class="prompt-text" style="color: #ff4757;">Fehler beim Laden der Historie.</p>';
     }
 }
+
+
+
 
 

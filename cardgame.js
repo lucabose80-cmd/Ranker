@@ -274,7 +274,7 @@ function updateDeckUI() {
         if(!dbC) return;
         const div = document.createElement('div');
         div.style.cssText = `cursor:pointer; border:2px solid ${getRarityColor(c.rarity)}; border-radius:5px; padding:5px; background:#222; text-align:center;`;
-        div.innerHTML = `<img src="${dbC.img}" style="width:100%; height:60px; object-fit:cover; border-radius:3px;">
+        div.innerHTML = `<img src="${dbC.img}" style="width:100%; height:100px; object-fit:cover; border-radius:3px;">
                          <div style="font-size:0.6rem; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${c.charName}</div>`;
         div.addEventListener('click', () => {
             playerDeck.splice(idx, 1);
@@ -586,10 +586,14 @@ async function finishMatch() {
             opponent: opponentData.displayName,
             score: `${playerScore}:${opponentScore}`,
             isBot: isBotMatch,
+            playerDeck: playerDeck,
+            opponentDeck: opponentDeck,
             timestamp: Timestamp.now()
         }).catch(e => console.error("History save error:", e));
     }
 }
+
+
 
 
 
