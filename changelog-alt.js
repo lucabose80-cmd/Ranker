@@ -16,6 +16,7 @@ export const patchNotesWaifu = [
             "Feature: Wrecker, Hunter, Tech und Luke Skywalker haben nun ebenfalls ihre eigenen Zitate im Hardcore Modus.",
             "Feature: Im Hardcore Modus werden die Zitate der Charaktere nun auch nach dem Aufdecken auf dem End-Screen unter dem Charakter-Namen angezeigt.",
             "Feature: Das Scoreboard hat nun eine Live-Suchleiste (wie das Lexikon), um in der aktuellen Liste blitzschnell nach Charakteren zu suchen, ohne dass das Spiel laggt.",
+            "Feature: Ab sofort fließen auch die Ergebnisse aller anderen 5er-Modi (Klon-Modus, Fahrzeuge, Peak, Hardcore Peak) automatisch in das Overall Scoreboard mit ein.",
             "UI: Der Standard-Modus im Scoreboard wurde von 'Expanded Universe' zu 'Overall Scoreboard (Basis-Werte)' umbenannt, um klarzumachen, dass dies das Master-Ranking für das Cardgame und alle Berechnungen ist."
         ]
     },
