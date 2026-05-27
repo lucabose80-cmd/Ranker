@@ -396,6 +396,14 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
         await setDoc(doc(db, "scores", `${currentMode}_${gameType}${suffix}_${user.username}`), updates, { merge: true });
         trackWrite(1);
 
+        // Zusätzlich in das Overall Scoreboard einfließen lassen (alle 5er Modi)
+        if (gameType !== 'advanced' && (gameType !== 'classic' || suffix !== '')) {
+            await setDoc(doc(db, "scores", `${currentMode}_classic_global`), updates, { merge: true });
+            trackWrite(1);
+            await setDoc(doc(db, "scores", `${currentMode}_classic_${user.username}`), updates, { merge: true });
+            trackWrite(1);
+        }
+
     } catch (e) {
         console.error("Fehler beim Speichern der Historie: ", e);
     }
