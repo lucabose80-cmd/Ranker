@@ -1,5 +1,13 @@
 export const patchNotesWaifu = [
     {
+        version: "v7.4.2",
+        title: "Hotfix: Cardgame Effekte",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Das Runden-Ergebnis-Popup (Sieg/Niederlage) wird bei Legendären Karten um 5 Sekunden verzögert, damit epische Animationen und Sounds ungestört wirken können."
+        ]
+    },
+    {
         version: "v7.4.1",
         title: "Feature Update: Shop Tooltip",
         isHotfix: false,

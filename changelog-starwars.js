@@ -1,5 +1,15 @@
 export const patchNotesStarWars = [
     {
+        version: "v7.5.4",
+        title: "Hotfix: Legendäre Effekte im Cardgame",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Wenn eine Legendäre Karte im Cardgame gespielt wird, ertönt nun der charakterspezifische epische Sound statt der Standard-Fanfare.",
+            "Hotfix: Das Spielfeld zeigt nun das alternative Artwork der legendären Karte inklusive dem goldenen Leucht-Effekt an.",
+            "Hotfix: Das Runden-Ergebnis-Popup (Sieg/Niederlage) wird bei Legendären Karten um 5 Sekunden verzögert, damit die epischen Animationen und Sounds ungestört wirken können."
+        ]
+    },
+    {
         version: "v7.5.3",
         title: "Feature Update: Shop & Legendäre Klonkrieger",
         isHotfix: false,
