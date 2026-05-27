@@ -1109,8 +1109,9 @@ function handleCardgameLiveState(lobby) {
         const myCardIndex = myObj.picks[currentRound - 1];
         const oppCardIndex = opponentObj.picks[currentRound - 1];
         
-        const myCard = myObj.deck[myCardIndex];
-        const oppCard = opponentObj.deck[oppCardIndex];
+        // Use local deck references so object equality (includes) works in renderHand
+        const myCard = playerDeck[myCardIndex];
+        const oppCard = opponentDeck[oppCardIndex];
         
         playRound(myCard, oppCard);
     }
