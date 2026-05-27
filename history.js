@@ -447,6 +447,26 @@ function renderHistoryHTML(games, container, displayNames) {
             return;
         }
 
+        if (game.type === 'cardgame') {
+            const isWin = game.result === 'Sieg';
+            const color = isWin ? '#2ed573' : (game.result === 'Niederlage' ? '#ff4757' : '#ffd700');
+            card.innerHTML = 
+                <div class="history-header">
+                    <div>
+                        <strong>CARDGAME </strong>
+                        <div style="font-size:0.75rem; color:; font-weight:bold; margin-top:2px;"> vs </div>
+                    </div>
+                    <span class="history-date"></span>
+                </div>
+                <div class="history-images" style="justify-content: center; align-items: center; gap: 15px;">
+                    <span style="font-size: 1.5rem;">??</span>
+                    <span>Score: </span>
+                </div>
+            ;
+            container.appendChild(card);
+            return;
+        }
+
         const poolHtml = (game.pool && game.pool.length > 0) ? `
             <div class="history-pool">
                 <span class="history-pool-label">Erschienen in:</span>

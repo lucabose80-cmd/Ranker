@@ -1,10 +1,10 @@
-import { getCurrentUser, refreshCurrentUser } from './auth.js';
+import { getCurrentUser } from './auth.js';
 import { activeCharacterDatabase } from './theme.js';
 import { db } from './firebase-config.js';
 import { currentMode } from './mode-state.js';
-import { doc, getDoc, getDocs, updateDoc, collection, query, where } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { doc, getDoc, getDocs, updateDoc, collection, query, where, setDoc, deleteDoc, Timestamp, addDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-let playerDecks = [[], [], []];
+let playerDecks = { deck0: [], deck1: [], deck2: [] };
 let activeDeckIndex = 0;
 let playerDeck = [];
 let opponentDeck = [];
@@ -16,6 +16,7 @@ let playedPlayerCards = [];
 let playedOpponentCards = [];
 let globalScoresCache = {};
 let isBotMatch = false;
+let liveMatchActive = false;
 
 const RARITY_MULT = { 'common': 1.0, 'rare': 1.1, 'epic': 1.3, 'legendary': 1.5 };
 const RARITY_ORDER = { 'legendary': 4, 'epic': 3, 'rare': 2, 'common': 1 };
@@ -26,7 +27,9 @@ const FACTION_ADVANTAGE = {
     'rebell': 'imperium',
     'imperium': 'mandalorianer',
     'mandalorianer': 'klon',
-    'klon': 'jedi'
+    'klon': 'jedi',
+    'kopfgeldjäger': 'jedi',
+    'droid': 'kopfgeldjäger'
 };
 
 function getMainFaction(tags) {
@@ -38,6 +41,8 @@ function getMainFaction(tags) {
     if(tg.includes('rebell') || tg.includes('rebellion')) return 'rebell';
     if(tg.includes('imperium')) return 'imperium';
     if(tg.includes('mandalorianer') || tg.includes('mandalorian')) return 'mandalorianer';
+    if(tg.includes('kopfgeldjäger') || tg.includes('kopfgeldjaeger')) return 'kopfgeldjäger';
+    if(tg.includes('droid') || tg.includes('droide')) return 'droid';
     return 'neutral';
 }
 
@@ -109,14 +114,16 @@ export function initCardgame() {
         if(!user) return;
         const field = currentMode === 'starwars' ? 'decks_starwars' : 'decks_waifu';
         
-        if(!user[field]) { const oldF = currentMode === 'starwars' ? 'deck_starwars' : 'deck_waifu'; user[field] = user[oldF] ? [user[oldF], [], []] : [[], [], []]; }
-        user[field][activeDeckIndex] = playerDeck;
+        let savedDecks = user[field];
+        if(!savedDecks || Array.isArray(savedDecks)) { 
+            savedDecks = { deck0: [], deck1: [], deck2: [] }; 
+        }
+        savedDecks[`deck${activeDeckIndex}`] = playerDeck;
+        user[field] = savedDecks;
         
         localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
         try {
-            // Fix Firebase undefined error by serializing the array
-            const cleanDeckData = JSON.parse(JSON.stringify(user[field]));
-            await updateDoc(doc(db, "users", user.uid), { [field]: cleanDeckData });
+            await updateDoc(doc(db, "users", user.uid), { [field]: savedDecks });
             alert(`Deck ${activeDeckIndex + 1} erfolgreich gespeichert!`);
         } catch(e) { 
             console.error("Speichern Fehler:", e);
@@ -127,10 +134,11 @@ export function initCardgame() {
     document.getElementById('cardgame-btn-play').addEventListener('click', async () => {
         const user = getCurrentUser();
         const field = currentMode === 'starwars' ? 'decks_starwars' : 'decks_waifu';
-        if(!user || !user[field] || !user[field][activeDeckIndex] || user[field][activeDeckIndex].length !== 10) {
+        const userDecks = user[field];
+        if(!user || !userDecks || Array.isArray(userDecks) || !userDecks[`deck${activeDeckIndex}`] || userDecks[`deck${activeDeckIndex}`].length !== 10) {
             alert(`Bitte erstelle zuerst Deck ${activeDeckIndex + 1} mit genau 10 Karten!`); return;
         }
-        playerDeck = [...user[field][activeDeckIndex]];
+        playerDeck = [...userDecks[`deck${activeDeckIndex}`]];
         document.getElementById('cardgame-main-menu').classList.add('hidden');
         document.getElementById('cardgame-matchmaking').classList.remove('hidden');
         renderMatchmaking();
@@ -145,10 +153,11 @@ export function initCardgame() {
     document.getElementById('cardgame-btn-bot').addEventListener('click', () => {
         const user = getCurrentUser();
         const field = currentMode === 'starwars' ? 'decks_starwars' : 'decks_waifu';
-        if(!user || !user[field] || !user[field][activeDeckIndex] || user[field][activeDeckIndex].length !== 10) {
+        const userDecks = user[field];
+        if(!user || !userDecks || Array.isArray(userDecks) || !userDecks[`deck${activeDeckIndex}`] || userDecks[`deck${activeDeckIndex}`].length !== 10) {
             alert(`Bitte erstelle zuerst Deck ${activeDeckIndex + 1} mit genau 10 Karten!`); return;
         }
-        playerDeck = [...user[field][activeDeckIndex]];
+        playerDeck = [...userDecks[`deck${activeDeckIndex}`]];
         document.getElementById('cardgame-main-menu').classList.add('hidden');
         document.getElementById('cardgame-bots').classList.remove('hidden');
     });
@@ -165,7 +174,6 @@ export function initCardgame() {
     document.getElementById('bot-inquisitor-btn').addEventListener('click', () => {
         startBotMatch('Inquisitor', ['rare', 'epic']);
     });
-
 
     document.getElementById('match-next-round-btn').addEventListener('click', () => {
         document.getElementById('match-result-overlay').classList.add('hidden');
@@ -184,9 +192,12 @@ function renderDeckbuilder() {
     const user = getCurrentUser();
     if(!user) return;
     const deckField = currentMode === 'starwars' ? 'decks_starwars' : 'decks_waifu';
-    if(!user[deckField]) { const oldF = currentMode === 'starwars' ? 'deck_starwars' : 'deck_waifu'; user[deckField] = user[oldF] ? [user[oldF], [], []] : [[], [], []]; }
-    playerDecks = user[deckField];
-    playerDeck = [...(playerDecks[activeDeckIndex] || [])];
+    let savedDecks = user[deckField];
+    if(!savedDecks || Array.isArray(savedDecks)) { 
+        savedDecks = { deck0: [], deck1: [], deck2: [] }; 
+    }
+    playerDecks = savedDecks;
+    playerDeck = [...(playerDecks[`deck${activeDeckIndex}`] || [])];
     
     updateDeckUI();
     renderInventory();
@@ -202,9 +213,23 @@ function renderInventory() {
     
     const uniqueCards = [];
     const seen = new Set();
+    const deckCharNames = playerDeck.map(d => d.charName);
+
     inventory.forEach(c => {
-        const key = c.charName + '_' + c.rarity;
-        if(!seen.has(key)) { seen.add(key); uniqueCards.push(c); }
+        // Skip if already in deck
+        if(deckCharNames.includes(c.charName)) return;
+
+        // Keep only highest rarity for a char
+        const currentRarity = RARITY_ORDER[c.rarity] || 1;
+        const existingIdx = uniqueCards.findIndex(x => x.charName === c.charName);
+        if(existingIdx >= 0) {
+            const existingRarity = RARITY_ORDER[uniqueCards[existingIdx].rarity] || 1;
+            if(currentRarity > existingRarity) {
+                uniqueCards[existingIdx] = c;
+            }
+        } else {
+            uniqueCards.push(c);
+        }
     });
     
     const sortMode = document.getElementById('cardgame-sort-select').value;
@@ -229,11 +254,9 @@ function renderInventory() {
                          <div style="font-size:0.6rem; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${c.charName}</div>`;
         div.addEventListener('click', () => {
             if(playerDeck.length < 10) {
-                if(playerDeck.some(dc => dc.charName === c.charName)) {
-                    alert("Charakter ist bereits im Deck!"); return;
-                }
                 playerDeck.push(c);
                 updateDeckUI();
+                renderInventory();
             } else { alert("Deck ist voll (10 Karten)!"); }
         });
         invContainer.appendChild(div);
@@ -255,6 +278,7 @@ function updateDeckUI() {
         div.addEventListener('click', () => {
             playerDeck.splice(idx, 1);
             updateDeckUI();
+            renderInventory();
         });
         slots.appendChild(div);
     });
@@ -292,8 +316,8 @@ async function renderMatchmaking() {
         snap.forEach(docSnap => {
             if(docSnap.id !== user.uid) {
                 const data = docSnap.data();
-                if(data[deckField] && data[deckField][0] && data[deckField][0].length === 10) {
-                    opponents.push({ uid: docSnap.id, deck: data[deckField][0], ...data });
+                if(data[deckField] && data[deckField].deck0 && data[deckField].deck0.length === 10) {
+                    opponents.push({ uid: docSnap.id, deck: data[deckField].deck0, ...data });
                 }
             }
         });
@@ -319,14 +343,10 @@ async function renderMatchmaking() {
 
 function startBotMatch(botName, allowedRarities) {
     let pool = [];
-    // Generate Bot Deck
     activeCharacterDatabase.forEach(char => {
-        // Just pick one of the allowed rarities randomly or distribute
         const rarity = allowedRarities[Math.floor(Math.random() * allowedRarities.length)];
         pool.push({ charName: char.name, rarity: rarity });
     });
-    
-    // Pick 10 random unique chars
     pool = pool.sort(() => 0.5 - Math.random()).slice(0, 10);
     
     isBotMatch = true;
@@ -356,8 +376,32 @@ async function startMatch(oppData, oppDeckArr) {
     document.getElementById('match-player-synergy').innerHTML = pSyn.map(s => `${s.faction} (+${s.count}%)`).join('<br>') || 'Keine';
     document.getElementById('match-opponent-synergy').innerHTML = oSyn.map(s => `${s.faction} (+${s.count}%)`).join('<br>') || 'Keine';
     
+    const user = getCurrentUser();
+    if(user && !isBotMatch) {
+        liveMatchActive = true;
+        updateLiveSpectator(user, "0:0 (Runde 1)");
+    }
+    
     renderHand();
     renderOpponentDeckState();
+}
+
+function updateLiveSpectator(user, scoreText) {
+    if(!liveMatchActive) return;
+    try {
+        setDoc(doc(db, "live_games", user.username), {
+            displayName: user.displayName || user.username,
+            avatar: user.avatar || '',
+            placedCharacters: [],
+            pool: [],
+            mode: currentMode,
+            gameType: "Cardgame",
+            category: "normal",
+            progress: `Cardgame vs ${opponentData.displayName} - ${scoreText}`,
+            updatedAt: Timestamp.now(),
+            isTestUser: user.isTestUser || false
+        }).catch(()=>{});
+    } catch(e){}
 }
 
 function renderOpponentDeckState() {
@@ -437,10 +481,15 @@ function playRound(playerCard) {
     document.getElementById('match-player-score').innerText = playerScore;
     document.getElementById('match-opponent-score').innerText = opponentScore;
     
+    const user = getCurrentUser();
+    if(user && liveMatchActive) updateLiveSpectator(user, `${playerScore}:${opponentScore} (Runde ${currentRound+1})`);
+    
     document.getElementById('match-round-result').innerHTML = resultText;
     document.getElementById('match-round-calc').innerHTML = `
-        Dein Score: ${pBase.toFixed(2)} * ${pRar} * ${pFacMult} * ${pSyn.toFixed(2)} = <b style="color:#2ed573">${pFinal.toFixed(2)}</b><br>
-        Gegner Score: ${oBase.toFixed(2)} * ${oRar} * ${oFacMult} * ${oSyn.toFixed(2)} = <b style="color:#ff4757">${oFinal.toFixed(2)}</b>
+        <div style="display:flex; flex-direction:column; gap:8px; text-align:left; background:#111; padding:10px; border-radius:5px; border:1px solid #333;">
+            <div><span style="color:#2ed573">Du:</span> Base(${pBase.toFixed(1)}) * Rar(${pRar}) * Frak(${pFacMult}) * Syn(${pSyn.toFixed(2)}) = <b style="color:#2ed573">${pFinal.toFixed(1)}</b></div>
+            <div><span style="color:#ff4757">Gegner:</span> Base(${oBase.toFixed(1)}) * Rar(${oRar}) * Frak(${oFacMult}) * Syn(${oSyn.toFixed(2)}) = <b style="color:#ff4757">${oFinal.toFixed(1)}</b></div>
+        </div>
     `;
     
     currentRound++;
@@ -452,24 +501,45 @@ async function finishMatch() {
     document.getElementById('cardgame-match').classList.add('hidden');
     document.getElementById('cardgame-main-menu').classList.remove('hidden');
     
+    const user = getCurrentUser();
+    if(user && liveMatchActive) {
+        liveMatchActive = false;
+        deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
+    }
+
+    let finalRes = "Unentschieden";
     if(playerScore > opponentScore) {
+        finalRes = "Sieg";
         alert(`Du hast das Match ${playerScore}:${opponentScore} gewonnen!`);
-        if(!isBotMatch) {
-            alert(`Du erhaeltst 5 Credits fuer den Sieg gegen einen echten Spieler!`);
-            const user = getCurrentUser();
-            if(user) {
-                user.credits = (user.credits || 0) + 5;
-                localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
-                await updateDoc(doc(db, "users", user.uid), { credits: user.credits });
-                const cb = document.getElementById('topbar-credits');
-                if(cb) cb.innerHTML = `<span style="color:#ffd700;">?</span> ${user.credits}`;
-            }
-        } else {
-            alert(`Uebungsmatch beendet. Keine Credits, da es ein Bot war.`);
+        if(!isBotMatch && user) {
+            alert(`Du bekommst 5 Credits fuer den Sieg!`);
+            user.credits = (user.credits || 0) + 5;
+            localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
+            await updateDoc(doc(db, "users", user.uid), { credits: user.credits });
+            const cb = document.getElementById('topbar-credits');
+            if(cb) cb.innerHTML = `<span style="color:#ffd700;">?</span> ${user.credits}`;
         }
     } else if(opponentScore > playerScore) {
+        finalRes = "Niederlage";
         alert(`Du hast das Match ${playerScore}:${opponentScore} verloren!`);
     } else {
         alert(`Das Match endete unentschieden ${playerScore}:${opponentScore}!`);
     }
+
+    if(user) {
+        addDoc(collection(db, "games"), {
+            userUid: user.uid,
+            username: user.username,
+            mode: currentMode,
+            type: "cardgame",
+            gameType: "cardgame",
+            category: "normal",
+            result: finalRes,
+            opponent: opponentData.displayName,
+            score: `${playerScore}:${opponentScore}`,
+            isBot: isBotMatch,
+            date: Timestamp.now()
+        }).catch(e => console.error("History save error:", e));
+    }
 }
+
