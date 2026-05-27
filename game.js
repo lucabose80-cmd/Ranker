@@ -38,7 +38,7 @@ export const hardcoreQuotes = {
     'Bo-Katan Kryze': 'Mandalore will survive.',
     'Boba Fett': 'I am a simple man making his way through the galaxy.',
     'Jango Fett': 'I am just a simple man trying to make my way in the universe.',
-    'Pre Vizsla': 'For Mandalore!',
+    'Pre Vizsla': 'Only the strongest shall rule!',
     'R2-D2': '*Beep boop beep*',
     'C-3PO': 'I am fluent in over six million forms of communication.',
     'General Grievous': 'General Kenobi. You are a bold one.',
