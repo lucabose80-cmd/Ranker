@@ -1781,7 +1781,7 @@ window.processCardUpgrade = async function(charName, fromRarity, user) {
     
     let toRarity = fromRarity === 'common' ? 'rare' : 'epic';
     let addedKyber = 0;
-    let notificationText = \`Karte auf \${toRarity.toUpperCase()} geupgradet!\`;
+    let notificationText = `Karte auf ${toRarity.toUpperCase()} geupgradet!`;
     
     if (toRarity === 'epic') {
         const hasEpic = inventory.some(c => c.charName === charName && c.rarity === 'epic');
