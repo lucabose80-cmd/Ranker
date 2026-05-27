@@ -1,6 +1,6 @@
 export const patchNotesStarWars = [
     {
-        version: "v7.6.0",
+        version: "v7.6",
         title: "Update: Cardgame Overhaul & UI Features",
         isHotfix: false,
         changes: [

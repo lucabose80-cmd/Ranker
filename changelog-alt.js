@@ -1,6 +1,6 @@
 export const patchNotesWaifu = [
     {
-        version: "v7.5.0",
+        version: "v7.5",
         title: "Update: Cardgame Overhaul & UI Features",
         isHotfix: false,
         changes: [
