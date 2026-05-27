@@ -93,10 +93,11 @@ export function initShop() {
         
         // Calculate distinct owned characters pulled from THIS specific booster
         const inv = user[`inventory_${currentMode}`] || [];
-        const ownedNames = new Set(inv.filter(c => c.boosterId === booster.id).map(c => c.charName));
+        const poolNames = new Set(pool.map(c => c.name));
+        const ownedNames = new Set(inv.filter(c => poolNames.has(c.charName)).map(c => c.charName));
         const ownedCount = ownedNames.size;
         const totalCount = pool.length;
-        const packComplete = ownedCount === totalCount;
+        const packComplete = ownedCount >= totalCount;
         const alreadyClaimed = !!user[`claimedLegendary_${booster.id}`];
 
         const legacyDate = new Date('2026-06-10T00:00:00Z');
@@ -668,6 +669,8 @@ window.processCrafting = async function(charName, user) {
         alert("Ein Fehler ist aufgetreten.");
     }
 };
+
+
 
 
 
