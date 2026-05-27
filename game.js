@@ -13,6 +13,47 @@ export let activePool = [];
 export let currentIndex = 0;
 export let placedCharacters = { 1: null, 2: null, 3: null, 4: null, 5: null };
 
+export const hardcoreQuotes = {
+    'Captain Rex': 'In my book, experience outranks everything.',
+    'Commander Cody': 'Blast him!',
+    'Fives': 'I am not just another number! None of us are!',
+    'Echo': 'I am a soldier, like you!',
+    'Wolffe': 'We are the Wolfpack.',
+    'Gregor': 'It was an honor to serve with you, Rex.',
+    'Obi-Wan Kenobi': 'Hello there.',
+    'Yoda': 'Do or do not, there is no try.',
+    'Anakin Skywalker': 'This is where the fun begins.',
+    'Mace Windu': 'This party is over.',
+    'Qui-Gon Jinn': 'There is always a bigger fish.',
+    'Ahsoka Tano': 'I am no Jedi.',
+    'Plo Koon': 'Not to me.',
+    'Darth Vader': 'I find your lack of faith disturbing.',
+    'Emperor Palpatine': 'I am the Senate.',
+    'Darth Maul': 'Kenobi!!!',
+    'Count Dooku': 'I have been looking forward to this.',
+    'Grand Admiral Thrawn': 'To defeat an enemy, you must know them.',
+    'Asajj Ventress': 'You are a fool to challenge me.',
+    'Savage Opress': 'Brother, I am an unworthy apprentice.',
+    'Din Djarin': 'This is the Way.',
+    'Bo-Katan Kryze': 'Mandalore will survive.',
+    'Boba Fett': 'I am a simple man making his way through the galaxy.',
+    'Jango Fett': 'I am just a simple man trying to make my way in the universe.',
+    'Pre Vizsla': 'For Mandalore!',
+    'R2-D2': '*Beep boop beep*',
+    'C-3PO': 'I am fluent in over six million forms of communication.',
+    'General Grievous': 'General Kenobi. You are a bold one.',
+    'BB-8': '*Happy beeps*',
+    'K-2SO': 'Congratulations. You are being rescued.',
+    'Kommando Droide': 'Roger roger.',
+    'Chewbacca': '*Wookiee roar*',
+    'Cassian Andor': 'Rebellions are built on hope.',
+    'Cad Bane': 'I will take on any job... for the right price.',
+    'Embo': '*Grunts*',
+    'Padme Amidala': 'So this is how liberty dies... with thunderous applause.',
+    'Grogu': '*Coos*',
+    'Wrecker': 'Yeah! Boom!'
+};
+
 export async function initGame() {
     const user = getCurrentUser();
     if (!user) return;
@@ -166,46 +207,6 @@ export function showNextCharacter() {
             return;
         }
         
-        const hardcoreQuotes = {
-            'Captain Rex': 'In my book, experience outranks everything.',
-            'Commander Cody': 'Blast him!',
-            'Fives': 'I am not just another number! None of us are!',
-            'Echo': 'I am a soldier, like you!',
-            'Wolffe': 'We are the Wolfpack.',
-            'Gregor': 'It was an honor to serve with you, Rex.',
-            'Obi-Wan Kenobi': 'Hello there.',
-            'Yoda': 'Do or do not, there is no try.',
-            'Anakin Skywalker': 'This is where the fun begins.',
-            'Mace Windu': 'This party is over.',
-            'Qui-Gon Jinn': 'There is always a bigger fish.',
-            'Ahsoka Tano': 'I am no Jedi.',
-            'Plo Koon': 'Not to me.',
-            'Darth Vader': 'I find your lack of faith disturbing.',
-            'Emperor Palpatine': 'I am the Senate.',
-            'Darth Maul': 'Kenobi!!!',
-            'Count Dooku': 'I have been looking forward to this.',
-            'Grand Admiral Thrawn': 'To defeat an enemy, you must know them.',
-            'Asajj Ventress': 'You are a fool to challenge me.',
-            'Savage Opress': 'Brother, I am an unworthy apprentice.',
-            'Din Djarin': 'This is the Way.',
-            'Bo-Katan Kryze': 'Mandalore will survive.',
-            'Boba Fett': 'I am a simple man making his way through the galaxy.',
-            'Jango Fett': 'I am just a simple man trying to make my way in the universe.',
-            'Pre Vizsla': 'For Mandalore!',
-            'R2-D2': '*Beep boop beep*',
-            'C-3PO': 'I am fluent in over six million forms of communication.',
-            'General Grievous': 'General Kenobi. You are a bold one.',
-            'BB-8': '*Happy beeps*',
-            'K-2SO': 'Congratulations. You are being rescued.',
-            'Kommando Droide': 'Roger roger.',
-            'Chewbacca': '*Wookiee roar*',
-            'Cassian Andor': 'Rebellions are built on hope.',
-            'Cad Bane': 'I will take on any job... for the right price.',
-            'Embo': '*Grunts*',
-            'Padme Amidala': 'So this is how liberty dies... with thunderous applause.',
-            'Grogu': '*Coos*'
-        };
-        
         const extraStyle = currentGameCategory === 'hardcore' ? 'filter: brightness(0);' : '';
         
         const quoteContainer = document.getElementById('hardcore-quote-container');
@@ -264,7 +265,12 @@ export function revealNames() {
         const placedChar = placedCharacters[i];
         if (!labelSpan) continue;
         if (placedChar && placedChar.name) {
-            labelSpan.textContent = placedChar.name;
+            if (currentGameCategory === 'hardcore') {
+                const quote = hardcoreQuotes[placedChar.name] || '...';
+                labelSpan.innerHTML = `${placedChar.name}<br><span style="font-size:0.75rem; color:#aaa; font-style:italic; line-height: 1.2; display: inline-block; margin-top: 5px;">"${quote}"</span>`;
+            } else {
+                labelSpan.textContent = placedChar.name;
+            }
         } else {
             labelSpan.textContent = '???';
         }
