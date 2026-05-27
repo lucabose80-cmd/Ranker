@@ -1579,11 +1579,8 @@ export async function renderCustomLookSelection() {
     if (!grid) return;
     grid.innerHTML = '';
     
-    const { getCurrentUser } = await import('./auth.js');
     const user = getCurrentUser();
     if (!user) return;
-    
-    const { currentMode, activeCharacterDatabase } = await import('./mode-state.js');
     const inventory = currentMode === 'starwars' ? (user.inventory_starwars || []) : (user.inventory_waifu || []);
     const charLooks = currentMode === 'starwars' ? (user.custom_look_starwars || {}) : (user.custom_look_waifu || {});
     
