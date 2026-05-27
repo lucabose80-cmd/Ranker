@@ -7,7 +7,9 @@ export const patchNotesStarWars = [
             "Feature: Das Cardgame unterstützt nun echtes synchrones Live-PvP! Über die neue 'Lobby erstellen'-Funktion können Spieler nun in Echtzeit online gegeneinander antreten.",
             "Feature: Die Spielhistorie und Statistiken werden nun am Ende eines echten Live-Matches aktualisiert, Siege gewähren 5 Credits.",
             "Hotfix: Behebung eines Fehlers in der Cardgame-Scoreberechnung, durch den Bots ohne Seltenheits-Tags gespielt haben und somit das Match abstürzen ließen (keine Popups mehr).",
-            "Hotfix: Cardgame-Bots ignorieren nicht länger das Beliebtheits-Ranking und bauen nun wieder konforme Decks."
+            "Hotfix: Cardgame-Bots ignorieren nicht länger das Beliebtheits-Ranking und bauen nun wieder konforme Decks.",
+            "Hotfix: Bot-UI aktualisiert: Sobald ein Bot besiegt wurde, verschwindet die 'Erster Sieg' Credit-Anzeige und wird durch einen grünen Haken ersetzt.",
+            "Hotfix: Machtverirrung und neue Cardgame-Basiswerte wurden auf das neue Punkte-basierte Scoreboard angepasst, wodurch neue Karten nicht länger unspielbar schlecht sind."
         ]
     },
     {
