@@ -1,4 +1,4 @@
-import { getCurrentUser } from './auth.js';
+﻿import { getCurrentUser } from './auth.js';
 import { activeCharacterDatabase } from './theme.js';
 import { db } from './firebase-config.js';
 import { currentMode } from './mode-state.js';
@@ -412,7 +412,7 @@ function renderOpponentDeckState() {
         if(!dbC) return;
         const isPlayed = playedOpponentCards.includes(c);
         const div = document.createElement('div');
-        div.style.cssText = `width:40px; height:40px; position:relative;`;
+        div.style.cssText = `width:55px; height:55px; position:relative;`;
         div.innerHTML = `<img src="${dbC.img}" style="width:100%; height:100%; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(c.rarity)}; ${isPlayed ? 'filter:grayscale(100%) opacity(0.3);' : ''}">`;
         div.title = c.charName;
         oppContainer.appendChild(div);
@@ -475,8 +475,8 @@ function playRound(playerCard) {
     const getHoloHTML = (rarity) => rarity === "epic" ? `<div style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; mix-blend-mode: color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear; border-radius:5px;"></div>` : "";
     const getLegStyle = (rarity) => rarity === "legendary" ? "animation: legendary-flicker 1.5s infinite;" : "";
 
-    document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:100px; height:100px;"><img src="${pDb.img}" style="width:100px; height:100px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(playerCard.rarity)}; ${getLegStyle(playerCard.rarity)}">${getHoloHTML(playerCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${playerCard.charName}</div></div>`;
-    document.getElementById("match-opponent-active").innerHTML = `<div style="text-align:center; position:relative; width:100px; height:100px;"><img src="${oDb.img}" style="width:100px; height:100px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(oppCard.rarity)}; ${getLegStyle(oppCard.rarity)}">${getHoloHTML(oppCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${oppCard.charName}</div></div>`;
+    document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${pDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(playerCard.rarity)}; ${getLegStyle(playerCard.rarity)}">${getHoloHTML(playerCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${playerCard.charName}</div></div>`;
+    document.getElementById("match-opponent-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${oDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(oppCard.rarity)}; ${getLegStyle(oppCard.rarity)}">${getHoloHTML(oppCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${oppCard.charName}</div></div>`;
 
     
     renderOpponentDeckState();
@@ -571,6 +571,8 @@ async function finishMatch() {
         }).catch(e => console.error("History save error:", e));
     }
 }
+
+
 
 
 
