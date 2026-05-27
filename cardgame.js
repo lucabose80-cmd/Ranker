@@ -265,6 +265,9 @@ function renderInventory() {
 }
 
 function updateDeckUI() {
+    // Auto-clean invalid characters (e.g. deleted or renamed characters)
+    playerDeck = playerDeck.filter(c => activeCharacterDatabase.some(x => x.name === c.charName));
+
     const slots = document.getElementById('cardgame-deck-slots');
     slots.innerHTML = '';
     document.getElementById('cardgame-deck-count').innerText = playerDeck.length;
