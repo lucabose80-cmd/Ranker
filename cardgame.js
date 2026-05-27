@@ -368,21 +368,24 @@ function renderBots() {
             </div>
             <button class="rank-btn bot-start-btn" style="margin-top:15px; padding: 10px 20px; font-size: 1rem; width: 100%; border-color:${bot.color}; color:${bot.color};">Kampf starten</button>
         `;
-        div.querySelector('.bot-start-btn').addEventListener('click', () => startBotMatch(bot));
+        div.querySelector('.bot-start-btn').addEventListener('click', async () => await startBotMatch(bot));
         list.appendChild(div);
     });
 }
 
-function startBotMatch(bot) {
-    let candidates = activeCharacterDatabase.filter(c => bot.rarities.includes(c.rarity));
+async function startBotMatch(bot) {
+    await loadGlobalScores();
+    let candidates = [...activeCharacterDatabase];
     
     // Evaluate popularity
     if (bot.popFilter !== 'any') {
         candidates = candidates.sort((a, b) => {
-            const sA = globalScoresCache[a.name] || 5.0;
-            const sB = globalScoresCache[b.name] || 5.0;
-            return sB - sA; // descending
+            const sA = getCardScore(a.name);
+            const sB = getCardScore(b.name);
+            return sA - sB; // higher score means higher popularity (closer to 1.0) - wait, score is 1-5 where 1 is best
         });
+        // So we want popular (low score) to be at the beginning of the array. sA - sB does ascending.
+        
         const cut = Math.max(10, Math.floor(candidates.length * 0.4));
         if (bot.popFilter === 'high') {
             candidates = candidates.slice(0, cut);
@@ -422,7 +425,10 @@ function startBotMatch(bot) {
         deck.push(activeCharacterDatabase[Math.floor(Math.random() * activeCharacterDatabase.length)]);
     }
     
-    const finalDeck = deck.slice(0, 10).map(c => ({ charName: c.name, rarity: c.rarity }));
+    const finalDeck = deck.slice(0, 10).map(c => {
+        const assignedRarity = bot.rarities[Math.floor(Math.random() * bot.rarities.length)];
+        return { charName: c.name, rarity: assignedRarity };
+    });
     isBotMatch = true;
     startMatch({ username: `BOT: ${bot.name}`, displayName: `BOT: ${bot.name}`, botLevel: BOT_LEVELS.indexOf(bot) + 1 }, finalDeck);
 }
