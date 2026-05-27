@@ -78,7 +78,9 @@ export function initShop() {
         const pool = activeCharacterDatabase.filter(booster.filter);
         if (pool.length === 0) return;
         
-        const legCount = (booster.id === 'starwars_jedi_sith' || booster.id === 'starwars_klon') ? pool.filter(c => LEGENDARY_POOL[c.name]).length : 0;
+        const legendaryCharsInPack = (booster.id === 'starwars_jedi_sith' || booster.id === 'starwars_klon') ? pool.filter(c => LEGENDARY_POOL[c.name]) : [];
+        const legCount = legendaryCharsInPack.length;
+        const legNames = legendaryCharsInPack.map(c => c.name).join(', ');
         
         // Calculate distinct owned characters pulled from THIS specific booster
         const inv = user[`inventory_${currentMode}`] || [];
@@ -132,7 +134,7 @@ export function initShop() {
                     <span style="color:${RARITIES.EPIC.color}">${RARITIES.EPIC.name}</span>
                     <span>${(RARITIES.EPIC.dropRate * 100).toFixed(0)}%</span>
                 </div>
-                <div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:bold;">
+                <div title="${legCount > 0 ? 'Legendäre Charaktere: ' + legNames : ''}" style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:bold; cursor: ${legCount > 0 ? 'help' : 'default'};">
                     <span style="color:${RARITIES.LEGENDARY.color}">${RARITIES.LEGENDARY.name}</span>
                     <span style="color:#ffd700;">${(RARITIES.LEGENDARY.dropRate * 100).toFixed(0)}% (${legCount} Karten)</span>
                 </div>
