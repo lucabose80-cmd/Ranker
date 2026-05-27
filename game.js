@@ -117,8 +117,6 @@ export async function initGame() {
                 poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon') && !c.tags.includes('vehicle'));
             } else if (currentGameCategory === 'peak' || currentGameCategory === 'hardcore') {
                 poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('peak') && !c.tags.includes('vehicle'));
-            } else if (currentGameCategory === 'meme') {
-                poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('meme'));
             } else {
                 // Expanded Universe ('normal'): alle Charaktere inklusive Fahrzeuge
                 poolSource = activeCharacterDatabase;
