@@ -568,11 +568,12 @@ export async function openVersusResultModal(game) {
     });
 
     // Render bets results
-    if (game.bets && game.bets.length > 0) {
-        const pool = game.prizePool || 0;
-        const winnersList = game.betWinners || [];
-        
-        let payoutInfo = '';
+    const bets = game.bets || [];
+    const pool = game.prizePool || 0;
+    const winnersList = game.betWinners || [];
+    
+    let payoutInfo = '';
+    if (bets.length > 0) {
         if (winnersList.length > 0) {
             payoutInfo = `
                 <div style="background:rgba(46, 213, 115, 0.1); border:1px solid #2ed573; border-radius:6px; padding:10px; margin-bottom:10px; text-align:center;">
@@ -591,13 +592,21 @@ export async function openVersusResultModal(game) {
                 </div>
             `;
         }
-        
-        content.innerHTML += `
-            <div style="margin-top: 15px; border: 1px solid #333; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.2);">
-                <h4 style="margin:0 0 10px 0; color:#ffd700; font-size:0.9rem; text-transform:uppercase;">Wett-Auswertung (Pool: ${pool} Credits)</h4>
-                ${payoutInfo}
+    } else {
+        payoutInfo = `
+            <div style="background:rgba(255,255,255,0.02); border:1px dashed #444; border-radius:6px; padding:10px; margin-bottom:10px; text-align:center; color:#888; font-size:0.85rem;">
+                Keine Wetten in dieser Runde platziert.
+            </div>
+        `;
+    }
+    
+    content.innerHTML += `
+        <div style="margin-top: 15px; border: 1px solid #333; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.2);">
+            <h4 style="margin:0 0 10px 0; color:#ffd700; font-size:0.9rem; text-transform:uppercase;">Wett-Auswertung (Pool: ${pool} Credits)</h4>
+            ${payoutInfo}
+            ${bets.length > 0 ? `
                 <div style="font-size:0.8rem; color:#94a3b8; max-height:120px; overflow-y:auto; background:rgba(0,0,0,0.2); padding:8px; border-radius:4px; border:1px solid #222;">
-                    ${game.bets.map(b => {
+                    ${bets.map(b => {
                         const correct = safeWinners.includes(b.targetUid);
                         const statusColor = correct ? '#2ed573' : '#ff4757';
                         const statusIcon = correct ? '✓' : '✗';
@@ -609,9 +618,9 @@ export async function openVersusResultModal(game) {
                         `;
                     }).join('')}
                 </div>
-            </div>
-        `;
-    }
+            ` : ''}
+        </div>
+    `;
 }
 
 function openArchiveDetailModal(game) {

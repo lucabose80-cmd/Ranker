@@ -345,15 +345,18 @@ function showWaitingRoom(lobbyId) {
             if (lobby.status === 'waiting') {
                 try {
                     const uSnap = await getDoc(doc(db, "users", user.uid));
-                    const credits = uSnap.exists() ? (uSnap.data().credits || 0) : 0;
+                    let credits = uSnap.exists() ? (uSnap.data().credits || 0) : 0;
+                    if (user.username === 'test1' || user.username === 'test2' || user.role === 'admin') {
+                        credits = Math.max(credits, 1000);
+                    }
                     const myBet = (lobby.bets || []).find(b => b.uid === user.uid);
                     const totalPool = lobby.prizePool || 0;
                     
-                    let poolHtml = totalPool > 0 ? `
+                    let poolHtml = `
                         <div style="background: rgba(46, 213, 115, 0.1); border: 1px solid #2ed573; border-radius: 6px; padding: 10px; text-align: center; margin-bottom: 15px;">
                             <span style="color: #2ed573; font-weight: bold; font-size: 0.95rem;">💰 Aktueller Preispool: ${totalPool} Credits</span>
                         </div>
-                    ` : '';
+                    `;
                     
                     if (myBet) {
                         bettingContainer.innerHTML = `
@@ -422,7 +425,10 @@ function showWaitingRoom(lobbyId) {
                                             if (!userSnap.exists()) throw new Error("Benutzer nicht gefunden.");
                                             
                                             const userData = userSnap.data();
-                                            const currentCredits = userData.credits || 0;
+                                            let currentCredits = userData.credits || 0;
+                                            if (user.username === 'test1' || user.username === 'test2' || userData.role === 'admin') {
+                                                currentCredits = Math.max(currentCredits, 1000);
+                                            }
                                             if (currentCredits < amount) throw new Error("Nicht genügend Credits.");
                                             
                                             const lobbyRef = doc(db, "versus_lobbies", lobby.id);
@@ -437,7 +443,11 @@ function showWaitingRoom(lobbyId) {
                                                 throw new Error("Du hast bereits eine Wette platziert.");
                                             }
                                             
-                                            transaction.update(userRef, { credits: currentCredits - amount });
+                                            const finalCredits = (user.username === 'test1' || user.username === 'test2' || userData.role === 'admin')
+                                                ? Math.max(0, (userData.credits || 0) - amount)
+                                                : currentCredits - amount;
+                                            
+                                            transaction.update(userRef, { credits: finalCredits });
                                             
                                             existingBets.push({
                                                 uid: user.uid,
@@ -469,11 +479,11 @@ function showWaitingRoom(lobbyId) {
                 }
             } else {
                 const pool = lobby.prizePool || 0;
-                bettingContainer.innerHTML = pool > 0 ? `
+                bettingContainer.innerHTML = `
                     <div style="background: rgba(46, 213, 115, 0.1); border: 1px solid #2ed573; border-radius: 6px; padding: 10px; text-align: center; margin-bottom: 15px;">
                         <span style="color: #2ed573; font-weight: bold; font-size: 0.95rem;">💰 Spiel-Preispool: ${pool} Credits</span>
                     </div>
-                ` : '';
+                `;
             }
         }
         
@@ -672,9 +682,9 @@ function showWaitingRoom(lobbyId) {
 }
 
 // Auswertung des Versus Matches
-async function evaluateVersusMatch(lobbyId, lobby) {
-    // 0. Transaktions-Sperre: Verhindere, dass mehrere Clients gleichzeitig auswerten
-    let shouldEvaluate = false;
+async function evaluateVersusMatch(lobbyId, localLobby) {
+    // 0. Transaktions-Sperre: Verhindere, dass mehrere Clients gleichzeitig auswerten und hole frische Daten
+    let freshLobby = null;
     try {
         await runTransaction(db, async (transaction) => {
             const snap = await transaction.get(doc(db, "versus_lobbies", lobbyId));
@@ -683,176 +693,191 @@ async function evaluateVersusMatch(lobbyId, lobby) {
             if (data.status === 'finished' || data.status === 'evaluating') return;
             
             transaction.update(doc(db, "versus_lobbies", lobbyId), { status: 'evaluating' });
-            shouldEvaluate = true;
+            freshLobby = { id: snap.id, ...data };
         });
     } catch(e) { console.error("Lock error", e); }
     
-    if (!shouldEvaluate) return; // Ein anderer Spieler wertet bereits aus
+    if (!freshLobby) return; // Ein anderer Spieler wertet bereits aus
     
-    // 1. Hole das globale Scoreboard für den Modus
-    const suffix = lobby.category === 'normal' || !lobby.category ? '' : '_' + lobby.category;
-    const scoresRef = doc(db, "scores", `${lobby.mode}_classic${suffix}_global`);
-    const scoresSnap = await getDoc(scoresRef);
-    const globalScores = scoresSnap.exists() ? scoresSnap.data() : {};
-    
-    // 2. Erstelle ein "Perfektes" Ranking der 5 Charaktere
-    const perfectRanking = [...lobby.characters].sort((a, b) => {
-        const safeA = a.replace(/[\.\/\[\]~#]/g, '_');
-        const safeB = b.replace(/[\.\/\[\]~#]/g, '_');
-        const scoreA = globalScores.characters?.[safeA]?.score || 0;
-        const scoreB = globalScores.characters?.[safeB]?.score || 0;
-        return scoreB - scoreA; // Absteigend (meiste Punkte = Platz 1)
-    });
-    
-    // Check if there are any global scores for these characters
-    let totalPoints = 0;
-    lobby.characters.forEach(c => {
-        const safe = c.replace(/[\.\/\[\]~#]/g, '_');
-        totalPoints += globalScores.characters?.[safe]?.score || 0;
-    });
-
-    let bestScore = Infinity;
-    let winners = [];
-    
-    if (totalPoints === 0) {
-        // No global scores yet, it's a tie for everyone
-        lobby.players.forEach(player => {
-            player.score = 0; // 0 Abweichung
-            winners.push(player.uid);
+    try {
+        // 1. Hole das globale Scoreboard für den Modus
+        const suffix = freshLobby.category === 'normal' || !freshLobby.category ? '' : '_' + freshLobby.category;
+        const scoresRef = doc(db, "scores", `${freshLobby.mode}_classic${suffix}_global`);
+        const scoresSnap = await getDoc(scoresRef);
+        const globalScores = scoresSnap.exists() ? scoresSnap.data() : {};
+        
+        // 2. Erstelle ein "Perfektes" Ranking der 5 Charaktere
+        const perfectRanking = [...freshLobby.characters].sort((a, b) => {
+            const safeA = a.replace(/[\.\/\[\]~#]/g, '_');
+            const safeB = b.replace(/[\.\/\[\]~#]/g, '_');
+            const scoreA = globalScores.characters?.[safeA]?.score || 0;
+            const scoreB = globalScores.characters?.[safeB]?.score || 0;
+            return scoreB - scoreA; // Absteigend (meiste Punkte = Platz 1)
         });
-        // We won't increment win stats for 0-point unranked games
-    } else {
-        // Normal evaluation
-        lobby.players.forEach(player => {
-            let diffSum = 0;
-            // player.picks enthält die Namen in Reihenfolge von 1 bis 5
-            player.picks.forEach((pickName, index) => {
-                const playerRank = index + 1;
-                const perfectRank = perfectRanking.indexOf(pickName) + 1;
-                diffSum += Math.abs(playerRank - perfectRank);
-            });
-            player.score = diffSum;
-            
-            if (diffSum < bestScore) {
-                bestScore = diffSum;
-                winners = [player.uid];
-            } else if (diffSum === bestScore) {
+        
+        // Check if there are any global scores for these characters
+        let totalPoints = 0;
+        freshLobby.characters.forEach(c => {
+            const safe = c.replace(/[\.\/\[\]~#]/g, '_');
+            totalPoints += globalScores.characters?.[safe]?.score || 0;
+        });
+
+        let bestScore = Infinity;
+        let winners = [];
+        
+        if (totalPoints === 0) {
+            // No global scores yet, it's a tie for everyone
+            freshLobby.players.forEach(player => {
+                player.score = 0; // 0 Abweichung
                 winners.push(player.uid);
-            }
-        });
-        
-        const hasTestUser = lobby.players.some(p => p.username === 'test1' || p.username === 'test2');
-        
-        if (!hasTestUser) {
-            // 4. Update die Stats der Gewinner UND inkrementiere gamesPlayed für alle
-            const playerPromises = lobby.players.map(async (player) => {
-                const uRef = doc(db, "users", player.uid);
-                const suffixWin = lobby.category === 'klon' ? '_klon' : '';
-                const winField = `versusWins_${lobby.mode}${suffixWin}`;
-                const gamesField = `gamesPlayed_${lobby.mode}`;
-                const uSnap = await getDoc(uRef);
-                if (uSnap.exists()) {
-                    const data = uSnap.data();
-                    const updates = { [gamesField]: (data[gamesField] || 0) + 1 };
-                    
-                    // Rivalitäten & Match-History
-                    const opp = lobby.players.find(p => p.uid !== player.uid);
-                    if (opp) {
-                        const vsStats = data.versusMatchups || {};
-                        const oppName = opp.username;
-                        if (!vsStats[oppName]) vsStats[oppName] = { wins: 0, losses: 0, draws: 0 };
-                        
-                        if (winners.includes(player.uid) && winners.includes(opp.uid)) {
-                            vsStats[oppName].draws++;
-                        } else if (winners.includes(player.uid)) {
-                            vsStats[oppName].wins++;
-                        } else {
-                            vsStats[oppName].losses++;
-                        }
-                        updates.versusMatchups = vsStats;
-                    }
-
-                    if (winners.includes(player.uid)) {
-                        updates[winField] = (data[winField] || 0) + 1;
-                    }
-                    await updateDoc(uRef, updates);
-                }
             });
-            await Promise.all(playerPromises);
-        }
-    }
-    
-    // Wetten-Auszahlung
-    let betWinners = [];
-    if (lobby.bets && lobby.bets.length > 0) {
-        const totalPool = lobby.prizePool || 0;
-        
-        // Finde Spieler, die auf einen der Gewinner gesetzt haben
-        const correctBettors = lobby.bets.filter(b => winners.includes(b.targetUid));
-        
-        if (correctBettors.length > 0) {
-            const payoutPerBettor = Math.floor(totalPool / correctBettors.length);
-            
-            const payoutPromises = correctBettors.map(async (b) => {
-                const uRef = doc(db, "users", b.uid);
-                const uSnap = await getDoc(uRef);
-                if (uSnap.exists()) {
-                    const data = uSnap.data();
-                    const newCredits = (data.credits || 0) + payoutPerBettor;
-                    await updateDoc(uRef, { credits: newCredits });
-                }
-            });
-            await Promise.all(payoutPromises);
-            
-            betWinners = correctBettors.map(b => ({
-                uid: b.uid,
-                displayName: b.displayName,
-                payout: payoutPerBettor
-            }));
+            // We won't increment win stats for 0-point unranked games
         } else {
-            // Keine korrekten Wetten -> Rückerstattung
-            const refundPromises = lobby.bets.map(async (b) => {
-                const uRef = doc(db, "users", b.uid);
-                const uSnap = await getDoc(uRef);
-                if (uSnap.exists()) {
-                    const data = uSnap.data();
-                    const newCredits = (data.credits || 0) + b.amount;
-                    await updateDoc(uRef, { credits: newCredits });
+            // Normal evaluation
+            freshLobby.players.forEach(player => {
+                let diffSum = 0;
+                const picks = player.picks || [];
+                // player.picks enthält die Namen in Reihenfolge von 1 bis 5
+                for (let index = 0; index < 5; index++) {
+                    const pickName = picks[index];
+                    const playerRank = index + 1;
+                    const perfectRank = pickName ? perfectRanking.indexOf(pickName) + 1 : 0;
+                    if (perfectRank > 0) {
+                        diffSum += Math.abs(playerRank - perfectRank);
+                    } else {
+                        diffSum += 5; // Maximaler Abstand/Strafe für fehlende Picks
+                    }
+                }
+                player.score = diffSum;
+                
+                if (diffSum < bestScore) {
+                    bestScore = diffSum;
+                    winners = [player.uid];
+                } else if (diffSum === bestScore) {
+                    winners.push(player.uid);
                 }
             });
-            await Promise.all(refundPromises);
+            
+            const hasTestUser = freshLobby.players.some(p => p.username === 'test1' || p.username === 'test2');
+            
+            if (!hasTestUser) {
+                // 4. Update die Stats der Gewinner UND inkrementiere gamesPlayed für alle
+                const playerPromises = freshLobby.players.map(async (player) => {
+                    const uRef = doc(db, "users", player.uid);
+                    const suffixWin = freshLobby.category === 'klon' ? '_klon' : '';
+                    const winField = `versusWins_${freshLobby.mode}${suffixWin}`;
+                    const gamesField = `gamesPlayed_${freshLobby.mode}`;
+                    const uSnap = await getDoc(uRef);
+                    if (uSnap.exists()) {
+                        const userData = uSnap.data();
+                        const updates = { [gamesField]: (userData[gamesField] || 0) + 1 };
+                        
+                        // Rivalitäten & Match-History
+                        const opp = freshLobby.players.find(p => p.uid !== player.uid);
+                        if (opp) {
+                            const vsStats = userData.versusMatchups || {};
+                            const oppName = opp.username;
+                            if (!vsStats[oppName]) vsStats[oppName] = { wins: 0, losses: 0, draws: 0 };
+                            
+                            if (winners.includes(player.uid) && winners.includes(opp.uid)) {
+                                vsStats[oppName].draws++;
+                            } else if (winners.includes(player.uid)) {
+                                vsStats[oppName].wins++;
+                            } else {
+                                vsStats[oppName].losses++;
+                            }
+                            updates.versusMatchups = vsStats;
+                        }
+
+                        if (winners.includes(player.uid)) {
+                            updates[winField] = (userData[winField] || 0) + 1;
+                        }
+                        await updateDoc(uRef, updates);
+                    }
+                });
+                await Promise.all(playerPromises);
+            }
         }
-    }
-    
-    const hasTestUserGlobal = lobby.players.some(p => p.username === 'test1' || p.username === 'test2');
-    if (!hasTestUserGlobal) {
-        // 5. Speichere das Spiel in die History
-        const historyData = {
-            mode: lobby.mode,
-            category: lobby.category || 'normal',
-            type: 'versus',
-            timestamp: Timestamp.now(),
-            characters: lobby.characters,
-            players: lobby.players,
+        
+        // Wetten-Auszahlung
+        let betWinners = [];
+        if (freshLobby.bets && freshLobby.bets.length > 0) {
+            const totalPool = freshLobby.prizePool || 0;
+            
+            // Finde Spieler, die auf einen der Gewinner gesetzt haben
+            const correctBettors = freshLobby.bets.filter(b => winners.includes(b.targetUid));
+            
+            if (correctBettors.length > 0) {
+                const payoutPerBettor = Math.floor(totalPool / correctBettors.length);
+                
+                const payoutPromises = correctBettors.map(async (b) => {
+                    const uRef = doc(db, "users", b.uid);
+                    const uSnap = await getDoc(uRef);
+                    if (uSnap.exists()) {
+                        const userData = uSnap.data();
+                        const newCredits = (userData.credits || 0) + payoutPerBettor;
+                        await updateDoc(uRef, { credits: newCredits });
+                    }
+                });
+                await Promise.all(payoutPromises);
+                
+                betWinners = correctBettors.map(b => ({
+                    uid: b.uid,
+                    displayName: b.displayName,
+                    payout: payoutPerBettor
+                }));
+            } else {
+                // Keine korrekten Wetten -> Rückerstattung
+                const refundPromises = freshLobby.bets.map(async (b) => {
+                    const uRef = doc(db, "users", b.uid);
+                    const uSnap = await getDoc(uRef);
+                    if (uSnap.exists()) {
+                        const userData = uSnap.data();
+                        const newCredits = (userData.credits || 0) + b.amount;
+                        await updateDoc(uRef, { credits: newCredits });
+                    }
+                });
+                await Promise.all(refundPromises);
+            }
+        }
+        
+        const hasTestUserGlobal = freshLobby.players.some(p => p.username === 'test1' || p.username === 'test2');
+        if (!hasTestUserGlobal) {
+            // 5. Speichere das Spiel in die History
+            const historyData = {
+                mode: freshLobby.mode,
+                category: freshLobby.category || 'normal',
+                type: 'versus',
+                timestamp: Timestamp.now(),
+                characters: freshLobby.characters,
+                players: freshLobby.players,
+                perfectRanking: perfectRanking,
+                winners: winners,
+                bets: freshLobby.bets || [],
+                prizePool: freshLobby.prizePool || 0,
+                betWinners: betWinners
+            };
+            await setDoc(doc(db, "history", `versus_${Date.now()}`), historyData);
+        }
+        
+        // 6. Setze Lobby auf Finished und speichere die Results in der Lobby
+        await updateDoc(doc(db, "versus_lobbies", lobbyId), {
+            status: 'finished',
+            players: freshLobby.players,
             perfectRanking: perfectRanking,
             winners: winners,
-            bets: lobby.bets || [],
-            prizePool: lobby.prizePool || 0,
+            bets: freshLobby.bets || [],
+            prizePool: freshLobby.prizePool || 0,
             betWinners: betWinners
-        };
-        await setDoc(doc(db, "history", `versus_${Date.now()}`), historyData);
+        });
+    } catch(err) {
+        console.error("Fehler bei versus-Auswertung:", err);
+        // Fallback: Setze Lobby auf finished, damit es nicht blockiert bleibt
+        await updateDoc(doc(db, "versus_lobbies", lobbyId), {
+            status: 'finished',
+            error: err.message
+        });
     }
-    
-    // 6. Setze Lobby auf Finished und speichere die Results in der Lobby
-    await updateDoc(doc(db, "versus_lobbies", lobbyId), {
-        status: 'finished',
-        players: lobby.players,
-        perfectRanking: perfectRanking,
-        winners: winners,
-        bets: lobby.bets || [],
-        prizePool: lobby.prizePool || 0,
-        betWinners: betWinners
-    });
 }
 
 export async function sendVersusInvite(targetUser) {
