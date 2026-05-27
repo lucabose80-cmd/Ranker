@@ -207,10 +207,17 @@ export function showNextCharacter() {
         };
         
         const extraStyle = currentGameCategory === 'hardcore' ? 'filter: brightness(0);' : '';
-        let quoteHtml = '';
+        
+        const quoteContainer = document.getElementById('hardcore-quote-container');
         if (currentGameCategory === 'hardcore') {
             const quote = hardcoreQuotes[currentChar.name] || '...';
-            quoteHtml = `<div style="text-align: center; font-style: italic; color: #ffd700; margin-top: 10px; font-size: 0.9rem;">"${quote}"</div>`;
+            if (quoteContainer) {
+                quoteContainer.innerText = `"${quote}"`;
+                quoteContainer.classList.remove('hidden');
+            }
+        } else if (quoteContainer) {
+            quoteContainer.classList.add('hidden');
+            quoteContainer.innerText = '';
         }
         
         const user = getCurrentUser();
@@ -220,7 +227,7 @@ export function showNextCharacter() {
             displayImg = LEGENDARY_POOL[currentChar.name].specialImg;
         }
         
-        imgContainer.innerHTML = `<img src="${displayImg}" alt="Charakter Bild" style="${extraStyle}">${quoteHtml}`;
+        imgContainer.innerHTML = `<img src="${displayImg}" alt="Charakter Bild" style="${extraStyle}">`;
         
         const discoveredList = user && user.discovered ? user.discovered : [];
         
