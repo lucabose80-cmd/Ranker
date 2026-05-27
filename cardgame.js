@@ -1,4 +1,4 @@
-import { getCurrentUser } from './auth.js';
+ï»¿import { getCurrentUser } from './auth.js';
 import { activeCharacterDatabase } from './theme.js';
 import { db } from './firebase-config.js';
 import { currentMode } from './mode-state.js';
@@ -28,8 +28,8 @@ const FACTION_ADVANTAGE = {
     'imperium': 'mandalorianer',
     'mandalorianer': 'klon',
     'klon': 'jedi',
-    'kopfgeldjäger': 'jedi',
-    'droid': 'kopfgeldjäger'
+    'kopfgeldjï¿½ger': 'jedi',
+    'droid': 'kopfgeldjï¿½ger'
 };
 
 function getMainFaction(tags) {
@@ -41,7 +41,7 @@ function getMainFaction(tags) {
     if(tg.includes('rebell') || tg.includes('rebellion')) return 'rebell';
     if(tg.includes('imperium')) return 'imperium';
     if(tg.includes('mandalorianer') || tg.includes('mandalorian')) return 'mandalorianer';
-    if(tg.includes('kopfgeldjäger') || tg.includes('kopfgeldjaeger')) return 'kopfgeldjäger';
+    if(tg.includes('kopfgeldjï¿½ger') || tg.includes('kopfgeldjaeger')) return 'kopfgeldjï¿½ger';
     if(tg.includes('droid') || tg.includes('droide')) return 'droid';
     return 'neutral';
 }

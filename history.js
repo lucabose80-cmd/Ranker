@@ -1,4 +1,4 @@
-// history.js
+﻿// history.js
 import { db } from './firebase-config.js';
 import { collection, addDoc, onSnapshot, query, where, limit, orderBy, Timestamp, setDoc, doc, increment } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { getCurrentUser, markCharactersAsDiscovered } from './auth.js';
@@ -450,19 +450,19 @@ function renderHistoryHTML(games, container, displayNames) {
         if (game.type === 'cardgame') {
             const isWin = game.result === 'Sieg';
             const color = isWin ? '#2ed573' : (game.result === 'Niederlage' ? '#ff4757' : '#ffd700');
-            card.innerHTML = 
+            card.innerHTML = `
                 <div class="history-header">
                     <div>
-                        <strong>CARDGAME </strong>
-                        <div style="font-size:0.75rem; color:; font-weight:bold; margin-top:2px;"> vs </div>
+                        <strong>CARDGAME ${game.isBot ? '(BOT)' : '(ONLINE)'}</strong>
+                        <div style="font-size:0.75rem; color:${color}; font-weight:bold; margin-top:2px;">${game.result} vs ${game.opponent}</div>
                     </div>
-                    <span class="history-date"></span>
+                    <span class="history-date">${date}</span>
                 </div>
                 <div class="history-images" style="justify-content: center; align-items: center; gap: 15px;">
-                    <span style="font-size: 1.5rem;">??</span>
-                    <span>Score: </span>
+                    <span style="font-size: 1.5rem;">🃏</span>
+                    <span>Score: ${game.score}</span>
                 </div>
-            ;
+            `;
             container.appendChild(card);
             return;
         }
