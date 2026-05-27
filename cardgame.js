@@ -1,4 +1,4 @@
-﻿import { getCurrentUser } from './auth.js';
+import { getCurrentUser } from './auth.js';
 import { activeCharacterDatabase } from './theme.js';
 import { db } from './firebase-config.js';
 import { currentMode } from './mode-state.js';
@@ -446,39 +446,61 @@ function playRound(playerCard) {
     const oppCard = unplayedOpp[Math.floor(Math.random() * unplayedOpp.length)];
     playedOpponentCards.push(oppCard);
     
-        const pDb = activeCharacterDatabase.find(x => x.name === playerCard.charName);
+    const pDb = activeCharacterDatabase.find(x => x.name === playerCard.charName);
     const oDb = activeCharacterDatabase.find(x => x.name === oppCard.charName);
     
     const actx = window.getSharedAudioContext ? window.getSharedAudioContext() : (window.sharedAudioContext || new (window.AudioContext || window.webkitAudioContext)());
-    const now = actx.currentTime;
-    function playTone(freq, time, dur, type="square") {
+    
+    function playTone(freq, time, dur, type="square", vol=0.1) {
         try {
             const osc = actx.createOscillator();
             const gain = actx.createGain();
             osc.type = type; osc.frequency.setValueAtTime(freq, time);
-            gain.gain.setValueAtTime(0.1, time); gain.gain.exponentialRampToValueAtTime(0.01, time + dur);
+            gain.gain.setValueAtTime(vol, time); gain.gain.exponentialRampToValueAtTime(0.001, time + dur);
             osc.connect(gain); gain.connect(actx.destination);
             osc.start(time); osc.stop(time + dur);
         } catch(e){}
     }
 
-    // Play sounds based on highest rarity played
-    const maxRar = RARITY_ORDER[playerCard.rarity] > RARITY_ORDER[oppCard.rarity] ? playerCard.rarity : oppCard.rarity;
-    if(maxRar === "legendary") {
-        playTone(440, now, 0.1); playTone(554.37, now + 0.1, 0.1); playTone(659.25, now + 0.2, 0.1); playTone(880, now + 0.3, 0.4);
-    } else if (maxRar === "epic") {
-        playTone(523.25, now, 0.1); playTone(659.25, now + 0.1, 0.1); playTone(783.99, now + 0.2, 0.3);
-    } else {
-        playTone(440, now, 0.15, "triangle");
+    function playWinSound() {
+        const t = actx.currentTime;
+        playTone(523.25, t,      0.08, "sine", 0.12);
+        playTone(659.25, t+0.09, 0.08, "sine", 0.12);
+        playTone(783.99, t+0.18, 0.08, "sine", 0.12);
+        playTone(1046.5, t+0.27, 0.3,  "sine", 0.15);
+    }
+    function playLoseSound() {
+        const t = actx.currentTime;
+        playTone(440,    t,      0.1,  "sine", 0.1);
+        playTone(349.23, t+0.12, 0.1,  "sine", 0.1);
+        playTone(293.66, t+0.25, 0.35, "sine", 0.12);
+    }
+    function playDrawSound() {
+        const t = actx.currentTime;
+        playTone(440, t, 0.15, "triangle", 0.08);
+        playTone(440, t+0.2, 0.15, "triangle", 0.06);
+    }
+    function playLegendaryFanfare() {
+        const t = actx.currentTime;
+        playTone(440,   t,      0.1, "square", 0.08);
+        playTone(554.37,t+0.1,  0.1, "square", 0.08);
+        playTone(659.25,t+0.2,  0.1, "square", 0.08);
+        playTone(880,   t+0.3,  0.5, "sine",   0.12);
+    }
+    function playEpicFanfare() {
+        const t = actx.currentTime;
+        playTone(523.25,t,      0.1, "square", 0.07);
+        playTone(659.25,t+0.1,  0.1, "square", 0.07);
+        playTone(783.99,t+0.2,  0.3, "sine",   0.1);
     }
 
     const getHoloHTML = (rarity) => rarity === "epic" ? `<div style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; mix-blend-mode: color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear; border-radius:5px;"></div>` : "";
     const getLegStyle = (rarity) => rarity === "legendary" ? "animation: legendary-flicker 1.5s infinite;" : "";
 
-    document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${pDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(playerCard.rarity)}; ${getLegStyle(playerCard.rarity)}">${getHoloHTML(playerCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${playerCard.charName}</div></div>`;
-    document.getElementById("match-opponent-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${oDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(oppCard.rarity)}; ${getLegStyle(oppCard.rarity)}">${getHoloHTML(oppCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${oppCard.charName}</div></div>`;
+    // Show cards (no effect yet - just the card flip)
+    document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${pDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(playerCard.rarity)};"><div style="color:#fff; font-size:0.8rem; margin-top:5px;">${playerCard.charName}</div></div>`;
+    document.getElementById("match-opponent-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${oDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(oppCard.rarity)};"><div style="color:#fff; font-size:0.8rem; margin-top:5px;">${oppCard.charName}</div></div>`;
 
-    
     renderOpponentDeckState();
     
     const pBase = getCardScore(playerCard.charName);
@@ -500,28 +522,116 @@ function playRound(playerCard) {
     const pFinal = pBase * pRar * pFacMult * pSyn;
     const oFinal = oBase * oRar * oFacMult * oSyn;
     
-    let resultText = '';
-    if(pFinal > oFinal) { resultText = "<span style='color:#2ed573;'>Runde Gewonnen!</span>"; playerScore++; }
-    else if(oFinal > pFinal) { resultText = "<span style='color:#ff4757;'>Runde Verloren!</span>"; opponentScore++; }
-    else { resultText = "<span style='color:#ffd700;'>Unentschieden!</span>"; }
+    let isWin = pFinal > oFinal;
+    let isDraw = pFinal === oFinal;
+    
+    if(isWin)       { playerScore++; }
+    else if(!isDraw){ opponentScore++; }
     
     document.getElementById('match-player-score').innerText = playerScore;
     document.getElementById('match-opponent-score').innerText = opponentScore;
     
     const user = getCurrentUser();
     if(user && liveMatchActive) updateLiveSpectator(user, `${playerScore}:${opponentScore} (Runde ${currentRound+1})`);
-    
-    document.getElementById('match-round-result').innerHTML = resultText;
+
+    // Helper: render a score row
+    const fmtMultiplier = (label, val, color, active) => active
+        ? `<div style="display:flex; justify-content:space-between; align-items:center; padding:4px 8px; background:rgba(255,255,255,0.05); border-radius:4px; border-left:3px solid ${color};">
+              <span style="color:#aaa; font-size:0.78rem;">${label}</span>
+              <span style="color:${color}; font-weight:bold; font-size:0.85rem;">x${val.toFixed(2)}</span>
+           </div>`
+        : '';
+
+    const pFacActive   = pFacMult !== 1.0;
+    const oFacActive   = oFacMult !== 1.0;
+    const pSynActive   = pSyn > 1.0;
+    const oSynActive   = oSyn > 1.0;
+    const pRarActive   = pRar > 1.0;
+    const oRarActive   = oRar > 1.0;
+
+    const resultIcon = isWin ? '&#x1F3C6;' : (isDraw ? '&#x1F91D;' : '&#x1F4A5;');
+    const resultLabel = isWin
+        ? `<span style="color:#2ed573; font-size:1.4rem; font-weight:bold;">RUNDE GEWONNEN!</span>`
+        : (isDraw
+            ? `<span style="color:#ffd700; font-size:1.4rem; font-weight:bold;">UNENTSCHIEDEN</span>`
+            : `<span style="color:#ff4757; font-size:1.4rem; font-weight:bold;">RUNDE VERLOREN!</span>`);
+
+    document.getElementById('match-round-result').innerHTML = `<div style="font-size:2rem; margin-bottom:8px;">${resultIcon}</div>${resultLabel}`;
+
+    // Score bar visual
+    const pPct = Math.round((pFinal / (pFinal + oFinal)) * 100);
+    const oPct = 100 - pPct;
+
     document.getElementById('match-round-calc').innerHTML = `
-        <div style="display:flex; flex-direction:column; gap:8px; text-align:left; background:#111; padding:10px; border-radius:5px; border:1px solid #333;">
-            <div><span style="color:#2ed573">Du:</span> Base(${pBase.toFixed(1)}) * Rar(${pRar}) * Frak(${pFacMult}) * Syn(${pSyn.toFixed(2)}) = <b style="color:#2ed573">${pFinal.toFixed(1)}</b></div>
-            <div><span style="color:#ff4757">Gegner:</span> Base(${oBase.toFixed(1)}) * Rar(${oRar}) * Frak(${oFacMult}) * Syn(${oSyn.toFixed(2)}) = <b style="color:#ff4757">${oFinal.toFixed(1)}</b></div>
+        <div style="margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; font-size:0.9rem; font-weight:bold; margin-bottom:4px;">
+                <span style="color:#2ed573;">Du: ${pFinal.toFixed(2)}</span>
+                <span style="color:#ff4757;">Gegner: ${oFinal.toFixed(2)}</span>
+            </div>
+            <div style="height:12px; border-radius:6px; background:#222; overflow:hidden; border:1px solid #444;">
+                <div style="height:100%; width:${pPct}%; background:linear-gradient(to right,#2ed573,#20bf6b); display:inline-block; border-radius:6px 0 0 6px; transition:width 0.5s;"></div>
+            </div>
+        </div>
+
+        <div style="display:flex; gap:12px; text-align:left;">
+            <div style="flex:1; background:#111; border-radius:8px; padding:10px; border:1px solid #2ed57355;">
+                <div style="font-size:0.8rem; color:#2ed573; font-weight:bold; margin-bottom:6px; border-bottom:1px solid #2ed57333; padding-bottom:4px;">Du (${playerCard.charName})</div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                    <span style="color:#aaa; font-size:0.78rem;">Basis-Score</span>
+                    <span style="color:#fff; font-weight:bold; font-size:0.85rem;">${pBase.toFixed(2)}</span>
+                </div>
+                ${fmtMultiplier(`${playerCard.rarity[0].toUpperCase() + playerCard.rarity.slice(1)}-Karte`, pRar, '#ff9f43', pRarActive)}
+                ${fmtMultiplier(`Fraktions-Bonus (${pFac} > ${oFac})`, pFacMult, '#4da6ff', pFacActive)}
+                ${fmtMultiplier(`Synergie-Bonus`, pSyn, '#a855f7', pSynActive)}
+                <div style="margin-top:8px; padding-top:6px; border-top:1px solid #333; display:flex; justify-content:space-between;">
+                    <span style="color:#aaa; font-size:0.8rem;">Gesamt</span>
+                    <span style="color:#2ed573; font-size:1.1rem; font-weight:bold;">${pFinal.toFixed(2)}</span>
+                </div>
+            </div>
+            <div style="flex:1; background:#111; border-radius:8px; padding:10px; border:1px solid #ff475755;">
+                <div style="font-size:0.8rem; color:#ff4757; font-weight:bold; margin-bottom:6px; border-bottom:1px solid #ff475733; padding-bottom:4px;">Gegner (${oppCard.charName})</div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                    <span style="color:#aaa; font-size:0.78rem;">Basis-Score</span>
+                    <span style="color:#fff; font-weight:bold; font-size:0.85rem;">${oBase.toFixed(2)}</span>
+                </div>
+                ${fmtMultiplier(`${oppCard.rarity[0].toUpperCase() + oppCard.rarity.slice(1)}-Karte`, oRar, '#ff9f43', oRarActive)}
+                ${fmtMultiplier(`Fraktions-Bonus (${oFac} > ${pFac})`, oFacMult, '#4da6ff', oFacActive)}
+                ${fmtMultiplier(`Synergie-Bonus`, oSyn, '#a855f7', oSynActive)}
+                <div style="margin-top:8px; padding-top:6px; border-top:1px solid #333; display:flex; justify-content:space-between;">
+                    <span style="color:#aaa; font-size:0.8rem;">Gesamt</span>
+                    <span style="color:#ff4757; font-size:1.1rem; font-weight:bold;">${oFinal.toFixed(2)}</span>
+                </div>
+            </div>
         </div>
     `;
-    
+
     currentRound++;
-    document.getElementById('match-player-hand').innerHTML = ''; 
-    document.getElementById('match-result-overlay').classList.remove('hidden');
+    document.getElementById('match-player-hand').innerHTML = '';
+
+    // Delay showing the overlay slightly so the card flip registers first
+    setTimeout(() => {
+        // Now apply legendary/epic effects and their fanfare
+        const maxRar = RARITY_ORDER[playerCard.rarity] > RARITY_ORDER[oppCard.rarity] ? playerCard.rarity : oppCard.rarity;
+        if(maxRar === "legendary") {
+            playLegendaryFanfare();
+            // Re-inject cards with legendary/epic effects
+            document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${pDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(playerCard.rarity)}; ${getLegStyle(playerCard.rarity)}">${getHoloHTML(playerCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${playerCard.charName}</div></div>`;
+            document.getElementById("match-opponent-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${oDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(oppCard.rarity)}; ${getLegStyle(oppCard.rarity)}">${getHoloHTML(oppCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${oppCard.charName}</div></div>`;
+        } else if(maxRar === "epic") {
+            playEpicFanfare();
+            document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${pDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(playerCard.rarity)};">${getHoloHTML(playerCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${playerCard.charName}</div></div>`;
+            document.getElementById("match-opponent-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${oDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(oppCard.rarity)};">${getHoloHTML(oppCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${oppCard.charName}</div></div>`;
+        }
+
+        // Play win/loss sound after a tiny extra delay (after fanfare starts)
+        setTimeout(() => {
+            if(isWin)       playWinSound();
+            else if(isDraw) playDrawSound();
+            else            playLoseSound();
+        }, maxRar === "legendary" ? 600 : maxRar === "epic" ? 350 : 0);
+
+        document.getElementById('match-result-overlay').classList.remove('hidden');
+    }, 200);
 }
 
 async function finishMatch() {
