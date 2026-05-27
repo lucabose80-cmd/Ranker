@@ -2,10 +2,11 @@ export const patchNotesStarWars = [
     {
         version: "v7.2.1",
         title: "Onboarding & Progression Update",
-        isHotfix: true,
+        isHotfix: false,
         changes: [
             "Feature: Umfassende In-Game Anleitung (Tutorial) für neue Spieler hinzugefügt. (Oben rechts aufrufbar)",
-            "Progression: Nach Erreichen des 20-Spiele-Limits (10 Credits) erhält man nun unbegrenzt 5 Credits für jedes weitere Spiel im klassischen Modus.",
+            "Feature: Nach Erreichen des 20-Spiele-Limits (10 Credits) erhält man nun unbegrenzt 5 Credits für jedes weitere Spiel im klassischen Modus.",
+            "Content: Neue Fahrzeug-Bilder wurden zur Fahrzeug-Kategorie hinzugefügt.",
             "Fix: Fehler behoben, bei dem die Info zur legendären Set-Belohnung im Shop nicht korrekt initialisiert wurde.",
             "Fix: v7.2 Patchnotes wurden im Changelog-Fenster nicht richtig als aktuellste Version erkannt."
         ]
