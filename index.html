@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ranking Game</title>
-    <link rel="stylesheet" href="style.css?v=7.2">
-    <link id="theme-stylesheet" rel="stylesheet" href="theme-starwars.css?v=7.2">
-    <link rel="stylesheet" href="theme-sith.css?v=7.2">
+    <link rel="stylesheet" href="style.css?v=7.6">
+    <link id="theme-stylesheet" rel="stylesheet" href="theme-starwars.css?v=7.6">
+    <link rel="stylesheet" href="theme-sith.css?v=7.6">
 
 </head>
 <body>
@@ -383,8 +383,19 @@
                 </div>
                 <div id='cardgame-matchmaking' class="hidden">
                     <button id="cardgame-match-back" class="rank-btn " style="margin-bottom: 20px; padding: 15px 30px; font-size: 1.1rem; width: 100%; max-width: 300px;">Menu</button>
-                    <h3 style="color:#ffd700; text-align:center;">Gegner finden</h3>
-                    <div id="cardgame-opponent-list" style="max-width:500px; margin:0 auto; display:flex; flex-direction:column; gap:10px;"></div>
+                    
+                    <div style="max-width:600px; margin:0 auto; text-align:center;">
+                        <h3 style="color:#ffd700; text-align:center;">Cardgame Lobbys</h3>
+                        <button id="cardgame-create-lobby-btn" class="rank-btn" style="margin-bottom:20px; padding:15px; font-size:1.1rem; width:100%;">Lobby erstellen</button>
+                        
+                        <div id="cardgame-lobby-waiting" class="hidden" style="background:#1a1e29; padding:20px; border-radius:10px; border:2px solid #ffd700; margin-bottom:20px;">
+                            <h4 style="color:#ffd700; margin-top:0;">Warte auf Gegner...</h4>
+                            <div class="loader" style="margin: 20px auto;"></div>
+                            <button id="cardgame-leave-lobby-btn" class="rank-btn" style="border-color:#ff4757; color:#ff4757; padding:10px;">Lobby abbrechen</button>
+                        </div>
+                        
+                        <div id="cardgame-opponent-list" style="display:flex; flex-direction:column; gap:10px;"></div>
+                    </div>
                 </div>
 
                 <div id="cardgame-match" class="hidden" style="position:relative; width:100%;">
@@ -811,7 +822,7 @@
         </div>
     </div>
 
-    <script type="module" src="main.js?v=7.2"></script>
+    <script type="module" src="main.js?v=7.6"></script>
 </body>
 </html>
 

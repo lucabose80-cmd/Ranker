@@ -3,7 +3,7 @@ import { activeCharacterDatabase } from './theme.js';
 import { db } from './firebase-config.js';
 import { currentMode } from './mode-state.js';
 import { LEGENDARY_POOL } from './data-starwars.js';
-import { doc, getDoc, getDocs, updateDoc, collection, query, where, setDoc, deleteDoc, Timestamp, addDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { doc, getDoc, getDocs, updateDoc, collection, query, where, setDoc, deleteDoc, Timestamp, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 let playerDecks = { deck0: [], deck1: [], deck2: [] };
 let activeDeckIndex = 0;
@@ -142,7 +142,15 @@ export function initCardgame() {
         playerDeck = [...userDecks[`deck${activeDeckIndex}`]];
         document.getElementById('cardgame-main-menu').classList.add('hidden');
         document.getElementById('cardgame-matchmaking').classList.remove('hidden');
-        renderMatchmaking();
+        listenToCardgameLobbies();
+    });
+    
+    document.getElementById('cardgame-create-lobby-btn').addEventListener('click', () => {
+        createCardgameLobby();
+    });
+    
+    document.getElementById('cardgame-leave-lobby-btn').addEventListener('click', () => {
+        leaveCardgameLobby();
     });
     
     document.getElementById('cardgame-match-back').addEventListener('click', () => {
@@ -514,17 +522,34 @@ function renderHand() {
         div.onmouseout = () => div.style.transform = 'translateY(0)';
         div.innerHTML = `<img src="${dbC.img}" style="width:100%; height:80px; object-fit:cover; border-radius:3px;">
                          <div style="font-size:0.6rem; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${c.charName}</div>`;
-        div.addEventListener('click', () => playRound(c));
+        div.addEventListener('click', () => {
+            if (typeof isLivePvP !== 'undefined' && isLivePvP) {
+                // Find the original index of this card in playerDeck to send to Firebase
+                const originalIndex = playerDeck.findIndex(deckCard => deckCard === c);
+                if(typeof playRoundLive === 'function') playRoundLive(originalIndex);
+            } else {
+                playRound(c);
+            }
+        });
         hand.appendChild(div);
     });
 }
 
-function playRound(playerCard) {
+function playRound(playerCard, explicitOppCard = null) {
     playedPlayerCards.push(playerCard);
     
-    const unplayedOpp = opponentDeck.filter(c => !playedOpponentCards.includes(c));
-    const oppCard = unplayedOpp[Math.floor(Math.random() * unplayedOpp.length)];
-    playedOpponentCards.push(oppCard);
+    let oppCard;
+    if (explicitOppCard) {
+        oppCard = explicitOppCard;
+    } else {
+        const unplayedOpp = opponentDeck.filter(c => !playedOpponentCards.includes(c));
+        oppCard = unplayedOpp[Math.floor(Math.random() * unplayedOpp.length)];
+    }
+    
+    // Only push if not already pushed (to avoid double push in PvP)
+    if (!playedOpponentCards.includes(oppCard)) {
+        playedOpponentCards.push(oppCard);
+    }
     
     const pDb = activeCharacterDatabase.find(x => x.name === playerCard.charName);
     const oDb = activeCharacterDatabase.find(x => x.name === oppCard.charName);
@@ -742,6 +767,11 @@ async function finishMatch() {
         liveMatchActive = false;
         deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
     }
+    
+    if (typeof isLivePvP !== 'undefined' && isLivePvP) {
+        isLivePvP = false;
+        setTimeout(() => leaveCardgameLobby(), 500);
+    }
 
     let finalRes = "Unentschieden";
     if(playerScore > opponentScore) {
@@ -826,3 +856,253 @@ async function finishMatch() {
 
 
 
+let currentCardgameLobbyId = null;
+let cardgameLobbyUnsubscribe = null;
+let cardgameListUnsubscribe = null;
+let isHost = false;
+
+function listenToCardgameLobbies() {
+    if (cardgameListUnsubscribe) cardgameListUnsubscribe();
+    
+    const q = query(collection(db, "cardgame_lobbies"), where("mode", "==", currentMode), where("status", "==", "waiting"));
+    
+    cardgameListUnsubscribe = onSnapshot(q, (snapshot) => {
+        const list = document.getElementById('cardgame-opponent-list');
+        if (!list) return;
+        list.innerHTML = '';
+        
+        let hasLobbies = false;
+        snapshot.forEach(d => {
+            const lobby = d.data();
+            lobby.id = d.id;
+            
+            hasLobbies = true;
+            const div = document.createElement('div');
+            div.className = 'history-item';
+            div.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:15px; background:#1a1e29; border:1px solid #333; border-radius:8px;';
+            div.innerHTML = `<div style="font-weight:bold; color:#fff; font-size:1.1rem;">Lobby von ${lobby.hostName}</div>
+                             <button class="rank-btn" style="padding:10px 20px; font-size:1rem;">Beitreten</button>`;
+            div.querySelector('button').addEventListener('click', () => joinCardgameLobby(lobby.id));
+            list.appendChild(div);
+        });
+        
+        if (!hasLobbies) {
+            list.innerHTML = '<p class="prompt-text">Keine offenen Lobbys gefunden.</p>';
+        }
+    });
+}
+
+async function createCardgameLobby() {
+    const user = getCurrentUser();
+    if (!user) return;
+    
+    const lobbyId = "cg_" + Date.now().toString(36) + Math.random().toString(36).substring(2);
+    currentCardgameLobbyId = lobbyId;
+    isHost = true;
+    
+    const lobbyData = {
+        mode: currentMode,
+        hostUid: user.uid,
+        hostName: user.displayName || user.username,
+        status: 'waiting',
+        timestamp: Timestamp.now(),
+        players: [{
+            uid: user.uid,
+            username: user.username,
+            displayName: user.displayName || user.username,
+            deck: playerDeck,
+            picks: []
+        }]
+    };
+    
+    await setDoc(doc(db, "cardgame_lobbies", lobbyId), lobbyData);
+    showCardgameLobbyWaiting();
+    listenToSpecificCardgameLobby(lobbyId);
+}
+
+async function joinCardgameLobby(lobbyId) {
+    const user = getCurrentUser();
+    if (!user) return;
+    
+    const lobbyRef = doc(db, "cardgame_lobbies", lobbyId);
+    const snap = await getDoc(lobbyRef);
+    if (!snap.exists()) return;
+    
+    const lobby = snap.data();
+    if (lobby.status !== 'waiting' || lobby.players.length >= 2) {
+        alert("Lobby ist voll oder bereits gestartet.");
+        return;
+    }
+    
+    currentCardgameLobbyId = lobbyId;
+    isHost = false;
+    
+    lobby.players.push({
+        uid: user.uid,
+        username: user.username,
+        displayName: user.displayName || user.username,
+        deck: playerDeck,
+        picks: []
+    });
+    
+    lobby.status = 'playing';
+    lobby.round = 1;
+    
+    await updateDoc(lobbyRef, { players: lobby.players, status: 'playing', round: 1 });
+    showCardgameLobbyWaiting();
+    listenToSpecificCardgameLobby(lobbyId);
+}
+
+async function leaveCardgameLobby() {
+    if (!currentCardgameLobbyId) {
+        hideCardgameLobbyWaiting();
+        return;
+    }
+    
+    const user = getCurrentUser();
+    const lobbyRef = doc(db, "cardgame_lobbies", currentCardgameLobbyId);
+    
+    if (cardgameLobbyUnsubscribe) cardgameLobbyUnsubscribe();
+    cardgameLobbyUnsubscribe = null;
+    
+    try {
+        const snap = await getDoc(lobbyRef);
+        if (snap.exists()) {
+            const lobby = snap.data();
+            if (lobby.status !== 'finished') {
+                if (lobby.players.length <= 1 || lobby.hostUid === user.uid) {
+                    await deleteDoc(lobbyRef);
+                } else {
+                    lobby.players = lobby.players.filter(p => p.uid !== user.uid);
+                    lobby.status = 'finished'; // Abort match if someone leaves
+                    await updateDoc(lobbyRef, { players: lobby.players, status: 'finished' });
+                }
+            }
+        }
+    } catch(e) {}
+    
+    currentCardgameLobbyId = null;
+    isHost = false;
+    hideCardgameLobbyWaiting();
+    
+    // Switch back to menu
+    document.getElementById('cardgame-matchmaking').classList.add('hidden');
+    document.getElementById('cardgame-match').classList.add('hidden');
+    document.getElementById('cardgame-main-menu').classList.remove('hidden');
+}
+
+function showCardgameLobbyWaiting() {
+    document.getElementById('cardgame-create-lobby-btn').classList.add('hidden');
+    document.getElementById('cardgame-opponent-list').classList.add('hidden');
+    document.getElementById('cardgame-lobby-waiting').classList.remove('hidden');
+}
+
+function hideCardgameLobbyWaiting() {
+    document.getElementById('cardgame-create-lobby-btn').classList.remove('hidden');
+    document.getElementById('cardgame-opponent-list').classList.remove('hidden');
+    document.getElementById('cardgame-lobby-waiting').classList.add('hidden');
+}
+
+function listenToSpecificCardgameLobby(lobbyId) {
+    if (cardgameLobbyUnsubscribe) cardgameLobbyUnsubscribe();
+    
+    let matchStarted = false;
+    
+    cardgameLobbyUnsubscribe = onSnapshot(doc(db, "cardgame_lobbies", lobbyId), (docSnap) => {
+        if (!docSnap.exists()) {
+            alert("Die Lobby wurde geschlossen.");
+            leaveCardgameLobby();
+            return;
+        }
+        
+        const lobby = docSnap.data();
+        if (lobby.status === 'playing' && lobby.players.length === 2) {
+            if (!matchStarted) {
+                matchStarted = true;
+                const user = getCurrentUser();
+                const opponentObj = lobby.players.find(p => p.uid !== user.uid);
+                isLivePvP = true;
+                isBotMatch = false;
+                startMatch({ username: opponentObj.username, displayName: opponentObj.displayName }, opponentObj.deck);
+                hideCardgameLobbyWaiting();
+            }
+            handleCardgameLiveState(lobby);
+        } else if (lobby.status === 'finished') {
+            if (currentRound <= 10) {
+                alert("Das Spiel wurde beendet (Gegner hat das Spiel verlassen). Du gewinnst automatisch!");
+                playerScore = 10;
+                opponentScore = 0;
+                finishMatch();
+            }
+            leaveCardgameLobby();
+        }
+    });
+}
+let isLivePvP = false;
+let livePvPRoundProcessed = false;
+
+async function playRoundLive(cardIndex) {
+    const user = getCurrentUser();
+    if (!user || !currentCardgameLobbyId) return;
+
+    // Temporarily disable hand
+    const hand = document.getElementById('match-player-hand');
+    if (hand) {
+        hand.style.pointerEvents = 'none';
+        hand.style.opacity = '0.5';
+    }
+
+    try {
+        const lobbyRef = doc(db, "cardgame_lobbies", currentCardgameLobbyId);
+        const snap = await getDoc(lobbyRef);
+        if (snap.exists()) {
+            const lobby = snap.data();
+            const playerObj = lobby.players.find(p => p.uid === user.uid);
+            if (playerObj && playerObj.picks.length < currentRound) {
+                playerObj.picks.push(cardIndex);
+                await updateDoc(lobbyRef, { players: lobby.players });
+            }
+        }
+    } catch(e) {
+        console.error("Fehler beim Senden der Karte:", e);
+        if (hand) {
+            hand.style.pointerEvents = 'auto';
+            hand.style.opacity = '1.0';
+        }
+    }
+}
+
+function handleCardgameLiveState(lobby) {
+    const user = getCurrentUser();
+    if (!user) return;
+    
+    // Determine opponent
+    const opponentObj = lobby.players.find(p => p.uid !== user.uid);
+    const myObj = lobby.players.find(p => p.uid === user.uid);
+    
+    if (!opponentObj || !myObj) return;
+
+    // Check if both players have picked for the CURRENT round
+    if (myObj.picks.length === currentRound && opponentObj.picks.length === currentRound && !livePvPRoundProcessed) {
+        livePvPRoundProcessed = true;
+        
+        // Execute round
+        const myCardIndex = myObj.picks[currentRound - 1];
+        const oppCardIndex = opponentObj.picks[currentRound - 1];
+        
+        const myCard = myObj.deck[myCardIndex];
+        const oppCard = opponentObj.deck[oppCardIndex];
+        
+        playRound(myCard, oppCard);
+    }
+    
+    // Check if next round is ready to start
+    if (myObj.picks.length < currentRound) {
+        livePvPRoundProcessed = false;
+        const hand = document.getElementById('match-player-hand');
+        if (hand) {
+            hand.style.pointerEvents = 'auto';
+            hand.style.opacity = '1.0';
+        }
+    }
+}
