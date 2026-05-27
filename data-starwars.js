@@ -251,3 +251,17 @@ export const starWarsCharacters = [
 
 
 
+
+export const LEGENDARY_POOL = {
+    'Anakin Skywalker': {
+        specialImg: 'Special.Bilder/anakin.selten.jpg',
+        sound: 'sounds/imperialmarch.mp3',
+        soundLoops: 1
+    },
+    'Darth Vader': {
+        specialImg: 'Special.Bilder/vader.special.jpg',
+        sound: 'sounds/vaderbreathing.mp3',
+        soundLoops: 3
+    }
+};
+

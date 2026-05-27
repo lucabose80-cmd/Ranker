@@ -1,4 +1,4 @@
-import { LEGENDARY_POOL } from './shop.js';
+import { LEGENDARY_POOL } from './data-starwars.js';
 function getSeenIds() {
     const raw = localStorage.getItem('seen_unlock_ids') || '';
     if (raw.startsWith('[')) {
@@ -40,7 +40,7 @@ export function renderAvatarSelection() {
         let targetImg = char.img;
         let isLegSpecial = false;
         if (useSpecial) {
-            const hasLegendary = inventory.some(c => c.charName === char.name && c.rarity === 'legendary');
+            const hasLegendary = inventory.some(c => c.charName === char.name && (c.rarity === 'legendary' || user.role === 'admin' || user.isTestUser));
             if (hasLegendary && LEGENDARY_POOL && LEGENDARY_POOL[char.name]) {
                 targetImg = LEGENDARY_POOL[char.name].specialImg;
                 isLegSpecial = true;
@@ -1589,7 +1589,7 @@ export async function renderCustomLookSelection() {
     
     const charsWithLegendary = [];
     inventory.forEach(c => {
-        if (c.rarity === 'legendary' && !charsWithLegendary.includes(c.charName)) {
+        if ((c.rarity === 'legendary' || user.role === 'admin' || user.isTestUser) && LEGENDARY_POOL && LEGENDARY_POOL[c.charName] && !charsWithLegendary.includes(c.charName)) {
             charsWithLegendary.push(c.charName);
         }
     });

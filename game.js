@@ -7,7 +7,7 @@ import { getCurrentUser } from './auth.js';
 import { doc, setDoc, Timestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { db } from './firebase-config.js';
 import { currentMode, currentGameCategory } from './mode-state.js';
-import { LEGENDARY_POOL } from './shop.js';
+import { LEGENDARY_POOL } from './data-starwars.js';
 
 export let activePool = []; 
 export let currentIndex = 0;

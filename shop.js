@@ -11,19 +11,7 @@ const RARITIES = {
     LEGENDARY: { id: 'legendary', name: 'Legendär', color: '#ffd700', dropRate: 0.01, border: '5px solid #ffd700', holo: true }
 };
 
-export const LEGENDARY_POOL = {
-    'Anakin Skywalker': {
-        specialImg: 'Special.Bilder/anakin.selten.jpg',
-        sound: 'sounds/imperialmarch.mp3',
-        soundLoops: 1
-    },
-    'Darth Vader': {
-        specialImg: 'Special.Bilder/vader.special.jpg',
-        sound: 'sounds/vaderbreathing.mp3',
-        soundLoops: 3
-    }
-};
-window.LEGENDARY_POOL = LEGENDARY_POOL;
+import { LEGENDARY_POOL } from './data-starwars.js';
 
 const BOOSTERS = [
     {

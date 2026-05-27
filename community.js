@@ -1,4 +1,4 @@
-import { LEGENDARY_POOL } from './shop.js';
+import { LEGENDARY_POOL } from './data-starwars.js';
 // community.js
 import { db } from './firebase-config.js';
 import { collection, onSnapshot, query, orderBy, limit, addDoc, Timestamp, getDocs, where, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
