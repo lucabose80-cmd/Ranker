@@ -62,8 +62,8 @@ export const TITLES = {
         { id: 'sw_secret_53', name: 'Dunkles Bündnis', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Qimir (Der Fremde)', 'Darth Malgus', 'Darth Jar Jar'] } },
         { id: 'sw_secret_54', name: 'Licht & Schatten', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Der Sohn', 'Die Tochter'] } },
         { id: 'sw_secret_55', name: 'Zwei als Eins', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Osha Aniseya', 'Jecki Lon'] } },
-        { id: 'sw_secret_56', name: 'Entwickler-Segen', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Jonas', 'Darth Jar Jar'] } },
-        { id: 'sw_secret_57', name: 'Das wahre Meme', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Jonas', 'Fino Bloodstone'] } }
+        { id: 'sw_secret_56', name: 'Entwickler-Segen', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Jonas', 'Fino Bloodstone', 'Monkey D. Ruffy'] } },
+        { id: 'sw_secret_57', name: 'Das wahre Meme', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Jonas', 'Fino Bloodstone', 'Monkey D. Ruffy'] } }
     ],
     waifu: [
         { id: 'wf_0', name: 'Kein Titel', required: 0 },
