@@ -1,5 +1,14 @@
 export const patchNotesStarWars = [
     {
+        version: "v7.9",
+        title: "Hotfix: Booster Packs & Animationen",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Ein kritischer Fehler wurde behoben, durch den Karten aus Booster-Packs nicht im Inventar gespeichert wurden, wenn eine ungültige Variablenreferenz ausgelöst wurde.",
+            "Hotfix: Die Logik für das 'Vervollständigen' eines Packs wurde stark verbessert. Gecraftete oder hochgestufte Karten zählen nun immer zu 100% als gesammelt für das jeweilige Pack. Dadurch kann die Legenden-Belohnung nicht mehr blockiert werden."
+        ]
+    },
+    {
         version: "v7.8",
         title: "Update: Gacha Quality of Life & Admin Tools",
         isHotfix: false,
