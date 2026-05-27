@@ -1,4 +1,4 @@
-// Mischt ein Array zufällig (Fisher-Yates)
+﻿// Mischt ein Array zufällig (Fisher-Yates)
 export function shuffleArray(array) {
     const arr = [...array];
     for (let i = arr.length - 1; i > 0; i--) {
@@ -35,7 +35,7 @@ export function drawFromBag(pool, count, bagKey) {
         
         let totalWeight = 0;
         const weighted = available.map(c => {
-            const weight = c.tags?.includes('anime') ? 0.3 : 1.0 + ((drought[c.name] || 0) * 0.01);
+            const weight = (c.tags?.includes('anime') || c.tags?.includes('meme')) ? 0.3 : 1.0 + ((drought[c.name] || 0) * 0.01);
             totalWeight += weight;
             return { char: c, weight };
         });

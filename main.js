@@ -1,4 +1,4 @@
-﻿
+
 window.getSharedAudioContext = function() {
     if (!window.sharedAudioContext) {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -307,10 +307,11 @@ function setupGameUI(user) {
     const catPeakBtn = document.getElementById('cat-peak-btn');
     const catVehicleBtn = document.getElementById('cat-vehicle-btn');
     const catHardcoreBtn = document.getElementById('cat-hardcore-btn');
+    const catMemeBtn = document.getElementById('cat-meme-btn');
     
     if (catNormalBtn) {
         const updateCatButtons = (activeCat) => {
-            [catNormalBtn, catKlonBtn, catPeakBtn, catVehicleBtn, catHardcoreBtn].forEach(btn => {
+            [catNormalBtn, catKlonBtn, catPeakBtn, catVehicleBtn, catHardcoreBtn, catMemeBtn].forEach(btn => {
                 if(btn) btn.classList.remove('active');
             });
             if (activeCat === 'normal') catNormalBtn.classList.add('active');
@@ -318,6 +319,7 @@ function setupGameUI(user) {
             if (activeCat === 'peak') catPeakBtn.classList.add('active');
             if (activeCat === 'vehicle') catVehicleBtn.classList.add('active');
             if (activeCat === 'hardcore') catHardcoreBtn.classList.add('active');
+            if (activeCat === 'meme' && catMemeBtn) catMemeBtn.classList.add('active');
         };
 
         const attachCatListener = (btn, cat) => {
@@ -335,6 +337,7 @@ function setupGameUI(user) {
         attachCatListener(catPeakBtn, 'peak');
         attachCatListener(catVehicleBtn, 'vehicle');
         attachCatListener(catHardcoreBtn, 'hardcore');
+        attachCatListener(catMemeBtn, 'meme');
         
         // Initialize state
         updateCatButtons(currentGameCategory);
