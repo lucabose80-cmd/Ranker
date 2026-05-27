@@ -1,4 +1,4 @@
-import { LEGENDARY_POOL } from './data-starwars.js';
+﻿import { LEGENDARY_POOL } from './data-starwars.js';
 function getSeenIds() {
     const raw = localStorage.getItem('seen_unlock_ids') || '';
     if (raw.startsWith('[')) {
@@ -945,14 +945,16 @@ window.openShowcaseModal = function(user, slotIndex) {
         modal.id = 'showcase-selector-modal';
         modal.className = 'modal hidden';
         modal.innerHTML = `
-            <div class="modal-content" style="max-width:400px; background:#1e293b; color:#fff; padding:20px; border-radius:12px; max-height:80vh; overflow-y:auto;">
+            <div class="modal-content" style="position:relative; max-width:400px; background:#1e293b; color:#fff; padding:20px; border-radius:12px; max-height:80vh; overflow-y:auto;">
                 <h3 style="margin-top:0;">Trophäe auswählen</h3>
                 <div id="showcase-items-list" style="display:flex; flex-direction:column; gap:10px;"></div>
-                <button id="close-showcase-modal" class="btn secondary-btn" style="margin-top:20px; width:100%;">Schließen</button>
+                <span id="close-showcase-modal" class="close-btn" style="position:absolute; right:15px; top:15px; font-size:1.5rem; cursor:pointer;">&times;</span>
             </div>
         `;
         document.body.appendChild(modal);
         document.getElementById('close-showcase-modal').addEventListener('click', () => modal.classList.add('hidden'));
+        const escProfile = (e) => { if(e.key === "Escape") modal.classList.add("hidden"); };
+        document.addEventListener("keydown", escProfile);
     }
     
     const list = document.getElementById('showcase-items-list');
@@ -1025,14 +1027,16 @@ window.openAlbumShowcaseModal = function(user, slotIndex) {
         modal.id = 'album-showcase-selector-modal';
         modal.className = 'modal hidden';
         modal.innerHTML = `
-            <div class="modal-content" style="max-width:500px; background:#1e293b; color:#fff; padding:20px; border-radius:12px; max-height:80vh; overflow-y:auto;">
+            <div class="modal-content" style="position:relative; max-width:500px; background:#1e293b; color:#fff; padding:20px; border-radius:12px; max-height:80vh; overflow-y:auto;">
                 <h3 style="margin-top:0;">Karte für Showcase wählen</h3>
                 <div id="album-showcase-items-list" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(80px, 1fr)); gap:10px;"></div>
-                <button id="close-album-showcase-modal" class="btn secondary-btn" style="margin-top:20px; width:100%;">Schließen</button>
+                <span id="close-album-showcase-modal" class="close-btn" style="position:absolute; right:15px; top:15px; font-size:1.5rem; cursor:pointer;">&times;</span>
             </div>
         `;
         document.body.appendChild(modal);
         document.getElementById('close-album-showcase-modal').addEventListener('click', () => modal.classList.add('hidden'));
+        const escProfile = (e) => { if(e.key === "Escape") modal.classList.add("hidden"); };
+        document.addEventListener("keydown", escProfile);
     }
     
     const list = document.getElementById('album-showcase-items-list');
@@ -1642,5 +1646,6 @@ export async function renderCustomLookSelection() {
 
 
 // Additional call added via script
+
 
 

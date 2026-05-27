@@ -1,4 +1,4 @@
-import { LEGENDARY_POOL } from './data-starwars.js';
+﻿import { LEGENDARY_POOL } from './data-starwars.js';
 // community.js
 import { db } from './firebase-config.js';
 import { collection, onSnapshot, query, orderBy, limit, addDoc, Timestamp, getDocs, where, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
@@ -629,6 +629,8 @@ window.showUserAlbumModal = function(u) {
         `;
         document.body.appendChild(modal);
         document.getElementById('close-foreign-album-btn').addEventListener('click', () => modal.classList.add('hidden'));
+        const escForeign = (e) => { if(e.key === 'Escape') { modal.classList.add('hidden'); document.removeEventListener('keydown', escForeign); } };
+        document.addEventListener('keydown', escForeign);
     }
     
     document.getElementById('foreign-album-name').textContent = u.displayName || u.username;
@@ -858,6 +860,7 @@ async function openTradeProposalModal(targetUser) {
         modal.classList.add('hidden');
     }
 }
+
 
 
 

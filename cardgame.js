@@ -85,8 +85,7 @@ async function loadGlobalScores() {
 
 function getCardScore(charName) {
     const scores = globalScoresCache[currentMode] || {};
-    const safeName = charName.replace(/[\.\/\[\]~#]/g, "_");
-    return scores[safeName] || 2.5;
+    return scores[charName] || 2.5;
 }
 
 export function initCardgame() {
@@ -251,8 +250,8 @@ function renderInventory() {
         if(!dbC) return;
         const div = document.createElement('div');
         div.style.cssText = `cursor:pointer; border:2px solid ${getRarityColor(c.rarity)}; border-radius:5px; padding:5px; background:#222; text-align:center; position:relative;`;
-        div.innerHTML = `<img src="${dbC.img}" style="width:100%; height:70px; object-fit:cover; border-radius:3px;">
-                         <div style="font-size:0.6rem; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${c.charName}</div>`;
+        div.innerHTML = `<img src="${dbC.img}" style="width:100%; height:100px; object-fit:cover; border-radius:3px;">
+                         <div style="font-size:0.65rem; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-top:3px;">${c.charName}</div>`;
         div.addEventListener('click', () => {
             if(playerDeck.length < 10) {
                 playerDeck.push(c);
@@ -513,30 +512,10 @@ function playRound(playerCard) {
     if(user && liveMatchActive) updateLiveSpectator(user, `${playerScore}:${opponentScore} (Runde ${currentRound+1})`);
     
     document.getElementById('match-round-result').innerHTML = resultText;
-        document.getElementById('match-round-calc').innerHTML = `
-        <div style="display:flex; justify-content:space-around; background:#111; padding:15px; border-radius:8px; border:1px solid #333; margin-top:10px;">
-            <div style="text-align:left;">
-                <h4 style="color:#2ed573; margin:0 0 10px 0; border-bottom:1px solid #2ed573; padding-bottom:5px;">Du</h4>
-                <div style="color:#ddd; font-size:0.85rem; line-height:1.6;">
-                    Basiswert: <b>${pBase.toFixed(1)}</b><br>
-                    Seltenheit: <span style="color:#ffd700">x${pRar}</span><br>
-                    Fraktion: <span style="color:#ff9f43">x${pFacMult}</span><br>
-                    Synergie: <span style="color:#00cec9">x${pSyn.toFixed(2)}</span><br>
-                    <hr style="border-color:#444; margin:5px 0;">
-                    Ergebnis: <b style="color:#2ed573; font-size:1.1rem;">${pFinal.toFixed(1)}</b>
-                </div>
-            </div>
-            <div style="text-align:left;">
-                <h4 style="color:#ff4757; margin:0 0 10px 0; border-bottom:1px solid #ff4757; padding-bottom:5px;">Gegner</h4>
-                <div style="color:#ddd; font-size:0.85rem; line-height:1.6;">
-                    Basiswert: <b>${oBase.toFixed(1)}</b><br>
-                    Seltenheit: <span style="color:#ffd700">x${oRar}</span><br>
-                    Fraktion: <span style="color:#ff9f43">x${oFacMult}</span><br>
-                    Synergie: <span style="color:#00cec9">x${oSyn.toFixed(2)}</span><br>
-                    <hr style="border-color:#444; margin:5px 0;">
-                    Ergebnis: <b style="color:#ff4757; font-size:1.1rem;">${oFinal.toFixed(1)}</b>
-                </div>
-            </div>
+    document.getElementById('match-round-calc').innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:8px; text-align:left; background:#111; padding:10px; border-radius:5px; border:1px solid #333;">
+            <div><span style="color:#2ed573">Du:</span> Base(${pBase.toFixed(1)}) * Rar(${pRar}) * Frak(${pFacMult}) * Syn(${pSyn.toFixed(2)}) = <b style="color:#2ed573">${pFinal.toFixed(1)}</b></div>
+            <div><span style="color:#ff4757">Gegner:</span> Base(${oBase.toFixed(1)}) * Rar(${oRar}) * Frak(${oFacMult}) * Syn(${oSyn.toFixed(2)}) = <b style="color:#ff4757">${oFinal.toFixed(1)}</b></div>
         </div>
     `;
     
@@ -588,15 +567,10 @@ async function finishMatch() {
             isBot: isBotMatch,
             playerDeck: playerDeck,
             opponentDeck: opponentDeck,
-            timestamp: Timestamp.now()
+            date: Timestamp.now()
         }).catch(e => console.error("History save error:", e));
     }
 }
-
-
-
-
-
 
 
 

@@ -11,14 +11,14 @@ let historyCache = [];
 let historyUnsubscribe = null;
 let isFirstLoadComplete = false;
 
-// Gibt die aktuell gecachten Historien-Daten zur?ck
+// Gibt die aktuell gecachten Historien-Daten zurï¿½ck
 export function getCachedHistory() {
     return { data: historyCache, isLoaded: isFirstLoadComplete };
 }
 
 let currentListenerMode = null;
 
-// Startet den Echtzeit-Sync f?r den aktuellen Modus
+// Startet den Echtzeit-Sync fï¿½r den aktuellen Modus
 export function initHistoryListener(force = false) {
     if (!force && historyUnsubscribe && currentListenerMode === currentMode) {
         return;
@@ -70,7 +70,7 @@ export function initHistoryListener(force = false) {
     historyUnsubscribe = onSnapshot(q, handleHistorySnapshot, handleHistoryError);
 }
 
-// Beendet den Echtzeit-Sync f?r die Historie, um Reads im Hintergrund zu sparen
+// Beendet den Echtzeit-Sync fï¿½r die Historie, um Reads im Hintergrund zu sparen
 export function stopHistoryListener() {
     if (historyUnsubscribe) {
         historyUnsubscribe();
@@ -114,7 +114,7 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
 
     // Warten bis Charaktere als entdeckt markiert sind (aktualisiert localStorage)
     await markCharactersAsDiscovered(rankingData.map(c => c.name));
-    // Aktuellen User aus localStorage neu laden, damit die Entdeckungen nicht ?berschrieben werden
+    // Aktuellen User aus localStorage neu laden, damit die Entdeckungen nicht ï¿½berschrieben werden
     user = getCurrentUser();
 
     const poolData = pool ? pool.map((c, idx) => ({ order: idx + 1, name: c.name, img: c.img })) : [];
@@ -168,7 +168,7 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
             }
         }
 
-        // Track tags for themes ? 5 of the same tag in a single game unlocks the theme
+        // Track tags for themes ï¿½ 5 of the same tag in a single game unlocks the theme
         if (gameType === 'classic' && category === 'normal') {
             const { activeCharacterDatabase } = await import('./theme.js');
             const { THEMES } = await import('./themes.js');
@@ -357,8 +357,8 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
         if (patternStr) localStorage.setItem(lastPatternKey, patternStr);
 
         if (skipScoreboardUpdate) {
-            console.log("Anti-Cheat: Scoreboard update ?bersprungen wegen wiederholtem Muster oder Wertung.");
-            return; // Beende die Funktion hier, damit Scoreboard nicht gef?llt wird
+            console.log("Anti-Cheat: Scoreboard update ï¿½bersprungen wegen wiederholtem Muster oder Wertung.");
+            return; // Beende die Funktion hier, damit Scoreboard nicht gefï¿½llt wird
         }
 
         // --- AGGREGATED SCOREBOARD SYSTEM ---
@@ -463,8 +463,6 @@ function renderHistoryHTML(games, container, displayNames) {
                     <span>Score: ${game.score}</span>
                 </div>
             `;
-            card.style.cursor = "pointer";
-            card.addEventListener("click", () => { openCardgameResultModal(game); });
             container.appendChild(card);
             return;
         }
@@ -523,10 +521,10 @@ export async function openCardgameResultModal(game) {
         modal.id = "cardgame-result-modal";
         modal.className = "modal hidden";
         modal.innerHTML = `
-            <div class="modal-content" style="max-width:800px; max-height:90vh; overflow-y:auto; background:#1a1e29; border:1px solid #333;">
+            <div class="modal-content" style="max-width:800px; max-height:90vh; overflow-y:auto; background:#1a1e29; border:1px solid #333; position:relative;">
+                <span id="close-cardgame-result-btn" class="close-btn" style="position:absolute; right:15px; top:15px; font-size:1.5rem; cursor:pointer;">&times;</span>
                 <h2 style="color:#ffd700; margin-top:0; text-align:center;">Match Details</h2>
                 <div id="cardgame-result-content"></div>
-                <button id="close-cardgame-result-btn" class="rank-btn" style="margin-top:20px; width:100%;">Schließen</button>
             </div>
         `;
         document.body.appendChild(modal);
@@ -536,6 +534,11 @@ export async function openCardgameResultModal(game) {
     const content = document.getElementById("cardgame-result-content");
     content.innerHTML = "<p>Lade Ergebnisse...</p>";
     modal.classList.remove("hidden");
+
+    const escListener = (e) => {
+        if(e.key === "Escape") { modal.classList.add("hidden"); document.removeEventListener("keydown", escListener); }
+    };
+    document.addEventListener("keydown", escListener);
 
     const { activeCharacterDatabase } = await import("./theme.js");
     
@@ -552,7 +555,7 @@ export async function openCardgameResultModal(game) {
     };
 
     const renderDeck = (deck) => {
-        if (!deck || deck.length === 0) return "<p style='color:#888; text-align:center;'>Kein Deck gefunden (Altes Match)</p>";
+        if (!deck || deck.length === 0) return '<p style="color:#888; text-align:center;">Kein Deck gefunden (Altes Match)</p>';
         return `<div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:10px;">
             ${deck.map(c => `
                 <div style="border:2px solid ${getRarityColor(c.rarity)}; border-radius:5px; padding:5px; background:#222; text-align:center;">
@@ -587,6 +590,8 @@ export async function openVersusResultModal(game) {
     const content = document.getElementById('versus-result-content');
     content.innerHTML = '<p>Lade Ergebnisse...</p>';
     modal.classList.remove('hidden');
+    const escListener = (e) => { if(e.key === "Escape") { modal.classList.add("hidden"); document.removeEventListener("keydown", escListener); } };
+    document.addEventListener("keydown", escListener);
 
     const { activeCharacterDatabase } = await import('./theme.js');
     const getImgForChar = (name) => {
@@ -681,7 +686,7 @@ export async function openVersusResultModal(game) {
         } else {
             payoutInfo = `
                 <div style="background:rgba(255,255,255,0.05); border:1px solid #666; border-radius:6px; padding:10px; margin-bottom:10px; text-align:center; color:#ccc; font-size:0.85rem;">
-                    Kein Spieler hat richtig getippt. Die Eins?tze wurden zur?ckerstattet.
+                    Kein Spieler hat richtig getippt. Die Einsï¿½tze wurden zurï¿½ckerstattet.
                 </div>
             `;
         }
@@ -847,11 +852,6 @@ export async function renderHistory() {
         container.innerHTML = '<p class="prompt-text" style="color: #ff4757;">Fehler beim Laden der Historie.</p>';
     }
 }
-
-
-
-
-
 
 
 

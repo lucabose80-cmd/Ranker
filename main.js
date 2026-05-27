@@ -1,4 +1,4 @@
-
+﻿
 window.getSharedAudioContext = function() {
     if (!window.sharedAudioContext) {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -641,3 +641,11 @@ window.updateCreditProgressBars = function() {
 
 bootApp();
 
+
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+        document.querySelectorAll(".profile-overlay:not(.hidden), .modal:not(.hidden)").forEach(modal => {
+            modal.classList.add("hidden");
+        });
+    }
+});
