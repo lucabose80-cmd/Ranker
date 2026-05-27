@@ -800,7 +800,7 @@ function renderAlbumTab(user) {
     }
 }
 
-window.renderCommunityAlbum = function(user, containerId, filterPack = 'all', sortMode = 'rarity_desc') {
+window.renderCommunityAlbum = async function(user, containerId, filterPack = 'all', sortMode = 'rarity_desc') {
     const inventory = currentMode === 'starwars' ? (user.inventory_starwars || []) : (user.inventory_waifu || []);
     const albumGrid = document.getElementById(containerId);
     if (!albumGrid) return;
@@ -808,21 +808,40 @@ window.renderCommunityAlbum = function(user, containerId, filterPack = 'all', so
     albumGrid.innerHTML = '';
     albumGrid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(100px, 1fr)); gap:25px; max-height:400px; overflow-y:auto; padding: 10px;';
     
-    let filtered = inventory;
-    if (filterPack && filterPack !== 'all') {
-        filtered = inventory.filter(c => c.boosterId === filterPack);
-    }
-
-    if (filtered.length === 0) {
-        albumGrid.innerHTML = '<div style="color:#666; grid-column: 1 / -1; text-align:center; padding: 20px;">Keine Karten gefunden.</div>';
-        return;
-    }
-    
+    let isPackView = (filterPack && filterPack !== 'all');
     const grouped = {};
-    filtered.forEach(c => {
+    if (isPackView) {
+        const localBoosters = [
+            { id: 'starwars_all', filter: (char) => true },
+            { id: 'starwars_klon', filter: (char) => char.tags && char.tags.includes('klon') && (!char.tags || !char.tags.includes('vehicle')) },
+            { id: 'starwars_jedi_sith', filter: (char) => {
+                if (char.tags && char.tags.includes('vehicle')) return false;
+                if (char.tags && (char.tags.includes('jedi') || char.tags.includes('sith'))) return true;
+                if (char.name === 'General Grievous' || char.name === 'Asajj Ventress') return true;
+                return false;
+            }}
+        ];
+        const booster = localBoosters.find(b => b.id === filterPack);
+        if (booster) {
+            const packPool = activeCharacterDatabase.filter(c => booster.filter(c));
+            packPool.forEach(c => { grouped[c.name] = []; });
+        }
+    }
+    inventory.forEach(c => {
+        if (isPackView && c.boosterId !== filterPack) return;
         if (!grouped[c.charName]) grouped[c.charName] = [];
         grouped[c.charName].push(c);
     });
+    if (!isPackView) {
+        Object.keys(grouped).forEach(k => {
+            if (grouped[k].length === 0) delete grouped[k];
+        });
+    }
+    if (Object.keys(grouped).length === 0) {
+        albumGrid.innerHTML = '<div style="color:#666; grid-column: 1 / -1; text-align:center; padding: 20px;">Keine Karten gefunden.</div>';
+        return;
+    }
+
 
     const rarVal = { 'legendary': 4, 'epic': 3, 'rare': 2, 'common': 1 };
     const RARITY_BORDERS = {
@@ -832,9 +851,10 @@ window.renderCommunityAlbum = function(user, containerId, filterPack = 'all', so
         'legendary': '3px solid #ffd700'
     };
 
-    const sortedChars = Object.keys(grouped).sort((a,b) => {
-        const highestA = Math.max(...grouped[a].map(c => rarVal[c.rarity]));
-        const highestB = Math.max(...grouped[b].map(c => rarVal[c.rarity]));
+    const charsToRender = Object.keys(grouped);
+    const sortedChars = charsToRender.sort((a,b) => {
+        const highestA = grouped[a].length > 0 ? Math.max(...grouped[a].map(c => rarVal[c.rarity])) : 0;
+        const highestB = grouped[b].length > 0 ? Math.max(...grouped[b].map(c => rarVal[c.rarity])) : 0;
         
         if (sortMode === 'rarity_desc') {
             if (highestA !== highestB) return highestB - highestA;
@@ -875,8 +895,18 @@ window.renderCommunityAlbum = function(user, containerId, filterPack = 'all', so
                 boosterId: topCard.boosterId
             }));
         };
-        
-        cards.slice(0, 5).forEach((c, idx) => {
+        stackContainer.onclick = () => { if (cards.length > 0) window.openCardUpgradeModal(charName, cards, user); };
+        if (cards.length === 0) {
+            stackContainer.style.cssText = `position:relative; width:100%; aspect-ratio:2/3; margin-bottom: 0px; margin-right: 0px;`;
+            const card = document.createElement('div');
+            card.style.cssText = `position:absolute; top:0; left:0; width:100%; height:100%; background-image:url('${charObj.img}'); background-size:cover; background-position:center; border-radius:6px; border:3px solid #333; box-shadow: -2px -2px 5px rgba(0,0,0,0.5); overflow:hidden; filter: grayscale(100%) brightness(0.4); opacity: 0.6;`;
+            stackContainer.appendChild(card);
+            const missingText = document.createElement('div');
+            missingText.textContent = "Fehlt";
+            missingText.style.cssText = "position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-15deg); color:#fff; font-weight:bold; font-size:1.2rem; text-shadow: 0 0 5px #000; z-index:10; opacity: 0.8;";
+            stackContainer.appendChild(missingText);
+        } else {
+            cards.slice(0, 5).forEach((c, idx) => {
             const card = document.createElement('div');
             const z = cards.length - idx;
             const offset = idx * 4;
@@ -937,10 +967,7 @@ window.renderCommunityAlbum = function(user, containerId, filterPack = 'all', so
                  card.appendChild(topBanner);
             }
             
-            stackContainer.appendChild(card);
-        });
-        
-        albumGrid.appendChild(stackContainer);
+            stackContainer.appendChild(card); }); } albumGrid.appendChild(stackContainer);
     });
 }
 
@@ -1665,4 +1692,133 @@ export async function renderCustomLookSelection() {
 
 
 
+
+
+
+
+
+// Additional call added via script
+window.openCardUpgradeModal = function(charName, cards, user) {
+    let modal = document.getElementById('card-upgrade-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'card-upgrade-modal';
+        modal.className = 'modal hidden';
+        document.body.appendChild(modal);
+    }
+
+    const rarityCounts = { 'common': 0, 'rare': 0, 'epic': 0, 'legendary': 0 };
+    cards.forEach(c => rarityCounts[c.rarity]++);
+    
+    let html = `
+        <div class="modal-content" style="position:relative; max-width:500px; background:#1e293b; color:#fff; padding:20px; border-radius:12px; text-align:center;">
+            <span id="close-upgrade-modal" class="close-btn" style="position:absolute; right:15px; top:15px; font-size:1.5rem; cursor:pointer;">&times;</span>
+            <h2 style="color:#ffd700; margin-top:0;">${charName} - Upgrades</h2>
+            <div style="display:flex; justify-content:space-around; margin:20px 0;">
+                <div>
+                    <div style="color:#888; font-weight:bold;">Gewöhnlich</div>
+                    <div style="font-size:1.5rem;">${rarityCounts.common}x</div>
+                </div>
+                <div>
+                    <div style="color:#ff9f43; font-weight:bold;">Selten</div>
+                    <div style="font-size:1.5rem;">${rarityCounts.rare}x</div>
+                </div>
+                <div>
+                    <div style="color:#9b59b6; font-weight:bold;">Episch</div>
+                    <div style="font-size:1.5rem;">${rarityCounts.epic}x</div>
+                </div>
+            </div>
+            
+            <div style="margin-top:20px; display:flex; flex-direction:column; gap:10px;">
+    `;
+
+    if (rarityCounts.common >= 5) {
+        html += `<button id="btn-upgrade-common" class="rank-btn" style="background:#ff9f43; color:#000;">5 Gewöhnlich ➔ 1 Selten</button>`;
+    }
+    
+    if (rarityCounts.rare >= 5) {
+        const hasEpic = rarityCounts.epic > 0;
+        const btnText = hasEpic ? "5 Selten ➔ 20 Kyber Kristalle (Duplikat)" : "5 Selten ➔ 1 Episch";
+        html += `<button id="btn-upgrade-rare" class="rank-btn" style="background:#9b59b6; color:#fff;">${btnText}</button>`;
+    }
+    
+    html += `</div></div>`;
+    modal.innerHTML = html;
+    modal.classList.remove('hidden');
+
+    document.getElementById('close-upgrade-modal').onclick = () => modal.classList.add('hidden');
+    
+    const btnCommon = document.getElementById('btn-upgrade-common');
+    if (btnCommon) {
+        btnCommon.onclick = () => window.processCardUpgrade(charName, 'common', user);
+    }
+    
+    const btnRare = document.getElementById('btn-upgrade-rare');
+    if (btnRare) {
+        btnRare.onclick = () => window.processCardUpgrade(charName, 'rare', user);
+    }
+};
+
+window.processCardUpgrade = async function(charName, fromRarity, user) {
+    const field = currentMode === 'starwars' ? 'inventory_starwars' : 'inventory_waifu';
+    const inventory = user[field] || [];
+    
+    let count = 0;
+    const indicesToRemove = [];
+    for (let i = 0; i < inventory.length; i++) {
+        if (inventory[i].charName === charName && inventory[i].rarity === fromRarity) {
+            indicesToRemove.push(i);
+            count++;
+            if (count === 5) break;
+        }
+    }
+    
+    if (count < 5) return;
+    
+    indicesToRemove.sort((a,b) => b-a).forEach(idx => {
+        inventory.splice(idx, 1);
+    });
+    
+    let toRarity = fromRarity === 'common' ? 'rare' : 'epic';
+    let addedKyber = 0;
+    let notificationText = \`Karte auf \${toRarity.toUpperCase()} geupgradet!\`;
+    
+    if (toRarity === 'epic') {
+        const hasEpic = inventory.some(c => c.charName === charName && c.rarity === 'epic');
+        if (hasEpic) {
+            addedKyber = 20;
+            const kyberField = currentMode === 'starwars' ? 'kyber_crystals_starwars' : 'kyber_crystals_waifu';
+            user[kyberField] = (user[kyberField] || 0) + addedKyber;
+            notificationText = 'Duplikat aufgelöst! +20 Kyber Kristalle erhalten.';
+        } else {
+            inventory.push({ charName: charName, rarity: 'epic', timestamp: Date.now(), boosterId: 'starwars_all' });
+        }
+    } else {
+        inventory.push({ charName: charName, rarity: 'rare', timestamp: Date.now(), boosterId: 'starwars_all' });
+    }
+    
+    user[field] = inventory;
+    
+    try {
+        const { doc, updateDoc, increment } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+        const { db } = await import('./firebase-config.js');
+        
+        const updates = { [field]: inventory };
+        if (addedKyber > 0) {
+            const kyberField = currentMode === 'starwars' ? 'kyber_crystals_starwars' : 'kyber_crystals_waifu';
+            updates[kyberField] = increment(addedKyber);
+        }
+        
+        await updateDoc(doc(db, "users", user.uid), updates);
+        localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
+        
+        alert(notificationText);
+        
+        document.getElementById('card-upgrade-modal').classList.add('hidden');
+        window.renderCommunityAlbum(user, 'profile-album-grid-tab', document.getElementById('album-pack-filter')?.value || 'all');
+    } catch(e) {
+        console.error("Fehler beim Upgrade:", e);
+        alert("Ein Fehler ist aufgetreten.");
+    }
+};
 

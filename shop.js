@@ -13,7 +13,7 @@ const RARITIES = {
 
 import { LEGENDARY_POOL } from './data-starwars.js';
 
-const BOOSTERS = [
+export const BOOSTERS = [
     {
         id: 'starwars_all',
         name: 'Galaktisches Standard-Pack',
@@ -50,6 +50,15 @@ export function initShop() {
 
     const isAdmin = (user.username && (user.username.toLowerCase() === 'test1' || user.username.toLowerCase() === 'test2'));
     document.getElementById('shop-credits-display').textContent = isAdmin ? '∞' : (user.credits || 0);
+
+    const kyberField = currentMode === 'starwars' ? 'kyber_crystals_starwars' : 'kyber_crystals_waifu';
+    const kyberDisplay = document.getElementById('shop-kyber-display');
+    if (kyberDisplay) kyberDisplay.textContent = user[kyberField] || 0;
+
+    const craftBtn = document.getElementById('shop-crafting-btn');
+    if (craftBtn) {
+        craftBtn.onclick = () => window.openCraftingModal(user);
+    }
 
     const container = document.getElementById('booster-packs-container');
     container.innerHTML = '';
@@ -297,9 +306,20 @@ async function openBooster(booster, pool, currentCost) {
         const field = `inventory_${currentMode}`;
         const currentInventory = user[field] || [];
         
+        let kyberEarned = 0;
+        
         pulledCards.forEach(cardInfo => {
             const isNew = !currentInventory.some(c => c.charName === cardInfo.char.name && c.rarity === cardInfo.rarity.id);
             cardInfo.isNew = isNew;
+
+            if (cardInfo.rarity.id === 'epic') {
+                const alreadyHasEpic = currentInventory.some(c => c.charName === cardInfo.char.name && c.rarity === 'epic');
+                if (alreadyHasEpic) {
+                    kyberEarned += 20;
+                    cardInfo.isDissolved = true; // Mark for UI
+                    return; // Skip adding to inventory
+                }
+            }
 
             currentInventory.push({
                 charName: cardInfo.char.name,
@@ -321,9 +341,15 @@ async function openBooster(booster, pool, currentCost) {
             document.getElementById('shop-credits-display').textContent = user.credits;
         }
         
+        const kyberField = currentMode === 'starwars' ? 'kyber_crystals_starwars' : 'kyber_crystals_waifu';
+        if (kyberEarned > 0) {
+            user[kyberField] = (user[kyberField] || 0) + kyberEarned;
+        }
+        
         localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
 
         const updates = { [field]: currentInventory, [packCountField]: user[packCountField] };
+        if (kyberEarned > 0) updates[kyberField] = increment(kyberEarned);
         if (!isAdmin) updates.credits = increment(-currentCost);
         
         await updateDoc(doc(db, "users", user.uid), updates);
@@ -464,6 +490,7 @@ function showPullAnimation(pulledCards, isGodPack) {
                             <div class="pull-card-back" style="background-image: url('${info.char.img}'); border: ${info.rarity.border}; ${customStyle}">
                                 ${showHolo ? `<div style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; mix-blend-mode: color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear;"></div>` : ''}
                                 ${info.isNew ? `<div style="position:absolute; top:10px; right:10px; background:#ff4757; color:#fff; font-size:0.7rem; font-weight:bold; padding:3px 8px; border-radius:12px; transform:rotate(15deg); border:2px solid #fff; box-shadow:0 2px 5px rgba(0,0,0,0.5); z-index: 20;">NEU!</div>` : ''}
+                                ${info.isDissolved ? `<div style="position:absolute; inset:0; background:rgba(0,0,0,0.7); z-index:15; display:flex; flex-direction:column; justify-content:center; align-items:center; backdrop-filter: grayscale(1);"><div style="color:#ffd700; font-size:2.5rem; font-weight:bold; text-shadow:0 0 10px #ffd700; animation: pulse 1s infinite;">+20</div><div style="color:#fff; font-size:0.9rem; font-weight:bold; text-transform:uppercase; letter-spacing:1px; margin-bottom: 20px;">Kyber Kristalle</div><div style="background:#ff4757; color:#fff; padding:2px 8px; border-radius:10px; font-size:0.7rem; font-weight:bold;">DUPLIKAT AUFGELÖST</div></div>` : ''}
                                 <div style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.7), transparent); padding:20px 10px 10px 10px; color:#fff; text-align:center;">
                                     <h3 style="margin:0 0 5px 0; font-size:1.1rem; text-transform:uppercase; text-shadow: 2px 2px 4px #000;">${info.char.name}</h3>
                                     <div style="font-size:0.8rem; font-weight:bold; text-transform:uppercase; letter-spacing: 1px; color: ${info.rarity.color};">${info.rarity.name}</div>
@@ -541,3 +568,112 @@ function showPullAnimation(pulledCards, isGodPack) {
         modal.classList.add('hidden');
     });
 }
+
+window.openCraftingModal = function(user) {
+    let modal = document.getElementById('crafting-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'crafting-modal';
+        modal.className = 'modal hidden';
+        document.body.appendChild(modal);
+    }
+    
+    const kyberField = currentMode === 'starwars' ? 'kyber_crystals_starwars' : 'kyber_crystals_waifu';
+    const kyber = user[kyberField] || 0;
+    
+    let html = `
+        <div class="modal-content" style="position:relative; max-width:800px; background:#1e293b; color:#fff; padding:20px; border-radius:12px; text-align:center; max-height:80vh; overflow-y:auto;">
+            <span id="close-crafting-modal" class="close-btn" style="position:absolute; right:15px; top:15px; font-size:1.5rem; cursor:pointer;">&times;</span>
+            <h2 style="color:#ffd700; margin-top:0;">🛠️ Epische Karte herstellen</h2>
+            <p style="color:#94a3b8;">Wähle einen Charakter, um seine epische Karte für <strong style="color:#ffd700;">100 Kyber Kristalle</strong> herzustellen.</p>
+            <div style="font-size:1.2rem; margin-bottom:20px; background:rgba(0,0,0,0.3); padding:10px; border-radius:8px;">
+                Aktuelle Kristalle: <strong style="color:#ffd700;">${kyber}</strong>
+            </div>
+            
+            <input type="text" id="crafting-search" placeholder="Charakter suchen..." style="width:100%; padding:10px; border-radius:6px; background:rgba(0,0,0,0.5); border:1px solid #444; color:#fff; margin-bottom:20px;">
+            
+            <div id="crafting-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:15px;"></div>
+        </div>
+    `;
+    modal.innerHTML = html;
+    modal.classList.remove('hidden');
+    
+    document.getElementById('close-crafting-modal').onclick = () => modal.classList.add('hidden');
+    
+    const grid = document.getElementById('crafting-grid');
+    const searchInput = document.getElementById('crafting-search');
+    
+    const renderGrid = (query = '') => {
+        grid.innerHTML = '';
+        activeCharacterDatabase.forEach(char => {
+            if (query && !char.name.toLowerCase().includes(query.toLowerCase())) return;
+            
+            const card = document.createElement('div');
+            card.style.cssText = `position:relative; border-radius:8px; border:3px solid #9b59b6; cursor:pointer; overflow:hidden; aspect-ratio:2/3; background-image:url('${char.img}'); background-size:cover; background-position:center; transition:transform 0.2s;`;
+            card.onmouseenter = () => card.style.transform = 'scale(1.05)';
+            card.onmouseleave = () => card.style.transform = 'scale(1)';
+            
+            const btn = document.createElement('div');
+            btn.style.cssText = `position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.85); color:#fff; padding:8px 5px; font-size:0.75rem; text-align:center; display:flex; flex-direction:column; gap:3px;`;
+            btn.innerHTML = `<span style="font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${char.name}</span><span style="color:${kyber >= 100 ? '#2ed573' : '#ff4757'};">100 Kristalle</span>`;
+            card.appendChild(btn);
+            
+            card.onclick = () => {
+                if (kyber < 100) {
+                    alert('Nicht genügend Kyber Kristalle!');
+                    return;
+                }
+                if (confirm(`Möchtest du die epische Karte von ${char.name} für 100 Kyber Kristalle herstellen?`)) {
+                    window.processCrafting(char.name, user);
+                }
+            };
+            
+            grid.appendChild(card);
+        });
+    };
+    
+    renderGrid();
+    searchInput.oninput = (e) => renderGrid(e.target.value);
+};
+
+window.processCrafting = async function(charName, user) {
+    const kyberField = currentMode === 'starwars' ? 'kyber_crystals_starwars' : 'kyber_crystals_waifu';
+    if ((user[kyberField] || 0) < 100) return;
+    
+    const invField = currentMode === 'starwars' ? 'inventory_starwars' : 'inventory_waifu';
+    const inventory = user[invField] || [];
+    
+    // Check if user already has this Epic
+    const hasEpic = inventory.some(c => c.charName === charName && c.rarity === 'epic');
+    if (hasEpic) {
+        alert('Du besitzt bereits die epische Karte dieses Charakters!');
+        return;
+    }
+    
+    user[kyberField] -= 100;
+    inventory.push({ charName: charName, rarity: 'epic', timestamp: Date.now(), boosterId: 'crafted' });
+    user[invField] = inventory;
+    
+    try {
+        const { doc, updateDoc, increment } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+        const { db } = await import('./firebase-config.js');
+        
+        await updateDoc(doc(db, "users", user.uid), {
+            [kyberField]: increment(-100),
+            [invField]: inventory
+        });
+        
+        localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
+        alert(`Epische Karte von ${charName} erfolgreich hergestellt!`);
+        document.getElementById('crafting-modal').classList.add('hidden');
+        
+        // Update display
+        const kyberDisplay = document.getElementById('shop-kyber-display');
+        if (kyberDisplay) kyberDisplay.textContent = user[kyberField];
+        
+    } catch(e) {
+        console.error("Fehler beim Crafting:", e);
+        alert("Ein Fehler ist aufgetreten.");
+    }
+};
+

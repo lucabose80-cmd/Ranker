@@ -1,5 +1,17 @@
 export const patchNotesWaifu = [
     {
+        version: "v7.6",
+        title: "Update: Gacha Overhaul, Crafting & Trade-Up",
+        isHotfix: false,
+        changes: [
+            "Feature: Gacha Trade-Up System eingeführt! Im Album können nun 5 Gewöhnliche Karten zu 1 Seltenen, und 5 Seltene Karten zu 1 Epischen Karte kombiniert werden.",
+            "Feature: Kyber Kristalle hinzugefügt! Werden Duplikate von epischen Karten gezogen oder gecraftet, werden diese automatisch in 20 Kyber Kristalle umgewandelt.",
+            "Feature: Crafting-Shop integriert! Im Shop können nun für 100 Kyber Kristalle gezielt Wunsch-Karten auf epischer Stufe hergestellt werden.",
+            "Feature: Im Sammelalbum werden fehlende Karten aus spezifischen Booster-Packs nun transparent als ausgegraute 'Fehlt'-Karten angezeigt.",
+            "Hotfix: Filter-Verhalten im Album optimiert, um leere Slots und Duplikate sauberer zu trennen."
+        ]
+    },
+    {
         version: "v7.5",
         title: "Update: Cardgame Overhaul & UI Features",
         isHotfix: false,
