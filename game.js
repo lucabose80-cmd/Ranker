@@ -132,7 +132,6 @@ export async function initGame() {
     }
     
     // Restore DOM if we resumed a game
-    const user = getCurrentUser();
     const charLooks = user ? (currentMode === 'starwars' ? (user.custom_look_starwars || {}) : (user.custom_look_waifu || {})) : {};
     
     for (let i = 1; i <= 5; i++) {
