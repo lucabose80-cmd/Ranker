@@ -51,7 +51,10 @@ export const hardcoreQuotes = {
     'Embo': '*Grunts*',
     'Padme Amidala': 'So this is how liberty dies... with thunderous applause.',
     'Grogu': '*Coos*',
-    'Wrecker': 'Yeah! Boom!'
+    'Wrecker': 'Yeah! Boom!',
+    'Hunter': "We're not like the Regs.",
+    'Tech': 'I thought it was obvious.',
+    'Luke Skywalker': 'I am a Jedi, like my father before me.'
 };
 
 export async function initGame() {
