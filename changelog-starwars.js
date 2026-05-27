@@ -1,5 +1,36 @@
 export const patchNotesStarWars = [
     {
+        version: "v7.5.2",
+        title: "Feature Update: Lexikon & UI Cleanup",
+        isHotfix: false,
+        changes: [
+            "Feature: Die Suchleiste im Lexikon durchsucht jetzt auch Fraktionsnamen, nicht nur Charaktere.",
+            "Feature: Im Lexikon gibt es nun eine globale Suchleiste (verfügbar in allen Reitern), um gezielt nach Charakteren zu suchen.",
+            "Cleanup: Der 'Meme' Modus wurde vollständig aus dem Spiel entfernt. Meme-Charaktere sind nun Teil des regulären 'Expanded Universe'.",
+            "UI: Der Tag 'Peak Modus' wurde aus der Fraktionsübersicht im Lexikon entfernt, da er einen eigenen dedizierten Reiter besitzt."
+        ]
+    },
+    {
+        version: "v7.5.1",
+        title: "Content Update: 25 Neue Geheime Titel",
+        isHotfix: false,
+        changes: [
+            "Content: 25 brandneue geheime Titel wurden hinzugefügt! Diese triggern, wenn bestimmte epische Charakter-Kombinationen (z.B. Rivalen, Fraktionen, Götter) in einer einzigen Ranking-Runde gezogen werden.",
+            "Balancing: Die geheimen Titel decken nun auch Schiffe, Klon-Einheiten (wie das Bad Batch), die Mortis-Götter und Sith-Allianzen ab."
+        ]
+    },
+    {
+        version: "v7.5",
+        title: "Content Update: Massive Charakter-Erweiterung",
+        isHotfix: false,
+        changes: [
+            "Content: Über 20 neue Charaktere aus The Acolyte, Skeleton Crew, The Clone Wars und mehr wurden der Datenbank hinzugefügt (z.B. Qimir, Osha, Jod Na Nawood).",
+            "Content: Die legendären Mortis-Götter (Der Vater, Der Sohn, Die Tochter) sowie Darth Malgus und Darth Jar Jar sind nun verfügbar.",
+            "Content: Neue Droiden und Spezialeinheiten (z.B. Droideka, Suchdroide, Zwergspinnendroide) ergänzen das Roster.",
+            "Balancing: Fehlerhafte Charakter-Einträge korrigiert (z.B. Cameron zu Denal umbenannt, Commander Appo zu Appo korrigiert)."
+        ]
+    },
+    {
         version: "v7.4.1",
         title: "Cardgame Hotfixes",
         isHotfix: true,

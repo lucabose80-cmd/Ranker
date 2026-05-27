@@ -1,5 +1,13 @@
 export const patchNotesWaifu = [
     {
+        version: "v7.4",
+        title: "Feature Update: Lexikon Suche",
+        isHotfix: false,
+        changes: [
+            "Feature: Im Lexikon gibt es nun eine globale Suchleiste (verfügbar in allen Reitern), um gezielt nach Charakteren zu suchen."
+        ]
+    },
+    {
         version: "v7.3.1",
         title: "Bugfixes & Systemstabilität",
         isHotfix: true,
