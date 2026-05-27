@@ -146,7 +146,6 @@ function _renderByTags(grid, user, discoveredList) {
     // Sammle alle vorhandenen Tags
     const tagMap = {};
     activeCharacterDatabase.forEach(char => {
-        if (!char.name.toLowerCase().includes(currentSearchQuery)) return;
         const tags = char.tags || ['sonstige'];
         tags.forEach(tag => {
             if (!tagMap[tag]) tagMap[tag] = [];
@@ -156,7 +155,7 @@ function _renderByTags(grid, user, discoveredList) {
 
     // Rendere pro Tag-Gruppe
     const tagOrder = [
-        'peak', 'jedi', 'meister', 'padawan', 'sith', 'inquisitor', 'grau', 'nachtschwester', 'dathomir',
+        'jedi', 'meister', 'padawan', 'sith', 'inquisitor', 'grau', 'nachtschwester', 'dathomir',
         'klon', '501st', '212th', '104th', 'coruscant_guard', 'bad_batch', 'commander', 'captain', 'arc', 'soldat',
         'mandalorian', 'death_watch', 'kopfgeldjäger', 'unterwelt', 'hutte', 'pirat', 'schmuggel',
         'imperium', 'erste_ordnung', 'separatist', 'rebell', 'widerstand', 'senat',
@@ -168,6 +167,15 @@ function _renderByTags(grid, user, discoveredList) {
         if (!tagMap[tag]) return;
         const info = TAG_LABELS[tag] || { label: tag, color: '#888' };
 
+        const labelText = info.label.toLowerCase();
+        const matchesFaction = labelText.includes(currentSearchQuery);
+
+        const filteredChars = tagMap[tag].filter(char => {
+            return matchesFaction || char.name.toLowerCase().includes(currentSearchQuery);
+        });
+
+        if (filteredChars.length === 0) return;
+
         const section = document.createElement('div');
         section.innerHTML = `
             <h3 class="theme-heading" style="
@@ -178,14 +186,14 @@ function _renderByTags(grid, user, discoveredList) {
                 margin: 0 0 12px 0;
                 border-bottom: 1px solid ${info.color}44;
                 padding-bottom: 8px;
-            ">${info.label} (${tagMap[tag].length})</h3>
+            ">${info.label} (${filteredChars.length})</h3>
         `;
 
         const subGrid = document.createElement('div');
         subGrid.className = 'lexikon-grid';
         subGrid.style.marginTop = '0';
 
-        tagMap[tag].sort((a, b) => a.name.localeCompare(b.name)).forEach(char => {
+        filteredChars.sort((a, b) => a.name.localeCompare(b.name)).forEach(char => {
             const isDiscovered = user && user.role !== 'admin' ? discoveredList.includes(char.name) : true;
             const isNew = newlyDiscovered.includes(char.name);
 
