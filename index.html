@@ -161,6 +161,7 @@
             </div>
             
             <div class="nav-right-actions">
+                <button id="tutorial-open-btn" class="text-btn" style="color: #4cd137;">ANLEITUNG</button>
                 <button id="changelog-open-btn" class="text-btn">UPDATES</button>
                 <button id="logout-btn" class="text-btn logout-btn">LOGOUT</button>
             </div>
@@ -605,6 +606,43 @@
                 <button id="private-chat-send" class="rank-btn" style="width: auto; padding: 0 15px;">Senden</button>
             </div>
             <button id="private-chat-close" class="rank-btn" style="margin-top: 15px; width: 100%;">Schließen</button>
+        </div>
+    </div>
+
+    <!-- Onboarding / Tutorial Modal -->
+    <div id="tutorial-modal" class="profile-overlay hidden">
+        <div class="panel spectator-modal-panel" style="max-width: 650px;">
+            <button id="close-tutorial-btn" class="close-overlay-btn">✕</button>
+            <h2 class="theme-heading" style="text-align: center; color: #4cd137;">WILLKOMMEN BEI RANKER</h2>
+            
+            <div style="max-height: 60vh; overflow-y: auto; padding-right: 10px; font-size: 0.95rem; line-height: 1.6; color: #e2e8f0; text-align: left;">
+                
+                <h3 style="color: #ffd700; border-bottom: 1px solid #333; padding-bottom: 5px; margin-top: 0;">🎯 Spielmechanik</h3>
+                <p>Ordne Charaktere <strong>blind</strong> in eine Top 5 (oder Top 10) Liste ein. Du siehst den Charakter und musst entscheiden, welchen Platz er auf deiner persönlichen Liste bekommt. Sobald du einen Platz zugewiesen hast, kannst du ihn nicht mehr ändern!</p>
+                
+                <h3 style="color: #ffd700; border-bottom: 1px solid #333; padding-bottom: 5px;">🎮 Spielmodi</h3>
+                <ul style="padding-left: 20px;">
+                    <li style="margin-bottom: 8px;"><strong>Klassisch:</strong> Du ordnest 5 Charaktere ein.</li>
+                    <li style="margin-bottom: 8px;"><strong>Advanced:</strong> Du ordnest 10 Charaktere ein. Du hast <strong>einen Joker</strong>, mit dem du zwei bereits platzierte Charaktere tauschen kannst!</li>
+                    <li style="margin-bottom: 8px;"><strong>Versus:</strong> Tritt in Lobbys gegen andere an. Wer am nächsten am globalen "Konsens-Ranking" dran ist, gewinnt! Du kannst auch Credits auf andere Spieler wetten.</li>
+                    <li><strong>StarWarsdle:</strong> Errate täglich einen geheimen Charakter anhand von Fraktion, Bildausschnitt und Namen.</li>
+                </ul>
+
+                <h3 style="color: #ffd700; border-bottom: 1px solid #333; padding-bottom: 5px;">💰 Währungen & Progression</h3>
+                <ul style="padding-left: 20px;">
+                    <li style="margin-bottom: 8px;"><strong>Credits:</strong> Erhältst du durch das Spielen. Pro Modus kannst du <strong>die ersten 20 Spiele 10 Credits</strong> verdienen, danach <strong>5 Credits</strong> pro Runde. Credits kannst du im Shop für Booster-Packs ausgeben.</li>
+                    <li style="margin-bottom: 8px;"><strong>Titel & Farbschemas:</strong> Durch das Spielen, Abschließen von bestimmten Teams (z.B. 5 Jedi in einem Spiel) oder geheimen Kombinationen kannst du neue Titel und Farben für dein Profil freischalten!</li>
+                </ul>
+                
+                <h3 style="color: #ffd700; border-bottom: 1px solid #333; padding-bottom: 5px;">🗂 Kategorien</h3>
+                <p>Unter dem Modus-Selector kannst du wählen, <strong>welche Art</strong> von Charakteren du ziehen möchtest (z.B. nur Klone, nur Fahrzeuge oder Hardcore Peak). Fortschritte und Credit-Limits zählen pro Kategorie separat!</p>
+                
+                <h3 style="color: #ffd700; border-bottom: 1px solid #333; padding-bottom: 5px;">🛒 Shop & Tauschen</h3>
+                <p>Sammle Booster-Packs, vervollständige Sets, um <strong>legendäre Karten</strong> zu bekommen! Im Profil unter "Sammelalbum" oder "Tauschen" kannst du deine Karten bewundern und doppelte Karten mit anderen Spielern tauschen.</p>
+
+            </div>
+            
+            <button id="tutorial-got-it-btn" class="rank-btn" style="margin-top: 20px; width: 100%; height: auto; padding: 12px; font-size: 1.1rem; border-color: #4cd137; color: #4cd137;">Verstanden, los geht's!</button>
         </div>
     </div>
 

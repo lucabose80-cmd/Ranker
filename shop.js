@@ -83,7 +83,7 @@ export function initShop() {
     `;
     container.appendChild(infoBanner);
 
-
+    BOOSTERS.forEach(booster => {
         const pool = activeCharacterDatabase.filter(booster.filter);
         if (pool.length === 0) return;
         

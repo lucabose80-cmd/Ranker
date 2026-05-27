@@ -1,14 +1,12 @@
 export const patchNotesWaifu = [
     {
-        version: "v7.1.1",
-        title: "Hotfix: Wett-Pool & Auswertungs-Sichtbarkeit",
+        version: "v7.2.1",
+        title: "Onboarding & Progression Update",
         isHotfix: true,
         changes: [
-            "Hotfix: Der Wett-Pool im Warteraum und der Spielphase wird nun immer angezeigt (auch bei 0 Credits).",
-            "Hotfix: Die Wett-Auswertung im Ergebnis-Modal wird nun immer angezeigt (auch wenn keine Wetten platziert wurden).",
-            "Visualisierung: Detaillierte Darstellung von richtigen/falschen Wetten und Auszahlungs- oder Erstattungsdetails im Endscreen.",
-            "Stabilität: Erhöhte Robustheit bei unvollständigen Tipps und Schutz vor blockierten Auswertungs-Lobbies.",
-            "QoL: Virtuelle Credits für Test- und Admin-Accounts zur direkten Wett-Simulation im Warteraum."
+            "Feature: Umfassende In-Game Anleitung (Tutorial) für neue Spieler hinzugefügt. (Oben rechts aufrufbar)",
+            "Progression: Nach Erreichen des 20-Spiele-Limits (10 Credits) erhält man nun unbegrenzt 5 Credits für jedes weitere Spiel im klassischen Modus.",
+            "Fix: v7.2 Patchnotes wurden im Changelog-Fenster nicht richtig als aktuellste Version erkannt."
         ]
     },
     {
@@ -21,6 +19,18 @@ export const patchNotesWaifu = [
             "Feature: Korrekturen/Vorschläge: Charaktere können nun nach Namen durchsucht werden.",
             "Fix: Nach einer Versus-Runde wird der Wett-Status zurückgesetzt, sodass in der nächsten Runde neu gewettet werden kann.",
             "QoL: Das eigene Profil-Panel ist jetzt breiter, um alle Features ohne Überlappungen darzustellen."
+        ]
+    },
+    {
+        version: "v7.1.1",
+        title: "Hotfix: Wett-Pool & Auswertungs-Sichtbarkeit",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Der Wett-Pool im Warteraum und der Spielphase wird nun immer angezeigt (auch bei 0 Credits).",
+            "Hotfix: Die Wett-Auswertung im Ergebnis-Modal wird nun immer angezeigt (auch wenn keine Wetten platziert wurden).",
+            "Visualisierung: Detaillierte Darstellung von richtigen/falschen Wetten und Auszahlungs- oder Erstattungsdetails im Endscreen.",
+            "Stabilität: Erhöhte Robustheit bei unvollständigen Tipps und Schutz vor blockierten Auswertungs-Lobbies.",
+            "QoL: Virtuelle Credits für Test- und Admin-Accounts zur direkten Wett-Simulation im Warteraum."
         ]
     },
     {

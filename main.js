@@ -387,13 +387,32 @@ function setupGameUI(user) {
     });
 
 
-    
+    // Tutorial Logic
+    const tutorialModal = document.getElementById('tutorial-modal');
+    const tutorialOpenBtn = document.getElementById('tutorial-open-btn');
+    const closeTutorialBtn = document.getElementById('close-tutorial-btn');
+    const tutorialGotItBtn = document.getElementById('tutorial-got-it-btn');
+
+    const openTutorial = () => { if (tutorialModal) tutorialModal.classList.remove('hidden'); };
+    const closeTutorial = () => { if (tutorialModal) tutorialModal.classList.add('hidden'); };
+
+    if (tutorialOpenBtn) tutorialOpenBtn.addEventListener('click', openTutorial);
+    if (closeTutorialBtn) closeTutorialBtn.addEventListener('click', closeTutorial);
+    if (tutorialGotItBtn) tutorialGotItBtn.addEventListener('click', closeTutorial);
+
+    // Show tutorial on login if not shown this session
+    if (!sessionStorage.getItem('tutorial_shown')) {
+        sessionStorage.setItem('tutorial_shown', 'true');
+        openTutorial();
+    }
+
     // Tastenanschläge abfangen (Entf = Moduswechsel, Esc = Profil / Zuschauen schließen)
     document.addEventListener('keydown', (e) => { 
         if (e.key === 'Delete') { e.preventDefault(); toggleTheme(); }
         if (e.key === 'Escape') {
             closeProfileOverlay();
             closeSpectatorModal();
+            closeTutorial();
         }
     });
 
@@ -592,13 +611,14 @@ window.updateCreditProgressBars = function() {
         const earned = user[field] || 0;
         const percent = Math.min(100, (earned / 20) * 100);
         
+        const displayEarned = earned > 20 ? earned : `${earned}/20`;
         html += `
             <div style="display:flex; align-items:center; gap:10px;">
                 <div style="width:120px; font-size:0.75rem; color:#e2e8f0; text-align:right;">${cat.name}</div>
                 <div style="flex:1; height:8px; background:rgba(0,0,0,0.5); border-radius:4px; border:1px solid #333; overflow:hidden;">
                     <div style="width:${percent}%; height:100%; background:${cat.color}; transition:width 0.3s; box-shadow: 0 0 5px ${cat.color};"></div>
                 </div>
-                <div style="width:30px; font-size:0.7rem; color:#94a3b8; text-align:left;">${earned}/20</div>
+                <div style="width:30px; font-size:0.7rem; color:#94a3b8; text-align:left;">${displayEarned}</div>
             </div>
         `;
     });

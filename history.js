@@ -145,19 +145,26 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
             user[klonGamesPlayedField] = (user[klonGamesPlayedField] || 0) + 1;
         }
 
-        // Grant 10 Credits (Max 20 times per category)
+        // Grant Credits (10 for first 20 times per category, 5 afterwards)
         let earnedCredits = false;
+        let earnedCreditAmount = 0;
         if (gameType === 'classic' || gameType === 'hardcore') {
             const cat = category || 'normal';
             const catField = `credits_earned_${currentMode}_${cat}`;
             const totalEarned = user[catField] || 0;
+            
+            user[catField] = totalEarned + 1;
             if (totalEarned < 20) {
-                user[catField] = totalEarned + 1;
-                user.credits = (user.credits || 0) + 10;
-                earnedCredits = true;
-                if (window.updateCreditProgressBars) {
-                    window.updateCreditProgressBars();
-                }
+                earnedCreditAmount = 10;
+            } else {
+                earnedCreditAmount = 5;
+            }
+            
+            user.credits = (user.credits || 0) + earnedCreditAmount;
+            earnedCredits = true;
+            
+            if (window.updateCreditProgressBars) {
+                window.updateCreditProgressBars();
             }
         }
 
@@ -318,7 +325,7 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
         if (earnedCredits) {
             const cat = category || 'normal';
             updatePayload[`credits_earned_${currentMode}_${cat}`] = increment(1);
-            updatePayload.credits = increment(10);
+            updatePayload.credits = increment(earnedCreditAmount);
         }
         
         updateDoc(doc(db, "users", user.uid), updatePayload).catch(e => console.error(e));
