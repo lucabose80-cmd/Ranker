@@ -1269,8 +1269,9 @@ window.loadMachtverirrung = async function(user, targetDivId) {
 
     for (const [name, stats] of Object.entries(charRanks)) {
         const userAvg = stats.sum / stats.count;
-        let gRank = globalRanks[name];
-        if (gRank === undefined) gRank = 3.0; // Fallback to exact middle if community hasn't ranked it yet
+        const gRank = globalRanks[name];
+        // Skip characters that have never been globally ranked
+        if (gRank === undefined) continue;
         
         const diff = Math.abs(userAvg - gRank);
         if (stats.count >= 2 && diff > maxDiff) {

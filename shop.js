@@ -74,10 +74,9 @@ export function initShop() {
         
         const legCount = booster.id === 'starwars_jedi_sith' ? pool.filter(c => LEGENDARY_POOL[c.name]).length : 0;
         
-        // Calculate distinct owned characters from this pack's pool
+        // Calculate distinct owned characters pulled from THIS specific booster
         const inv = user[`inventory_${currentMode}`] || [];
-        const poolNames = new Set(pool.map(c => c.name));
-        const ownedNames = new Set(inv.filter(c => poolNames.has(c.charName)).map(c => c.charName));
+        const ownedNames = new Set(inv.filter(c => c.boosterId === booster.id).map(c => c.charName));
         const ownedCount = ownedNames.size;
         const totalCount = pool.length;
         const packComplete = ownedCount === totalCount;
