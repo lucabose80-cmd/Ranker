@@ -274,7 +274,7 @@ export const starWarsCharacters = [
 
 export const LEGENDARY_POOL = {
     'Anakin Skywalker': {
-        specialImg: 'Special.Bilder/anakin.selten.jpg',
+        specialImg: 'Special.Bilder/anakin.special.jpg',
         sound: 'sounds/imperialmarch.mp3',
         soundLoops: 1
     },
@@ -282,6 +282,26 @@ export const LEGENDARY_POOL = {
         specialImg: 'Special.Bilder/vader.special.jpg',
         sound: 'sounds/vaderbreathing.mp3',
         soundLoops: 3
+    },
+    'General Grievous': {
+        specialImg: 'Special.Bilder/grievious.special.jpg',
+        sound: 'sounds/generalkenobi.mp3',
+        soundLoops: 1
+    },
+    'Darth Maul': {
+        specialImg: 'Special.Bilder/maul.special.jpg',
+        sound: 'sounds/maultheme.mp3',
+        soundLoops: 1
+    },
+    'Obi-Wan Kenobi': {
+        specialImg: 'Special.Bilder/obiwan.special.jpg',
+        sound: 'sounds/hellothere.mp3',
+        soundLoops: 1
+    },
+    'Ahsoka Tano': {
+        specialImg: 'Special.Bilder/ahsoka.special.jpg',
+        sound: 'sounds/nojediahsoka.mp3',
+        soundLoops: 1
     }
 };
 
