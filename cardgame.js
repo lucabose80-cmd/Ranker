@@ -168,14 +168,7 @@ export function initCardgame() {
         document.getElementById('cardgame-main-menu').classList.remove('hidden');
     });
 
-    document.getElementById('bot-b1-btn').addEventListener('click', () => {
-        startBotMatch('B1-Kampfdroide', ['common', 'rare']);
-    });
-
-    document.getElementById('bot-inquisitor-btn').addEventListener('click', () => {
-        startBotMatch('Inquisitor', ['rare', 'epic']);
-    });
-
+    renderBots();
     document.getElementById('match-next-round-btn').addEventListener('click', () => {
         document.getElementById('match-result-overlay').classList.add('hidden');
         document.getElementById('match-player-active').innerHTML = '';
@@ -345,16 +338,92 @@ async function renderMatchmaking() {
     } catch(e) { list.innerHTML = 'Fehler beim Laden der Gegner.'; console.error(e); }
 }
 
-function startBotMatch(botName, allowedRarities) {
-    let pool = [];
-    activeCharacterDatabase.forEach(char => {
-        const rarity = allowedRarities[Math.floor(Math.random() * allowedRarities.length)];
-        pool.push({ charName: char.name, rarity: rarity });
+const BOT_LEVELS = [
+    { name: "Trainingsdroide (Lvl 1)", rarities: ['common'], popFilter: 'low', synergy: 'none', color: '#888', desc: "Nutzt nur häufige & unbeliebte Karten." },
+    { name: "Jawa (Lvl 2)", rarities: ['common', 'rare'], popFilter: 'low', synergy: 'none', color: '#a0a0a0', desc: "Nutzt schwache Karten, manchmal seltene." },
+    { name: "Sturmtruppler (Lvl 3)", rarities: ['common', 'rare'], popFilter: 'any', synergy: 'low', color: '#fff', desc: "Durchschnittliche Karten ohne Strategie." },
+    { name: "Kopfgeldjäger (Lvl 4)", rarities: ['rare'], popFilter: 'high', synergy: 'low', color: '#f39c12', desc: "Nutzt starke, seltene Karten." },
+    { name: "Inquisitor (Lvl 5)", rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'low', color: '#e74c3c', desc: "Solide Mischung aus selten und episch." },
+    { name: "Ritter der Ren (Lvl 6)", rarities: ['rare', 'epic'], popFilter: 'high', synergy: 'low', color: '#8e44ad', desc: "Starke epische Karten, wenig Synergie." },
+    { name: "Jedi-Ritter (Lvl 7)", rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#2ed573', desc: "Epische Karten mit gezielten Synergien." },
+    { name: "General Grievous (Lvl 8)", rarities: ['epic', 'legendary'], popFilter: 'any', synergy: 'high', color: '#95a5a6', desc: "Gefährliche Legendäre und starke Synergie." },
+    { name: "Darth Vader (Lvl 9)", rarities: ['epic', 'legendary'], popFilter: 'high', synergy: 'high', color: '#c0392b', desc: "Nur die stärksten Karten mit extremen Synergien." },
+    { name: "Großmeister Yoda (Lvl 10)", rarities: ['legendary'], popFilter: 'high', synergy: 'max', color: '#ffd700', desc: "Das perfekte Deck. Maximale Stärke." }
+];
+
+function renderBots() {
+    const list = document.getElementById('cardgame-bots-list');
+    if (!list) return;
+    list.innerHTML = '';
+    BOT_LEVELS.forEach(bot => {
+        const div = document.createElement('div');
+        div.style.cssText = `background:#1a1e29; padding:20px; border:2px solid ${bot.color}; border-radius:10px; text-align:center; flex:1 1 250px; max-width:300px; display:flex; flex-direction:column; justify-content:space-between;`;
+        div.innerHTML = `
+            <div>
+                <h3 style="color:${bot.color}; margin-top:0;">${bot.name}</h3>
+                <p style="color:#888; font-size:0.9rem;">${bot.desc}</p>
+                <div style="font-size:0.8rem; color:#aaa; margin-top:5px;">Rarität: ${bot.rarities.join(', ')}</div>
+                <div style="font-size:0.8rem; color:#aaa;">Strategie: ${bot.synergy === 'max' ? 'Perfekt' : bot.synergy === 'high' ? 'Hoch' : bot.synergy === 'low' ? 'Gering' : 'Keine'}</div>
+            </div>
+            <button class="rank-btn bot-start-btn" style="margin-top:15px; padding: 10px 20px; font-size: 1rem; width: 100%; border-color:${bot.color}; color:${bot.color};">Kampf starten</button>
+        `;
+        div.querySelector('.bot-start-btn').addEventListener('click', () => startBotMatch(bot));
+        list.appendChild(div);
     });
-    pool = pool.sort(() => 0.5 - Math.random()).slice(0, 10);
+}
+
+function startBotMatch(bot) {
+    let candidates = activeCharacterDatabase.filter(c => bot.rarities.includes(c.rarity));
     
+    // Evaluate popularity
+    if (bot.popFilter !== 'any') {
+        candidates = candidates.sort((a, b) => {
+            const sA = globalScoresCache[a.name] || 5.0;
+            const sB = globalScoresCache[b.name] || 5.0;
+            return sB - sA; // descending
+        });
+        const cut = Math.max(10, Math.floor(candidates.length * 0.4));
+        if (bot.popFilter === 'high') {
+            candidates = candidates.slice(0, cut);
+        } else if (bot.popFilter === 'low') {
+            candidates = candidates.slice(Math.max(0, candidates.length - cut));
+        }
+    }
+
+    let deck = [];
+    if (bot.synergy === 'none' || candidates.length < 10) {
+        deck = candidates.sort(() => 0.5 - Math.random()).slice(0, 10);
+    } else {
+        const baseChar = candidates[Math.floor(Math.random() * candidates.length)];
+        const targetFaction = (baseChar.faction && baseChar.faction.length > 0) ? baseChar.faction[0] : null;
+        
+        if (targetFaction) {
+            let synChars = candidates.filter(c => c.faction && c.faction.includes(targetFaction)).sort(() => 0.5 - Math.random());
+            let otherChars = candidates.filter(c => !c.faction || !c.faction.includes(targetFaction)).sort(() => 0.5 - Math.random());
+            
+            if (bot.synergy === 'max') {
+                deck = synChars.slice(0, 10);
+                if (deck.length < 10) deck = deck.concat(otherChars.slice(0, 10 - deck.length));
+            } else if (bot.synergy === 'high') {
+                const amountSyn = Math.min(synChars.length, 7);
+                deck = synChars.slice(0, amountSyn).concat(otherChars.slice(0, 10 - amountSyn));
+            } else if (bot.synergy === 'low') {
+                const amountSyn = Math.min(synChars.length, 3);
+                deck = synChars.slice(0, amountSyn).concat(otherChars.slice(0, 10 - amountSyn));
+            }
+        } else {
+            deck = candidates.sort(() => 0.5 - Math.random()).slice(0, 10);
+        }
+    }
+    
+    // Fallback if not enough
+    while (deck.length < 10 && activeCharacterDatabase.length > 0) {
+        deck.push(activeCharacterDatabase[Math.floor(Math.random() * activeCharacterDatabase.length)]);
+    }
+    
+    const finalDeck = deck.slice(0, 10).map(c => ({ charName: c.name, rarity: c.rarity }));
     isBotMatch = true;
-    startMatch({ username: `BOT: ${botName}`, displayName: `BOT: ${botName}` }, pool);
+    startMatch({ username: `BOT: ${bot.name}`, displayName: `BOT: ${bot.name}` }, finalDeck);
 }
 
 async function startMatch(oppData, oppDeckArr) {
