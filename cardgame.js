@@ -86,7 +86,7 @@ async function loadGlobalScores() {
 
 function getCardScore(charName) {
     const scores = globalScoresCache[currentMode] || {};
-    return scores[charName] || 2.5;
+    return scores[charName] || 9.0;
 }
 
 export function initCardgame() {
@@ -363,7 +363,18 @@ function renderBots() {
     const list = document.getElementById('cardgame-bots-list');
     if (!list) return;
     list.innerHTML = '';
-    BOT_LEVELS.forEach(bot => {
+    
+    const user = getCurrentUser();
+    const defeatedField = currentMode === 'starwars' ? 'defeated_bots_starwars' : 'defeated_bots_waifu';
+    const defeatedBots = user ? (user[defeatedField] || []) : [];
+    
+    BOT_LEVELS.forEach((bot, idx) => {
+        const botLevel = idx + 1;
+        const isDefeated = defeatedBots.includes(botLevel);
+        const rewardHtml = isDefeated 
+            ? `<div style="font-size:0.85rem; color:#2ed573; margin-top:10px; font-weight:bold;">✓ Bereits besiegt</div>` 
+            : `<div style="font-size:0.85rem; color:#ffd700; margin-top:10px; font-weight:bold;">🏆 Erstsieg: ${bot.reward} Credits</div>`;
+            
         const div = document.createElement('div');
         div.style.cssText = `background:#1a1e29; padding:20px; border:2px solid ${bot.color}; border-radius:10px; text-align:center; flex:1 1 250px; max-width:300px; display:flex; flex-direction:column; justify-content:space-between;`;
         div.innerHTML = `
@@ -372,7 +383,7 @@ function renderBots() {
                 <p style="color:#888; font-size:0.9rem;">${bot.desc}</p>
                 <div style="font-size:0.8rem; color:#aaa; margin-top:5px;">Rarität: ${bot.rarities.join(', ')}</div>
                 <div style="font-size:0.8rem; color:#aaa;">Strategie: ${bot.synergy === 'max' ? 'Perfekt' : bot.synergy === 'high' ? 'Hoch' : bot.synergy === 'low' ? 'Gering' : 'Keine'}</div>
-                <div style="font-size:0.85rem; color:#ffd700; margin-top:10px; font-weight:bold;">🏆 Erstsieg: ${bot.reward} Credits</div>
+                ${rewardHtml}
             </div>
             <button class="rank-btn bot-start-btn" style="margin-top:15px; padding: 10px 20px; font-size: 1rem; width: 100%; border-color:${bot.color}; color:${bot.color};">Kampf starten</button>
         `;

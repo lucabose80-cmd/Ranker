@@ -1311,7 +1311,13 @@ window.loadMachtverirrung = async function(user, targetDivId) {
             const chars = Object.values(snapGlobal.data().characters || {});
             chars.forEach(c => {
                 const globalScore = c.score / (c.count || 1); 
-                globalRanks[c.name] = 6 - globalScore;
+                // The new system uses points (avg. multiplier ~3). globalScore is approx (6 - rank) * 3.
+                // So rank = 6 - (globalScore / 3). We clamp it between 1 and 5.
+                let estimatedRank = 6 - (globalScore / 3);
+                if(estimatedRank < 1) estimatedRank = 1;
+                if(estimatedRank > 5) estimatedRank = 5;
+                
+                globalRanks[c.name] = estimatedRank;
             });
         }
     } catch(e) {}
