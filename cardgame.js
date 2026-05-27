@@ -15,6 +15,7 @@ let opponentScore = 0;
 let playedPlayerCards = [];
 let playedOpponentCards = [];
 let globalScoresCache = {};
+let isBotMatch = false;
 
 const RARITY_MULT = { 'common': 1.0, 'rare': 1.1, 'epic': 1.3, 'legendary': 1.5 };
 const RARITY_ORDER = { 'legendary': 4, 'epic': 3, 'rare': 2, 'common': 1 };
@@ -113,9 +114,14 @@ export function initCardgame() {
         
         localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
         try {
-            await updateDoc(doc(db, "users", user.uid), { [field]: user[field] });
+            // Fix Firebase undefined error by serializing the array
+            const cleanDeckData = JSON.parse(JSON.stringify(user[field]));
+            await updateDoc(doc(db, "users", user.uid), { [field]: cleanDeckData });
             alert(`Deck ${activeDeckIndex + 1} erfolgreich gespeichert!`);
-        } catch(e) { alert("Fehler beim Speichern!"); }
+        } catch(e) { 
+            console.error("Speichern Fehler:", e);
+            alert("Fehler beim Speichern in der Cloud, aber lokal gespeichert."); 
+        }
     });
 
     document.getElementById('cardgame-btn-play').addEventListener('click', async () => {
@@ -134,6 +140,32 @@ export function initCardgame() {
         document.getElementById('cardgame-matchmaking').classList.add('hidden');
         document.getElementById('cardgame-main-menu').classList.remove('hidden');
     });
+
+    // BOT BUTTONS
+    document.getElementById('cardgame-btn-bot').addEventListener('click', () => {
+        const user = getCurrentUser();
+        const field = currentMode === 'starwars' ? 'decks_starwars' : 'decks_waifu';
+        if(!user || !user[field] || !user[field][activeDeckIndex] || user[field][activeDeckIndex].length !== 10) {
+            alert(`Bitte erstelle zuerst Deck ${activeDeckIndex + 1} mit genau 10 Karten!`); return;
+        }
+        playerDeck = [...user[field][activeDeckIndex]];
+        document.getElementById('cardgame-main-menu').classList.add('hidden');
+        document.getElementById('cardgame-bots').classList.remove('hidden');
+    });
+
+    document.getElementById('cardgame-bots-back').addEventListener('click', () => {
+        document.getElementById('cardgame-bots').classList.add('hidden');
+        document.getElementById('cardgame-main-menu').classList.remove('hidden');
+    });
+
+    document.getElementById('bot-b1-btn').addEventListener('click', () => {
+        startBotMatch('B1-Kampfdroide', ['common', 'rare']);
+    });
+
+    document.getElementById('bot-inquisitor-btn').addEventListener('click', () => {
+        startBotMatch('Inquisitor', ['rare', 'epic']);
+    });
+
 
     document.getElementById('match-next-round-btn').addEventListener('click', () => {
         document.getElementById('match-result-overlay').classList.add('hidden');
@@ -277,11 +309,28 @@ async function renderMatchmaking() {
             div.innerHTML = `<div style="font-weight:bold; color:#fff; font-size:1.1rem;">${opp.displayName || opp.username}</div>
                              <button class="rank-btn" style="padding:10px 20px; font-size:1rem;">Herausfordern</button>`;
             div.querySelector('button').addEventListener('click', () => {
+                isBotMatch = false;
                 startMatch(opp, opp.deck);
             });
             list.appendChild(div);
         });
     } catch(e) { list.innerHTML = 'Fehler beim Laden der Gegner.'; console.error(e); }
+}
+
+function startBotMatch(botName, allowedRarities) {
+    let pool = [];
+    // Generate Bot Deck
+    activeCharacterDatabase.forEach(char => {
+        // Just pick one of the allowed rarities randomly or distribute
+        const rarity = allowedRarities[Math.floor(Math.random() * allowedRarities.length)];
+        pool.push({ charName: char.name, rarity: rarity });
+    });
+    
+    // Pick 10 random unique chars
+    pool = pool.sort(() => 0.5 - Math.random()).slice(0, 10);
+    
+    isBotMatch = true;
+    startMatch({ username: `BOT: ${botName}`, displayName: `BOT: ${botName}` }, pool);
 }
 
 async function startMatch(oppData, oppDeckArr) {
@@ -295,6 +344,7 @@ async function startMatch(oppData, oppDeckArr) {
     playedOpponentCards = [];
     
     document.getElementById('cardgame-matchmaking').classList.add('hidden');
+    document.getElementById('cardgame-bots').classList.add('hidden');
     document.getElementById('cardgame-match').classList.remove('hidden');
     
     document.getElementById('match-player-score').innerText = '0';
@@ -403,14 +453,19 @@ async function finishMatch() {
     document.getElementById('cardgame-main-menu').classList.remove('hidden');
     
     if(playerScore > opponentScore) {
-        alert(`Du hast das Match ${playerScore}:${opponentScore} gewonnen! Du erhältst 5 Credits!`);
-        const user = getCurrentUser();
-        if(user) {
-            user.credits = (user.credits || 0) + 5;
-            localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
-            await updateDoc(doc(db, "users", user.uid), { credits: user.credits });
-            const cb = document.getElementById('topbar-credits');
-            if(cb) cb.innerHTML = `<span style="color:#ffd700;">?</span> ${user.credits}`;
+        alert(`Du hast das Match ${playerScore}:${opponentScore} gewonnen!`);
+        if(!isBotMatch) {
+            alert(`Du erhaeltst 5 Credits fuer den Sieg gegen einen echten Spieler!`);
+            const user = getCurrentUser();
+            if(user) {
+                user.credits = (user.credits || 0) + 5;
+                localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
+                await updateDoc(doc(db, "users", user.uid), { credits: user.credits });
+                const cb = document.getElementById('topbar-credits');
+                if(cb) cb.innerHTML = `<span style="color:#ffd700;">?</span> ${user.credits}`;
+            }
+        } else {
+            alert(`Uebungsmatch beendet. Keine Credits, da es ein Bot war.`);
         }
     } else if(opponentScore > playerScore) {
         alert(`Du hast das Match ${playerScore}:${opponentScore} verloren!`);
