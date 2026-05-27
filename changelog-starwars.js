@@ -1,8 +1,20 @@
 export const patchNotesStarWars = [
     {
         version: "v7.1.1",
-        title: "Tausch & Versus Wetten Update",
+        title: "Hotfix: Wett-Pool & Auswertungs-Sichtbarkeit",
         isHotfix: true,
+        changes: [
+            "Hotfix: Der Wett-Pool im Warteraum und der Spielphase wird nun immer angezeigt (auch bei 0 Credits).",
+            "Hotfix: Die Wett-Auswertung im Ergebnis-Modal wird nun immer angezeigt (auch wenn keine Wetten platziert wurden).",
+            "Visualisierung: Detaillierte Darstellung von richtigen/falschen Wetten und Auszahlungs- oder Erstattungsdetails im Endscreen.",
+            "Stabilität: Erhöhte Robustheit bei unvollständigen Tipps und Schutz vor blockierten Auswertungs-Lobbies.",
+            "QoL: Virtuelle Credits für Test- und Admin-Accounts zur direkten Wett-Simulation im Warteraum."
+        ]
+    },
+    {
+        version: "v7.1",
+        title: "Tausch & Versus Wetten Update",
+        isHotfix: false,
         changes: [
             "Feature: Versus-Wetten! Platziere vor dem Start eines Versus-Spiels im Warteraum Credits auf den vermuteten Gewinner (maximal 1/10 deines Guthabens).",
             "Auszahlung: Der Gewinner der Wette erhält den gesamten Preispool. Bei mehreren richtigen Wetten wird geteilt, bei falschem Tipp aller Spieler gibt es eine Rückerstattung.",
