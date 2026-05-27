@@ -1621,6 +1621,7 @@ export async function renderCustomLookSelection() {
                 charLooks[charName] = type;
                 const field = currentMode === 'starwars' ? 'custom_look_starwars' : 'custom_look_waifu';
                 user[field] = charLooks;
+                localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
                 const { db } = await import('./firebase-config.js');
                 const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js');
                 await updateDoc(doc(db, 'users', user.uid), {
