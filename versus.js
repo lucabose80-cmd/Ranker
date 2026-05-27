@@ -338,6 +338,144 @@ function showWaitingRoom(lobbyId) {
                 </div>
             `;
         }).join('');
+
+        // Betting UI implementation
+        const bettingContainer = document.getElementById('versus-betting-container');
+        if (bettingContainer) {
+            if (lobby.status === 'waiting') {
+                try {
+                    const uSnap = await getDoc(doc(db, "users", user.uid));
+                    const credits = uSnap.exists() ? (uSnap.data().credits || 0) : 0;
+                    const myBet = (lobby.bets || []).find(b => b.uid === user.uid);
+                    const totalPool = lobby.prizePool || 0;
+                    
+                    let poolHtml = totalPool > 0 ? `
+                        <div style="background: rgba(46, 213, 115, 0.1); border: 1px solid #2ed573; border-radius: 6px; padding: 10px; text-align: center; margin-bottom: 15px;">
+                            <span style="color: #2ed573; font-weight: bold; font-size: 0.95rem;">💰 Aktueller Preispool: ${totalPool} Credits</span>
+                        </div>
+                    ` : '';
+                    
+                    if (myBet) {
+                        bettingContainer.innerHTML = `
+                            ${poolHtml}
+                            <div style="background: rgba(255,215,0,0.1); border: 1px solid #ffd700; border-radius: 6px; padding: 12px; text-align: center;">
+                                <p style="margin: 0; color: #ffd700; font-size: 0.9rem;">
+                                    Du hast <strong>${myBet.amount} Credits</strong> auf <strong>${myBet.targetName}</strong> gewettet!
+                                </p>
+                            </div>
+                        `;
+                    } else {
+                        const maxBet = Math.floor(credits / 10);
+                        if (maxBet <= 0) {
+                            bettingContainer.innerHTML = `
+                                ${poolHtml}
+                                <div style="background: rgba(255,255,255,0.03); border: 1px solid #444; border-radius: 6px; padding: 12px; text-align: center; color:#94a3b8; font-size:0.85rem;">
+                                    Mindestens 10 Credits benötigt für Wetten (Guthaben: ${credits}).
+                                </div>
+                            `;
+                        } else {
+                            bettingContainer.innerHTML = `
+                                ${poolHtml}
+                                <div style="background: rgba(255,255,255,0.05); border: 1px solid #333; border-radius: 6px; padding: 15px;">
+                                    <h4 style="margin: 0 0 10px 0; font-size: 0.95rem; color: #ffd700; text-align: center;">Versus-Wette platzieren</h4>
+                                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                                        <div style="display: flex; gap: 10px; align-items: center;">
+                                            <span style="font-size: 0.85rem; color: #ccc; width: 80px;">Gewinner:</span>
+                                            <select id="bet-target-select" style="flex: 1; padding: 6px; border-radius: 4px; background: #222; border: 1px solid #444; color: #fff;">
+                                                ${lobby.players.map(p => `<option value="${p.uid}">${p.displayName}</option>`).join('')}
+                                            </select>
+                                        </div>
+                                        <div style="display: flex; gap: 10px; align-items: center;">
+                                            <span style="font-size: 0.85rem; color: #ccc; width: 80px;">Einsatz:</span>
+                                            <input type="number" id="bet-amount-input" min="1" max="${maxBet}" value="1" style="flex: 1; padding: 6px; border-radius: 4px; background: #222; border: 1px solid #444; color: #fff; text-align: center;">
+                                            <span style="font-size: 0.75rem; color: #94a3b8;">(max. ${maxBet})</span>
+                                        </div>
+                                        <button id="submit-bet-btn" class="rank-btn" style="margin-top: 5px; font-size: 0.85rem; padding: 6px 12px;">Wette abgeben</button>
+                                    </div>
+                                </div>
+                            `;
+                            
+                            const submitBetBtn = document.getElementById('submit-bet-btn');
+                            if (submitBetBtn) {
+                                submitBetBtn.onclick = async () => {
+                                    const targetSelect = document.getElementById('bet-target-select');
+                                    const amountInput = document.getElementById('bet-amount-input');
+                                    if (!targetSelect || !amountInput) return;
+                                    
+                                    const targetUid = targetSelect.value;
+                                    const targetPlayer = lobby.players.find(p => p.uid === targetUid);
+                                    const targetName = targetPlayer ? targetPlayer.displayName : 'Unbekannt';
+                                    const amount = parseInt(amountInput.value);
+                                    
+                                    if (isNaN(amount) || amount < 1 || amount > maxBet) {
+                                        alert(`Ungültiger Wetteinsatz! Der Betrag muss zwischen 1 und ${maxBet} liegen.`);
+                                        return;
+                                    }
+                                    
+                                    submitBetBtn.disabled = true;
+                                    submitBetBtn.textContent = 'Verarbeite...';
+                                    
+                                    try {
+                                        await runTransaction(db, async (transaction) => {
+                                            const userRef = doc(db, "users", user.uid);
+                                            const userSnap = await transaction.get(userRef);
+                                            if (!userSnap.exists()) throw new Error("Benutzer nicht gefunden.");
+                                            
+                                            const userData = userSnap.data();
+                                            const currentCredits = userData.credits || 0;
+                                            if (currentCredits < amount) throw new Error("Nicht genügend Credits.");
+                                            
+                                            const lobbyRef = doc(db, "versus_lobbies", lobby.id);
+                                            const lobbySnap = await transaction.get(lobbyRef);
+                                            if (!lobbySnap.exists()) throw new Error("Lobby nicht gefunden.");
+                                            
+                                            const lobbyData = lobbySnap.data();
+                                            if (lobbyData.status !== 'waiting') throw new Error("Wetten sind nur in der Wartephase erlaubt.");
+                                            
+                                            const existingBets = lobbyData.bets || [];
+                                            if (existingBets.some(b => b.uid === user.uid)) {
+                                                throw new Error("Du hast bereits eine Wette platziert.");
+                                            }
+                                            
+                                            transaction.update(userRef, { credits: currentCredits - amount });
+                                            
+                                            existingBets.push({
+                                                uid: user.uid,
+                                                username: user.username,
+                                                displayName: user.displayName || user.username,
+                                                targetUid,
+                                                targetName,
+                                                amount
+                                            });
+                                            
+                                            transaction.update(lobbyRef, {
+                                                bets: existingBets,
+                                                prizePool: (lobbyData.prizePool || 0) + amount
+                                            });
+                                        });
+                                        
+                                        alert("Wette erfolgreich abgegeben!");
+                                    } catch(err) {
+                                        alert("Wettfehler: " + err.message);
+                                        submitBetBtn.disabled = false;
+                                        submitBetBtn.textContent = 'Wette abgeben';
+                                    }
+                                };
+                            }
+                        }
+                    }
+                } catch(e) {
+                    console.error("Bet UI load error:", e);
+                }
+            } else {
+                const pool = lobby.prizePool || 0;
+                bettingContainer.innerHTML = pool > 0 ? `
+                    <div style="background: rgba(46, 213, 115, 0.1); border: 1px solid #2ed573; border-radius: 6px; padding: 10px; text-align: center; margin-bottom: 15px;">
+                        <span style="color: #2ed573; font-weight: bold; font-size: 0.95rem;">💰 Spiel-Preispool: ${pool} Credits</span>
+                    </div>
+                ` : '';
+            }
+        }
         
         if (lobby.status === 'playing') {
             const me = lobby.players.find(p => p.uid === user.uid);
@@ -644,6 +782,48 @@ async function evaluateVersusMatch(lobbyId, lobby) {
         }
     }
     
+    // Wetten-Auszahlung
+    let betWinners = [];
+    if (lobby.bets && lobby.bets.length > 0) {
+        const totalPool = lobby.prizePool || 0;
+        
+        // Finde Spieler, die auf einen der Gewinner gesetzt haben
+        const correctBettors = lobby.bets.filter(b => winners.includes(b.targetUid));
+        
+        if (correctBettors.length > 0) {
+            const payoutPerBettor = Math.floor(totalPool / correctBettors.length);
+            
+            const payoutPromises = correctBettors.map(async (b) => {
+                const uRef = doc(db, "users", b.uid);
+                const uSnap = await getDoc(uRef);
+                if (uSnap.exists()) {
+                    const data = uSnap.data();
+                    const newCredits = (data.credits || 0) + payoutPerBettor;
+                    await updateDoc(uRef, { credits: newCredits });
+                }
+            });
+            await Promise.all(payoutPromises);
+            
+            betWinners = correctBettors.map(b => ({
+                uid: b.uid,
+                displayName: b.displayName,
+                payout: payoutPerBettor
+            }));
+        } else {
+            // Keine korrekten Wetten -> Rückerstattung
+            const refundPromises = lobby.bets.map(async (b) => {
+                const uRef = doc(db, "users", b.uid);
+                const uSnap = await getDoc(uRef);
+                if (uSnap.exists()) {
+                    const data = uSnap.data();
+                    const newCredits = (data.credits || 0) + b.amount;
+                    await updateDoc(uRef, { credits: newCredits });
+                }
+            });
+            await Promise.all(refundPromises);
+        }
+    }
+    
     const hasTestUserGlobal = lobby.players.some(p => p.username === 'test1' || p.username === 'test2');
     if (!hasTestUserGlobal) {
         // 5. Speichere das Spiel in die History
@@ -655,7 +835,10 @@ async function evaluateVersusMatch(lobbyId, lobby) {
             characters: lobby.characters,
             players: lobby.players,
             perfectRanking: perfectRanking,
-            winners: winners
+            winners: winners,
+            bets: lobby.bets || [],
+            prizePool: lobby.prizePool || 0,
+            betWinners: betWinners
         };
         await setDoc(doc(db, "history", `versus_${Date.now()}`), historyData);
     }
@@ -665,7 +848,10 @@ async function evaluateVersusMatch(lobbyId, lobby) {
         status: 'finished',
         players: lobby.players,
         perfectRanking: perfectRanking,
-        winners: winners
+        winners: winners,
+        bets: lobby.bets || [],
+        prizePool: lobby.prizePool || 0,
+        betWinners: betWinners
     });
 }
 

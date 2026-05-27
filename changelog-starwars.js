@@ -1,5 +1,17 @@
 export const patchNotesStarWars = [
     {
+        version: "v7.1.1",
+        title: "Tausch & Versus Wetten Update",
+        isHotfix: true,
+        changes: [
+            "Feature: Versus-Wetten! Platziere vor dem Start eines Versus-Spiels im Warteraum Credits auf den vermuteten Gewinner (maximal 1/10 deines Guthabens).",
+            "Auszahlung: Der Gewinner der Wette erhält den gesamten Preispool. Bei mehreren richtigen Wetten wird geteilt, bei falschem Tipp aller Spieler gibt es eine Rückerstattung.",
+            "Visualisierung: Detaillierte Wett-Auswertungen direkt im Versus-Ergebnis-Modal und im Archiv der Historie einsehbar.",
+            "Fix: Die Sichtbarkeit des Kartentausch-Buttons im Spielerprofil anderer Spieler wurde für Star Wars Modus korrigiert.",
+            "QoL: Cache-Busting für Stylesheets und Skripte implementiert, damit alle neuen Features sofort geladen werden."
+        ]
+    },
+    {
         version: "v7.0.7",
         title: "Hotfix: Shop Tracker & Fahrzeuge",
         isHotfix: true,

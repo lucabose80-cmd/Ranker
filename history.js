@@ -566,6 +566,52 @@ export async function openVersusResultModal(game) {
             </div>
         `;
     });
+
+    // Render bets results
+    if (game.bets && game.bets.length > 0) {
+        const pool = game.prizePool || 0;
+        const winnersList = game.betWinners || [];
+        
+        let payoutInfo = '';
+        if (winnersList.length > 0) {
+            payoutInfo = `
+                <div style="background:rgba(46, 213, 115, 0.1); border:1px solid #2ed573; border-radius:6px; padding:10px; margin-bottom:10px; text-align:center;">
+                    <span style="color:#2ed573; font-weight:bold; font-size:0.85rem;">
+                        Gewinner der Wette erhalten je ${winnersList[0].payout} Credits:
+                    </span>
+                    <div style="color:#fff; font-size:0.85rem; margin-top:4px;">
+                        ${winnersList.map(w => w.displayName).join(', ')}
+                    </div>
+                </div>
+            `;
+        } else {
+            payoutInfo = `
+                <div style="background:rgba(255,255,255,0.05); border:1px solid #666; border-radius:6px; padding:10px; margin-bottom:10px; text-align:center; color:#ccc; font-size:0.85rem;">
+                    Kein Spieler hat richtig getippt. Die Einsätze wurden zurückerstattet.
+                </div>
+            `;
+        }
+        
+        content.innerHTML += `
+            <div style="margin-top: 15px; border: 1px solid #333; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.2);">
+                <h4 style="margin:0 0 10px 0; color:#ffd700; font-size:0.9rem; text-transform:uppercase;">Wett-Auswertung (Pool: ${pool} Credits)</h4>
+                ${payoutInfo}
+                <div style="font-size:0.8rem; color:#94a3b8; max-height:120px; overflow-y:auto; background:rgba(0,0,0,0.2); padding:8px; border-radius:4px; border:1px solid #222;">
+                    ${game.bets.map(b => {
+                        const correct = safeWinners.includes(b.targetUid);
+                        const statusColor = correct ? '#2ed573' : '#ff4757';
+                        const statusIcon = correct ? '✓' : '✗';
+                        return `
+                            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                                <span>${b.displayName} gewettet auf ${b.targetName} (${b.amount} Credits)</span>
+                                <span style="color:${statusColor}; font-weight:bold;">${statusIcon}</span>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    }
 }
 
 function openArchiveDetailModal(game) {

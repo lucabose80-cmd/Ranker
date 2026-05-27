@@ -35,7 +35,7 @@ export async function toggleTheme() {
         activeCharacterDatabase = altData['wai' + 'fuCharacters'];
         activeChangelogDatabase = altChangelog['patchNotesWai' + 'fu'];
         mainTitle.textContent = "WAIFU RANKING";
-        themeStylesheet.href = "theme-alt.css?v=5.0.3"; 
+        themeStylesheet.href = "theme-alt.css?v=7.1.1"; 
         document.body.classList.add('alt-theme');
         if (catContainer) catContainer.classList.add('hidden');
         
@@ -54,7 +54,7 @@ export async function toggleTheme() {
         activeCharacterDatabase = starWarsCharacters;
         activeChangelogDatabase = patchNotesStarWars;
         mainTitle.textContent = "STAR WARS RANKING";
-        themeStylesheet.href = "theme-starwars.css?v=5.0.3"; 
+        themeStylesheet.href = "theme-starwars.css?v=7.1.1"; 
         document.body.classList.remove('alt-theme');
         if (catContainer && currentGameType === 'classic') catContainer.classList.remove('hidden');
         

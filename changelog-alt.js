@@ -1,5 +1,16 @@
 export const patchNotesWaifu = [
     {
+        version: "v7.1.1",
+        title: "Versus Wetten Update",
+        isHotfix: true,
+        changes: [
+            "Feature: Versus-Wetten! Platziere vor dem Start eines Versus-Spiels im Warteraum Credits auf den vermuteten Gewinner (maximal 1/10 deines Guthabens).",
+            "Auszahlung: Der Gewinner der Wette erhält den gesamten Preispool. Bei mehreren richtigen Wetten wird geteilt, bei falschem Tipp aller Spieler gibt es eine Rückerstattung.",
+            "Visualisierung: Detaillierte Wett-Auswertungen direkt im Versus-Ergebnis-Modal und im Archiv der Historie einsehbar.",
+            "QoL: Cache-Busting für Stylesheets und Skripte implementiert, damit alle neuen Features sofort geladen werden."
+        ]
+    },
+    {
         version: "v7.0.7",
         title: "Hotfix: Shop Tracker",
         isHotfix: true,
