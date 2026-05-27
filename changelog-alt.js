@@ -9,7 +9,9 @@ export const patchNotesWaifu = [
             "Hotfix: Behebung eines Fehlers in der Cardgame-Scoreberechnung, durch den Bots ohne Seltenheits-Tags gespielt haben und somit das Match abstürzen ließen (keine Popups mehr).",
             "Hotfix: Cardgame-Bots ignorieren nicht länger das Beliebtheits-Ranking und bauen nun wieder konforme Decks.",
             "Hotfix: Bot-UI aktualisiert: Sobald ein Bot besiegt wurde, verschwindet die 'Erster Sieg' Credit-Anzeige und wird durch einen grünen Haken ersetzt.",
-            "Hotfix: Machtverirrung und neue Cardgame-Basiswerte wurden auf das neue Punkte-basierte Scoreboard angepasst, wodurch neue Karten nicht länger unspielbar schlecht sind."
+            "Hotfix: Machtverirrung und neue Cardgame-Basiswerte wurden auf das neue Punkte-basierte Scoreboard angepasst, wodurch neue Karten nicht länger unspielbar schlecht sind.",
+            "Feature: Im Deckbuilder wird nun für jede Karte der aktuelle Global-Score (Basiswert) als kleines goldenes Badge in der Ecke angezeigt.",
+            "Feature: Im Cardgame-Match (Live/Bot) verschwinden gespielte Karten nicht mehr komplett aus der Hand, sondern bleiben als 'ausgegraut' sichtbar, analog zur Anzeige des Gegners."
         ]
     },
     {
