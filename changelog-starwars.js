@@ -28,6 +28,7 @@ export const patchNotesStarWars = [
         ]
     },
     {
+        version: "v7.1",
         title: "Tausch & Versus Wetten Update",
         isHotfix: false,
         changes: [
