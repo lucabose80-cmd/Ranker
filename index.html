@@ -74,6 +74,13 @@
                     <div style="display: flex; gap: 10px; flex-direction: column;">
                         <input type="password" id="admin-new-password" placeholder="Neues Admin-Passwort" class="chat-input" style="width: 100%; box-sizing: border-box; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #1a1e29; color: #fff;">
                         <button id="admin-change-password-btn" class="rank-btn" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; color: #ffd700; border-color: #ffd700;">Admin-Passwort ändern</button>
+                        
+                        <hr style="border: 1px solid #333; margin: 10px 0; width: 100%;">
+                        <select id="admin-player-password-select" class="chat-input" style="width: 100%; box-sizing: border-box; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #1a1e29; color: #fff;">
+                            <option value="">Wähle Spieler...</option>
+                        </select>
+                        <input type="password" id="admin-player-new-password" placeholder="Neues Spieler-Passwort" class="chat-input" style="width: 100%; box-sizing: border-box; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #1a1e29; color: #fff;">
+                        <button id="admin-change-player-password-btn" class="rank-btn" style="height: auto; padding: 12px; font-size: 0.9rem; width: 100%; color: #2ed573; border-color: #2ed573;">Spieler-Passwort ändern</button>
                     </div>
 
                     <h3 class="theme-heading" style="border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 30px;">VORSCHLÄGE MODERATION</h3>
@@ -456,7 +463,12 @@
                         </div>
                         
                         <div id="profile-avatar-panel" class="profile-panel-content">
-                            <p class="prompt-text">Avatar wählen (Speichert sofort für dieses Universum)</p>
+                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:10px;">
+                                <p class="prompt-text" style="margin:0;">Avatar wählen (Speichert sofort für dieses Universum)</p>
+                                <label style="color:#ffd700; font-size:0.85rem; display:flex; align-items:center; gap:5px; cursor:pointer;">
+                                    <input type="checkbox" id="profile-special-avatar-toggle"> Legendäre Spezial-Avatare anzeigen
+                                </label>
+                            </div>
                             <div id="avatar-grid" class="lexikon-grid"></div>
                         </div>
                         <div id="profile-stats-panel" class="profile-panel-content hidden" style="text-align:left;">

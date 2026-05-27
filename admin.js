@@ -212,6 +212,37 @@ export async function initAdminPanel() {
             }
         });
         
+        const changePlayerBtn = document.getElementById('admin-change-player-password-btn');
+        if (changePlayerBtn) {
+            changePlayerBtn.addEventListener('click', async () => {
+                const playerUid = document.getElementById('admin-player-password-select').value;
+                const newPass = document.getElementById('admin-player-new-password').value;
+                if (!playerUid) { alert("Bitte wähle zuerst einen Spieler aus."); return; }
+                if (!newPass || newPass.trim() === '') { alert("Bitte ein gültiges Passwort eingeben."); return; }
+                
+                if (confirm("Möchtest du das Passwort dieses Spielers wirklich ändern?")) {
+                    try {
+                        const { getAuth, updatePassword } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js");
+                        const { doc, updateDoc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+                        
+                        // We must store it or update it. But wait, updatePassword only works for the CURRENT logged-in user.
+                        // Admin cannot update another user's auth password directly using the client SDK.
+                        // We need a workaround or we store the password in firestore for plain auth if we use our own auth?
+                        // Wait, auth.js does manual auth:
+                        // `const snap = await getDoc(doc(db, "users", ...));`
+                        // Yes! auth.js just checks password field in firestore!
+                        await updateDoc(doc(db, "users", playerUid), {
+                            password: newPass
+                        });
+                        alert("Spieler-Passwort erfolgreich geändert!");
+                        document.getElementById('admin-player-new-password').value = '';
+                    } catch(e) {
+                        alert("Fehler beim Ändern des Passworts: " + e.message);
+                    }
+                }
+            });
+        }
+        
         document.getElementById('admin-test-sound-1').addEventListener('click', () => {
             if (window.playStarWars8BitTheme) {
                 window.playStarWars8BitTheme();
@@ -255,10 +286,18 @@ async function renderUserList() {
     const adminUser = users.find(u => u.username === 'admin');
 
     const playerSelect = document.getElementById('admin-reset-player-select');
+    const pwPlayerSelect = document.getElementById('admin-player-password-select');
+    
     if (playerSelect) {
         playerSelect.innerHTML = '<option value="">Wähle Spieler...</option>';
         normalUsers.forEach(u => {
             playerSelect.innerHTML += `<option value="${u.username}">${u.displayName || u.username}</option>`;
+        });
+    }
+    if (pwPlayerSelect) {
+        pwPlayerSelect.innerHTML = '<option value="">Wähle Spieler...</option>';
+        normalUsers.forEach(u => {
+            pwPlayerSelect.innerHTML += `<option value="${u.uid}">${u.displayName || u.username}</option>`;
         });
     }
 

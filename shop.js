@@ -38,7 +38,8 @@ const BOOSTERS = [
         name: 'Klonkrieger Elite-Pack',
         cost: 100,
         img: 'Boosterpack.Bilder/klone.jpg',
-        filter: (char) => char.tags && char.tags.includes('klon')
+        filter: (char) => char.tags && char.tags.includes('klon') && (!char.tags || !char.tags.includes('vehicle')),
+        isLimited: true
     },
     {
         id: 'starwars_jedi_sith',
@@ -46,10 +47,12 @@ const BOOSTERS = [
         cost: 100,
         img: 'Boosterpack.Bilder/machtanwender.jpg',
         filter: (char) => {
+            if (char.tags && char.tags.includes('vehicle')) return false;
             if (char.tags && (char.tags.includes('jedi') || char.tags.includes('sith'))) return true;
             if (char.name === 'General Grievous' || char.name === 'Asajj Ventress') return true;
             return false;
-        }
+        },
+        isLimited: true
     }
 ];
 
@@ -97,12 +100,29 @@ export function initShop() {
         const packComplete = ownedCount === totalCount;
         const alreadyClaimed = !!user[`claimedLegendary_${booster.id}`];
 
+        const legacyDate = new Date('2026-06-10T00:00:00Z');
+        const isLegacy = Date.now() > legacyDate.getTime();
+        
+        let displayCost = booster.cost;
+        let displayName = booster.name;
+        let limitBadge = '';
+        if (booster.isLimited) {
+            if (isLegacy) {
+                displayCost = 150;
+                displayName += ' (Legacy)';
+                limitBadge = `<div style="position:absolute; top:10px; right:-25px; background:#ff4757; color:#fff; font-size:0.7rem; font-weight:bold; padding:4px 30px; transform:rotate(45deg); box-shadow:0 2px 4px rgba(0,0,0,0.5);">LEGACY</div>`;
+            } else {
+                limitBadge = `<div style="position:absolute; top:10px; right:-35px; background:#ffd700; color:#000; font-size:0.7rem; font-weight:bold; padding:4px 35px; transform:rotate(45deg); box-shadow:0 2px 4px rgba(0,0,0,0.5);">LIMITIERT (10.06.)</div>`;
+            }
+        }
+
         const el = document.createElement('div');
         el.className = 'booster-pack-card';
         el.style.cssText = 'background: rgba(0,0,0,0.5); border: 1px solid #333; border-radius: 8px; padding: 15px; width: 280px; text-align: center; display: flex; flex-direction: column; align-items: center; position: relative; overflow: hidden;';
         
         el.innerHTML = `
-            <h3 style="margin:0 0 10px 0; color:#ffd700; text-transform:uppercase;">${booster.name}</h3>
+            ${limitBadge}
+            <h3 style="margin:0 0 10px 0; color:#ffd700; text-transform:uppercase;">${displayName}</h3>
             ${booster.img ? `<img src="${booster.img}" style="width:100%; height:280px; object-fit:cover; border-radius:6px; margin-bottom:15px; border:2px solid #555; box-shadow: inset 0 0 20px rgba(0,0,0,0.8);">` : `<div style="width:100%; height:180px; background:linear-gradient(135deg, #0f172a, #1e293b); border-radius:6px; margin-bottom:15px; border:2px solid #555; display:flex; justify-content:center; align-items:center; font-size:4rem; box-shadow: inset 0 0 20px rgba(0,0,0,0.8);">📦</div>`}
             <p style="font-size:0.85rem; color:#94a3b8; margin:0 0 8px 0;">Mögliche Charaktere: <span style="color:#fff">${totalCount}</span></p>
             <div style="margin-bottom:12px; padding:8px 12px; border-radius:6px; background:rgba(255,215,0,0.08); border:1px solid ${packComplete ? '#ffd700' : '#444'};">
@@ -130,8 +150,8 @@ export function initShop() {
                 </div>
             </div>
 
-            <button class="rank-btn buy-booster-btn" style="width:100%; padding:15px; margin:0; font-size:1.1rem; border-color:#2ed573; color:#2ed573;" data-id="${booster.id}">
-                🛒 ${booster.cost} Credits
+            <button class="rank-btn buy-booster-btn" style="width:100%; padding:15px; margin:0; font-size:1.1rem; border-color:#2ed573; color:#2ed573;" data-id="${booster.id}" data-cost="${displayCost}">
+                🛒 ${displayCost} Credits
             </button>
             <div style="margin-top: 10px; font-size: 0.85rem; color: #94a3b8; text-align: center;">
                 Geöffnet: <span id="opened-count-${booster.id}" style="color: #ffd700; font-weight: bold;">${user[`packsOpened_${booster.id}`] || 0}</span>
@@ -143,7 +163,7 @@ export function initShop() {
             <div style="margin-top:10px; font-size:0.8rem; color:#ffd700; text-align:center; opacity:0.7;">✓ Belohnung bereits beansprucht</div>` : ''}
         `;
 
-        el.querySelector('.buy-booster-btn').addEventListener('click', () => openBooster(booster, pool));
+        el.querySelector('.buy-booster-btn').addEventListener('click', () => openBooster(booster, pool, displayCost));
         
         const claimBtn = el.querySelector('.claim-legendary-btn');
         if (claimBtn) {
@@ -209,13 +229,13 @@ async function claimPackLegendary(booster, pool) {
     }
 }
 
-async function openBooster(booster, pool) {
+async function openBooster(booster, pool, currentCost) {
     const user = getCurrentUser();
     if (!user) return;
 
     const isAdmin = (user.username && (user.username.toLowerCase() === 'test1' || user.username.toLowerCase() === 'test2'));
     
-    if (!isAdmin && (user.credits || 0) < booster.cost) {
+    if (!isAdmin && (user.credits || 0) < currentCost) {
         if (window.showUnlockNotification) window.showUnlockNotification('error', "Nicht genügend Credits!");
         else alert("Nicht genügend Credits!");
         return;
@@ -302,14 +322,14 @@ async function openBooster(booster, pool) {
         
         user[field] = currentInventory;
         if (!isAdmin) {
-            user.credits -= booster.cost;
+            user.credits -= currentCost;
             document.getElementById('shop-credits-display').textContent = user.credits;
         }
         
         localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
 
         const updates = { [field]: currentInventory, [packCountField]: user[packCountField] };
-        if (!isAdmin) updates.credits = increment(-booster.cost);
+        if (!isAdmin) updates.credits = increment(-currentCost);
         
         await updateDoc(doc(db, "users", user.uid), updates);
         

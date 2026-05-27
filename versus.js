@@ -363,7 +363,7 @@ function showWaitingRoom(lobbyId) {
                             ${poolHtml}
                             <div style="background: rgba(255,215,0,0.1); border: 1px solid #ffd700; border-radius: 6px; padding: 12px; text-align: center;">
                                 <p style="margin: 0; color: #ffd700; font-size: 0.9rem;">
-                                    Du hast <strong>${myBet.amount} Credits</strong> auf <strong>${myBet.targetName}</strong> gewettet!
+                                    Du hast <strong>${myBet.amount} Credits</strong> in den Preispool eingezahlt!
                                 </p>
                             </div>
                         `;
@@ -380,20 +380,14 @@ function showWaitingRoom(lobbyId) {
                             bettingContainer.innerHTML = `
                                 ${poolHtml}
                                 <div style="background: rgba(255,255,255,0.05); border: 1px solid #333; border-radius: 6px; padding: 15px;">
-                                    <h4 style="margin: 0 0 10px 0; font-size: 0.95rem; color: #ffd700; text-align: center;">Versus-Wette platzieren</h4>
+                                    <h4 style="margin: 0 0 10px 0; font-size: 0.95rem; color: #ffd700; text-align: center;">Preispool Einsatz</h4>
                                     <div style="display: flex; flex-direction: column; gap: 10px;">
-                                        <div style="display: flex; gap: 10px; align-items: center;">
-                                            <span style="font-size: 0.85rem; color: #ccc; width: 80px;">Gewinner:</span>
-                                            <select id="bet-target-select" style="flex: 1; padding: 6px; border-radius: 4px; background: #222; border: 1px solid #444; color: #fff;">
-                                                ${lobby.players.map(p => `<option value="${p.uid}">${p.displayName}</option>`).join('')}
-                                            </select>
-                                        </div>
                                         <div style="display: flex; gap: 10px; align-items: center;">
                                             <span style="font-size: 0.85rem; color: #ccc; width: 80px;">Einsatz:</span>
                                             <input type="number" id="bet-amount-input" min="1" max="${maxBet}" value="1" style="flex: 1; padding: 6px; border-radius: 4px; background: #222; border: 1px solid #444; color: #fff; text-align: center;">
                                             <span style="font-size: 0.75rem; color: #94a3b8;">(max. ${maxBet})</span>
                                         </div>
-                                        <button id="submit-bet-btn" class="rank-btn" style="margin-top: 5px; font-size: 0.85rem; padding: 6px 12px;">Wette abgeben</button>
+                                        <button id="submit-bet-btn" class="rank-btn" style="margin-top: 5px; font-size: 0.85rem; padding: 6px 12px;">Einsatz zahlen</button>
                                     </div>
                                 </div>
                             `;
@@ -401,13 +395,9 @@ function showWaitingRoom(lobbyId) {
                             const submitBetBtn = document.getElementById('submit-bet-btn');
                             if (submitBetBtn) {
                                 submitBetBtn.onclick = async () => {
-                                    const targetSelect = document.getElementById('bet-target-select');
                                     const amountInput = document.getElementById('bet-amount-input');
-                                    if (!targetSelect || !amountInput) return;
+                                    if (!amountInput) return;
                                     
-                                    const targetUid = targetSelect.value;
-                                    const targetPlayer = lobby.players.find(p => p.uid === targetUid);
-                                    const targetName = targetPlayer ? targetPlayer.displayName : 'Unbekannt';
                                     const amount = parseInt(amountInput.value);
                                     
                                     if (isNaN(amount) || amount < 1 || amount > maxBet) {
@@ -453,8 +443,6 @@ function showWaitingRoom(lobbyId) {
                                                 uid: user.uid,
                                                 username: user.username,
                                                 displayName: user.displayName || user.username,
-                                                targetUid,
-                                                targetName,
                                                 amount
                                             });
                                             
@@ -464,11 +452,11 @@ function showWaitingRoom(lobbyId) {
                                             });
                                         });
                                         
-                                        alert("Wette erfolgreich abgegeben!");
+                                        alert("Einsatz erfolgreich gezahlt!");
                                     } catch(err) {
-                                        alert("Wettfehler: " + err.message);
+                                        alert("Fehler: " + err.message);
                                         submitBetBtn.disabled = false;
-                                        submitBetBtn.textContent = 'Wette abgeben';
+                                        submitBetBtn.textContent = 'Einsatz zahlen';
                                     }
                                 };
                             }
@@ -801,33 +789,33 @@ async function evaluateVersusMatch(lobbyId, localLobby) {
             }
         }
         
-        // Wetten-Auszahlung
+        // Preispool-Auszahlung an die Spiel-Gewinner
         let betWinners = [];
         if (freshLobby.bets && freshLobby.bets.length > 0) {
             const totalPool = freshLobby.prizePool || 0;
             
-            // Finde Spieler, die auf einen der Gewinner gesetzt haben
-            const correctBettors = freshLobby.bets.filter(b => winners.includes(b.targetUid));
-            
-            if (correctBettors.length > 0) {
-                const payoutPerBettor = Math.floor(totalPool / correctBettors.length);
+            if (winners.length > 0) {
+                const payoutPerWinner = Math.floor(totalPool / winners.length);
                 
-                const payoutPromises = correctBettors.map(async (b) => {
-                    const uRef = doc(db, "users", b.uid);
+                const payoutPromises = winners.map(async (winnerUid) => {
+                    const uRef = doc(db, "users", winnerUid);
                     const uSnap = await getDoc(uRef);
                     if (uSnap.exists()) {
                         const userData = uSnap.data();
-                        const newCredits = (userData.credits || 0) + payoutPerBettor;
+                        const newCredits = (userData.credits || 0) + payoutPerWinner;
                         await updateDoc(uRef, { credits: newCredits });
                     }
                 });
                 await Promise.all(payoutPromises);
                 
-                betWinners = correctBettors.map(b => ({
-                    uid: b.uid,
-                    displayName: b.displayName,
-                    payout: payoutPerBettor
-                }));
+                betWinners = winners.map(uid => {
+                    const p = freshLobby.players.find(pl => pl.uid === uid);
+                    return {
+                        uid: uid,
+                        displayName: p ? p.displayName : 'Unbekannt',
+                        payout: payoutPerWinner
+                    };
+                });
             } else {
                 // Keine korrekten Wetten -> Rückerstattung
                 const refundPromises = freshLobby.bets.map(async (b) => {

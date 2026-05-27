@@ -2,7 +2,7 @@ import { db } from './firebase-config.js';
 import { getCurrentUser, refreshCurrentUser } from './auth.js';
 import { currentMode } from './mode-state.js';
 import { activeCharacterDatabase } from './theme.js';
-import { collection, addDoc, Timestamp, query, where, getDocs, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+import { collection, addDoc, Timestamp, query, where, getDocs, doc, updateDoc, increment } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
 
 let dailyCharacter = null;
 let currentGuesses = [];
@@ -251,6 +251,20 @@ async function saveScoreToFirebase(attempts) {
         const snap = await getDocs(q);
         if (snap.empty) {
             await addDoc(collection(db, currentMode + "dle_scores"), { userId, username, attempts, date: seed, timestamp: Timestamp.now() });
+            
+            let creditsWon = 10;
+            if (attempts < 5) creditsWon = 100;
+            else if (attempts < 10) creditsWon = 50;
+            else if (attempts < 15) creditsWon = 25;
+            
+            if (user.role !== 'admin' && !user.isTestUser) {
+                await updateDoc(doc(db, "users", userId), { credits: increment(creditsWon) });
+                if (window.showUnlockNotification) {
+                    window.showUnlockNotification('success', `StarWarsdle gelöst: +${creditsWon} Credits!`);
+                } else {
+                    alert(`StarWarsdle gelöst: Du erhältst ${creditsWon} Credits!`);
+                }
+            }
         }
         await saveDailyStateToFirebase();
         await refreshCurrentUser();

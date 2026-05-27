@@ -28,14 +28,32 @@ export function renderAvatarSelection() {
     const sortedChars = [...activeCharacterDatabase].sort((a,b) => a.name.localeCompare(b.name));
     const seenIds = getSeenIds();
     
+    const useSpecial = document.getElementById('profile-special-avatar-toggle')?.checked;
+    
+    const inventory = currentMode === 'starwars' ? (user.inventory_starwars || []) : (user.inventory_waifu || []);
+
     sortedChars.forEach(char => {
         const isDiscovered = user.discovered && user.discovered.includes(char.name);
         const card = document.createElement('div');
         
+        let targetImg = char.img;
+        let isLegSpecial = false;
+        if (useSpecial) {
+            const hasLegendary = inventory.some(c => c.charName === char.name && c.rarity === 'legendary');
+            if (hasLegendary && window.LEGENDARY_POOL && window.LEGENDARY_POOL[char.name]) {
+                targetImg = window.LEGENDARY_POOL[char.name].specialImg;
+                isLegSpecial = true;
+            }
+        }
+        
         if (isDiscovered) {
             const isNew = !seenIds.includes(char.name);
-            card.className = `lexikon-card avatar-card ${currentAvatar === char.img ? 'selected' : ''}`;
-            card.innerHTML = `<img src="${char.img}"><span>${char.name}${isNew ? ' <span style="background:#ffd700; color:#000; font-size:0.55rem; font-weight:bold; padding:1px 3px; border-radius:3px; margin-left:3px; vertical-align:middle;">NEU</span>' : ''}</span>`;
+            card.className = `lexikon-card avatar-card ${currentAvatar === targetImg ? 'selected' : ''}`;
+            if (isLegSpecial) {
+                card.style.border = '2px solid #ffd700';
+                card.style.boxShadow = '0 0 10px #ffd700';
+            }
+            card.innerHTML = `<img src="${targetImg}"><span>${char.name}${isNew ? ' <span style="background:#ffd700; color:#000; font-size:0.55rem; font-weight:bold; padding:1px 3px; border-radius:3px; margin-left:3px; vertical-align:middle;">NEU</span>' : ''}</span>`;
             
             if (isNew) {
                 card.addEventListener('mouseenter', () => markAsSeen(char.name, card), { once: true });
@@ -44,7 +62,7 @@ export function renderAvatarSelection() {
                 document.querySelectorAll('.avatar-card').forEach(c => c.classList.remove('selected'));
                 card.classList.add('selected');
                 
-                const res = await updateUserProfile(user.displayName, null, char.img);
+                const res = await updateUserProfile(user.displayName, null, targetImg);
                 if(res.success) {
                     updateTopbarAvatarElement(res.user);
                 }
@@ -174,71 +192,72 @@ export function initProfile() {
                     return;
                 }
                 
-                // Fetch current user scores
-                const myScoresSnap = await getDoc(doc(db, "scores", `${currentMode}_classic_${freshUser.username}`));
-                if (!myScoresSnap.exists() || !myScoresSnap.data().characters || Object.keys(myScoresSnap.data().characters).length === 0) {
+                // Fetch all scores documents
+                const scoresSnap = await getDocs(collection(db, "scores"));
+                
+                const userAverages = {};
+                
+                // Aggregate all category lists for each user to get "overall" picks
+                scoresSnap.forEach(docSnap => {
+                    const docId = docSnap.id;
+                    const prefix = `${currentMode}_classic_`;
+                    if (!docId.startsWith(prefix) || docId.endsWith('_global')) return;
+                    
+                    let rest = docId.substring(prefix.length);
+                    const cats = ['klon_', 'peak_', 'vehicle_', 'hardcore_', 'waifu_', 'husbando_', 'shounen_'];
+                    for (const cat of cats) {
+                        if (rest.startsWith(cat)) { rest = rest.substring(cat.length); break; }
+                    }
+                    const username = rest;
+                    
+                    if (!userAverages[username]) userAverages[username] = { chars: {}, min: Infinity, max: -Infinity };
+                    
+                    const otherData = docSnap.data().characters || {};
+                    for (const [name, data] of Object.entries(otherData)) {
+                        if (!userAverages[username].chars[name]) userAverages[username].chars[name] = { score: 0, count: 0 };
+                        userAverages[username].chars[name].score += data.score;
+                        userAverages[username].chars[name].count += (data.count || 1);
+                    }
+                });
+
+                // Calculate Averages and Min/Max for everyone
+                for (const [uname, uData] of Object.entries(userAverages)) {
+                    uData.avgScores = {};
+                    for (const [charName, data] of Object.entries(uData.chars)) {
+                        const avg = data.score / data.count;
+                        uData.avgScores[charName] = avg;
+                        if (avg < uData.min) uData.min = avg;
+                        if (avg > uData.max) uData.max = avg;
+                    }
+                    uData.normalized = {};
+                    for (const [charName, avg] of Object.entries(uData.avgScores)) {
+                        uData.normalized[charName] = uData.max > uData.min ? (avg - uData.min) / (uData.max - uData.min) : 0.5;
+                    }
+                }
+
+                const myData = userAverages[freshUser.username];
+                if (!myData || Object.keys(myData.chars).length === 0) {
                     resultDiv.innerHTML = `<span style="color:#ff4757;">Du musst zuerst mindestens ein klassisches Spiel in diesem Modus spielen, um Rankings zu haben!</span>`;
                     return;
                 }
-                
-                const myChars = myScoresSnap.data().characters;
-                const myAvgScores = {};
-                let myMin = Infinity, myMax = -Infinity;
-                for (const [name, data] of Object.entries(myChars)) {
-                    const avg = data.score / (data.count || 1);
-                    myAvgScores[name] = avg;
-                    if (avg < myMin) myMin = avg;
-                    if (avg > myMax) myMax = avg;
-                }
-                
-                // Normalize my scores
-                const myNormalized = {};
-                for (const [name, avg] of Object.entries(myAvgScores)) {
-                    myNormalized[name] = myMax > myMin ? (avg - myMin) / (myMax - myMin) : 0.5;
-                }
-                
-                // Fetch all scores documents
-                const scoresSnap = await getDocs(collection(db, "scores"));
+
                 let bestTwin = null;
                 let highestMatch = -1;
                 let bestOverlap = 0;
                 let sharedFavs = [];
                 
-                scoresSnap.forEach(docSnap => {
-                    const docId = docSnap.id;
-                    const prefix = `${currentMode}_classic_`;
-                    if (!docId.startsWith(prefix) || docId.endsWith('_global') || docId === `${prefix}${freshUser.username}`) {
-                        return; // Ignore other modes, globals, and self
-                    }
+                for (const [otherUsername, otherData] of Object.entries(userAverages)) {
+                    if (otherUsername === freshUser.username) continue;
                     
-                    const otherUsername = docId.substring(prefix.length);
-                    const otherData = docSnap.data().characters || {};
-                    const otherAvgScores = {};
-                    let otherMin = Infinity, otherMax = -Infinity;
-                    
-                    for (const [name, data] of Object.entries(otherData)) {
-                        const avg = data.score / (data.count || 1);
-                        otherAvgScores[name] = avg;
-                        if (avg < otherMin) otherMin = avg;
-                        if (avg > otherMax) otherMax = avg;
-                    }
-                    
-                    // Normalize other scores
-                    const otherNormalized = {};
-                    for (const [name, avg] of Object.entries(otherAvgScores)) {
-                        otherNormalized[name] = otherMax > otherMin ? (avg - otherMin) / (otherMax - otherMin) : 0.5;
-                    }
-                    
-                    // Compare overlaps
                     let overlapCount = 0;
                     let maeSum = 0;
                     const common = [];
                     
-                    for (const name of Object.keys(myNormalized)) {
-                        if (otherNormalized[name] !== undefined) {
+                    for (const name of Object.keys(myData.normalized)) {
+                        if (otherData.normalized[name] !== undefined) {
                             overlapCount++;
-                            maeSum += Math.abs(myNormalized[name] - otherNormalized[name]);
-                            if (myNormalized[name] > 0.6 && otherNormalized[name] > 0.6) {
+                            maeSum += Math.abs(myData.normalized[name] - otherData.normalized[name]);
+                            if (myData.normalized[name] > 0.6 && otherData.normalized[name] > 0.6) {
                                 common.push(name);
                             }
                         }
@@ -256,7 +275,7 @@ export function initProfile() {
                             sharedFavs = common.slice(0, 3);
                         }
                     }
-                });
+                }
                 
                 if (bestTwin) {
                     const matchPercent = Math.round(highestMatch * 100);
@@ -297,6 +316,13 @@ export function initProfile() {
     document.getElementById('save-profile-btn').addEventListener('click', handleProfileSave);
     document.getElementById('profile-displayname').addEventListener('keypress', (e) => { if (e.key === 'Enter') handleProfileSave(); });
     document.getElementById('profile-password').addEventListener('keypress', (e) => { if (e.key === 'Enter') handleProfileSave(); });
+
+    const specialAvatarToggle = document.getElementById('profile-special-avatar-toggle');
+    if (specialAvatarToggle) {
+        specialAvatarToggle.addEventListener('change', () => {
+            renderAvatarSelection();
+        });
+    }
 
     refreshProfileContent();
 }
@@ -612,10 +638,13 @@ function renderStatsSelection(user) {
 
     const matchups = user.versusMatchups || {};
     let meister = null; let meisterLosses = 0;
-    let schueler = null; let schuelerWins = 0;
     for (const [oppName, stats] of Object.entries(matchups)) {
         if (stats.losses > meisterLosses) { meisterLosses = stats.losses; meister = oppName; }
-        if (stats.wins > schuelerWins) { schuelerWins = stats.wins; schueler = oppName; }
+    }
+    
+    let schueler = null; let schuelerWins = 0;
+    for (const [oppName, stats] of Object.entries(matchups)) {
+        if (oppName !== meister && stats.wins > schuelerWins) { schuelerWins = stats.wins; schueler = oppName; }
     }
 
     const showcase = currentMode === 'starwars' ? (user.showcase_starwars || []) : (user.showcase_waifu || []);
@@ -736,14 +765,14 @@ function renderAlbumTab(user) {
                     if (card.rarity === 'epic') rarityBorder = '3px solid #9b59b6';
                     if (card.rarity === 'legendary') rarityBorder = '3px solid #ffd700';
                     
-                    html += `<div class="album-showcase-slot" data-slot="${i}" style="width:80px; height:120px; border-radius:8px; background-size:cover; background-position:center; background-image:${bg}; border:${rarityBorder}; position:relative; cursor:pointer; box-shadow:0 5px 15px rgba(0,0,0,0.5);">
+                    html += `<div class="album-showcase-slot" data-slot="${i}" ondragover="event.preventDefault()" ondrop="window.dropCardToShowcase(event, ${i})" style="width:80px; height:120px; border-radius:8px; background-size:cover; background-position:center; background-image:${bg}; border:${rarityBorder}; position:relative; cursor:pointer; box-shadow:0 5px 15px rgba(0,0,0,0.5);">
                         <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.8); color:#fff; font-size:0.6rem; text-align:center; padding:3px; border-bottom-left-radius:5px; border-bottom-right-radius:5px;">${card.charName}</div>
                     </div>`;
                 } else {
-                    html += `<div class="album-showcase-slot" data-slot="${i}" style="width:80px; height:120px; border-radius:8px; background:rgba(0,0,0,0.5); border:1px dashed #555; display:flex; align-items:center; justify-content:center; cursor:pointer;"><span style="color:#666; font-size:2rem;">+</span></div>`;
+                    html += `<div class="album-showcase-slot" data-slot="${i}" ondragover="event.preventDefault()" ondrop="window.dropCardToShowcase(event, ${i})" style="width:80px; height:120px; border-radius:8px; background:rgba(0,0,0,0.5); border:1px dashed #555; display:flex; align-items:center; justify-content:center; cursor:pointer;"><span style="color:#666; font-size:2rem;">+</span></div>`;
                 }
             } else {
-                html += `<div class="album-showcase-slot" data-slot="${i}" style="width:80px; height:120px; border-radius:8px; background:rgba(0,0,0,0.5); border:1px dashed #555; display:flex; align-items:center; justify-content:center; cursor:pointer;"><span style="color:#666; font-size:2rem;">+</span></div>`;
+                html += `<div class="album-showcase-slot" data-slot="${i}" ondragover="event.preventDefault()" ondrop="window.dropCardToShowcase(event, ${i})" style="width:80px; height:120px; border-radius:8px; background:rgba(0,0,0,0.5); border:1px dashed #555; display:flex; align-items:center; justify-content:center; cursor:pointer;"><span style="color:#666; font-size:2rem;">+</span></div>`;
             }
         }
         showcaseContainer.innerHTML = html;
@@ -825,6 +854,16 @@ window.renderCommunityAlbum = function(user, containerId, filterPack = 'all', so
         stackContainer.className = 'album-stack-container';
         const stackOffset = Math.min(20, cards.length * 4);
         stackContainer.style.cssText = `position:relative; width:100%; aspect-ratio:2/3; margin-bottom: ${stackOffset}px; margin-right: ${stackOffset}px; cursor:pointer;`;
+        
+        stackContainer.draggable = true;
+        stackContainer.ondragstart = (e) => {
+            const topCard = cards[0];
+            e.dataTransfer.setData('application/json', JSON.stringify({
+                charName: topCard.charName,
+                rarity: topCard.rarity,
+                boosterId: topCard.boosterId
+            }));
+        };
         
         cards.slice(0, 5).forEach((c, idx) => {
             const card = document.createElement('div');
@@ -1500,3 +1539,36 @@ async function handleCancelTrade(tradeId) {
         alert("Fehler: " + err.message);
     }
 }
+window.dropCardToShowcase = async function(event, slotIndex) {
+    event.preventDefault();
+    const dataStr = event.dataTransfer.getData('application/json');
+    if (!dataStr) return;
+    try {
+        const cardData = JSON.parse(dataStr);
+        const { getCurrentUser } = await import('./auth.js');
+        const { currentMode } = await import('./mode-state.js');
+        const user = getCurrentUser();
+        if (!user) return;
+        
+        let showcaseField = currentMode === 'starwars' ? 'album_showcase_starwars' : 'album_showcase_waifu';
+        const currentShowcase = user[showcaseField] || [null, null, null];
+        
+        while(currentShowcase.length < 3) currentShowcase.push(null);
+        
+        currentShowcase[slotIndex] = cardData;
+        user[showcaseField] = currentShowcase;
+        
+        const { db } = await import('./firebase-config.js');
+        const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js');
+        await updateDoc(doc(db, 'users', user.uid), {
+            [showcaseField]: currentShowcase
+        });
+        
+        const { refreshProfileContent } = await import('./profile.js');
+        refreshProfileContent();
+        
+    } catch(e) {
+        console.error('Drop error', e);
+    }
+};
+
