@@ -45,7 +45,8 @@ const TAG_LABELS = {
     sonstige:        { label: '🌌 Sonstige',              color: '#555' }
 };
 
-let currentView = 'all'; // 'all' | 'tags'
+let currentView = 'all'; // 'all' | 'tags' | 'peak'
+let currentSearchQuery = '';
 
 export async function renderLexikon() {
     const grid = document.getElementById('lexikon-grid');
@@ -72,7 +73,9 @@ function _renderAll(grid, user, discoveredList) {
     grid.className = 'lexikon-grid';
     grid.removeAttribute('style'); // Wichtig: vollständig entfernen, nicht nur leeren
 
-    const sortedChars = [...activeCharacterDatabase].sort((a, b) => a.name.localeCompare(b.name));
+    const sortedChars = [...activeCharacterDatabase]
+        .filter(c => c.name.toLowerCase().includes(currentSearchQuery))
+        .sort((a, b) => a.name.localeCompare(b.name));
     const newlyDiscovered = user && user.newlyDiscovered ? user.newlyDiscovered : [];
 
     sortedChars.forEach(char => {
@@ -105,7 +108,9 @@ function _renderPeak(grid, user, discoveredList) {
     grid.className = 'lexikon-grid';
     grid.removeAttribute('style');
 
-    const sortedChars = [...activeCharacterDatabase].filter(c => c.tags && c.tags.includes('peak')).sort((a, b) => a.name.localeCompare(b.name));
+    const sortedChars = [...activeCharacterDatabase]
+        .filter(c => c.tags && c.tags.includes('peak') && c.name.toLowerCase().includes(currentSearchQuery))
+        .sort((a, b) => a.name.localeCompare(b.name));
     const newlyDiscovered = user && user.newlyDiscovered ? user.newlyDiscovered : [];
 
     sortedChars.forEach(char => {
@@ -141,6 +146,7 @@ function _renderByTags(grid, user, discoveredList) {
     // Sammle alle vorhandenen Tags
     const tagMap = {};
     activeCharacterDatabase.forEach(char => {
+        if (!char.name.toLowerCase().includes(currentSearchQuery)) return;
         const tags = char.tags || ['sonstige'];
         tags.forEach(tag => {
             if (!tagMap[tag]) tagMap[tag] = [];
@@ -218,6 +224,14 @@ export function initLexikonTabs() {
             renderLexikon();
         });
     });
+
+    const searchInput = document.getElementById('lexikon-search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            currentSearchQuery = e.target.value.toLowerCase();
+            renderLexikon();
+        });
+    }
 
     // Tag Suggestion Modal Listeners
     const modal = document.getElementById('tag-suggestion-modal');
