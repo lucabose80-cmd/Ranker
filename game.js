@@ -7,6 +7,7 @@ import { getCurrentUser } from './auth.js';
 import { doc, setDoc, Timestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { db } from './firebase-config.js';
 import { currentMode, currentGameCategory } from './mode-state.js';
+import { LEGENDARY_POOL } from './shop.js';
 
 export let activePool = []; 
 export let currentIndex = 0;
@@ -137,8 +138,8 @@ export async function initGame() {
     for (let i = 1; i <= 5; i++) {
         if (placedCharacters[i]) {
             let displayImg = placedCharacters[i].img;
-            if (charLooks[placedCharacters[i].name] === 'legendary' && window.LEGENDARY_POOL && window.LEGENDARY_POOL[placedCharacters[i].name]) {
-                displayImg = window.LEGENDARY_POOL[placedCharacters[i].name].specialImg;
+            if (charLooks[placedCharacters[i].name] === 'legendary' && LEGENDARY_POOL && LEGENDARY_POOL[placedCharacters[i].name]) {
+                displayImg = LEGENDARY_POOL[placedCharacters[i].name].specialImg;
             }
             document.querySelector(`#slot-${i} .card-content`).innerHTML = `<img src="${displayImg}" alt="Ranked">`;
             const btn = document.querySelector(`.rank-btn[data-rank="${i}"]`);
@@ -215,8 +216,8 @@ export function showNextCharacter() {
         const user = getCurrentUser();
         const charLooks = user ? (currentMode === 'starwars' ? (user.custom_look_starwars || {}) : (user.custom_look_waifu || {})) : {};
         let displayImg = currentChar.img;
-        if (charLooks[currentChar.name] === 'legendary' && window.LEGENDARY_POOL && window.LEGENDARY_POOL[currentChar.name]) {
-            displayImg = window.LEGENDARY_POOL[currentChar.name].specialImg;
+        if (charLooks[currentChar.name] === 'legendary' && LEGENDARY_POOL && LEGENDARY_POOL[currentChar.name]) {
+            displayImg = LEGENDARY_POOL[currentChar.name].specialImg;
         }
         
         imgContainer.innerHTML = `<img src="${displayImg}" alt="Charakter Bild" style="${extraStyle}">${quoteHtml}`;
@@ -278,8 +279,8 @@ export async function handleRankSelection(rank, buttonElement) {
     const user = getCurrentUser();
     const charLooks = user ? (currentMode === 'starwars' ? (user.custom_look_starwars || {}) : (user.custom_look_waifu || {})) : {};
     let displayImg = currentChar.img;
-    if (charLooks[currentChar.name] === 'legendary' && window.LEGENDARY_POOL && window.LEGENDARY_POOL[currentChar.name]) {
-        displayImg = window.LEGENDARY_POOL[currentChar.name].specialImg;
+    if (charLooks[currentChar.name] === 'legendary' && LEGENDARY_POOL && LEGENDARY_POOL[currentChar.name]) {
+        displayImg = LEGENDARY_POOL[currentChar.name].specialImg;
     }
     
     document.querySelector(`#slot-${rank} .card-content`).innerHTML = `<img src="${displayImg}" alt="Ranked" style="${extraStyle}">`;

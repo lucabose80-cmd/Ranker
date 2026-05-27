@@ -1,3 +1,4 @@
+import { LEGENDARY_POOL } from './shop.js';
 function getSeenIds() {
     const raw = localStorage.getItem('seen_unlock_ids') || '';
     if (raw.startsWith('[')) {
@@ -40,8 +41,8 @@ export function renderAvatarSelection() {
         let isLegSpecial = false;
         if (useSpecial) {
             const hasLegendary = inventory.some(c => c.charName === char.name && c.rarity === 'legendary');
-            if (hasLegendary && window.LEGENDARY_POOL && window.LEGENDARY_POOL[char.name]) {
-                targetImg = window.LEGENDARY_POOL[char.name].specialImg;
+            if (hasLegendary && LEGENDARY_POOL && LEGENDARY_POOL[char.name]) {
+                targetImg = LEGENDARY_POOL[char.name].specialImg;
                 isLegSpecial = true;
             }
         }
@@ -759,8 +760,8 @@ function renderAlbumTab(user) {
             if (card) {
                 const charObj = activeCharacterDatabase.find(c => c.name === card.charName);
                 if (charObj) {
-                    const isLegSpecial = card.rarity === 'legendary' && window.LEGENDARY_POOL && window.LEGENDARY_POOL[card.charName];
-                    const bg = `url('${isLegSpecial ? window.LEGENDARY_POOL[card.charName].specialImg : charObj.img}')`;
+                    const isLegSpecial = card.rarity === 'legendary' && LEGENDARY_POOL && LEGENDARY_POOL[card.charName];
+                    const bg = `url('${isLegSpecial ? LEGENDARY_POOL[card.charName].specialImg : charObj.img}')`;
                     let rarityBorder = '3px solid #111';
                     if (card.rarity === 'rare') rarityBorder = '3px solid #ff9f43';
                     if (card.rarity === 'epic') rarityBorder = '3px solid #9b59b6';
@@ -873,9 +874,9 @@ window.renderCommunityAlbum = function(user, containerId, filterPack = 'all', so
             
             let isLegSpecial = false;
             let specialImg = '';
-            if (c.rarity === 'legendary' && window.LEGENDARY_POOL && window.LEGENDARY_POOL[charName]) {
+            if (c.rarity === 'legendary' && LEGENDARY_POOL && LEGENDARY_POOL[charName]) {
                 isLegSpecial = true;
-                specialImg = window.LEGENDARY_POOL[charName].specialImg;
+                specialImg = LEGENDARY_POOL[charName].specialImg;
             }
             
             card.style.cssText = `position:absolute; top:${offset}px; left:${offset}px; width:100%; height:100%; background-image:url('${charObj.img}'); background-size:cover; background-position:center; border-radius:6px; border:${RARITY_BORDERS[c.rarity] || '3px solid #111'}; z-index:${z}; box-shadow: -2px -2px 5px rgba(0,0,0,0.5); overflow:hidden; ${c.rarity === 'legendary' ? 'animation: legendary-flicker 1.5s infinite;' : ''}`;
@@ -1595,7 +1596,7 @@ export async function renderCustomLookSelection() {
     
     charsWithLegendary.forEach(charName => {
         const dbChar = activeCharacterDatabase.find(c => c.name === charName);
-        if (!dbChar || !window.LEGENDARY_POOL || !window.LEGENDARY_POOL[charName]) return;
+        if (!dbChar || !LEGENDARY_POOL || !LEGENDARY_POOL[charName]) return;
         
         const currentSelected = charLooks[charName] || 'standard';
         
@@ -1610,7 +1611,7 @@ export async function renderCustomLookSelection() {
                     <div style='font-size:0.7rem; color:#aaa;'>Standard</div>
                 </div>
                 <div class='custom-look-option ${currentSelected === 'legendary' ? 'selected' : ''}' data-type='legendary' style='cursor:pointer; padding:5px; border-radius:5px; border:2px solid ${currentSelected === 'legendary' ? '#ffd700' : 'transparent'};'>
-                    <img src='${window.LEGENDARY_POOL[charName].specialImg}' style='width:60px; height:60px; object-fit:cover; border-radius:5px; display:block; margin:0 auto 5px;'>
+                    <img src='${LEGENDARY_POOL[charName].specialImg}' style='width:60px; height:60px; object-fit:cover; border-radius:5px; display:block; margin:0 auto 5px;'>
                     <div style='font-size:0.7rem; color:#ffd700;'>Legendär</div>
                 </div>
             </div>
@@ -1643,4 +1644,5 @@ export async function renderCustomLookSelection() {
 
 
 // Additional call added via script
+
 

@@ -1,3 +1,4 @@
+import { LEGENDARY_POOL } from './shop.js';
 // community.js
 import { db } from './firebase-config.js';
 import { collection, onSnapshot, query, orderBy, limit, addDoc, Timestamp, getDocs, where, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
@@ -421,8 +422,8 @@ function openUserProfileModal(u) {
                                     if(item.rarity==='legendary') border='2px solid #ffd700';
                                     
                                     let imgPath = dbObj.img;
-                                    if(item.rarity==='legendary' && window.LEGENDARY_POOL && window.LEGENDARY_POOL[item.charName]) {
-                                        imgPath = window.LEGENDARY_POOL[item.charName].specialImg;
+                                    if(item.rarity==='legendary' && LEGENDARY_POOL && LEGENDARY_POOL[item.charName]) {
+                                        imgPath = LEGENDARY_POOL[item.charName].specialImg;
                                     }
                                     
                                     const holo = (item.rarity==='epic') ? `<div style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; mix-blend-mode:color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear;"></div>` : '';
@@ -512,8 +513,8 @@ function openUserProfileModal(u) {
                                     if(item.rarity==='legendary') border='2px solid #ffd700';
                                     
                                     let imgPath = dbObj.img;
-                                    if(item.rarity==='legendary' && window.LEGENDARY_POOL && window.LEGENDARY_POOL[item.charName]) {
-                                        imgPath = window.LEGENDARY_POOL[item.charName].specialImg;
+                                    if(item.rarity==='legendary' && LEGENDARY_POOL && LEGENDARY_POOL[item.charName]) {
+                                        imgPath = LEGENDARY_POOL[item.charName].specialImg;
                                     }
                                     
                                     const holo = (item.rarity==='epic') ? `<div style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; mix-blend-mode:color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear;"></div>` : '';
@@ -857,6 +858,7 @@ async function openTradeProposalModal(targetUser) {
         modal.classList.add('hidden');
     }
 }
+
 
 
 
