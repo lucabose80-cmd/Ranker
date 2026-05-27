@@ -552,7 +552,7 @@ export async function openCardgameResultModal(game) {
     };
 
     const renderDeck = (deck) => {
-        if (!deck || deck.length === 0) return "<p style=`"color:#888; text-align:center;`">Kein Deck gefunden (Altes Match)</p>";
+        if (!deck || deck.length === 0) return "<p style='color:#888; text-align:center;'>Kein Deck gefunden (Altes Match)</p>";
         return `<div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:10px;">
             ${deck.map(c => `
                 <div style="border:2px solid ${getRarityColor(c.rarity)}; border-radius:5px; padding:5px; background:#222; text-align:center;">
@@ -617,7 +617,7 @@ export async function openCardgameResultModal(game) {
     };
 
     const renderDeck = (deck) => {
-        if (!deck || deck.length === 0) return "<p style=`"color:#888; text-align:center;`">Kein Deck gefunden (Altes Match)</p>";
+        if (!deck || deck.length === 0) return "<p style='color:#888; text-align:center;'>Kein Deck gefunden (Altes Match)</p>";
         return `<div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:10px;">
             ${deck.map(c => `
                 <div style="border:2px solid ${getRarityColor(c.rarity)}; border-radius:5px; padding:5px; background:#222; text-align:center;">
@@ -912,6 +912,8 @@ export async function renderHistory() {
         container.innerHTML = '<p class="prompt-text" style="color: #ff4757;">Fehler beim Laden der Historie.</p>';
     }
 }
+
+
 
 
 
