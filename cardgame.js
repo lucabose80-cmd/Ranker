@@ -608,13 +608,12 @@ function playRound(playerCard) {
     currentRound++;
     document.getElementById('match-player-hand').innerHTML = '';
 
-    // Delay showing the overlay slightly so the card flip registers first
+    const maxRar = RARITY_ORDER[playerCard.rarity] > RARITY_ORDER[oppCard.rarity] ? playerCard.rarity : oppCard.rarity;
+
+    // Apply legendary/epic visual effects and initial fanfare almost immediately
     setTimeout(() => {
-        // Now apply legendary/epic effects and their fanfare
-        const maxRar = RARITY_ORDER[playerCard.rarity] > RARITY_ORDER[oppCard.rarity] ? playerCard.rarity : oppCard.rarity;
         if(maxRar === "legendary") {
             playLegendaryFanfare();
-            // Re-inject cards with legendary/epic effects
             document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${pDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(playerCard.rarity)}; ${getLegStyle(playerCard.rarity)}">${getHoloHTML(playerCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${playerCard.charName}</div></div>`;
             document.getElementById("match-opponent-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${oDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(oppCard.rarity)}; ${getLegStyle(oppCard.rarity)}">${getHoloHTML(oppCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${oppCard.charName}</div></div>`;
         } else if(maxRar === "epic") {
@@ -622,16 +621,18 @@ function playRound(playerCard) {
             document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${pDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(playerCard.rarity)};">${getHoloHTML(playerCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${playerCard.charName}</div></div>`;
             document.getElementById("match-opponent-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${oDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(oppCard.rarity)};">${getHoloHTML(oppCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${oppCard.charName}</div></div>`;
         }
+    }, 50);
 
-        // Play win/loss sound after a tiny extra delay (after fanfare starts)
-        setTimeout(() => {
-            if(isWin)       playWinSound();
-            else if(isDraw) playDrawSound();
-            else            playLoseSound();
-        }, maxRar === "legendary" ? 600 : maxRar === "epic" ? 350 : 0);
+    const overlayDelay = maxRar === "legendary" ? 5000 : 200;
+
+    // Delay the win/loss sound and the popup overlay
+    setTimeout(() => {
+        if(isWin)       playWinSound();
+        else if(isDraw) playDrawSound();
+        else            playLoseSound();
 
         document.getElementById('match-result-overlay').classList.remove('hidden');
-    }, 200);
+    }, overlayDelay);
 }
 
 async function finishMatch() {
