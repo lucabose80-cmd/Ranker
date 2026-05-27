@@ -295,7 +295,6 @@ export async function handleRankSelection(rank, buttonElement) {
     }));
     
     // Live Broadcast mit Pool-Info für Zuschauer
-    const user = getCurrentUser();
     if(user && user.role !== 'admin' && !user.isTestUser) {
         try {
             setDoc(doc(db, "live_games", user.username), {
