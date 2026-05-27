@@ -14,7 +14,9 @@ export const patchNotesStarWars = [
             "Feature: Im Deckbuilder wird nun für jede Karte der aktuelle Global-Score (Basiswert) als kleines goldenes Badge in der Ecke angezeigt.",
             "Feature: Im Cardgame-Match (Live/Bot) verschwinden gespielte Karten nicht mehr komplett aus der Hand, sondern bleiben als 'ausgegraut' sichtbar, analog zur Anzeige des Gegners.",
             "Feature: Wrecker, Hunter, Tech und Luke Skywalker haben nun ebenfalls ihre eigenen Zitate im Hardcore Modus.",
-            "Feature: Im Hardcore Modus werden die Zitate der Charaktere nun auch nach dem Aufdecken auf dem End-Screen unter dem Charakter-Namen angezeigt."
+            "Feature: Im Hardcore Modus werden die Zitate der Charaktere nun auch nach dem Aufdecken auf dem End-Screen unter dem Charakter-Namen angezeigt.",
+            "Feature: Das Scoreboard hat nun eine Live-Suchleiste (wie das Lexikon), um in der aktuellen Liste blitzschnell nach Charakteren zu suchen, ohne dass das Spiel laggt.",
+            "UI: Der Standard-Modus im Scoreboard wurde von 'Expanded Universe' zu 'Overall Scoreboard (Basis-Werte)' umbenannt, um klarzumachen, dass dies das Master-Ranking für das Cardgame und alle Berechnungen ist."
         ]
     },
     {
