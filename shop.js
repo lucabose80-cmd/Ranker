@@ -134,9 +134,14 @@ export function initShop() {
                     <span style="color:${RARITIES.EPIC.color}">${RARITIES.EPIC.name}</span>
                     <span>${(RARITIES.EPIC.dropRate * 100).toFixed(0)}%</span>
                 </div>
-                <div title="${legCount > 0 ? 'Legendäre Charaktere: ' + legNames : ''}" style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:bold; cursor: ${legCount > 0 ? 'help' : 'default'};">
+                <div onmouseenter="var t=this.querySelector('.leg-tooltip'); if(t) t.style.opacity='1'" onmouseleave="var t=this.querySelector('.leg-tooltip'); if(t) t.style.opacity='0'" style="position:relative; display:flex; justify-content:space-between; font-size:0.8rem; font-weight:bold; cursor: ${legCount > 0 ? 'help' : 'default'};">
                     <span style="color:${RARITIES.LEGENDARY.color}">${RARITIES.LEGENDARY.name}</span>
                     <span style="color:#ffd700;">${(RARITIES.LEGENDARY.dropRate * 100).toFixed(0)}% (${legCount} Karten)</span>
+                    ${legCount > 0 ? `
+                    <div class="leg-tooltip" style="position:absolute; bottom:120%; right:0; background:rgba(20,20,20,0.95); border:1px solid #ffd700; color:#ddd; padding:10px; border-radius:8px; font-size:0.85rem; font-weight:normal; white-space:normal; width:220px; text-align:right; opacity:0; pointer-events:none; transition:opacity 0.2s ease-in-out; z-index:100; box-shadow:0 4px 15px rgba(0,0,0,0.8);">
+                        <strong style="color:#ffd700; display:block; margin-bottom:5px; font-size:0.9rem;">Mögliche Legenden:</strong>
+                        ${legNames}
+                    </div>` : ''}
                 </div>
             </div>
 
