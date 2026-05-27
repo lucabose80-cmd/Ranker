@@ -1,3 +1,14 @@
+
+window.getSharedAudioContext = function() {
+    if (!window.sharedAudioContext) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        window.sharedAudioContext = new AudioContext();
+    }
+    if (window.sharedAudioContext.state === 'suspended') {
+        window.sharedAudioContext.resume();
+    }
+    return window.sharedAudioContext;
+};
 // main.js
 import { initGame, handleRankSelection } from './game.js';
 import { initAdvancedGame } from './game-advanced.js';
@@ -440,7 +451,7 @@ function setupAdminUI() {
 
 window.playRankSound = function() {
     try {
-        const actx = new (window.AudioContext || window.webkitAudioContext)();
+        const actx = window.getSharedAudioContext();
         const osc = actx.createOscillator();
         const gain = actx.createGain();
         osc.type = 'sine';
@@ -456,7 +467,7 @@ window.playRankSound = function() {
 
 window.playFinishListSound = function() {
     try {
-        const actx = new (window.AudioContext || window.webkitAudioContext)();
+        const actx = window.getSharedAudioContext();
         const osc = actx.createOscillator();
         const gain = actx.createGain();
         osc.type = 'triangle';
@@ -474,7 +485,7 @@ window.playFinishListSound = function() {
 
 window.playVersusVictorySound = function() {
     try {
-        const actx = new (window.AudioContext || window.webkitAudioContext)();
+        const actx = window.getSharedAudioContext();
         const playTone = (freq, time, duration) => {
             const osc = actx.createOscillator();
             const gain = actx.createGain();
@@ -496,7 +507,7 @@ window.playVersusVictorySound = function() {
 window.playStarWars8BitTheme = function() {
     try {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
-        const actx = new AudioContext();
+        const actx = window.getSharedAudioContext();
         
         function playTone(freq, time, duration) {
             const osc = actx.createOscillator();
@@ -627,3 +638,4 @@ window.updateCreditProgressBars = function() {
 };
 
 bootApp();
+

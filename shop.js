@@ -332,7 +332,7 @@ async function openBooster(booster, pool, currentCost) {
 function playFlipSound() {
     try {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
-        const actx = new AudioContext();
+        const actx = window.getSharedAudioContext();
         const osc = actx.createOscillator();
         const gain = actx.createGain();
         osc.type = 'sine';
@@ -348,7 +348,7 @@ function playFlipSound() {
 function playGachaSound(rarity) {
     try {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
-        const actx = new AudioContext();
+        const actx = window.getSharedAudioContext();
         const now = actx.currentTime;
         function playTone(freq, time, dur, type='square') {
             const osc = actx.createOscillator();
