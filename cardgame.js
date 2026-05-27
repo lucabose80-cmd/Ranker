@@ -68,7 +68,7 @@ function getSynergyMult(synergies) {
 async function loadGlobalScores() {
     if(globalScoresCache[currentMode]) return globalScoresCache[currentMode];
     try {
-        const docRef = doc(db, "scores", `${currentMode}_classic_all`);
+        const docRef = doc(db, "scores", `${currentMode}_classic_global`);
         const snap = await getDoc(docRef);
         if(snap.exists() && snap.data().characters) {
             const chars = snap.data().characters;
@@ -85,7 +85,8 @@ async function loadGlobalScores() {
 
 function getCardScore(charName) {
     const scores = globalScoresCache[currentMode] || {};
-    return scores[charName] || 2.5;
+    const safeName = charName.replace(/[\.\/\[\]~#]/g, "_");
+    return scores[safeName] || 2.5;
 }
 
 export function initCardgame() {
@@ -589,6 +590,8 @@ async function finishMatch() {
         }).catch(e => console.error("History save error:", e));
     }
 }
+
+
 
 
 
