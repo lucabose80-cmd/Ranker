@@ -112,13 +112,13 @@ export async function initGame() {
         if (currentMode === 'starwars') {
             if (currentGameCategory === 'vehicle') {
                 poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('vehicle'));
+            } else if (currentGameCategory === 'klon') {
+                poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon') && !c.tags.includes('vehicle'));
+            } else if (currentGameCategory === 'peak' || currentGameCategory === 'hardcore') {
+                poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('peak') && !c.tags.includes('vehicle'));
             } else {
-                poolSource = activeCharacterDatabase.filter(c => !c.tags || !c.tags.includes('vehicle'));
-                if (currentGameCategory === 'klon') {
-                    poolSource = poolSource.filter(c => c.tags && c.tags.includes('klon'));
-                } else if (currentGameCategory === 'peak' || currentGameCategory === 'hardcore') {
-                    poolSource = poolSource.filter(c => c.tags && c.tags.includes('peak'));
-                }
+                // Expanded Universe ('normal'): alle Charaktere inklusive Fahrzeuge
+                poolSource = activeCharacterDatabase;
             }
         } else {
             poolSource = activeCharacterDatabase.filter(c => !c.tags || !c.tags.includes('vehicle'));

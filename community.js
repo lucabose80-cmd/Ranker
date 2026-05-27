@@ -552,9 +552,10 @@ function openUserProfileModal(u) {
             <h3 style="margin:0; font-size:1.5rem; color:#fff;">${u.displayName || u.username}</h3>
             <p style="color:#ffd700; font-weight:bold; margin-top:5px; margin-bottom:10px; text-transform:uppercase; font-size:0.9rem;">${activeTitle}</p>
             ${user.uid !== u.uid ? `
-                <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;">
+                <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap;">
                     <button id="profile-chat-btn" class="rank-btn" style="width: auto; padding: 5px 15px; font-size: 0.8rem; border-color: #3b82f6; color: #3b82f6;">💬 NACHRICHT SENDEN</button>
                     <button id="profile-challenge-btn" class="rank-btn" style="width: auto; padding: 5px 15px; font-size: 0.8rem; border-color: #ff4757; color: #ff4757;">⚔️ ZUM VERSUS HERAUSFORDERN</button>
+                    ${currentMode === 'starwars' ? `<button id="profile-trade-btn" class="rank-btn" style="width: auto; padding: 5px 15px; font-size: 0.8rem; border-color: #ffd700; color: #ffd700;">🤝 KARTEN TAUSCHEN</button>` : ''}
                 </div>
             ` : ''}
         </div>
@@ -575,6 +576,14 @@ function openUserProfileModal(u) {
     if (chatBtn) {
         chatBtn.addEventListener('click', () => {
             openPrivateChat(u);
+            modal.classList.add('hidden');
+        });
+    }
+
+    const tradeBtn = document.getElementById('profile-trade-btn');
+    if (tradeBtn) {
+        tradeBtn.addEventListener('click', () => {
+            openTradeProposalModal(u);
             modal.classList.add('hidden');
         });
     }
@@ -638,6 +647,195 @@ window.showUserAlbumModal = function(u) {
     
     modal.classList.remove('hidden');
 };
+
+async function openTradeProposalModal(targetUser) {
+    const modal = document.getElementById('trade-proposal-modal');
+    if (!modal) return;
+    
+    const user = getCurrentUser();
+    if (!user) return;
+    
+    document.getElementById('trade-target-name').textContent = targetUser.displayName || targetUser.username;
+    
+    const myGrid = document.getElementById('trade-my-inventory-grid');
+    const theirGrid = document.getElementById('trade-their-inventory-grid');
+    const myPreview = document.getElementById('trade-my-selection-preview');
+    const theirPreview = document.getElementById('trade-their-selection-preview');
+    const sendBtn = document.getElementById('send-trade-proposal-btn');
+    
+    myGrid.innerHTML = '<div class="loader" style="margin: 10px auto;"></div>';
+    theirGrid.innerHTML = '<div class="loader" style="margin: 10px auto;"></div>';
+    myPreview.innerHTML = '<span style="color:#64748b; font-size:0.85rem;">Keine Karte ausgewählt</span>';
+    theirPreview.innerHTML = '<span style="color:#64748b; font-size:0.85rem;">Keine Karte ausgewählt</span>';
+    sendBtn.disabled = true;
+    sendBtn.style.opacity = '0.5';
+    
+    let selectedMyCard = null;
+    let selectedTheirCard = null;
+    
+    modal.classList.remove('hidden');
+    
+    try {
+        const { getDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+        
+        // Fetch fresh inventories
+        const [mySnap, theirSnap] = await Promise.all([
+            getDoc(doc(db, "users", user.uid)),
+            getDoc(doc(db, "users", targetUser.uid))
+        ]);
+        
+        if (!mySnap.exists() || !theirSnap.exists()) {
+            alert("Fehler beim Laden der Spielerdaten.");
+            modal.classList.add('hidden');
+            return;
+        }
+        
+        const myData = mySnap.data();
+        const theirData = theirSnap.data();
+        
+        const field = `inventory_${currentMode}`;
+        const myInv = (myData[field] || []).filter(c => c.rarity !== 'legendary');
+        const theirInv = (theirData[field] || []).filter(c => c.rarity !== 'legendary');
+        
+        const renderGrid = (inv, gridEl, isOwn) => {
+            if (inv.length === 0) {
+                gridEl.innerHTML = '<p style="color:#64748b; font-size:0.75rem; text-align:center; width:100%;">Keine Karten verfügbar.</p>';
+                return;
+            }
+            
+            gridEl.innerHTML = '';
+            const grouped = {};
+            inv.forEach(c => {
+                const key = `${c.charName}_${c.rarity}`;
+                if (!grouped[key]) {
+                    grouped[key] = { ...c, count: 0 };
+                }
+                grouped[key].count++;
+            });
+            
+            Object.values(grouped).forEach(card => {
+                const dbObj = activeCharacterDatabase.find(char => char.name === card.charName);
+                if (!dbObj) return;
+                
+                let border = '1px solid #333';
+                if (card.rarity === 'rare') border = '1px solid #ff9f43';
+                if (card.rarity === 'epic') border = '1px solid #9b59b6';
+                
+                const cardEl = document.createElement('div');
+                cardEl.className = 'history-card';
+                cardEl.style.width = '65px';
+                cardEl.style.height = '95px';
+                cardEl.style.backgroundImage = `url('${dbObj.img}')`;
+                cardEl.style.backgroundSize = 'cover';
+                cardEl.style.backgroundPosition = 'center';
+                cardEl.style.border = border;
+                cardEl.style.borderRadius = '4px';
+                cardEl.style.position = 'relative';
+                cardEl.style.cursor = 'pointer';
+                cardEl.style.flexShrink = '0';
+                cardEl.style.boxShadow = '0 1px 3px rgba(0,0,0,0.5)';
+                
+                const countBadge = card.count > 1 ? `<div style="position:absolute; top:-4px; right:-4px; background:#ffd700; color:#000; font-size:0.6rem; font-weight:bold; width:14px; height:14px; border-radius:50%; display:flex; align-items:center; justify-content:center;">${card.count}</div>` : '';
+                const holo = card.rarity === 'epic' ? `<div style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; mix-blend-mode:color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear;"></div>` : '';
+                
+                cardEl.innerHTML = `
+                    ${countBadge}
+                    ${holo}
+                    <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.85); color:#fff; font-size:0.45rem; text-align:center; padding:1px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${card.charName}</div>
+                `;
+                
+                cardEl.addEventListener('click', () => {
+                    gridEl.querySelectorAll('.history-card').forEach(el => el.style.boxShadow = '0 1px 3px rgba(0,0,0,0.5)');
+                    gridEl.querySelectorAll('.history-card').forEach(el => el.style.borderColor = el.dataset.origBorder);
+                    
+                    cardEl.style.boxShadow = '0 0 8px #ffd700';
+                    cardEl.style.borderColor = '#ffd700';
+                    
+                    if (isOwn) {
+                        selectedMyCard = card;
+                        myPreview.innerHTML = `
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div style="width:40px; height:60px; background-image:url('${dbObj.img}'); background-size:cover; background-position:center; border:${border}; border-radius:4px;"></div>
+                                <div style="text-align:left;">
+                                    <div style="font-weight:bold; font-size:0.85rem; color:#fff;">${card.charName}</div>
+                                    <div style="font-size:0.75rem; color:#94a3b8; text-transform:uppercase;">${card.rarity}</div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        selectedTheirCard = card;
+                        theirPreview.innerHTML = `
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div style="width:40px; height:60px; background-image:url('${dbObj.img}'); background-size:cover; background-position:center; border:${border}; border-radius:4px;"></div>
+                                <div style="text-align:left;">
+                                    <div style="font-weight:bold; font-size:0.85rem; color:#fff;">${card.charName}</div>
+                                    <div style="font-size:0.75rem; color:#94a3b8; text-transform:uppercase;">${card.rarity}</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    if (selectedMyCard && selectedTheirCard) {
+                        sendBtn.disabled = false;
+                        sendBtn.style.opacity = '1';
+                    }
+                });
+                
+                cardEl.dataset.origBorder = border;
+                gridEl.appendChild(cardEl);
+            });
+        };
+        
+        renderGrid(myInv, myGrid, true);
+        renderGrid(theirInv, theirGrid, false);
+        
+        const closeBtn = document.getElementById('close-trade-proposal-btn');
+        closeBtn.onclick = () => modal.classList.add('hidden');
+        
+        sendBtn.onclick = async () => {
+            if (!selectedMyCard || !selectedTheirCard) return;
+            sendBtn.disabled = true;
+            sendBtn.textContent = 'Sende...';
+            
+            try {
+                const tradeData = {
+                    senderId: user.uid,
+                    senderName: user.displayName || user.username,
+                    receiverId: targetUser.uid,
+                    receiverName: targetUser.displayName || targetUser.username,
+                    giveCard: {
+                        charName: selectedMyCard.charName,
+                        rarity: selectedMyCard.rarity,
+                        timestamp: selectedMyCard.timestamp,
+                        boosterId: selectedMyCard.boosterId
+                    },
+                    takeCard: {
+                        charName: selectedTheirCard.charName,
+                        rarity: selectedTheirCard.rarity,
+                        timestamp: selectedTheirCard.timestamp,
+                        boosterId: selectedTheirCard.boosterId
+                    },
+                    status: 'pending',
+                    mode: currentMode,
+                    timestamp: Timestamp.now()
+                };
+                
+                await addDoc(collection(db, "trades"), tradeData);
+                alert("Tauschanfrage erfolgreich gesendet!");
+                modal.classList.add('hidden');
+            } catch(err) {
+                alert("Fehler beim Senden: " + err.message);
+                sendBtn.disabled = false;
+                sendBtn.textContent = 'Tauschanfrage senden';
+            }
+        };
+        
+    } catch(err) {
+        console.error(err);
+        alert("Fehler beim Laden der Tauschdaten.");
+        modal.classList.add('hidden');
+    }
+}
 
 
 

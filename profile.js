@@ -148,8 +148,137 @@ export function initProfile() {
             document.getElementById('profile-theme-panel').classList.toggle('hidden', target !== 'theme');
             document.getElementById('profile-stats-panel').classList.toggle('hidden', target !== 'stats');
             document.getElementById('profile-album-panel').classList.toggle('hidden', target !== 'album');
+            document.getElementById('profile-trades-panel').classList.toggle('hidden', target !== 'trades');
+            if (target === 'trades') {
+                renderTradesPanel();
+            }
         });
     });
+
+    const twinBtn = document.getElementById('twin-search-btn');
+    if (twinBtn) {
+        twinBtn.onclick = async () => {
+            twinBtn.disabled = true;
+            twinBtn.textContent = '🔮 Suche läuft...';
+            const resultDiv = document.getElementById('twin-search-result');
+            resultDiv.classList.remove('hidden');
+            resultDiv.innerHTML = `<div class="loader" style="margin: 10px auto;"></div>`;
+            
+            try {
+                const { db } = await import('./firebase-config.js');
+                const { collection, getDocs, doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+                
+                const freshUser = getCurrentUser();
+                if (!freshUser) {
+                    resultDiv.textContent = "Fehler: Nicht angemeldet.";
+                    return;
+                }
+                
+                // Fetch current user scores
+                const myScoresSnap = await getDoc(doc(db, "scores", `${currentMode}_classic_${freshUser.username}`));
+                if (!myScoresSnap.exists() || !myScoresSnap.data().characters || Object.keys(myScoresSnap.data().characters).length === 0) {
+                    resultDiv.innerHTML = `<span style="color:#ff4757;">Du musst zuerst mindestens ein klassisches Spiel in diesem Modus spielen, um Rankings zu haben!</span>`;
+                    return;
+                }
+                
+                const myChars = myScoresSnap.data().characters;
+                const myAvgScores = {};
+                let myMin = Infinity, myMax = -Infinity;
+                for (const [name, data] of Object.entries(myChars)) {
+                    const avg = data.score / (data.count || 1);
+                    myAvgScores[name] = avg;
+                    if (avg < myMin) myMin = avg;
+                    if (avg > myMax) myMax = avg;
+                }
+                
+                // Normalize my scores
+                const myNormalized = {};
+                for (const [name, avg] of Object.entries(myAvgScores)) {
+                    myNormalized[name] = myMax > myMin ? (avg - myMin) / (myMax - myMin) : 0.5;
+                }
+                
+                // Fetch all scores documents
+                const scoresSnap = await getDocs(collection(db, "scores"));
+                let bestTwin = null;
+                let highestMatch = -1;
+                let bestOverlap = 0;
+                let sharedFavs = [];
+                
+                scoresSnap.forEach(docSnap => {
+                    const docId = docSnap.id;
+                    const prefix = `${currentMode}_classic_`;
+                    if (!docId.startsWith(prefix) || docId.endsWith('_global') || docId === `${prefix}${freshUser.username}`) {
+                        return; // Ignore other modes, globals, and self
+                    }
+                    
+                    const otherUsername = docId.substring(prefix.length);
+                    const otherData = docSnap.data().characters || {};
+                    const otherAvgScores = {};
+                    let otherMin = Infinity, otherMax = -Infinity;
+                    
+                    for (const [name, data] of Object.entries(otherData)) {
+                        const avg = data.score / (data.count || 1);
+                        otherAvgScores[name] = avg;
+                        if (avg < otherMin) otherMin = avg;
+                        if (avg > otherMax) otherMax = avg;
+                    }
+                    
+                    // Normalize other scores
+                    const otherNormalized = {};
+                    for (const [name, avg] of Object.entries(otherAvgScores)) {
+                        otherNormalized[name] = otherMax > otherMin ? (avg - otherMin) / (otherMax - otherMin) : 0.5;
+                    }
+                    
+                    // Compare overlaps
+                    let overlapCount = 0;
+                    let maeSum = 0;
+                    const common = [];
+                    
+                    for (const name of Object.keys(myNormalized)) {
+                        if (otherNormalized[name] !== undefined) {
+                            overlapCount++;
+                            maeSum += Math.abs(myNormalized[name] - otherNormalized[name]);
+                            if (myNormalized[name] > 0.6 && otherNormalized[name] > 0.6) {
+                                common.push(name);
+                            }
+                        }
+                    }
+                    
+                    if (overlapCount >= 1) {
+                        const mae = maeSum / overlapCount;
+                        const weight = Math.min(overlapCount, 5) / 5;
+                        const matchScore = weight * (1 - mae);
+                        
+                        if (matchScore > highestMatch) {
+                            highestMatch = matchScore;
+                            bestTwin = otherUsername;
+                            bestOverlap = overlapCount;
+                            sharedFavs = common.slice(0, 3);
+                        }
+                    }
+                });
+                
+                if (bestTwin) {
+                    const matchPercent = Math.round(highestMatch * 100);
+                    let favsText = sharedFavs.length > 0 ? `Gemeinsame Favoriten: <span style="color:#fff;">${sharedFavs.join(', ')}</span>` : 'Keine gemeinsamen Favoriten gefunden.';
+                    resultDiv.innerHTML = `
+                        <div style="font-weight:bold; color:#a855f7; margin-bottom:5px; font-size:0.95rem;">Dein Star Wars Zwilling gefunden!</div>
+                        <div>Spieler: <strong style="color:#fff;">${bestTwin}</strong></div>
+                        <div style="margin:5px 0;">Übereinstimmung: <strong style="color:#2ed573; font-size:1.1rem;">${matchPercent}%</strong></div>
+                        <div style="font-size:0.8rem; color:#94a3b8; margin-top:5px;">${favsText} <br><span style="font-size:0.75rem;">(${bestOverlap} gemeinsam bewertete Charaktere)</span></div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<span style="color:#ffd700;">Keine anderen Spieler mit gemeinsamen Bewertungen in der Datenbank gefunden.</span>`;
+                }
+            } catch (err) {
+                console.error(err);
+                resultDiv.textContent = "Fehler bei der Zwillings-Suche.";
+            } finally {
+                twinBtn.disabled = false;
+                twinBtn.textContent = '🔮 Zwillings-Suche';
+            }
+        };
+    }
 
     const handleProfileSave = async () => {
         const newName = document.getElementById('profile-displayname').value;
@@ -220,10 +349,21 @@ export function updateTabNotificationDots(user) {
     const tabAvatar = document.getElementById('profile-tab-btn-avatar');
     const tabTitle = document.getElementById('profile-tab-btn-title');
     const tabTheme = document.getElementById('profile-tab-btn-theme');
+    const tabTrades = document.getElementById('profile-tab-btn-trades');
 
     if (tabAvatar) tabAvatar.innerHTML = `Avatare${hasUnseenAvatar ? ' <span style="color:#ffd700;">●</span>' : ''}`;
     if (tabTitle) tabTitle.innerHTML = `Titel${hasUnseenTitle ? ' <span style="color:#ffd700;">●</span>' : ''}`;
     if (tabTheme) tabTheme.innerHTML = `Farbschemas${hasUnseenTheme ? ' <span style="color:#ffd700;">●</span>' : ''}`;
+    
+    if (tabTrades) {
+        import('./firebase-config.js').then(async ({ db }) => {
+            const { collection, query, where, getDocs } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+            const q = query(collection(db, "trades"), where("receiverId", "==", user.uid), where("status", "==", "pending"), where("mode", "==", currentMode));
+            const snap = await getDocs(q);
+            const hasIncoming = !snap.empty;
+            tabTrades.innerHTML = `Tauschen${hasIncoming ? ' <span style="color:#ffd700;">●</span>' : ''}`;
+        }).catch(err => console.error(err));
+    }
     
     checkProfileUnlockDot(user);
 }
@@ -1158,5 +1298,204 @@ window.loadMachtverirrung = async function(user, targetDivId) {
         `;
     } else {
         area.innerHTML = '';
+    }
+}
+
+export async function renderTradesPanel() {
+    const incomingContainer = document.getElementById('profile-incoming-trades');
+    const outgoingContainer = document.getElementById('profile-outgoing-trades');
+    if (!incomingContainer || !outgoingContainer) return;
+    
+    incomingContainer.innerHTML = '<div class="loader" style="margin: 10px auto;"></div>';
+    outgoingContainer.innerHTML = '<div class="loader" style="margin: 10px auto;"></div>';
+    
+    const user = getCurrentUser();
+    if (!user) return;
+    
+    try {
+        const { db } = await import('./firebase-config.js');
+        const { collection, query, where, getDocs } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+        
+        const qIncoming = query(collection(db, "trades"), where("receiverId", "==", user.uid), where("status", "==", "pending"), where("mode", "==", currentMode));
+        const qOutgoing = query(collection(db, "trades"), where("senderId", "==", user.uid), where("status", "==", "pending"), where("mode", "==", currentMode));
+        
+        const [snapInc, snapOut] = await Promise.all([getDocs(qIncoming), getDocs(qOutgoing)]);
+        
+        incomingContainer.innerHTML = '';
+        outgoingContainer.innerHTML = '';
+        
+        if (snapInc.empty) {
+            incomingContainer.innerHTML = '<p class="prompt-text" style="color:#64748b; font-size:0.85rem; margin: 0;">Keine eingehenden Anfragen.</p>';
+        } else {
+            snapInc.forEach(docSnap => {
+                const trade = docSnap.data();
+                const tradeId = docSnap.id;
+                
+                const cardRow = document.createElement('div');
+                cardRow.className = 'history-card';
+                cardRow.style.padding = '10px';
+                cardRow.style.marginBottom = '10px';
+                cardRow.style.background = 'rgba(0,0,0,0.3)';
+                cardRow.style.border = '1px solid #2a3142';
+                
+                cardRow.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                        <div>
+                            <strong style="color:#ffd700;">${trade.senderName}</strong> möchte tauschen:
+                            <div style="font-size:0.85rem; color:#94a3b8; margin-top:4px;">
+                                Bietet dir: <span style="color:#fff; font-weight:bold;">${trade.giveCard.charName} (${trade.giveCard.rarity.toUpperCase()})</span>
+                            </div>
+                            <div style="font-size:0.85rem; color:#94a3b8;">
+                                Möchte von dir: <span style="color:#fff; font-weight:bold;">${trade.takeCard.charName} (${trade.takeCard.rarity.toUpperCase()})</span>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:5px;">
+                            <button class="rank-btn accept-trade-btn" data-id="${tradeId}" style="height:auto; padding:5px 12px; font-size:0.8rem; background:#2ed573; border-color:#2ed573; color:#fff; width:auto; margin:0;">Akzeptieren</button>
+                            <button class="rank-btn decline-trade-btn" data-id="${tradeId}" style="height:auto; padding:5px 12px; font-size:0.8rem; background:#ff4757; border-color:#ff4757; color:#fff; width:auto; margin:0;">Ablehnen</button>
+                        </div>
+                    </div>
+                `;
+                incomingContainer.appendChild(cardRow);
+            });
+            
+            incomingContainer.querySelectorAll('.accept-trade-btn').forEach(btn => {
+                btn.addEventListener('click', () => handleAcceptTrade(btn.dataset.id));
+            });
+            incomingContainer.querySelectorAll('.decline-trade-btn').forEach(btn => {
+                btn.addEventListener('click', () => handleDeclineTrade(btn.dataset.id));
+            });
+        }
+        
+        if (snapOut.empty) {
+            outgoingContainer.innerHTML = '<p class="prompt-text" style="color:#64748b; font-size:0.85rem; margin: 0;">Keine gesendeten Anfragen.</p>';
+        } else {
+            snapOut.forEach(docSnap => {
+                const trade = docSnap.data();
+                const tradeId = docSnap.id;
+                
+                const cardRow = document.createElement('div');
+                cardRow.className = 'history-card';
+                cardRow.style.padding = '10px';
+                cardRow.style.marginBottom = '10px';
+                cardRow.style.background = 'rgba(0,0,0,0.3)';
+                cardRow.style.border = '1px solid #2a3142';
+                
+                cardRow.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                        <div>
+                            Anfrage an <strong style="color:#ffd700;">${trade.receiverName}</strong>:
+                            <div style="font-size:0.85rem; color:#94a3b8; margin-top:4px;">
+                                Du bietest: <span style="color:#fff; font-weight:bold;">${trade.giveCard.charName} (${trade.giveCard.rarity.toUpperCase()})</span>
+                            </div>
+                            <div style="font-size:0.85rem; color:#94a3b8;">
+                                Du forderst: <span style="color:#fff; font-weight:bold;">${trade.takeCard.charName} (${trade.takeCard.rarity.toUpperCase()})</span>
+                            </div>
+                        </div>
+                        <button class="rank-btn cancel-trade-btn" data-id="${tradeId}" style="height:auto; padding:5px 12px; font-size:0.8rem; background:#ff4757; border-color:#ff4757; color:#fff; width:auto; margin:0;">Zurückziehen</button>
+                    </div>
+                `;
+                outgoingContainer.appendChild(cardRow);
+            });
+            
+            outgoingContainer.querySelectorAll('.cancel-trade-btn').forEach(btn => {
+                btn.addEventListener('click', () => handleCancelTrade(btn.dataset.id));
+            });
+        }
+        
+    } catch(err) {
+        console.error(err);
+        incomingContainer.innerHTML = '<p class="prompt-text" style="color:#ff4757;">Fehler beim Laden.</p>';
+        outgoingContainer.innerHTML = '<p class="prompt-text" style="color:#ff4757;">Fehler beim Laden.</p>';
+    }
+}
+
+async function handleAcceptTrade(tradeId) {
+    const user = getCurrentUser();
+    if (!user) return;
+    
+    try {
+        const { db } = await import('./firebase-config.js');
+        const { doc, getDoc, runTransaction } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+        
+        await runTransaction(db, async (transaction) => {
+            const tradeRef = doc(db, "trades", tradeId);
+            const tradeSnap = await transaction.get(tradeRef);
+            if (!tradeSnap.exists()) throw new Error("Tauschanfrage existiert nicht mehr.");
+            
+            const trade = tradeSnap.data();
+            if (trade.status !== 'pending') throw new Error("Diese Anfrage ist nicht mehr ausstehend.");
+            
+            const senderRef = doc(db, "users", trade.senderId);
+            const receiverRef = doc(db, "users", trade.receiverId);
+            
+            const [senderSnap, receiverSnap] = await Promise.all([
+                transaction.get(senderRef),
+                transaction.get(receiverRef)
+            ]);
+            
+            if (!senderSnap.exists() || !receiverSnap.exists()) throw new Error("Ein beteiligter Spieler wurde nicht gefunden.");
+            
+            const senderData = senderSnap.data();
+            const receiverData = receiverSnap.data();
+            
+            const field = `inventory_${trade.mode}`;
+            const senderInv = senderData[field] || [];
+            const receiverInv = receiverData[field] || [];
+            
+            const senderCardIdx = senderInv.findIndex(c => c.charName === trade.giveCard.charName && c.rarity === trade.giveCard.rarity);
+            if (senderCardIdx === -1) throw new Error(`${trade.senderName} besitzt die angebotene Karte nicht mehr.`);
+            
+            const receiverCardIdx = receiverInv.findIndex(c => c.charName === trade.takeCard.charName && c.rarity === trade.takeCard.rarity);
+            if (receiverCardIdx === -1) throw new Error(`Du besitzt die geforderte Karte nicht mehr.`);
+            
+            const giveCardObj = senderInv.splice(senderCardIdx, 1)[0];
+            const takeCardObj = receiverInv.splice(receiverCardIdx, 1)[0];
+            
+            senderInv.push({
+                ...takeCardObj,
+                timestamp: Date.now()
+            });
+            
+            receiverInv.push({
+                ...giveCardObj,
+                timestamp: Date.now()
+            });
+            
+            transaction.update(senderRef, { [field]: senderInv });
+            transaction.update(receiverRef, { [field]: receiverInv });
+            transaction.update(tradeRef, { status: 'accepted' });
+        });
+        
+        const { refreshCurrentUser } = await import('./auth.js');
+        await refreshCurrentUser();
+        
+        alert("Tausch erfolgreich durchgeführt!");
+        renderTradesPanel();
+    } catch(err) {
+        alert("Tausch fehlgeschlagen: " + err.message);
+    }
+}
+
+async function handleDeclineTrade(tradeId) {
+    try {
+        const { db } = await import('./firebase-config.js');
+        const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+        await updateDoc(doc(db, "trades", tradeId), { status: 'declined' });
+        alert("Tauschanfrage abgelehnt.");
+        renderTradesPanel();
+    } catch(err) {
+        alert("Fehler: " + err.message);
+    }
+}
+
+async function handleCancelTrade(tradeId) {
+    try {
+        const { db } = await import('./firebase-config.js');
+        const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+        await updateDoc(doc(db, "trades", tradeId), { status: 'cancelled' });
+        alert("Tauschanfrage zurückgezogen.");
+        renderTradesPanel();
+    } catch(err) {
+        alert("Fehler: " + err.message);
     }
 }

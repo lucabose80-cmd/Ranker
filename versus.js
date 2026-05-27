@@ -64,6 +64,14 @@ export async function initVersus() {
         window.location.reload(); // Force full reload to clear any hung state
     };
 
+    const closeVersusResultBtn = document.getElementById('close-versus-result-btn');
+    if (closeVersusResultBtn) {
+        closeVersusResultBtn.onclick = () => {
+            const modal = document.getElementById('versus-result-modal');
+            if (modal) modal.classList.add('hidden');
+        };
+    }
+
     listenToLobbies();
 }
 
@@ -136,18 +144,18 @@ async function createVersusLobby() {
     if (currentMode === 'starwars') {
         if (category === 'vehicle') {
             poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('vehicle'));
-        } else {
-            poolSource = activeCharacterDatabase.filter(c => !c.tags || !c.tags.includes('vehicle'));
-            if (category === 'klon') {
-                const klonGames = user['gamesPlayed_starwars_klon'] || 0;
-                if (klonGames < 10) {
-                    alert("Du musst mindestens 10 Spiele im 'Nur Klone' Modus (Klassisch) absolviert haben, um den Klon-Versus Modus zu hosten!");
-                    return;
-                }
-                poolSource = poolSource.filter(c => c.tags && c.tags.includes('klon'));
-            } else if (category === 'peak' || category === 'hardcore') {
-                poolSource = poolSource.filter(c => c.tags && c.tags.includes('peak'));
+        } else if (category === 'klon') {
+            const klonGames = user['gamesPlayed_starwars_klon'] || 0;
+            if (klonGames < 10) {
+                alert("Du musst mindestens 10 Spiele im 'Nur Klone' Modus (Klassisch) absolviert haben, um den Klon-Versus Modus zu hosten!");
+                return;
             }
+            poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon') && !c.tags.includes('vehicle'));
+        } else if (category === 'peak' || category === 'hardcore') {
+            poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('peak') && !c.tags.includes('vehicle'));
+        } else {
+            // Expanded Universe ('normal'): alle Charaktere inklusive Fahrzeuge
+            poolSource = activeCharacterDatabase;
         }
     } else {
         poolSource = activeCharacterDatabase.filter(c => !c.tags || !c.tags.includes('vehicle'));
@@ -475,18 +483,17 @@ function showWaitingRoom(lobbyId) {
                                 // Alle bereit -> Neustart!
                                 const { activeCharacterDatabase } = await import('./theme.js');
                                 const { drawFromBag } = await import('./utils.js');
-                                
-                                let poolSource = activeCharacterDatabase;
+                                 let poolSource = activeCharacterDatabase;
                                 if (data.mode === 'starwars') {
                                     if (data.category === 'vehicle') {
                                         poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('vehicle'));
+                                    } else if (data.category === 'klon') {
+                                        poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon') && !c.tags.includes('vehicle'));
+                                    } else if (data.category === 'peak' || data.category === 'hardcore') {
+                                        poolSource = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('peak') && !c.tags.includes('vehicle'));
                                     } else {
-                                        poolSource = activeCharacterDatabase.filter(c => !c.tags || !c.tags.includes('vehicle'));
-                                        if (data.category === 'klon') {
-                                            poolSource = poolSource.filter(c => c.tags && c.tags.includes('klon'));
-                                        } else if (data.category === 'peak' || data.category === 'hardcore') {
-                                            poolSource = poolSource.filter(c => c.tags && c.tags.includes('peak'));
-                                        }
+                                        // Expanded Universe ('normal'): alle Charaktere inklusive Fahrzeuge
+                                        poolSource = activeCharacterDatabase;
                                     }
                                 } else {
                                     poolSource = activeCharacterDatabase.filter(c => !c.tags || !c.tags.includes('vehicle'));
