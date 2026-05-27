@@ -828,7 +828,7 @@ window.renderCommunityAlbum = async function(user, containerId, filterPack = 'al
         }
     }
     inventory.forEach(c => {
-        if (isPackView && c.boosterId !== filterPack) return;
+        if (isPackView && !grouped.hasOwnProperty(c.charName)) return; // Card not part of this pack's pool
         if (!grouped[c.charName]) grouped[c.charName] = [];
         grouped[c.charName].push(c);
     });
