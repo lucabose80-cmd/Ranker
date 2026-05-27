@@ -166,6 +166,7 @@ export function initProfile() {
             document.getElementById('profile-theme-panel').classList.toggle('hidden', target !== 'theme');
             document.getElementById('profile-stats-panel').classList.toggle('hidden', target !== 'stats');
             document.getElementById('profile-album-panel').classList.toggle('hidden', target !== 'album');
+            document.getElementById('profile-custom-panel').classList.toggle('hidden', target !== 'custom');
             document.getElementById('profile-trades-panel').classList.toggle('hidden', target !== 'trades');
             if (target === 'trades') {
                 renderTradesPanel();
@@ -320,7 +321,7 @@ export function initProfile() {
     const specialAvatarToggle = document.getElementById('profile-special-avatar-toggle');
     if (specialAvatarToggle) {
         specialAvatarToggle.addEventListener('change', () => {
-            renderAvatarSelection();
+            renderAvatarSelection(); renderCustomLookSelection();
         });
     }
 
@@ -333,7 +334,7 @@ export async function refreshProfileContent() {
     const user = await refreshCurrentUser();
     if (!user) return;
 
-    renderAvatarSelection();
+    renderAvatarSelection(); renderCustomLookSelection();
 
     const gamesPlayed = currentMode === 'starwars'
         ? (user.gamesPlayed_starwars || 0)
@@ -1571,4 +1572,75 @@ window.dropCardToShowcase = async function(event, slotIndex) {
         console.error('Drop error', e);
     }
 };
+
+export async function renderCustomLookSelection() {
+    const grid = document.getElementById('custom-look-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    
+    const { getCurrentUser } = await import('./auth.js');
+    const user = getCurrentUser();
+    if (!user) return;
+    
+    const { currentMode, activeCharacterDatabase } = await import('./mode-state.js');
+    const inventory = currentMode === 'starwars' ? (user.inventory_starwars || []) : (user.inventory_waifu || []);
+    const charLooks = currentMode === 'starwars' ? (user.custom_look_starwars || {}) : (user.custom_look_waifu || {});
+    
+    const charsWithLegendary = [];
+    inventory.forEach(c => {
+        if (c.rarity === 'legendary' && !charsWithLegendary.includes(c.charName)) {
+            charsWithLegendary.push(c.charName);
+        }
+    });
+    
+    charsWithLegendary.forEach(charName => {
+        const dbChar = activeCharacterDatabase.find(c => c.name === charName);
+        if (!dbChar || !window.LEGENDARY_POOL || !window.LEGENDARY_POOL[charName]) return;
+        
+        const currentSelected = charLooks[charName] || 'standard';
+        
+        const card = document.createElement('div');
+        card.style.cssText = 'background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; border: 1px solid #333; text-align:center;';
+        
+        card.innerHTML = `
+            <h5 style='margin:0 0 10px 0; color:#fff;'>${charName}</h5>
+            <div style='display:flex; justify-content:center; gap:10px;'>
+                <div class='custom-look-option ${currentSelected === 'standard' ? 'selected' : ''}' data-type='standard' style='cursor:pointer; padding:5px; border-radius:5px; border:2px solid ${currentSelected === 'standard' ? '#2ed573' : 'transparent'};'>
+                    <img src='${dbChar.img}' style='width:60px; height:60px; object-fit:cover; border-radius:5px; display:block; margin:0 auto 5px;'>
+                    <div style='font-size:0.7rem; color:#aaa;'>Standard</div>
+                </div>
+                <div class='custom-look-option ${currentSelected === 'legendary' ? 'selected' : ''}' data-type='legendary' style='cursor:pointer; padding:5px; border-radius:5px; border:2px solid ${currentSelected === 'legendary' ? '#ffd700' : 'transparent'};'>
+                    <img src='${window.LEGENDARY_POOL[charName].specialImg}' style='width:60px; height:60px; object-fit:cover; border-radius:5px; display:block; margin:0 auto 5px;'>
+                    <div style='font-size:0.7rem; color:#ffd700;'>Legendär</div>
+                </div>
+            </div>
+        `;
+        
+        const opts = card.querySelectorAll('.custom-look-option');
+        opts.forEach(opt => {
+            opt.addEventListener('click', async () => {
+                const type = opt.dataset.type;
+                charLooks[charName] = type;
+                const field = currentMode === 'starwars' ? 'custom_look_starwars' : 'custom_look_waifu';
+                user[field] = charLooks;
+                const { db } = await import('./firebase-config.js');
+                const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js');
+                await updateDoc(doc(db, 'users', user.uid), {
+                    [field]: charLooks
+                });
+                renderCustomLookSelection();
+            });
+        });
+        
+        grid.appendChild(card);
+    });
+    
+    if (grid.innerHTML === '') {
+        grid.innerHTML = '<p class="prompt-text" style="grid-column: 1 / -1;">Keine legendären Charaktere freigeschaltet.</p>';
+    }
+}
+
+
+
+// Additional call added via script
 

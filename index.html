@@ -457,18 +457,14 @@
                             <button id="profile-tab-btn-avatar" class="changelog-tab profile-tab-btn active" data-tab="avatar">Avatare</button>
                             <button id="profile-tab-btn-title" class="changelog-tab profile-tab-btn" data-tab="title">Titel</button>
                             <button id="profile-tab-btn-theme" class="changelog-tab profile-tab-btn" data-tab="theme">Farbschemas</button>
-                            <button id="profile-tab-btn-stats" class="changelog-tab profile-tab-btn" data-tab="stats">Statistiken</button>
-                            <button id="profile-tab-btn-album" class="changelog-tab profile-tab-btn" data-tab="album">Sammelalbum</button>
-                            <button id="profile-tab-btn-trades" class="changelog-tab profile-tab-btn" data-tab="trades">Tauschen</button>
+                            <button class="profile-tab-btn" data-tab="stats" id="profile-tab-btn-stats">Statistiken</button>
+                            <button class="profile-tab-btn" data-tab="album" id="profile-tab-btn-album">Album</button>
+                            <button class="profile-tab-btn" data-tab="custom" id="profile-tab-btn-custom">Anpassen</button>
+                            <button class="profile-tab-btn" data-tab="trades" id="profile-tab-btn-trades">Tauschen</button>
                         </div>
                         
                         <div id="profile-avatar-panel" class="profile-panel-content">
-                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:10px;">
-                                <p class="prompt-text" style="margin:0;">Avatar wählen (Speichert sofort für dieses Universum)</p>
-                                <label style="color:#ffd700; font-size:0.85rem; display:flex; align-items:center; gap:5px; cursor:pointer;">
-                                    <input type="checkbox" id="profile-special-avatar-toggle"> Legendäre Spezial-Avatare anzeigen
-                                </label>
-                            </div>
+                            <p class="prompt-text" style="margin-bottom:10px;">Avatar wählen (Speichert sofort für dieses Universum)</p>
                             <div id="avatar-grid" class="lexikon-grid"></div>
                         </div>
                         <div id="profile-stats-panel" class="profile-panel-content hidden" style="text-align:left;">
@@ -483,6 +479,11 @@
                         <div id="profile-theme-panel" class="profile-panel-content hidden">
                             <p class="prompt-text">Farbschema wählen. Schalte neue Themes durch Erfolge frei.</p>
                             <div id="theme-grid" class="title-grid"></div>
+                        </div>
+
+                        <div id="profile-custom-panel" class="profile-panel-content hidden">
+                            <p class="prompt-text" style="margin-bottom:15px;">Passe das Aussehen deiner freigeschalteten legendären Charaktere im Ranking an.</p>
+                            <div id="custom-look-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:20px; max-height:400px; overflow-y:auto; padding:10px;"></div>
                         </div>
                         
                         <div id="profile-album-panel" class="profile-panel-content hidden" style="text-align:left;">

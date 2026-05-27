@@ -11,6 +11,7 @@ export const patchNotesStarWars = [
             "Fix: Zwillingssuche! Der Zwillings-Algorithmus wurde komplett überarbeitet und vergleicht nun deine globalen Bewertungen mit allen anderen Spielern für ein faires Ergebnis.",
             "Fix: Meister & Schüler! Im Profil können nun nicht mehr dieselben Spieler für beide Kategorien angezeigt werden.",
             "Fix: Versus Modus Preispool! Bei einem Sieg kriegt der Gewinner nun den kompletten Preispool aus den Einsätzen, ein faires Aufteilen passiert nur noch bei Unentschieden.",
+            "Fix: Fahrzeug-Modus! Der Fahrzeug-Modus funktioniert nun wieder reibungslos.",
             "Update: StarWarsdle gewährt nun Credits basierend auf den Versuchen (Unter 5 = 100c, Unter 10 = 50c, Unter 15 = 25c, Danach = 10c).",
             "Update: Limited-Time Booster Packs implementiert. Klon und Machtanwender sind für 2 Wochen günstiger und werden danach zu Legacy Packs für 150 Credits."
         ]

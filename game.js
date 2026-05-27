@@ -132,9 +132,16 @@ export async function initGame() {
     }
     
     // Restore DOM if we resumed a game
+    const user = getCurrentUser();
+    const charLooks = user ? (currentMode === 'starwars' ? (user.custom_look_starwars || {}) : (user.custom_look_waifu || {})) : {};
+    
     for (let i = 1; i <= 5; i++) {
         if (placedCharacters[i]) {
-            document.querySelector(`#slot-${i} .card-content`).innerHTML = `<img src="${placedCharacters[i].img}" alt="Ranked">`;
+            let displayImg = placedCharacters[i].img;
+            if (charLooks[placedCharacters[i].name] === 'legendary' && window.LEGENDARY_POOL && window.LEGENDARY_POOL[placedCharacters[i].name]) {
+                displayImg = window.LEGENDARY_POOL[placedCharacters[i].name].specialImg;
+            }
+            document.querySelector(`#slot-${i} .card-content`).innerHTML = `<img src="${displayImg}" alt="Ranked">`;
             const btn = document.querySelector(`.rank-btn[data-rank="${i}"]`);
             if (btn) btn.disabled = true;
         }
@@ -205,9 +212,16 @@ export function showNextCharacter() {
             const quote = hardcoreQuotes[currentChar.name] || '...';
             quoteHtml = `<div style="text-align: center; font-style: italic; color: #ffd700; margin-top: 10px; font-size: 0.9rem;">"${quote}"</div>`;
         }
-        imgContainer.innerHTML = `<img src="${currentChar.img}" alt="Charakter Bild" style="${extraStyle}">${quoteHtml}`;
         
         const user = getCurrentUser();
+        const charLooks = user ? (currentMode === 'starwars' ? (user.custom_look_starwars || {}) : (user.custom_look_waifu || {})) : {};
+        let displayImg = currentChar.img;
+        if (charLooks[currentChar.name] === 'legendary' && window.LEGENDARY_POOL && window.LEGENDARY_POOL[currentChar.name]) {
+            displayImg = window.LEGENDARY_POOL[currentChar.name].specialImg;
+        }
+        
+        imgContainer.innerHTML = `<img src="${displayImg}" alt="Charakter Bild" style="${extraStyle}">${quoteHtml}`;
+        
         const discoveredList = user && user.discovered ? user.discovered : [];
         
         if (user && user.role !== 'admin' && !discoveredList.includes(currentChar.name)) {
@@ -255,13 +269,21 @@ export function revealNames() {
 }
 
 export async function handleRankSelection(rank, buttonElement) {
-    if (window.playRankSound) window.playRankSound();
-    // The user has placed a character, but we only remove the punishment when they finish rating or start a new game.
-    // Actually, we remove it when the game is finished (all 5 placed) so they can't reload during the game.
+    if (placedCharacters[rank] !== null) return;
     
+    if (window.playRankSound) window.playRankSound();
+
     const currentChar = activePool[currentIndex];
     const extraStyle = currentGameCategory === 'hardcore' ? 'filter: brightness(0);' : '';
-    document.querySelector(`#slot-${rank} .card-content`).innerHTML = `<img src="${currentChar.img}" alt="Ranked" style="${extraStyle}">`;
+    
+    const user = getCurrentUser();
+    const charLooks = user ? (currentMode === 'starwars' ? (user.custom_look_starwars || {}) : (user.custom_look_waifu || {})) : {};
+    let displayImg = currentChar.img;
+    if (charLooks[currentChar.name] === 'legendary' && window.LEGENDARY_POOL && window.LEGENDARY_POOL[currentChar.name]) {
+        displayImg = window.LEGENDARY_POOL[currentChar.name].specialImg;
+    }
+    
+    document.querySelector(`#slot-${rank} .card-content`).innerHTML = `<img src="${displayImg}" alt="Ranked" style="${extraStyle}">`;
     placedCharacters[rank] = currentChar;
     
     buttonElement.disabled = true;
