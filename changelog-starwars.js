@@ -12,7 +12,9 @@ export const patchNotesStarWars = [
             "Hotfix: Machtverirrung und neue Cardgame-Basiswerte wurden auf das neue Punkte-basierte Scoreboard angepasst, wodurch neue Karten nicht länger unspielbar schlecht sind.",
             "Hotfix: Behebung eines Fehlers im Live-PvP, durch den man eine gespielte Karte theoretisch unendlich oft hintereinander spielen konnte (Objekt-Referenz-Fix).",
             "Feature: Im Deckbuilder wird nun für jede Karte der aktuelle Global-Score (Basiswert) als kleines goldenes Badge in der Ecke angezeigt.",
-            "Feature: Im Cardgame-Match (Live/Bot) verschwinden gespielte Karten nicht mehr komplett aus der Hand, sondern bleiben als 'ausgegraut' sichtbar, analog zur Anzeige des Gegners."
+            "Feature: Im Cardgame-Match (Live/Bot) verschwinden gespielte Karten nicht mehr komplett aus der Hand, sondern bleiben als 'ausgegraut' sichtbar, analog zur Anzeige des Gegners.",
+            "Feature: Wrecker hat nun sein eigenes Zitat im Hardcore Modus.",
+            "Feature: Im Hardcore Modus werden die Zitate der Charaktere nun auch nach dem Aufdecken auf dem End-Screen unter dem Charakter-Namen angezeigt."
         ]
     },
     {
