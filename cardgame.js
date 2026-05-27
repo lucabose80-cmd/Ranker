@@ -94,7 +94,8 @@ export function initCardgame() {
         activeDeckIndex = parseInt(e.target.value);
     });
 
-    document.getElementById('cardgame-btn-deck').addEventListener('click', () => {
+    document.getElementById('cardgame-btn-deck').addEventListener('click', async () => {
+        await loadGlobalScores();
         document.getElementById('cardgame-main-menu').classList.add('hidden');
         document.getElementById('cardgame-deckbuilder').classList.remove('hidden');
         renderDeckbuilder();
@@ -250,9 +251,11 @@ function renderInventory() {
     uniqueCards.forEach(c => {
         const dbC = activeCharacterDatabase.find(x => x.name === c.charName);
         if(!dbC) return;
+        const score = getCardScore(c.charName).toFixed(1);
         const div = document.createElement('div');
         div.style.cssText = `cursor:pointer; border:2px solid ${getRarityColor(c.rarity)}; border-radius:5px; padding:5px; background:#222; text-align:center; position:relative;`;
-        div.innerHTML = `<img src="${dbC.img}" style="width:100%; height:100px; object-fit:cover; border-radius:3px;">
+        div.innerHTML = `<div style="position:absolute; top:-5px; right:-5px; background:#1a1e29; color:#ffd700; border:1px solid #ffd700; border-radius:50%; width:24px; height:24px; font-size:0.6rem; font-weight:bold; display:flex; justify-content:center; align-items:center; z-index:10;">${score}</div>
+                         <img src="${dbC.img}" style="width:100%; height:100px; object-fit:cover; border-radius:3px;">
                          <div style="font-size:0.65rem; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-top:3px;">${c.charName}</div>`;
         div.addEventListener('click', () => {
             if(playerDeck.length < 10) {
@@ -276,9 +279,11 @@ function updateDeckUI() {
     playerDeck.forEach((c, idx) => {
         const dbC = activeCharacterDatabase.find(x => x.name === c.charName);
         if(!dbC) return;
+        const score = getCardScore(c.charName).toFixed(1);
         const div = document.createElement('div');
-        div.style.cssText = `cursor:pointer; border:2px solid ${getRarityColor(c.rarity)}; border-radius:5px; padding:5px; background:#222; text-align:center;`;
-        div.innerHTML = `<img src="${dbC.img}" style="width:100%; height:100px; object-fit:cover; border-radius:3px;">
+        div.style.cssText = `cursor:pointer; border:2px solid ${getRarityColor(c.rarity)}; border-radius:5px; padding:5px; background:#222; text-align:center; position:relative;`;
+        div.innerHTML = `<div style="position:absolute; top:-5px; right:-5px; background:#1a1e29; color:#ffd700; border:1px solid #ffd700; border-radius:50%; width:24px; height:24px; font-size:0.6rem; font-weight:bold; display:flex; justify-content:center; align-items:center; z-index:10;">${score}</div>
+                         <img src="${dbC.img}" style="width:100%; height:100px; object-fit:cover; border-radius:3px;">
                          <div style="font-size:0.6rem; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${c.charName}</div>`;
         div.addEventListener('click', () => {
             playerDeck.splice(idx, 1);
@@ -524,24 +529,27 @@ function renderHand() {
     hand.innerHTML = '';
     
     playerDeck.forEach((c) => {
-        if(playedPlayerCards.includes(c)) return;
+        const isPlayed = playedPlayerCards.includes(c);
         const dbC = activeCharacterDatabase.find(x => x.name === c.charName);
         if(!dbC) return;
         const div = document.createElement('div');
-        div.style.cssText = `cursor:pointer; border:2px solid ${getRarityColor(c.rarity)}; border-radius:5px; padding:5px; background:#222; text-align:center; width:80px; transition:transform 0.2s;`;
-        div.onmouseover = () => div.style.transform = 'translateY(-5px)';
-        div.onmouseout = () => div.style.transform = 'translateY(0)';
+        div.style.cssText = `cursor:${isPlayed ? 'not-allowed' : 'pointer'}; border:2px solid ${getRarityColor(c.rarity)}; border-radius:5px; padding:5px; background:#222; text-align:center; width:80px; transition:transform 0.2s; ${isPlayed ? 'filter:grayscale(100%) opacity(0.4);' : ''}`;
+        
+        if (!isPlayed) {
+            div.onmouseover = () => div.style.transform = 'translateY(-5px)';
+            div.onmouseout = () => div.style.transform = 'translateY(0)';
+            div.addEventListener('click', () => {
+                if (typeof isLivePvP !== 'undefined' && isLivePvP) {
+                    const originalIndex = playerDeck.findIndex(deckCard => deckCard === c);
+                    if(typeof playRoundLive === 'function') playRoundLive(originalIndex);
+                } else {
+                    playRound(c);
+                }
+            });
+        }
+        
         div.innerHTML = `<img src="${dbC.img}" style="width:100%; height:80px; object-fit:cover; border-radius:3px;">
                          <div style="font-size:0.6rem; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${c.charName}</div>`;
-        div.addEventListener('click', () => {
-            if (typeof isLivePvP !== 'undefined' && isLivePvP) {
-                // Find the original index of this card in playerDeck to send to Firebase
-                const originalIndex = playerDeck.findIndex(deckCard => deckCard === c);
-                if(typeof playRoundLive === 'function') playRoundLive(originalIndex);
-            } else {
-                playRound(c);
-            }
-        });
         hand.appendChild(div);
     });
 }
