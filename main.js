@@ -590,7 +590,7 @@ window.updateCreditProgressBars = function() {
     categories.forEach(cat => {
         const field = `credits_earned_${mode}_${cat.id}`;
         const earned = user[field] || 0;
-        const percent = Math.min(100, (earned / 10) * 100);
+        const percent = Math.min(100, (earned / 20) * 100);
         
         html += `
             <div style="display:flex; align-items:center; gap:10px;">
@@ -598,7 +598,7 @@ window.updateCreditProgressBars = function() {
                 <div style="flex:1; height:8px; background:rgba(0,0,0,0.5); border-radius:4px; border:1px solid #333; overflow:hidden;">
                     <div style="width:${percent}%; height:100%; background:${cat.color}; transition:width 0.3s; box-shadow: 0 0 5px ${cat.color};"></div>
                 </div>
-                <div style="width:30px; font-size:0.7rem; color:#94a3b8; text-align:left;">${earned}/10</div>
+                <div style="width:30px; font-size:0.7rem; color:#94a3b8; text-align:left;">${earned}/20</div>
             </div>
         `;
     });

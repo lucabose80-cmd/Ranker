@@ -631,11 +631,11 @@ function renderStatsSelection(user) {
                         <span>Konto: <span style="color:#00d2d3;">${(user.username && (user.username.toLowerCase() === 'test1' || user.username.toLowerCase() === 'test2')) ? '∞' : (user.credits || 0)} Credits</span></span>
                     </h3>
                     <div style="display: flex; gap: 5px; font-size: 0.75rem; flex-wrap: wrap; margin-top:5px;">
-                        <div style="background: rgba(0,0,0,0.5); padding: 3px 8px; border-radius: 4px; border: 1px solid #444;">Classic: ${user['credits_earned_' + currentMode + '_normal'] || 0}/10</div>
-                        <div style="background: rgba(0,0,0,0.5); padding: 3px 8px; border-radius: 4px; border: 1px solid #444;">Klon: ${user['credits_earned_' + currentMode + '_klon'] || 0}/10</div>
-                        <div style="background: rgba(0,0,0,0.5); padding: 3px 8px; border-radius: 4px; border: 1px solid #444;">Peak: ${user['credits_earned_' + currentMode + '_peak'] || 0}/10</div>
-                        <div style="background: rgba(0,0,0,0.5); padding: 3px 8px; border-radius: 4px; border: 1px solid #444;">Vehicle: ${user['credits_earned_' + currentMode + '_vehicle'] || 0}/10</div>
-                        <div style="background: rgba(0,0,0,0.5); padding: 3px 8px; border-radius: 4px; border: 1px solid #444;">Hardcore: ${user['credits_earned_' + currentMode + '_hardcore'] || 0}/10</div>
+                        <div style="background: rgba(0,0,0,0.5); padding: 3px 8px; border-radius: 4px; border: 1px solid #444;">Classic: ${user['credits_earned_' + currentMode + '_normal'] || 0}/20</div>
+                        <div style="background: rgba(0,0,0,0.5); padding: 3px 8px; border-radius: 4px; border: 1px solid #444;">Klon: ${user['credits_earned_' + currentMode + '_klon'] || 0}/20</div>
+                        <div style="background: rgba(0,0,0,0.5); padding: 3px 8px; border-radius: 4px; border: 1px solid #444;">Peak: ${user['credits_earned_' + currentMode + '_peak'] || 0}/20</div>
+                        <div style="background: rgba(0,0,0,0.5); padding: 3px 8px; border-radius: 4px; border: 1px solid #444;">Vehicle: ${user['credits_earned_' + currentMode + '_vehicle'] || 0}/20</div>
+                        <div style="background: rgba(0,0,0,0.5); padding: 3px 8px; border-radius: 4px; border: 1px solid #444;">Hardcore: ${user['credits_earned_' + currentMode + '_hardcore'] || 0}/20</div>
                     </div>
                 </div>
             </div>

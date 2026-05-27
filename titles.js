@@ -35,7 +35,8 @@ export const TITLES = {
         { id: 'sw_secret_26', name: 'Pechvogel', required: -1, secret: true, condition: { type: 'special_bottom5' } },
         { id: 'sw_secret_27', name: 'Seelenverwandte', required: -1, secret: true, condition: { type: 'special_versus_match' } },
         { id: 'sw_secret_28', name: 'Absolute Gegensätze', required: -1, secret: true, condition: { type: 'special_versus_opposite' } },
-        { id: 'sw_secret_29', name: 'Perfektion', required: -1, secret: true, condition: { type: 'special_versus_perfect' } }
+        { id: 'sw_secret_29', name: 'Perfektion', required: -1, secret: true, condition: { type: 'special_versus_perfect' } },
+        { id: 'sw_secret_30', name: 'Mandalorianer', required: -1, secret: true, condition: { type: 'has_characters', chars: ['Din Djarin', 'Bo-Katan Kryze', 'Pre Vizsla'] } }
     ],
     waifu: [
         { id: 'wf_0', name: 'Kein Titel', required: 0 },

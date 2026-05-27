@@ -145,13 +145,13 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
             user[klonGamesPlayedField] = (user[klonGamesPlayedField] || 0) + 1;
         }
 
-        // Grant 10 Credits (Max 10 times per category)
+        // Grant 10 Credits (Max 20 times per category)
         let earnedCredits = false;
         if (gameType === 'classic' || gameType === 'hardcore') {
             const cat = category || 'normal';
             const catField = `credits_earned_${currentMode}_${cat}`;
             const totalEarned = user[catField] || 0;
-            if (totalEarned < 10) {
+            if (totalEarned < 20) {
                 user[catField] = totalEarned + 1;
                 user.credits = (user.credits || 0) + 10;
                 earnedCredits = true;

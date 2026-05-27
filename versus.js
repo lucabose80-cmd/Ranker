@@ -657,7 +657,9 @@ function showWaitingRoom(lobbyId) {
                                     status: 'waiting',
                                     readyForRestart: [],
                                     characters: newChars,
-                                    players: resetPlayers
+                                    players: resetPlayers,
+                                    bets: [],
+                                    prizePool: 0
                                 });
                             } else {
                                 transaction.update(doc(db, "versus_lobbies", lobbyId), {

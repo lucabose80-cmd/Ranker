@@ -327,8 +327,8 @@ function openUserProfileModal(u) {
         modal.id = 'public-profile-modal';
         modal.className = 'modal hidden';
         modal.innerHTML = `
-            <div class="cl-modal-box" style="max-width: 500px; text-align:center; position: relative;">
-                <div class="cl-modal-header" style="justify-content: space-between; margin-bottom: 20px;">
+            <div class="cl-modal-box" style="max-width: 900px; width: 95vw; text-align:center; position: relative;">
+                <div class="cl-modal-header" style="justify-content: space-between; margin-bottom: 15px;">
                     <h2 style="margin:0;">Spieler-Profil</h2>
                     <button id="close-public-profile-btn" class="text-btn">SCHLIESSEN</button>
                 </div>
@@ -436,11 +436,6 @@ function openUserProfileModal(u) {
                             return `<div style="width:60px; height:90px; border-radius:6px; background:rgba(0,0,0,0.5); border:1px dashed #444; display:flex; align-items:center; justify-content:center;"><span style="color:#444; font-size:1.5rem;">+</span></div>`;
                         }).join('')}
                     </div>
-                </div>
-                
-                <div style="text-align:center; margin-top:15px;">
-                    <button class="rank-btn btn-sm" onclick='window.showUserAlbumModal(${JSON.stringify(u).replace(/'/g, "&#39;")})' style="font-size:0.8rem; padding:8px 15px;">Sammelalbum ansehen</button>
-                </div>
             </div>
         `;
     } else {
@@ -532,11 +527,6 @@ function openUserProfileModal(u) {
                             return `<div style="width:60px; height:90px; border-radius:6px; background:rgba(0,0,0,0.5); border:1px dashed #444; display:flex; align-items:center; justify-content:center;"><span style="color:#444; font-size:1.5rem;">+</span></div>`;
                         }).join('')}
                     </div>
-                </div>
-                
-                <div style="text-align:center; margin-top:15px;">
-                    <button class="rank-btn btn-sm" onclick='window.showUserAlbumModal(${JSON.stringify(u).replace(/'/g, "&#39;")})' style="font-size:0.8rem; padding:8px 15px;">Sammelalbum ansehen</button>
-                </div>
             </div>
         `;
     }
@@ -547,19 +537,32 @@ function openUserProfileModal(u) {
     const activeTitle = (currentMode === 'starwars' ? u.activeTitle_starwars : u.activeTitle_waifu) || 'Kein Titel';
     
     content.innerHTML = `
-        <div style="text-align:center;">
-            ${avatarHtml}
-            <h3 style="margin:0; font-size:1.5rem; color:#fff;">${u.displayName || u.username}</h3>
-            <p style="color:#ffd700; font-weight:bold; margin-top:5px; margin-bottom:10px; text-transform:uppercase; font-size:0.9rem;">${activeTitle}</p>
-            ${user.uid !== u.uid ? `
-                <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap;">
-                    <button id="profile-chat-btn" class="rank-btn" style="width: auto; padding: 5px 15px; font-size: 0.8rem; border-color: #3b82f6; color: #3b82f6;">💬 NACHRICHT SENDEN</button>
-                    <button id="profile-challenge-btn" class="rank-btn" style="width: auto; padding: 5px 15px; font-size: 0.8rem; border-color: #ff4757; color: #ff4757;">⚔️ ZUM VERSUS HERAUSFORDERN</button>
-                    ${currentMode === 'starwars' ? `<button id="profile-trade-btn" class="rank-btn" style="width: auto; padding: 5px 15px; font-size: 0.8rem; border-color: #ffd700; color: #ffd700;">🤝 KARTEN TAUSCHEN</button>` : ''}
-                </div>
-            ` : ''}
+        <div style="display:flex; gap:0; border: 1px solid #2a3142; border-radius: 10px; overflow: hidden; background: #0d111a; min-height: 400px;">
+            <!-- LEFT PAGE: Identity & Actions -->
+            <div style="flex: 0 0 260px; background: linear-gradient(160deg, #0f172a 60%, #1e293b); border-right: 2px solid #2a3142; padding: 25px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px;">
+                ${avatarHtml}
+                <h3 style="margin:0; font-size:1.4rem; color:#fff; text-align:center;">${u.displayName || u.username}</h3>
+                <p style="color:#ffd700; font-weight:bold; margin:0; text-transform:uppercase; font-size:0.85rem; text-align:center; background:rgba(255,215,0,0.1); padding:4px 10px; border-radius:20px; border:1px solid rgba(255,215,0,0.3);">${activeTitle}</p>
+                
+                <div style="width:100%; height:1px; background:#2a3142; margin: 4px 0;"></div>
+                
+                ${user.uid !== u.uid ? `
+                <div style="display: flex; flex-direction:column; gap: 8px; width: 100%;">
+                    <button id="profile-chat-btn" class="rank-btn" style="width:100%; padding: 8px 10px; font-size: 0.8rem; border-color: #3b82f6; color: #3b82f6;">💬 NACHRICHT SENDEN</button>
+                    <button id="profile-challenge-btn" class="rank-btn" style="width:100%; padding: 8px 10px; font-size: 0.8rem; border-color: #ff4757; color: #ff4757;">⚔️ HERAUSFORDERN</button>
+                    ${currentMode === 'starwars' ? `<button id="profile-trade-btn" class="rank-btn" style="width:100%; padding: 8px 10px; font-size: 0.8rem; border-color: #ffd700; color: #ffd700;">🤝 KARTEN TAUSCHEN</button>` : ''}
+                    <button class="rank-btn btn-sm" onclick='window.showUserAlbumModal(${JSON.stringify(u).replace(/'/g, "&#39;")})' style="width:100%; font-size:0.8rem; padding:8px 10px; border-color:#9b59b6; color:#9b59b6;">📖 SAMMELALBUM</button>
+                </div>` : `
+                <div style="display: flex; flex-direction:column; gap: 8px; width: 100%;">
+                    <button class="rank-btn btn-sm" onclick='window.showUserAlbumModal(${JSON.stringify(u).replace(/'/g, "&#39;")})' style="width:100%; font-size:0.8rem; padding:8px 10px; border-color:#9b59b6; color:#9b59b6;">📖 SAMMELALBUM ANSEHEN</button>
+                </div>`}
+            </div>
+            
+            <!-- RIGHT PAGE: Stats & Showcase -->
+            <div style="flex: 1; padding: 20px; overflow-y: auto; max-height: 75vh; display: flex; flex-direction: column; gap: 15px;">
+                ${progressHtml}
+            </div>
         </div>
-        ${progressHtml}
     `;
 
     modal.classList.remove('hidden');
@@ -706,11 +709,12 @@ async function openTradeProposalModal(targetUser) {
             gridEl.innerHTML = '';
             const grouped = {};
             inv.forEach(c => {
-                const key = `${c.charName}_${c.rarity}`;
-                if (!grouped[key]) {
-                    grouped[key] = { ...c, count: 0 };
+                if (!grouped[c.charName]) {
+                    grouped[c.charName] = { charName: c.charName, rarities: [] };
                 }
-                grouped[key].count++;
+                if (!grouped[c.charName].rarities.includes(c.rarity)) {
+                    grouped[c.charName].rarities.push(c.rarity);
+                }
             });
             
             Object.values(grouped).forEach(card => {
@@ -718,8 +722,6 @@ async function openTradeProposalModal(targetUser) {
                 if (!dbObj) return;
                 
                 let border = '1px solid #333';
-                if (card.rarity === 'rare') border = '1px solid #ff9f43';
-                if (card.rarity === 'epic') border = '1px solid #9b59b6';
                 
                 const cardEl = document.createElement('div');
                 cardEl.className = 'history-card';
@@ -735,53 +737,72 @@ async function openTradeProposalModal(targetUser) {
                 cardEl.style.flexShrink = '0';
                 cardEl.style.boxShadow = '0 1px 3px rgba(0,0,0,0.5)';
                 
-                const countBadge = card.count > 1 ? `<div style="position:absolute; top:-4px; right:-4px; background:#ffd700; color:#000; font-size:0.6rem; font-weight:bold; width:14px; height:14px; border-radius:50%; display:flex; align-items:center; justify-content:center;">${card.count}</div>` : '';
-                const holo = card.rarity === 'epic' ? `<div style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; mix-blend-mode:color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear;"></div>` : '';
-                
                 cardEl.innerHTML = `
-                    ${countBadge}
-                    ${holo}
                     <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.85); color:#fff; font-size:0.45rem; text-align:center; padding:1px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${card.charName}</div>
                 `;
                 
                 cardEl.addEventListener('click', () => {
                     gridEl.querySelectorAll('.history-card').forEach(el => el.style.boxShadow = '0 1px 3px rgba(0,0,0,0.5)');
-                    gridEl.querySelectorAll('.history-card').forEach(el => el.style.borderColor = el.dataset.origBorder);
+                    gridEl.querySelectorAll('.history-card').forEach(el => el.style.borderColor = '#333');
                     
                     cardEl.style.boxShadow = '0 0 8px #ffd700';
                     cardEl.style.borderColor = '#ffd700';
                     
-                    if (isOwn) {
-                        selectedMyCard = card;
-                        myPreview.innerHTML = `
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <div style="width:40px; height:60px; background-image:url('${dbObj.img}'); background-size:cover; background-position:center; border:${border}; border-radius:4px;"></div>
-                                <div style="text-align:left;">
-                                    <div style="font-weight:bold; font-size:0.85rem; color:#fff;">${card.charName}</div>
-                                    <div style="font-size:0.75rem; color:#94a3b8; text-transform:uppercase;">${card.rarity}</div>
-                                </div>
-                            </div>
+                    const updatePreview = (selectedRarity) => {
+                        let previewBorder = '1px solid #333';
+                        if (selectedRarity === 'rare') previewBorder = '1px solid #ff9f43';
+                        if (selectedRarity === 'epic') previewBorder = '1px solid #9b59b6';
+                        
+                        const selectHtml = `
+                            <select class="trade-rarity-select" style="padding:4px; border-radius:4px; background:#222; color:#fff; border:1px solid #444; font-size:0.75rem; margin-top:5px; width:100%;">
+                                ${card.rarities.map(r => `<option value="${r}" ${r === selectedRarity ? 'selected' : ''}>${r.toUpperCase()}</option>`).join('')}
+                            </select>
                         `;
-                    } else {
-                        selectedTheirCard = card;
-                        theirPreview.innerHTML = `
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <div style="width:40px; height:60px; background-image:url('${dbObj.img}'); background-size:cover; background-position:center; border:${border}; border-radius:4px;"></div>
-                                <div style="text-align:left;">
-                                    <div style="font-weight:bold; font-size:0.85rem; color:#fff;">${card.charName}</div>
-                                    <div style="font-size:0.75rem; color:#94a3b8; text-transform:uppercase;">${card.rarity}</div>
+                        
+                        const originalCard = inv.find(c => c.charName === card.charName && c.rarity === selectedRarity);
+                        const cardObject = originalCard ? { ...originalCard } : { charName: card.charName, rarity: selectedRarity };
+                        
+                        if (isOwn) {
+                            selectedMyCard = cardObject;
+                            myPreview.innerHTML = `
+                                <div style="display:flex; align-items:center; gap:10px; width:100%;">
+                                    <div style="width:40px; height:60px; flex-shrink:0; background-image:url('${dbObj.img}'); background-size:cover; background-position:center; border:${previewBorder}; border-radius:4px;"></div>
+                                    <div style="text-align:left; flex:1;">
+                                        <div style="font-weight:bold; font-size:0.85rem; color:#fff;">${card.charName}</div>
+                                        ${selectHtml}
+                                    </div>
                                 </div>
-                            </div>
-                        `;
-                    }
+                            `;
+                            const sel = myPreview.querySelector('.trade-rarity-select');
+                            sel.onchange = () => {
+                                updatePreview(sel.value);
+                            };
+                        } else {
+                            selectedTheirCard = cardObject;
+                            theirPreview.innerHTML = `
+                                <div style="display:flex; align-items:center; gap:10px; width:100%;">
+                                    <div style="width:40px; height:60px; flex-shrink:0; background-image:url('${dbObj.img}'); background-size:cover; background-position:center; border:${previewBorder}; border-radius:4px;"></div>
+                                    <div style="text-align:left; flex:1;">
+                                        <div style="font-weight:bold; font-size:0.85rem; color:#fff;">${card.charName}</div>
+                                        ${selectHtml}
+                                    </div>
+                                </div>
+                            `;
+                            const sel = theirPreview.querySelector('.trade-rarity-select');
+                            sel.onchange = () => {
+                                updatePreview(sel.value);
+                            };
+                        }
+                        
+                        if (selectedMyCard && selectedTheirCard) {
+                            sendBtn.disabled = false;
+                            sendBtn.style.opacity = '1';
+                        }
+                    };
                     
-                    if (selectedMyCard && selectedTheirCard) {
-                        sendBtn.disabled = false;
-                        sendBtn.style.opacity = '1';
-                    }
+                    updatePreview(card.rarities[0]);
                 });
                 
-                cardEl.dataset.origBorder = border;
                 gridEl.appendChild(cardEl);
             });
         };

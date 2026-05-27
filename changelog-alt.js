@@ -12,6 +12,18 @@ export const patchNotesWaifu = [
         ]
     },
     {
+        version: "v7.2",
+        title: "Community & Progression Update",
+        isHotfix: false,
+        changes: [
+            "Feature: Spielerprofil anderer Spieler jetzt im eleganten Buch-Layout mit zwei Seiten — links Identität & Aktionen, rechts Statistiken & Showcase.",
+            "Feature: Credits-Limit auf 20 Spiele pro Kategorie erhöht (vorher: 10). Bis zu 200 Credits pro Modus verdienbar.",
+            "Feature: Korrekturen/Vorschläge: Charaktere können nun nach Namen durchsucht werden.",
+            "Fix: Nach einer Versus-Runde wird der Wett-Status zurückgesetzt, sodass in der nächsten Runde neu gewettet werden kann.",
+            "QoL: Das eigene Profil-Panel ist jetzt breiter, um alle Features ohne Überlappungen darzustellen."
+        ]
+    },
+    {
         version: "v7.1",
         title: "Versus Wetten Update",
         isHotfix: false,

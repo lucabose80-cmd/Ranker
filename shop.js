@@ -73,6 +73,15 @@ export function initShop() {
         if (pool.length === 0) return;
         
         const legCount = booster.id === 'starwars_jedi_sith' ? pool.filter(c => LEGENDARY_POOL[c.name]).length : 0;
+        
+        // Calculate distinct owned characters from this pack's pool
+        const inv = user[`inventory_${currentMode}`] || [];
+        const poolNames = new Set(pool.map(c => c.name));
+        const ownedNames = new Set(inv.filter(c => poolNames.has(c.charName)).map(c => c.charName));
+        const ownedCount = ownedNames.size;
+        const totalCount = pool.length;
+        const packComplete = ownedCount === totalCount;
+        const alreadyClaimed = !!user[`claimedLegendary_${booster.id}`];
 
         const el = document.createElement('div');
         el.className = 'booster-pack-card';
@@ -81,7 +90,12 @@ export function initShop() {
         el.innerHTML = `
             <h3 style="margin:0 0 10px 0; color:#ffd700; text-transform:uppercase;">${booster.name}</h3>
             ${booster.img ? `<img src="${booster.img}" style="width:100%; height:280px; object-fit:cover; border-radius:6px; margin-bottom:15px; border:2px solid #555; box-shadow: inset 0 0 20px rgba(0,0,0,0.8);">` : `<div style="width:100%; height:180px; background:linear-gradient(135deg, #0f172a, #1e293b); border-radius:6px; margin-bottom:15px; border:2px solid #555; display:flex; justify-content:center; align-items:center; font-size:4rem; box-shadow: inset 0 0 20px rgba(0,0,0,0.8);">📦</div>`}
-            <p style="font-size:0.85rem; color:#94a3b8; margin:0 0 15px 0;">Mögliche Charaktere: <span style="color:#fff">${pool.length}</span></p>
+            <p style="font-size:0.85rem; color:#94a3b8; margin:0 0 8px 0;">Mögliche Charaktere: <span style="color:#fff">${totalCount}</span></p>
+            <div style="margin-bottom:12px; padding:8px 12px; border-radius:6px; background:rgba(255,215,0,0.08); border:1px solid ${packComplete ? '#ffd700' : '#444'};">
+                <span style="font-size:0.85rem; color:${packComplete ? '#ffd700' : '#94a3b8'}; font-weight:bold;">
+                    ${packComplete ? '🏆' : '📚'} Sammlung: ${ownedCount} von ${totalCount} Charakteren
+                </span>
+            </div>
             
             <div style="width:100%; background:rgba(0,0,0,0.3); border-radius:4px; padding:10px; margin-bottom:15px; display:flex; flex-direction:column; gap:5px;">
                 <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
@@ -108,13 +122,77 @@ export function initShop() {
             <div style="margin-top: 10px; font-size: 0.85rem; color: #94a3b8; text-align: center;">
                 Geöffnet: <span id="opened-count-${booster.id}" style="color: #ffd700; font-weight: bold;">${user[`packsOpened_${booster.id}`] || 0}</span>
             </div>
+            ${packComplete && !alreadyClaimed ? `
+            <button class="rank-btn claim-legendary-btn" data-id="${booster.id}" style="width:100%; padding:12px; margin-top:10px; font-size:1rem; background:linear-gradient(135deg,#b8860b,#ffd700); border:none; color:#000; font-weight:bold; border-radius:6px; cursor:pointer; animation: goldPulse 2s infinite ease-in-out;">
+                ✨ Legendäre Karte beanspruchen!
+            </button>` : packComplete && alreadyClaimed ? `
+            <div style="margin-top:10px; font-size:0.8rem; color:#ffd700; text-align:center; opacity:0.7;">✓ Belohnung bereits beansprucht</div>` : ''}
         `;
 
         el.querySelector('.buy-booster-btn').addEventListener('click', () => openBooster(booster, pool));
+        
+        const claimBtn = el.querySelector('.claim-legendary-btn');
+        if (claimBtn) {
+            claimBtn.addEventListener('click', () => claimPackLegendary(booster, pool));
+        }
+        
         container.appendChild(el);
     });
 
     isShopInitialized = true;
+}
+
+async function claimPackLegendary(booster, pool) {
+    const user = getCurrentUser();
+    if (!user) return;
+    
+    const claimKey = `claimedLegendary_${booster.id}`;
+    if (user[claimKey]) {
+        alert('Du hast diese Belohnung bereits beansprucht!');
+        return;
+    }
+    
+    // Find legendaries in pool — use all pool chars, not just LEGENDARY_POOL, as fallback
+    const legendaryChars = pool.filter(c => LEGENDARY_POOL[c.name]);
+    const charPool = legendaryChars.length > 0 ? legendaryChars : pool;
+    const chosenChar = charPool[Math.floor(Math.random() * charPool.length)];
+    
+    try {
+        const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+        const { db } = await import('./firebase-config.js');
+        
+        const field = `inventory_${currentMode}`;
+        const currentInventory = user[field] || [];
+        
+        currentInventory.push({
+            charName: chosenChar.name,
+            rarity: 'legendary',
+            timestamp: Date.now(),
+            boosterId: booster.id
+        });
+        
+        user[field] = currentInventory;
+        user[claimKey] = true;
+        localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
+        
+        await updateDoc(doc(db, "users", user.uid), {
+            [field]: currentInventory,
+            [claimKey]: true
+        });
+        
+        if (window.showUnlockNotification) {
+            window.showUnlockNotification('legendary', `Legendäre Karte erhalten: ${chosenChar.name}!`);
+        } else {
+            alert(`🌟 Du hast eine legendäre Karte erhalten: ${chosenChar.name}!`);
+        }
+        
+        // Re-render shop to update button state
+        initShop();
+        
+    } catch(e) {
+        console.error('Fehler beim Beanspruchen der Legendären Karte:', e);
+        alert('Fehler beim Beanspruchen der Belohnung.');
+    }
 }
 
 async function openBooster(booster, pool) {

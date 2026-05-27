@@ -12,7 +12,22 @@ export const patchNotesStarWars = [
         ]
     },
     {
-        version: "v7.1",
+        version: "v7.2",
+        title: "Community & Progression Update",
+        isHotfix: false,
+        changes: [
+            "Feature: Spielerprofil anderer Spieler jetzt im eleganten Buch-Layout mit zwei Seiten — links Identität & Aktionen, rechts Statistiken & Showcase.",
+            "Feature: Booster-Packs zeigen nun den Sammlungsfortschritt an ('X von Y Charakteren').",
+            "Feature: Wer ein komplettes Booster-Pack besitzt, kann einmalig eine zufällige Legendäre Karte aus diesem Pack beanspruchen.",
+            "Feature: Beim Kartentausch kann man nun die gewünschte Seltenheit direkt im Vorschau-Bereich auswählen.",
+            "Feature: Credits-Limit auf 20 Spiele pro Kategorie erhöht (vorher: 10). Bis zu 200 Credits pro Modus verdienbar.",
+            "Feature: Neuer geheimer Titel 'Mandalorianer' — finde ihn in einem Spiel mit Din Djarin, Bo-Katan Kryze und Pre Vizsla.",
+            "Feature: Korrekturen/Vorschläge: Charaktere können nun nach Namen durchsucht werden.",
+            "Fix: Nach einer Versus-Runde wird der Wett-Status zurückgesetzt, sodass in der nächsten Runde neu gewettet werden kann.",
+            "QoL: Das eigene Profil-Panel ist jetzt breiter, um alle Features ohne Überlappungen darzustellen."
+        ]
+    },
+    {
         title: "Tausch & Versus Wetten Update",
         isHotfix: false,
         changes: [

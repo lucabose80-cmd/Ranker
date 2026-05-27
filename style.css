@@ -630,7 +630,7 @@ body.alt-theme .mini-avatar { border-color: #ff2a9d; }
     background: rgba(0,0,0,0.85); z-index: 2000;
     display: flex; justify-content: center; align-items: center;
 }
-.profile-panel { width: 95%; max-width: 850px; position: relative; max-height: 90vh; overflow-y: auto; }
+.profile-panel { width: 95%; max-width: 1050px; position: relative; max-height: 90vh; overflow-y: auto; }
 .close-overlay-btn { position: absolute; top: 15px; right: 20px; font-size: 1.8rem; background: none; border: none; color: #888; cursor: pointer; }
 .close-overlay-btn:hover { color: #fff; }
 

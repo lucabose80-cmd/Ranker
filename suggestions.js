@@ -189,29 +189,43 @@ export function renderSuggestions() {
                 
                 import('./theme.js').then(({ activeCharacterDatabase }) => {
                     const gridEl = document.getElementById('char-update-grid');
-                    gridEl.innerHTML = '';
-                    const sorted = [...activeCharacterDatabase].sort((a,b) => a.name.localeCompare(b.name));
-                    sorted.forEach(c => {
-                        const img = document.createElement('img');
-                        img.src = c.img;
-                        img.className = 'char-update-img';
-                        img.style.width = '100%';
-                        img.style.aspectRatio = '1 / 1.3';
-                        img.style.objectFit = 'cover';
-                        img.style.borderRadius = '4px';
-                        img.style.cursor = 'pointer';
-                        img.style.border = '2px solid transparent';
-                        img.title = c.name;
-                        
-                        img.addEventListener('click', () => {
-                            selectedCharForUpdate = c.name;
-                            document.getElementById('char-update-selected-info').textContent = "Ausgewählt: " + c.name;
-                            document.querySelectorAll('.char-update-img').forEach(el => el.style.borderColor = 'transparent');
-                            img.style.borderColor = '#2ed573';
+                    const searchEl = document.getElementById('char-update-search');
+                    
+                    const allChars = [...activeCharacterDatabase].sort((a,b) => a.name.localeCompare(b.name));
+                    
+                    const renderCharGrid = (filter = '') => {
+                        gridEl.innerHTML = '';
+                        const q = filter.trim().toLowerCase();
+                        const filtered = q ? allChars.filter(c => c.name.toLowerCase().includes(q)) : allChars;
+                        filtered.forEach(c => {
+                            const img = document.createElement('img');
+                            img.src = c.img;
+                            img.className = 'char-update-img';
+                            img.style.width = '100%';
+                            img.style.aspectRatio = '1 / 1.3';
+                            img.style.objectFit = 'cover';
+                            img.style.borderRadius = '4px';
+                            img.style.cursor = 'pointer';
+                            img.style.border = '2px solid transparent';
+                            img.title = c.name;
+                            
+                            img.addEventListener('click', () => {
+                                selectedCharForUpdate = c.name;
+                                document.getElementById('char-update-selected-info').textContent = "Ausgewählt: " + c.name;
+                                document.querySelectorAll('.char-update-img').forEach(el => el.style.borderColor = 'transparent');
+                                img.style.borderColor = '#2ed573';
+                            });
+                            
+                            gridEl.appendChild(img);
                         });
-                        
-                        gridEl.appendChild(img);
-                    });
+                    };
+                    
+                    renderCharGrid();
+                    
+                    if (searchEl) {
+                        searchEl.value = '';
+                        searchEl.oninput = () => renderCharGrid(searchEl.value);
+                    }
                 });
             } else {
                 document.getElementById('suggestion-normal-input-group').classList.remove('hidden');
