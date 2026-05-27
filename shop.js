@@ -68,7 +68,22 @@ export function initShop() {
         return;
     }
 
-    BOOSTERS.forEach(booster => {
+    // Info-Banner: Legendäre Belohnung
+    const infoBanner = document.createElement('div');
+    infoBanner.style.cssText = 'width:100%; box-sizing:border-box; background:linear-gradient(135deg, rgba(255,215,0,0.08), rgba(184,134,11,0.15)); border:1px solid rgba(255,215,0,0.4); border-radius:10px; padding:14px 20px; margin-bottom:20px; display:flex; align-items:center; gap:15px;';
+    infoBanner.innerHTML = `
+        <span style="font-size:2rem; flex-shrink:0;">✨</span>
+        <div>
+            <div style="color:#ffd700; font-weight:bold; font-size:0.95rem; margin-bottom:3px;">Satz-Belohnung: Legendäre Karte!</div>
+            <div style="color:#e2e8f0; font-size:0.82rem; line-height:1.5;">
+                Ziehe alle Charaktere eines Packs mindestens einmal aus diesem Pack — und erhalte <strong style="color:#ffd700;">einmalig eine zufällige Legendäre Karte</strong> als Belohnung!<br>
+                <span style="color:#94a3b8; font-size:0.78rem;">Der Fortschritt wird separat pro Pack-Typ gezählt.</span>
+            </div>
+        </div>
+    `;
+    container.appendChild(infoBanner);
+
+
         const pool = activeCharacterDatabase.filter(booster.filter);
         if (pool.length === 0) return;
         
