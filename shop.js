@@ -313,7 +313,7 @@ async function openBooster(booster, pool, currentCost) {
                 }
             }
 
-            const isNewLegendary = !currentInventory.some(c => c.charName === chosenChar.name && c.rarity === 'legendary'); currentInventory.push({
+            currentInventory.push({
                 charName: cardInfo.char.name,
                 rarity: cardInfo.rarity.id,
                 timestamp: Date.now(),
