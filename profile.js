@@ -462,9 +462,11 @@ function renderTitleSelection(user, gamesPlayed) {
                 const reqCount = t.condition.count || 5;
                 baseReqText = `Ranke ${reqCount} ${t.condition.tag.charAt(0).toUpperCase() + t.condition.tag.slice(1)} im selben Spiel`;
             } else if (t.condition.type === 'has_characters' || t.condition.type === 'has_discovered_characters') {
-                baseReqText = `Finde bestimmte geheime Charaktere`;
+                const targetChars = t.condition.chars || t.condition.characters || [];
+                baseReqText = `Finde: ${targetChars.join(', ')}`;
             } else if (t.condition.type === 'has_tag_in_round') {
-                baseReqText = `Finde geheime Kombinationen`;
+                const tag = t.condition.tag || '';
+                baseReqText = `Finde Kombination: ${t.condition.count}x ${tag.charAt(0).toUpperCase() + tag.slice(1)}`;
             }
         }
         
@@ -616,6 +618,12 @@ function renderThemeSelection(user) {
                 baseReqText = `Ranke ${reqCount} ${tag.charAt(0).toUpperCase() + tag.slice(1)} im selben Spiel`;
             } else if (type === 'bot_defeat') {
                 baseReqText = `Besiege Bot Stufe ${t.condition.level} im Cardgame`;
+            } else if (type === 'has_characters' || type === 'has_discovered_characters') {
+                const targetChars = t.condition.chars || t.condition.characters || [];
+                baseReqText = `Finde: ${targetChars.join(', ')}`;
+            } else if (type === 'has_tag_in_round') {
+                const tagStr = tag || '';
+                baseReqText = `Finde Kombination: ${t.condition.count}x ${tagStr.charAt(0).toUpperCase() + tagStr.slice(1)}`;
             }
         }
         

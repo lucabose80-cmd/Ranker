@@ -1,5 +1,13 @@
 export const patchNotesStarWars = [
     {
+        version: "v7.9.7",
+        title: "QoL: Geheime Titel aufdecken",
+        isHotfix: false,
+        changes: [
+            "QoL: Wenn man einen geheimen Titel freigeschaltet hat, wird beim Hovern nun nicht mehr nur 'geheime Charaktere' angezeigt, sondern exakt aufgelistet, welche Charaktere (oder Kombinationen) man dafür benötigt hat."
+        ]
+    },
+    {
         version: "v7.9.6",
         title: "QoL: Hover-Details für Titel & Themes",
         isHotfix: false,
