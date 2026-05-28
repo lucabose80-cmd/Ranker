@@ -29,7 +29,7 @@ export function initHistoryListener(force = false) {
     }
     isFirstLoadComplete = false;
 
-    const q = query(collection(db, "history"), where("mode", "==", currentMode), orderBy("timestamp", "desc"), limit(24));
+    const q = query(collection(db, "history"), where("mode", "==", currentMode), orderBy("timestamp", "desc"), limit(100));
     
     const handleHistorySnapshot = (snapshot) => {
         trackRead(snapshot.docChanges().filter(c => c.type !== 'removed').length);
@@ -60,7 +60,7 @@ export function initHistoryListener(force = false) {
     const handleHistoryError = (error) => {
         console.error("Fehler im History-Listener:", error);
         if (error?.message?.includes('index')) {
-            const fallbackQuery = query(collection(db, "history"), orderBy("timestamp", "desc"), limit(24));
+            const fallbackQuery = query(collection(db, "history"), orderBy("timestamp", "desc"), limit(100));
             historyUnsubscribe = onSnapshot(fallbackQuery, handleHistorySnapshot, (fallbackError) => {
                 console.error("History listener fallback error:", fallbackError);
             });
