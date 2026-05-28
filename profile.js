@@ -468,7 +468,7 @@ function renderTitleSelection(user, gamesPlayed) {
             }
         }
         
-        let reqText = isLocked ? baseReqText : 'Freigeschaltet';
+        let reqText = isLocked ? baseReqText : `<span class="req-status-normal">Freigeschaltet</span><span class="req-status-hover" style="display:none; color:#a1a1aa;">${baseReqText}</span>`;
         let probHtml = '';
         
         if (t.secret && t.condition && (t.condition.type === 'has_characters' || t.condition.type === 'has_discovered_characters')) {
@@ -522,6 +522,17 @@ function renderTitleSelection(user, gamesPlayed) {
             card.addEventListener('mouseenter', () => markAsSeen(t.id, card), { once: true });
         }
         if (!isLocked) {
+            card.addEventListener('mouseenter', () => {
+                const n = card.querySelector('.req-status-normal');
+                const h = card.querySelector('.req-status-hover');
+                if(n && h) { n.style.display = 'none'; h.style.display = 'inline'; }
+            });
+            card.addEventListener('mouseleave', () => {
+                const n = card.querySelector('.req-status-normal');
+                const h = card.querySelector('.req-status-hover');
+                if(n && h) { n.style.display = 'inline'; h.style.display = 'none'; }
+            });
+            
             card.addEventListener('click', async () => {
                 document.querySelectorAll('.title-card').forEach(c => c.classList.remove('selected'));
                 card.classList.add('selected');
@@ -608,7 +619,7 @@ function renderThemeSelection(user) {
             }
         }
         
-        reqText = !unlocked ? baseReqText : 'Freigeschaltet';
+        reqText = !unlocked ? baseReqText : `<span class="req-status-normal">Freigeschaltet</span><span class="req-status-hover" style="display:none; color:#a1a1aa;">${baseReqText}</span>`;
         
         reqText += probHtml;
 
@@ -625,6 +636,16 @@ function renderThemeSelection(user) {
             card.addEventListener('mouseenter', () => markAsSeen(t.id, card), { once: true });
         }
         if (unlocked) {
+            card.addEventListener('mouseenter', () => {
+                const n = card.querySelector('.req-status-normal');
+                const h = card.querySelector('.req-status-hover');
+                if(n && h) { n.style.display = 'none'; h.style.display = 'inline'; }
+            });
+            card.addEventListener('mouseleave', () => {
+                const n = card.querySelector('.req-status-normal');
+                const h = card.querySelector('.req-status-hover');
+                if(n && h) { n.style.display = 'inline'; h.style.display = 'none'; }
+            });
             card.addEventListener('click', async () => {
                 document.querySelectorAll('#theme-grid .title-card').forEach(c => c.classList.remove('selected'));
                 card.classList.add('selected');
