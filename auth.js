@@ -40,6 +40,34 @@ export function restoreUserStorage(user) {
     }
 }
 
+export async function checkDailyCreditsReset(user) {
+    if (!user || user.role === 'admin' || user.isTestUser) return false;
+    
+    const today = new Date();
+    const offset = today.getTimezoneOffset() * 60000;
+    const todaySeed = (new Date(today - offset)).toISOString().slice(0, 10);
+    
+    if (user.lastCreditResetDate !== todaySeed) {
+        user.lastCreditResetDate = todaySeed;
+        const updates = { lastCreditResetDate: todaySeed };
+        
+        Object.keys(user).forEach(key => {
+            if (key.startsWith('credits_earned_')) {
+                user[key] = 0;
+                updates[key] = 0;
+            }
+        });
+        
+        localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
+        try {
+            await updateDoc(doc(db, "users", user.uid), updates);
+            trackWrite(1);
+        } catch(e) {}
+        return true;
+    }
+    return false;
+}
+
 export async function loginOrRegister(usernameInput, password) {
     if (!usernameInput || !password) return { success: false, message: 'Bitte alles ausfüllen.' };
     
@@ -78,6 +106,8 @@ export async function loginOrRegister(usernameInput, password) {
                     user.password = hashedInput;
                 }
                 
+                await checkDailyCreditsReset(user);
+                
                 const { password: _, ...safeUser } = user;
                 localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(safeUser));
                 restoreUserStorage(user);
@@ -101,6 +131,7 @@ export async function loginOrRegister(usernameInput, password) {
                 avatarWaifu: "",
                 lastReadVersionStarWars: "", // NEU
                 lastReadVersionWaifu: "",    // NEU
+                lastCreditResetDate: (new Date(new Date() - new Date().getTimezoneOffset() * 60000)).toISOString().slice(0, 10),
                 uid: newUid
             };
             
@@ -317,6 +348,8 @@ export async function refreshCurrentUser() {
                 updatedUser.unlocked_titles_starwars = TITLES.starwars ? TITLES.starwars.map(t => t.id) : [];
                 updatedUser.unlocked_titles_waifu = TITLES.waifu ? TITLES.waifu.map(t => t.id) : [];
             }
+            
+            await checkDailyCreditsReset(updatedUser);
             
             localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updatedUser));
             restoreUserStorage(updatedUser);

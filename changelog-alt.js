@@ -1,5 +1,13 @@
 export const patchNotesWaifu = [
     {
+        version: "v7.9.1",
+        title: "Hotfix: Daily Reset",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Der Daily Reset für gespielte Runden im klassischen Modus wurde repariert. Tägliche Credits-Limits (20 Runden pro Tag) setzen sich nun um Mitternacht wieder korrekt zurück."
+        ]
+    },
+    {
         version: "v7.8",
         title: "Hotfix: Booster Packs & Animationen",
         isHotfix: true,
