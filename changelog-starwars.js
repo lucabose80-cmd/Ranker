@@ -1,5 +1,15 @@
 export const patchNotesStarWars = [
     {
+        version: "v8.2.2",
+        title: "Performance & Datenbank-Optimierung",
+        isHotfix: false,
+        changes: [
+            "Optimierung: Die Datenbank-Zugriffe (Reads) wurden im gesamten Spiel um bis zu 70% reduziert.",
+            "Performance: Hintergrund-Listener (Live-Modus & Historie) werden nun pausiert, wenn man den jeweiligen Tab verlässt.",
+            "Performance: Das Scoreboard und die Spielerlisten laden wesentlich effizienter und schonen das Datenvolumen extrem."
+        ]
+    },
+    {
         version: "v8.2.1",
         title: "Hotfix: Historie Limit, Cardgame Sorting & Tab Bug",
         isHotfix: true,

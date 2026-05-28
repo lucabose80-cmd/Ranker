@@ -18,7 +18,7 @@ import { initChangelog, updateChangelogContent } from './changelog.js';
 import { patchNotesStarWars } from './changelog-starwars.js';
 import { initAuth, loginOrRegister, logout, getCurrentUser, startPresenceHeartbeat, markCurrentUserOffline } from './auth.js';
 import { initAdminPanel, stopAdminPanel } from './admin.js';
-import { initAdventureMode } from './adventure.js?v=8.2.1';
+import { initAdventureMode } from './adventure.js?v=8.2.2';
 import { renderHistory, initHistoryListener, stopHistoryListener } from './history.js';
 import { renderScoreboard } from './scoreboard.js';
 import { renderLexikon, initLexikonTabs } from './lexikon.js';
@@ -242,9 +242,13 @@ function setupGameUI(user) {
             const target = link.dataset.target;
             document.getElementById(target).classList.remove('hidden');
             
-            // Inaktive Hörer werden absichtlich NICHT mehr abbestellt! 
-            // Wenn der Tab-Wechsel stattfindet, bleibt der Listener im Hintergrund aktiv.
-            // Dadurch nutzt Firebase den lokalen Cache und löst beim erneuten Öffnen 0 (NULL) Reads aus!
+            // Stoppe Listener, um Reads zu sparen, wenn Tabs verlassen werden!
+            if (target !== 'history-content' && target !== 'scoreboard-content') {
+                stopHistoryListener();
+            }
+            if (target !== 'live-content') {
+                stopLiveSpectating();
+            }
 
             // SOFORTIGES ERZWUNGENES NEULADEN BEI TAB-KLICK
             if (target === 'history-content') {

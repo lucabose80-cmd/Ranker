@@ -29,9 +29,8 @@ export async function initAdminPanel() {
                 const field = `globalHistoryReset_${currentMode}`;
                 const obj = {}; obj[field] = Timestamp.now();
                 try {
-                    const adminUid = getCurrentUser()?.uid;
-                    if (!adminUid) throw new Error('Kein Admin eingeloggt.');
-                    await updateDoc(doc(db, "users", adminUid), obj);
+                    // Schreib in config/resets anstatt in das Admin-Dokument (spart Reads)
+                    await setDoc(doc(db, "config", "resets"), obj, { merge: true });
                     invalidateAllCaches();
                     alert(`Globale Historie für ${currentMode} zurückgesetzt.`);
                     refreshAdminPanel();
@@ -44,9 +43,7 @@ export async function initAdminPanel() {
                 const field = `globalScoreboardReset_${currentMode}`;
                 const obj = {}; obj[field] = Timestamp.now();
                 try {
-                    const adminUid = getCurrentUser()?.uid;
-                    if (!adminUid) throw new Error('Kein Admin eingeloggt.');
-                    await updateDoc(doc(db, "users", adminUid), obj);
+                    await setDoc(doc(db, "config", "resets"), obj, { merge: true });
                     
                     // Globale Dokumente löschen
                     try { await deleteDoc(doc(db, "scores", `${currentMode}_classic_global`)); } catch(e) {}
@@ -72,13 +69,11 @@ export async function initAdminPanel() {
         document.getElementById('admin-reset-all-btn')?.addEventListener('click', async () => {
             if(confirm(`Bist du sicher? Das wird ALLE globalen und persönlichen Scoreboards sowie Historien für ${currentMode} komplett zurücksetzen.`)) {
                 try {
-                    const adminUid = getCurrentUser()?.uid;
-                    if (!adminUid) throw new Error('Kein Admin eingeloggt.');
-                    
                     const obj = {}; 
                     obj[`globalHistoryReset_${currentMode}`] = Timestamp.now();
                     obj[`globalScoreboardReset_${currentMode}`] = Timestamp.now();
-                    await updateDoc(doc(db, "users", adminUid), obj);
+                    await setDoc(doc(db, "config", "resets"), obj, { merge: true });
+
 
                     const scoresSnap = await getDocs(collection(db, "scores"));
                     const deletes = [];
@@ -275,8 +270,8 @@ async function renderUserList() {
     if(!userList) return;
     userList.innerHTML = '<p class="prompt-text" style="padding:10px;">Lade Benutzer...</p>';
     
-    // Alle User frisch laden (kein Cache hier, Admin braucht aktuelle Daten)
-    const querySnapshot = await getDocs(collection(db, "users"));
+    // Begrenzung auf 100 User, um Reads zu sparen. (Paginierung wäre besser, aber dies schützt vor Extremkosten)
+    const querySnapshot = await getDocs(query(collection(db, "users"), limit(100)));
     let users = querySnapshot.docs.map(d => ({ ...d.data(), id: d.id }));
     
     allUsersCache = users; // Für die Action-Buttons cachen
@@ -304,10 +299,14 @@ async function renderUserList() {
     // Globale Resets auslesen
     let globalHistReset = 0;
     let globalScoreReset = 0;
-    if (adminUser) {
-        if(adminUser[`globalHistoryReset_${currentMode}`]) globalHistReset = adminUser[`globalHistoryReset_${currentMode}`].seconds;
-        if(adminUser[`globalScoreboardReset_${currentMode}`]) globalScoreReset = adminUser[`globalScoreboardReset_${currentMode}`].seconds;
-    }
+    try {
+        const configSnap = await getDoc(doc(db, "config", "resets"));
+        if (configSnap.exists()) {
+            const data = configSnap.data();
+            if(data[`globalHistoryReset_${currentMode}`]) globalHistReset = data[`globalHistoryReset_${currentMode}`].seconds;
+            if(data[`globalScoreboardReset_${currentMode}`]) globalScoreReset = data[`globalScoreboardReset_${currentMode}`].seconds;
+        }
+    } catch (e) { console.warn(e); }
 
     // History für den aktuellen Modus abrufen
     let userHasHistory = {};

@@ -1,6 +1,6 @@
 // resets.js
 import { db } from './firebase-config.js';
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { collection, getDocs, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 let cacheAdminResets = null;
 let cacheUserResets = null;
@@ -9,8 +9,8 @@ let cacheTimestamp = 0;
 // Holt alle Resets (global und persönlich) mit einem 5-Minuten-Cache
 export async function getResets(force = false) {
     const now = Date.now();
-    // 5 Minuten Cache (300000 ms) – kurz genug, damit neue User im Scoreboard erscheinen
-    if (!force && cacheAdminResets && cacheUserResets && (now - cacheTimestamp < 300000)) {
+    // 1 Stunde Cache (3600000 ms) – massiv Read-Kosten gesenkt
+    if (!force && cacheAdminResets && cacheUserResets && (now - cacheTimestamp < 3600000)) {
         return { adminResets: cacheAdminResets, userResets: cacheUserResets };
     }
 
@@ -19,7 +19,7 @@ export async function getResets(force = false) {
             const localCacheStr = localStorage.getItem('ranker_resets_cache');
             if (localCacheStr) {
                 const localCache = JSON.parse(localCacheStr);
-                if (now - localCache.timestamp < 300000) {
+                if (now - localCache.timestamp < 3600000) {
                     cacheAdminResets = localCache.adminResets;
                     cacheUserResets = localCache.userResets;
                     cacheTimestamp = localCache.timestamp;
@@ -40,15 +40,24 @@ export async function getResets(force = false) {
     const userResets = {};
 
     try {
+        // Zuerst die globalen Resets über einen einzigen Read holen
+        try {
+            const configSnap = await getDoc(doc(db, "config", "resets"));
+            if (configSnap.exists()) {
+                const data = configSnap.data();
+                if (data.globalHistoryReset_starwars) adminResets.globalHistoryReset_starwars = data.globalHistoryReset_starwars.seconds;
+                if (data.globalHistoryReset_waifu) adminResets.globalHistoryReset_waifu = data.globalHistoryReset_waifu.seconds;
+                if (data.globalScoreboardReset_starwars) adminResets.globalScoreboardReset_starwars = data.globalScoreboardReset_starwars.seconds;
+                if (data.globalScoreboardReset_waifu) adminResets.globalScoreboardReset_waifu = data.globalScoreboardReset_waifu.seconds;
+            }
+        } catch (e) {
+            console.warn("Konnte config/resets nicht laden", e);
+        }
+
         const usersSnap = await getDocs(collection(db, "users"));
         usersSnap.forEach(d => {
             const u = d.data();
             if (u.role === 'admin') {
-                // Globale Reset-Timestamps aus dem Admin-Dokument lesen
-                if (u.globalHistoryReset_starwars) adminResets.globalHistoryReset_starwars = u.globalHistoryReset_starwars.seconds;
-                if (u.globalHistoryReset_waifu) adminResets.globalHistoryReset_waifu = u.globalHistoryReset_waifu.seconds;
-                if (u.globalScoreboardReset_starwars) adminResets.globalScoreboardReset_starwars = u.globalScoreboardReset_starwars.seconds;
-                if (u.globalScoreboardReset_waifu) adminResets.globalScoreboardReset_waifu = u.globalScoreboardReset_waifu.seconds;
                 return; // Admin NICHT ins userResets eintragen – soll nicht im Scoreboard erscheinen
             }
             

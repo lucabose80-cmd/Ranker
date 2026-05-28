@@ -1,4 +1,4 @@
-﻿import { LEGENDARY_POOL } from './data-starwars.js';
+import { LEGENDARY_POOL } from './data-starwars.js';
 // community.js
 import { db } from './firebase-config.js';
 import { collection, onSnapshot, query, orderBy, limit, addDoc, Timestamp, getDocs, where, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
@@ -319,7 +319,7 @@ export function initCommunity() {
     }
 
     updateOnlineTracker();
-    onlineInterval = setInterval(() => updateOnlineTracker(), 60000);
+    onlineInterval = setInterval(() => updateOnlineTracker(), 300000);
 }
 
 function openUserProfileModal(u) {
