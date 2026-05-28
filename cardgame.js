@@ -308,8 +308,8 @@ function updateDeckUI() {
     }
 }
 
-function getRarityColor(rarity) {
-    if(rarity === 'legendary') return '#ffd700';
+export function getRarityColor(rarity) {
+    if(rarity === 'legendary' || rarity === 'legend') return '#ffd700';
     if(rarity === 'epic') return '#9b59b6';
     if(rarity === 'rare') return '#ff9f43';
     return '#888';
@@ -770,8 +770,8 @@ function playRound(playerCard, explicitOppCard = null) {
     let oppRarMult = RARITY_MULT[oppCard.rarity] || 1.0;
     
     if (isAdventureMatch) {
-        // Global difficulty scaling: Level 1 starts with 0.70x multiplier, goes up to 1.65x at Level 20
-        const globalAdvScaling = 0.70 + (adventureLevelIndex * 0.05);
+        // Global difficulty scaling: Level 1 starts with 0.85x multiplier, goes up to 1.325x at Level 20
+        const globalAdvScaling = 0.85 + (adventureLevelIndex * 0.025);
         oppRarMult *= globalAdvScaling;
     }
     

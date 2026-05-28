@@ -4,7 +4,38 @@ import { doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11
 import { activeCharacterDatabase } from './theme.js';
 import { trackWrite, trackRead } from './tracker.js';
 
-import { startAdventureMatch, loadGlobalScores, getCardScore } from './cardgame.js';
+import { startAdventureMatch, loadGlobalScores, getCardScore, getRarityColor } from './cardgame.js';
+
+export function rollRarityForLevel(levelIdx) {
+    const r = Math.random();
+    if (levelIdx >= 18) { // 19, 20
+        if(r < 0.10) return 'legendary';
+        if(r < 0.30) return 'epic';
+        if(r < 0.70) return 'rare';
+        return 'common';
+    } else if (levelIdx >= 14) { // 15, 16, 17, 18
+        if(r < 0.05) return 'legendary';
+        if(r < 0.20) return 'epic';
+        if(r < 0.50) return 'rare';
+        return 'common';
+    } else if (levelIdx >= 9) { // 10, 11, 12, 13, 14
+        if(r < 0.10) return 'epic';
+        if(r < 0.40) return 'rare';
+        return 'common';
+    } else if (levelIdx >= 4) { // 5, 6, 7, 8, 9
+        if(r < 0.20) return 'rare';
+        return 'common';
+    }
+    return 'common';
+}
+
+function migrateDeck(deckArray) {
+    if(!deckArray) return [];
+    return deckArray.map(item => {
+        if(typeof item === 'string') return { charName: item, rarity: 'common' };
+        return item;
+    });
+}
 
 
 const ADVENTURE_LEVELS = 20;
@@ -26,13 +57,13 @@ export const BASE_ADVENTURE_DECK = [
 // Adventure Campaign Configuration
 export const ADVENTURE_CAMPAIGN = [
     { name: "Die Unterwelt", avatar: "", deck: ["Trace Martez", "Rafa Martez", "Gamorrean Guard", "Bib Fortuna", "Rotta the Hutt", "Ziro the Hutt", "Gardulla the Hutt", "The Twins", "Jabba the Hutt", "Boba Fett"], ruleText: "Keine Sonderregeln." },
-    { name: "Droiden-Armee", avatar: "", deck: ["B1 Battle Droide", "B2 Super Battle Droide", "Droideka", "Kommando Droide", "Suchdroide", "Zwergspinnendroide", "Spybot", "General Grievous", "AZI-3", "IG-88"], ruleText: "Gegnerische Droiden haben +10% Stärke." },
     { name: "Piraten & Schmuggler", avatar: "", deck: ["Hondo Ohnaka", "DJ", "Enfys Nest", "Dryden Vos", "Qi'ra", "Gorian Shard", "Kragan Gorr", "Vane", "Han Solo", "Lando Calrissian"], ruleText: "Keine Sonderregeln." },
     { name: "Erste Ordnung", avatar: "", deck: ["Kylo Ren", "Captain Phasma", "General Hux", "Supreme Leader Snoke", "FN-2199", "Sith Trooper", "Allegiant General Pryde", "Captain Peavey", "Executioner Trooper", "BB-9E"], ruleText: "Keine Sonderregeln." },
     { name: "Widerstand", avatar: "", deck: ["Rey Skywalker", "Poe Dameron", "Finn", "Rose Tico", "Vice Admiral Holdo", "Maz Kanata", "BB-8", "D-O", "Leia Organa", "Han Solo"], ruleText: "Gespieltes Imperium hat +10% Stärke gegen den Widerstand." },
     { name: "Bestien", avatar: "", deck: ["Rancor", "Wampa", "Sarlacc", "Nexu", "Acklay", "Reek", "Rathtar", "Zillo Beast", "Mudhorn", "Gamorrean Guard"], ruleText: "Gegner haben einen zufälligen Buff (10% bis 30%)." },
-    { name: "Separatisten-Führung", avatar: "", deck: ["Count Dooku", "General Grievous", "Wat Tambor", "Poggle the Lesser", "Nute Gunray", "Admiral Trench", "San Hill", "Lux Bonteri", "General Kalani", "Asajj Ventress"], ruleText: "Gegnerische Sith haben +15% Stärke." },
     { name: "Jedi-Padawane", avatar: "", deck: ["Jecki Lon", "Ahsoka Tano", "Ezra Bridger", "Cal Kestis", "Barriss Offee", "Zett Jukassa", "Gungi", "Katooni", "Petro", "Nahdar Vebb"], ruleText: "Gespielte Kopfgeldjäger haben +15% Stärke." },
+    { name: "Separatisten-Führung", avatar: "", deck: ["Count Dooku", "General Grievous", "Wat Tambor", "Poggle the Lesser", "Nute Gunray", "Admiral Trench", "San Hill", "Lux Bonteri", "General Kalani", "Asajj Ventress"], ruleText: "Gegnerische Sith haben +15% Stärke." },
+    { name: "Droiden-Armee", avatar: "", deck: ["B1 Battle Droide", "B2 Super Battle Droide", "Droideka", "Kommando Droide", "Suchdroide", "Zwergspinnendroide", "Spybot", "General Grievous", "AZI-3", "IG-88"], ruleText: "Gegnerische Droiden haben +10% Stärke." },
     { name: "Rebellen-Allianz", avatar: "", deck: ["Jyn Erso", "Cassian Andor", "Saw Gerrera", "Mon Mothma", "Admiral Ackbar", "Wedge Antilles", "Hera Syndulla", "Sabine Wren", "Nien Nunb", "Bail Organa"], ruleText: "Gegnerische Rebellen haben +10% Stärke." },
     { name: "Inquisitoren", avatar: "", deck: ["Grand Inquisitor", "Second Sister", "Third Sister", "Fifth Brother", "Seventh Sister", "Darth Vader", "Suchdroide", "Imperial Royal Guard", "Iden Versio", "Director Krennic"], ruleText: "Gegnerisches Imperium hat +15% Stärke." },
     { name: "Nachtschwestern", avatar: "", deck: ["Mother Talzin", "Asajj Ventress", "Merrin", "Morgan Elsbeth", "Savage Opress", "Darth Maul", "General Grievous", "Count Dooku", "Rancor", "Osha Aniseya"], ruleText: "Magie: Alle gegnerischen Karten sind 10% stärker." },
@@ -64,8 +95,8 @@ export function initAdventureMode() {
             const levelIdx = (user.adventure_level || 1) - 1;
             const safeIdx = Math.min(levelIdx, ADVENTURE_CAMPAIGN.length - 1);
             const oppData = ADVENTURE_CAMPAIGN[safeIdx];
-            const oppDeck = oppData.deck.map(name => ({ charName: name, rarity: 'common' }));
-            const pDeck = (user.adventure_deck || BASE_ADVENTURE_DECK).map(name => ({ charName: name, rarity: 'common' }));
+            const oppDeck = oppData.deck.map(name => ({ charName: name, rarity: rollRarityForLevel(levelIdx) }));
+            const pDeck = migrateDeck(user.adventure_deck || BASE_ADVENTURE_DECK);
             
             startAdventureMatch(safeIdx, oppData, oppDeck, pDeck);
         });
@@ -105,17 +136,23 @@ async function verifyAdventureInit() {
         needsUpdate = true;
     }
     if(!user.adventure_deck || user.adventure_deck.length !== 10) {
-        user.adventure_deck = [...BASE_ADVENTURE_DECK];
+        user.adventure_deck = migrateDeck(BASE_ADVENTURE_DECK);
         updates.adventure_deck = user.adventure_deck;
         needsUpdate = true;
     } else {
-        // Validate existing deck
+        const isLegacy = user.adventure_deck.some(c => typeof c === 'string');
+        if (isLegacy) {
+            user.adventure_deck = migrateDeck(user.adventure_deck);
+            updates.adventure_deck = user.adventure_deck;
+            needsUpdate = true;
+        }
+        
         let isInvalid = false;
         user.adventure_deck.forEach(c => {
-            if(!activeCharacterDatabase.find(dbC => dbC.name === c)) isInvalid = true;
+            if(!activeCharacterDatabase.find(dbC => dbC.name === c.charName)) isInvalid = true;
         });
         if(isInvalid) {
-            user.adventure_deck = [...BASE_ADVENTURE_DECK];
+            user.adventure_deck = migrateDeck(BASE_ADVENTURE_DECK);
             updates.adventure_deck = user.adventure_deck;
             needsUpdate = true;
         }
@@ -180,16 +217,16 @@ export function renderAdventureDeck() {
     const deckContainer = document.getElementById('adventure-current-deck');
     deckContainer.innerHTML = '';
     
-    const deck = user.adventure_deck || BASE_ADVENTURE_DECK;
+    const deck = migrateDeck(user.adventure_deck || BASE_ADVENTURE_DECK);
     
-    deck.forEach(cardName => {
-        const charObj = activeCharacterDatabase.find(c => c.name === cardName);
+    deck.forEach(cardObj => {
+        const charObj = activeCharacterDatabase.find(c => c.name === cardObj.charName);
         if(!charObj) return;
         
         const cardEl = document.createElement('div');
         cardEl.style.position = 'relative';
         cardEl.innerHTML = `
-            <img src="${charObj.img}" style="width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; border: 1px solid #333;">
+            <img src="${charObj.img}" style="width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; border: 2px solid ${getRarityColor(cardObj.rarity)};">
             <div style="position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.8); color: #fff; font-size: 0.65rem; text-align: center; padding: 2px 0;">${charObj.name}</div>
         `;
         deckContainer.appendChild(cardEl);
@@ -228,7 +265,7 @@ export function handleAdventureWin(levelIndex) {
         // Reset so they can play again if they want, or maybe just cap it?
         // Let's reset the run but keep the milestone flags so they can do it again for fun (5 credits).
         user.adventure_level = 1;
-        user.adventure_deck = [...BASE_ADVENTURE_DECK];
+        user.adventure_deck = migrateDeck(BASE_ADVENTURE_DECK);
         alert("HERZLICHEN GLÃœCKWUNSCH! Du hast die Abenteuer-Kampagne durchgespielt! Dein Run wird nun zurÃ¼ckgesetzt, du kannst aber jederzeit neu starten.");
     }
     
@@ -265,7 +302,7 @@ export function handleAdventureLoss() {
     alert("NIEDERLAGE! Dein Abenteuer-Lauf ist beendet. Du startest wieder bei Level 1 mit dem Standard-Deck.");
     
     user.adventure_level = 1;
-    user.adventure_deck = [...BASE_ADVENTURE_DECK];
+    user.adventure_deck = migrateDeck(BASE_ADVENTURE_DECK);
     
     const updates = {
         adventure_level: 1,
@@ -299,16 +336,16 @@ async function showDraftScreen(levelIndex, creditsWon) {
         const randIdx = Math.floor(Math.random() * dbCopy.length);
         const card = dbCopy.splice(randIdx, 1)[0];
         // Ensure no duplicates
-        if(!draftOptions.includes(card.name)) {
-            draftOptions.push(card.name);
+        if(!draftOptions.find(o => o.charName === card.name)) {
+            draftOptions.push({ charName: card.name, rarity: rollRarityForLevel(levelIndex) });
         }
     }
     
     const optionsContainer = document.getElementById('adventure-draft-options');
     optionsContainer.innerHTML = '';
     
-    draftOptions.forEach(cardName => {
-        const charObj = activeCharacterDatabase.find(c => c.name === cardName);
+    draftOptions.forEach(draftObj => {
+        const charObj = activeCharacterDatabase.find(c => c.name === draftObj.charName);
         if(!charObj) return;
         
         const cardScore = getCardScore(cardName);
@@ -321,7 +358,7 @@ async function showDraftScreen(levelIndex, creditsWon) {
         
         cardEl.innerHTML = `
             <div style="position:relative;">
-                <img src="${charObj.img}" style="width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 6px; border: 2px solid #333;">
+                <img src="${charObj.img}" style="width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 6px; border: 3px solid ${getRarityColor(draftObj.rarity)};">
                 <div style="position:absolute; top:5px; right:5px; background:rgba(0,0,0,0.8); border:1px solid #ffd700; color:#ffd700; border-radius:4px; padding:2px 5px; font-weight:bold; font-size:0.8rem;">
                     ★ ${cardScore.toFixed(1)}
                 </div>
@@ -333,20 +370,20 @@ async function showDraftScreen(levelIndex, creditsWon) {
         cardEl.addEventListener('mouseleave', () => cardEl.style.transform = 'scale(1)');
         
         cardEl.addEventListener('click', () => {
-            selectDraftCard(cardName, charObj.img, cardScore);
+            selectDraftCard(draftObj, charObj.img, cardScore);
         });
         
         optionsContainer.appendChild(cardEl);
     });
 }
 
-function selectDraftCard(newCardName, newCardImage, newCardScore) {
+function selectDraftCard(newDraftObj, newCardImage, newCardScore) {
     document.getElementById('adventure-draft-step1').classList.add('hidden');
     document.getElementById('adventure-draft-step2').classList.remove('hidden');
     
     document.getElementById('adventure-draft-new-card-preview').innerHTML = `
         <div style="position:relative;">
-            <img src="${newCardImage}" style="width: 80px; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px;">
+            <img src="${newCardImage}" style="width: 80px; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; border: 2px solid ${getRarityColor(newDraftObj.rarity)};">
             <div style="position:absolute; top:2px; right:2px; background:rgba(0,0,0,0.8); border:1px solid #2ed573; color:#2ed573; border-radius:4px; padding:1px 3px; font-weight:bold; font-size:0.7rem;">
                 ★ ${newCardScore.toFixed(1)}
             </div>
@@ -357,11 +394,13 @@ function selectDraftCard(newCardName, newCardImage, newCardScore) {
     const removeContainer = document.getElementById('adventure-draft-remove-options');
     removeContainer.innerHTML = '';
     
-    user.adventure_deck.forEach((cardName, index) => {
-        const charObj = activeCharacterDatabase.find(c => c.name === cardName);
+    const pDeck = migrateDeck(user.adventure_deck);
+    
+    pDeck.forEach((deckObj, index) => {
+        const charObj = activeCharacterDatabase.find(c => c.name === deckObj.charName);
         if(!charObj) return;
         
-        const existingCardScore = getCardScore(cardName);
+        const existingCardScore = getCardScore(deckObj.charName);
         
         const cardEl = document.createElement('div');
         cardEl.style.width = '80px';
@@ -374,7 +413,7 @@ function selectDraftCard(newCardName, newCardImage, newCardScore) {
         
         cardEl.innerHTML = `
             <div style="position:relative;">
-                <img src="${charObj.img}" style="width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; border: 2px solid #555;">
+                <img src="${charObj.img}" style="width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; border: 2px solid ${getRarityColor(deckObj.rarity)};">
                 <div style="position:absolute; top:2px; right:2px; background:rgba(0,0,0,0.8); border:1px solid ${diffColor}; color:${diffColor}; border-radius:4px; padding:1px 3px; font-weight:bold; font-size:0.7rem;">
                     ★ ${existingCardScore.toFixed(1)}
                 </div>
@@ -386,13 +425,13 @@ function selectDraftCard(newCardName, newCardImage, newCardScore) {
         cardEl.addEventListener('mouseenter', () => cardEl.style.opacity = '0.7');
         cardEl.addEventListener('mouseleave', () => cardEl.style.opacity = '1');
         
-        cardEl.addEventListener('click', async () => {
-            // Swap cards
-            user.adventure_deck[index] = newCardName;
+        cardEl.addEventListener('click', () => {
+            pDeck[index] = newDraftObj;
+            user.adventure_deck = pDeck;
             
-            // Save
-            await updateDoc(doc(db, "users", user.uid), { adventure_deck: user.adventure_deck });
-            trackWrite(1);
+            updateDoc(doc(db, "users", user.uid), {
+                adventure_deck: user.adventure_deck
+            });trackWrite(1);
             localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
             
             // Go back to map
