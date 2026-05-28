@@ -562,7 +562,62 @@ function playRound(playerCard, explicitOppCard = null) {
         oppCard = explicitOppCard;
     } else {
         const unplayedOpp = opponentDeck.filter(c => !playedOpponentCards.includes(c));
-        oppCard = unplayedOpp[Math.floor(Math.random() * unplayedOpp.length)];
+        
+        if (typeof isBotMatch !== 'undefined' && isBotMatch && opponentData && opponentData.botLevel) {
+            const pDb = activeCharacterDatabase.find(x => x.name === playerCard.charName);
+            const pFac = getMainFaction(pDb.tags);
+            const pSyn = getSynergyMult(calculateSynergy(playerDeck));
+            const pBase = getCardScore(playerCard.charName);
+            const pRar = RARITY_MULT[playerCard.rarity] || 1.0;
+            const pBaseFinal = pBase * pRar * pSyn;
+            
+            const oSyn = getSynergyMult(calculateSynergy(opponentDeck));
+            
+            const oppOptions = unplayedOpp.map(c => {
+                const oDb = activeCharacterDatabase.find(x => x.name === c.charName);
+                const oFac = getMainFaction(oDb.tags);
+                let pFacMult = 1.0; let oFacMult = 1.0;
+                if(FACTION_ADVANTAGE[pFac] === oFac) pFacMult = 1.2;
+                if(FACTION_ADVANTAGE[oFac] === pFac) oFacMult = 1.2;
+                
+                const oBase = getCardScore(c.charName);
+                const oRar = RARITY_MULT[c.rarity] || 1.0;
+                const oFinal = oBase * oRar * oFacMult * oSyn;
+                const pFinal = pBaseFinal * pFacMult;
+                
+                return {
+                    card: c,
+                    win: oFinal >= pFinal,
+                    oFinal: oFinal
+                };
+            });
+            
+            oppOptions.sort((a, b) => a.oFinal - b.oFinal);
+            
+            const botLvl = opponentData.botLevel;
+            const errorChance = Math.max(0, (10 - botLvl) * 0.1); // Lvl 10 = 0% error, Lvl 1 = 90% error
+            
+            if (Math.random() < errorChance) {
+                oppCard = unplayedOpp[Math.floor(Math.random() * unplayedOpp.length)];
+            } else {
+                const winningCards = oppOptions.filter(o => o.win);
+                if (winningCards.length > 0) {
+                    if (botLvl >= 7) {
+                        oppCard = winningCards[0].card; // Play weakest winning card
+                    } else {
+                        oppCard = winningCards[Math.floor(Math.random() * winningCards.length)].card;
+                    }
+                } else {
+                    if (botLvl >= 5) {
+                        oppCard = oppOptions[0].card; // Sacrifice weakest losing card
+                    } else {
+                        oppCard = oppOptions[Math.floor(Math.random() * oppOptions.length)].card;
+                    }
+                }
+            }
+        } else {
+            oppCard = unplayedOpp[Math.floor(Math.random() * unplayedOpp.length)];
+        }
     }
     
     // Only push if not already pushed (to avoid double push in PvP)

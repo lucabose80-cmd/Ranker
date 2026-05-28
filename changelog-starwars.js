@@ -1,5 +1,14 @@
 export const patchNotesStarWars = [
     {
+        version: "v7.9.3",
+        title: "Update: Cardgame Bot Intelligenz",
+        isHotfix: false,
+        changes: [
+            "Feature: Die KI-Logik für Cardgame Bots wurde massiv überarbeitet. Die Bots werfen nun nicht mehr einfach zufällig Karten ab.",
+            "Balancing: Die Intelligenz skaliert jetzt exakt mit der Stufe des Bots. Niedrige Bots spielen noch fehlerhaft und zufällig. Höhere Bots (Stufe 7+) kontern die Züge des Spielers taktisch perfekt aus und opfern bei garantierten Niederlagen gezielt ihre schwächsten Karten."
+        ]
+    },
+    {
         version: "v7.9.2",
         title: "Hotfix: Cardgame Bot Titel",
         isHotfix: true,
