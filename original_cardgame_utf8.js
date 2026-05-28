@@ -1,6 +1,5 @@
-import { getCurrentUser } from './auth.js';
+﻿import { getCurrentUser } from './auth.js';
 import { activeCharacterDatabase } from './theme.js';
-import { handleAdventureWin, handleAdventureLoss } from './adventure.js';
 import { db } from './firebase-config.js';
 import { currentMode } from './mode-state.js';
 import { LEGENDARY_POOL } from './data-starwars.js';
@@ -19,8 +18,6 @@ let playedOpponentCards = [];
 let globalScoresCache = {};
 let isBotMatch = false;
 let liveMatchActive = false;
-let isAdventureMatch = false;
-let adventureLevelIndex = 0;
 
 const RARITY_MULT = { 'common': 1.0, 'rare': 1.1, 'epic': 1.3, 'legendary': 1.5 };
 const RARITY_ORDER = { 'legendary': 4, 'epic': 3, 'rare': 2, 'common': 1 };
@@ -355,16 +352,16 @@ async function renderMatchmaking() {
 }
 
 const BOT_LEVELS = [
-    { name: "Trainingsdroide (Lvl 1)", rarities: ['common'], popFilter: 'low', synergy: 'none', color: '#888', desc: "Nutzt nur häufige & unbeliebte Karten.", reward: 5 },
+    { name: "Trainingsdroide (Lvl 1)", rarities: ['common'], popFilter: 'low', synergy: 'none', color: '#888', desc: "Nutzt nur h├ñufige & unbeliebte Karten.", reward: 5 },
     { name: "Jawa (Lvl 2)", rarities: ['common', 'rare'], popFilter: 'low', synergy: 'none', color: '#a0a0a0', desc: "Nutzt schwache Karten, manchmal seltene.", reward: 10 },
     { name: "Sturmtruppler (Lvl 3)", rarities: ['common', 'rare'], popFilter: 'any', synergy: 'low', color: '#fff', desc: "Durchschnittliche Karten ohne Strategie.", reward: 20 },
-    { name: "Kopfgeldjäger (Lvl 4)", rarities: ['rare'], popFilter: 'high', synergy: 'low', color: '#f39c12', desc: "Nutzt starke, seltene Karten.", reward: 50 },
+    { name: "Kopfgeldj├ñger (Lvl 4)", rarities: ['rare'], popFilter: 'high', synergy: 'low', color: '#f39c12', desc: "Nutzt starke, seltene Karten.", reward: 50 },
     { name: "Inquisitor (Lvl 5)", rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'low', color: '#e74c3c', desc: "Solide Mischung aus selten und episch.", reward: 75 },
     { name: "Ritter der Ren (Lvl 6)", rarities: ['rare', 'epic'], popFilter: 'high', synergy: 'low', color: '#8e44ad', desc: "Starke epische Karten, wenig Synergie.", reward: 100 },
     { name: "Jedi-Ritter (Lvl 7)", rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#2ed573', desc: "Epische Karten mit gezielten Synergien.", reward: 150 },
-    { name: "General Grievous (Lvl 8)", rarities: ['epic', 'legendary'], popFilter: 'any', synergy: 'high', color: '#95a5a6', desc: "Gefährliche Legendäre und starke Synergie.", reward: 200 },
-    { name: "Darth Vader (Lvl 9)", rarities: ['epic', 'legendary'], popFilter: 'high', synergy: 'high', color: '#c0392b', desc: "Nur die stärksten Karten mit extremen Synergien.", reward: 300 },
-    { name: "Großmeister Yoda (Lvl 10)", rarities: ['legendary'], popFilter: 'high', synergy: 'max', color: '#ffd700', desc: "Das perfekte Deck. Maximale Stärke.", reward: 500 }
+    { name: "General Grievous (Lvl 8)", rarities: ['epic', 'legendary'], popFilter: 'any', synergy: 'high', color: '#95a5a6', desc: "Gef├ñhrliche Legend├ñre und starke Synergie.", reward: 200 },
+    { name: "Darth Vader (Lvl 9)", rarities: ['epic', 'legendary'], popFilter: 'high', synergy: 'high', color: '#c0392b', desc: "Nur die st├ñrksten Karten mit extremen Synergien.", reward: 300 },
+    { name: "Gro├ƒmeister Yoda (Lvl 10)", rarities: ['legendary'], popFilter: 'high', synergy: 'max', color: '#ffd700', desc: "Das perfekte Deck. Maximale St├ñrke.", reward: 500 }
 ];
 
 function renderBots() {
@@ -380,8 +377,8 @@ function renderBots() {
         const botLevel = idx + 1;
         const isDefeated = defeatedBots.includes(botLevel);
         const rewardHtml = isDefeated 
-            ? `<div style="font-size:0.85rem; color:#2ed573; margin-top:10px; font-weight:bold;">✓ Bereits besiegt</div>` 
-            : `<div style="font-size:0.85rem; color:#ffd700; margin-top:10px; font-weight:bold;">🏆 Erstsieg: ${bot.reward} Credits</div>`;
+            ? `<div style="font-size:0.85rem; color:#2ed573; margin-top:10px; font-weight:bold;">Ô£ô Bereits besiegt</div>` 
+            : `<div style="font-size:0.85rem; color:#ffd700; margin-top:10px; font-weight:bold;">­ƒÅå Erstsieg: ${bot.reward} Credits</div>`;
             
         const div = document.createElement('div');
         div.style.cssText = `background:#1a1e29; padding:20px; border:2px solid ${bot.color}; border-radius:10px; text-align:center; flex:1 1 250px; max-width:300px; display:flex; flex-direction:column; justify-content:space-between;`;
@@ -389,7 +386,7 @@ function renderBots() {
             <div>
                 <h3 style="color:${bot.color}; margin-top:0;">${bot.name}</h3>
                 <p style="color:#888; font-size:0.9rem;">${bot.desc}</p>
-                <div style="font-size:0.8rem; color:#aaa; margin-top:5px;">Rarität: ${bot.rarities.join(', ')}</div>
+                <div style="font-size:0.8rem; color:#aaa; margin-top:5px;">Rarit├ñt: ${bot.rarities.join(', ')}</div>
                 <div style="font-size:0.8rem; color:#aaa;">Strategie: ${bot.synergy === 'max' ? 'Perfekt' : bot.synergy === 'high' ? 'Hoch' : bot.synergy === 'low' ? 'Gering' : 'Keine'}</div>
                 ${rewardHtml}
             </div>
@@ -520,38 +517,6 @@ async function startMatch(oppData, oppDeckArr) {
     renderOpponentDeckState();
 }
 
-export async function startAdventureMatch(levelIndex, oppData, oppDeckArr, playerAdventureDeckArr) {
-    await loadGlobalScores();
-    opponentData = oppData; 
-    opponentDeck = [...oppDeckArr];
-    playerDeck = [...playerAdventureDeckArr]; 
-    
-    currentRound = 1;
-    playerScore = 0;
-    opponentScore = 0;
-    playedPlayerCards = [];
-    playedOpponentCards = [];
-    
-    isBotMatch = true;
-    isAdventureMatch = true;
-    adventureLevelIndex = levelIndex;
-    
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-    document.getElementById('cardgame-match').classList.remove('hidden');
-    
-    document.getElementById('match-player-score').innerText = '0';
-    document.getElementById('match-opponent-score').innerText = '0';
-    
-    const pSyn = calculateSynergy(playerDeck);
-    const oSyn = calculateSynergy(opponentDeck);
-    
-    document.getElementById('match-player-synergy').innerHTML = pSyn.map(s => `${s.faction} (+${s.count}%)`).join('<br>') || 'Keine';
-    document.getElementById('match-opponent-synergy').innerHTML = oSyn.map(s => `${s.faction} (+${s.count}%)`).join('<br>') || 'Keine';
-    
-    renderHand();
-    renderOpponentDeckState();
-}
-
 function updateLiveSpectator(user, scoreText) {
     if(!liveMatchActive) return;
     try {
@@ -624,25 +589,18 @@ function playRound(playerCard, explicitOppCard = null) {
         oppCard = explicitOppCard;
     } else {
         const unplayedOpp = opponentDeck.filter(c => !playedOpponentCards.includes(c));
-        if (typeof isBotMatch !== 'undefined' && isBotMatch && opponentData) {
+        
+        if (typeof isBotMatch !== 'undefined' && isBotMatch && opponentData && opponentData.botLevel) {
             const pDb = activeCharacterDatabase.find(x => x.name === playerCard.charName);
             const pFac = getMainFaction(pDb.tags);
             const pSyn = getSynergyMult(calculateSynergy(playerDeck));
             const pBase = getCardScore(playerCard.charName);
             const pRar = RARITY_MULT[playerCard.rarity] || 1.0;
-            let pBaseFinal = pBase * pRar * pSyn;
+            const pBaseFinal = pBase * pRar * pSyn;
             
-            // Adventure Modifiers for Player
-            if (isAdventureMatch) {
-                if (adventureLevelIndex === 9 && pFac === 'rebell') pBaseFinal *= 1.15;
-                if (adventureLevelIndex === 17 && pFac === 'jedi') pBaseFinal *= 1.20;
-            }
-            
-            let bestOpp = null;
-            let bestScoreDiff = -999999;
             const oSyn = getSynergyMult(calculateSynergy(opponentDeck));
             
-            unplayedOpp.forEach(c => {
+            const oppOptions = unplayedOpp.map(c => {
                 const oDb = activeCharacterDatabase.find(x => x.name === c.charName);
                 const oFac = getMainFaction(oDb.tags);
                 let pFacMult = 1.0; let oFacMult = 1.0;
@@ -651,48 +609,45 @@ function playRound(playerCard, explicitOppCard = null) {
                 
                 const oBase = getCardScore(c.charName);
                 const oRar = RARITY_MULT[c.rarity] || 1.0;
-                let oBaseFinal = oBase * oRar * oSyn;
+                const oFinal = oBase * oRar * oFacMult * oSyn;
+                const pFinal = pBaseFinal * pFacMult;
                 
-                // Adventure Modifiers for Bot
-                if (isAdventureMatch) {
-                    if (adventureLevelIndex === 2 && oFac === 'imperium') oBaseFinal *= 1.10;
-                    if (adventureLevelIndex === 3 && (oFac === 'kopfgeldjäger' || oFac === 'schurke')) oBaseFinal *= 1.15;
-                    if (adventureLevelIndex === 4) oBaseFinal *= 1.20;
-                    if (adventureLevelIndex === 5 && oDb.tags.includes('fahrzeug')) oBaseFinal *= 1.20;
-                    if (adventureLevelIndex === 7 && oFac === 'sith') oBaseFinal *= 1.25;
-                    if (adventureLevelIndex === 8 && c.charName === 'Emperor Palpatine') oBaseFinal *= 1.50;
-                    if (adventureLevelIndex === 9 && oFac === 'rebell') oBaseFinal *= 1.15;
-                    if (adventureLevelIndex === 10 && oDb.tags.includes('fahrzeug')) oBaseFinal *= 1.30;
-                    if (adventureLevelIndex === 11 && oDb.tags.includes('ewok')) oBaseFinal *= 1.20;
-                    if (adventureLevelIndex === 12 && oFac === 'imperium') oBaseFinal *= 1.15;
-                    if (adventureLevelIndex === 13 && (oDb.tags.includes('fahrzeug') || oFac === 'kopfgeldjäger')) oBaseFinal *= 1.15;
-                    if (adventureLevelIndex === 14) oBaseFinal *= 1.30;
-                    if (adventureLevelIndex === 15 && c.charName === 'Rancor') oBaseFinal *= 2.0;
-                    if (adventureLevelIndex === 16) oBaseFinal *= (1 + (Math.random() * 0.4));
-                    if (adventureLevelIndex === 18 && oFac === 'imperium') oBaseFinal *= 1.25;
-                    if (adventureLevelIndex === 19 && oFac === 'sith') oBaseFinal *= 1.30;
-                    if (adventureLevelIndex === 19 && oFac === 'imperium') oBaseFinal *= 1.20;
-                }
-                
-                const scoreDiff = (oBaseFinal * oFacMult) - (pBaseFinal * pFacMult);
-                if (scoreDiff > bestScoreDiff) {
-                    bestScoreDiff = scoreDiff;
-                    bestOpp = c;
-                }
+                return {
+                    card: c,
+                    win: oFinal >= pFinal,
+                    oFinal: oFinal
+                };
             });
             
-            if (!isAdventureMatch && opponentData.botLevel === 1 && Math.random() < 0.6) {
-                oppCard = unplayedOpp[Math.floor(Math.random() * unplayedOpp.length)];
-            } else if (!isAdventureMatch && opponentData.botLevel === 2 && Math.random() < 0.3) {
+            oppOptions.sort((a, b) => a.oFinal - b.oFinal);
+            
+            const botLvl = opponentData.botLevel;
+            const errorChance = Math.max(0, (10 - botLvl) * 0.1); // Lvl 10 = 0% error, Lvl 1 = 90% error
+            
+            if (Math.random() < errorChance) {
                 oppCard = unplayedOpp[Math.floor(Math.random() * unplayedOpp.length)];
             } else {
-                oppCard = bestOpp;
+                const winningCards = oppOptions.filter(o => o.win);
+                if (winningCards.length > 0) {
+                    if (botLvl >= 7) {
+                        oppCard = winningCards[0].card; // Play weakest winning card
+                    } else {
+                        oppCard = winningCards[Math.floor(Math.random() * winningCards.length)].card;
+                    }
+                } else {
+                    if (botLvl >= 5) {
+                        oppCard = oppOptions[0].card; // Sacrifice weakest losing card
+                    } else {
+                        oppCard = oppOptions[Math.floor(Math.random() * oppOptions.length)].card;
+                    }
+                }
             }
         } else {
             oppCard = unplayedOpp[Math.floor(Math.random() * unplayedOpp.length)];
         }
     }
     
+    // Only push if not already pushed (to avoid double push in PvP)
     if (!playedOpponentCards.includes(oppCard)) {
         playedOpponentCards.push(oppCard);
     }
@@ -748,6 +703,7 @@ function playRound(playerCard, explicitOppCard = null) {
     const getHoloHTML = (rarity) => rarity === "epic" ? `<div style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; mix-blend-mode: color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear; border-radius:5px;"></div>` : "";
     const getLegStyle = (rarity) => rarity === "legendary" ? "animation: legendary-flicker 1.5s infinite;" : "";
 
+    // Show cards (no effect yet - just the card flip)
     document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${pDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(playerCard.rarity)};"><div style="color:#fff; font-size:0.8rem; margin-top:5px;">${playerCard.charName}</div></div>`;
     document.getElementById("match-opponent-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${oDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(oppCard.rarity)};"><div style="color:#fff; font-size:0.8rem; margin-top:5px;">${oppCard.charName}</div></div>`;
 
@@ -755,43 +711,22 @@ function playRound(playerCard, explicitOppCard = null) {
     
     const pBase = getCardScore(playerCard.charName);
     const oBase = getCardScore(oppCard.charName);
+    
     const pFac = getMainFaction(pDb.tags);
     const oFac = getMainFaction(oDb.tags);
+    
     let pFacMult = 1.0; let oFacMult = 1.0;
     if(FACTION_ADVANTAGE[pFac] === oFac) pFacMult = 1.2;
     if(FACTION_ADVANTAGE[oFac] === pFac) oFacMult = 1.2;
-    const pSynArr = calculateSynergy(playerDeck);
-    const oSynArr = calculateSynergy(opponentDeck);
-    const pSyn = getSynergyMult(pSynArr);
-    const oSyn = getSynergyMult(oSynArr);
-    let pRarMult = RARITY_MULT[playerCard.rarity] || 1.0;
-    let oppRarMult = RARITY_MULT[oppCard.rarity] || 1.0;
     
-    if (isAdventureMatch) {
-        if (adventureLevelIndex === 2 && oFac === 'imperium') oppRarMult *= 1.10;
-        if (adventureLevelIndex === 3 && (oFac === 'kopfgeldjäger' || oFac === 'schurke')) oppRarMult *= 1.15;
-        if (adventureLevelIndex === 4) oppRarMult *= 1.20;
-        if (adventureLevelIndex === 5 && oDb.tags.includes('fahrzeug')) oppRarMult *= 1.20;
-        if (adventureLevelIndex === 6 && oFac === 'imperium') pRarMult *= 0.9;
-        if (adventureLevelIndex === 7 && oFac === 'sith') oppRarMult *= 1.25;
-        if (adventureLevelIndex === 8 && oppCard.charName === 'Emperor Palpatine') oppRarMult *= 1.50;
-        if (adventureLevelIndex === 9 && oFac === 'rebell') oppRarMult *= 1.15;
-        if (adventureLevelIndex === 9 && pFac === 'rebell') pRarMult *= 1.15;
-        if (adventureLevelIndex === 10 && oDb.tags.includes('fahrzeug')) oppRarMult *= 1.30;
-        if (adventureLevelIndex === 11 && oDb.tags.includes('ewok')) oppRarMult *= 1.20;
-        if (adventureLevelIndex === 12 && oFac === 'imperium') oppRarMult *= 1.15;
-        if (adventureLevelIndex === 13 && (oDb.tags.includes('fahrzeug') || oFac === 'kopfgeldjäger')) oppRarMult *= 1.15;
-        if (adventureLevelIndex === 14) oppRarMult *= 1.30;
-        if (adventureLevelIndex === 15 && oppCard.charName === 'Rancor') oppRarMult *= 2.0;
-        if (adventureLevelIndex === 16) oppRarMult *= (1 + (Math.random() * 0.4));
-        if (adventureLevelIndex === 17 && pFac === 'jedi') pRarMult *= 1.20;
-        if (adventureLevelIndex === 18 && oFac === 'imperium') oppRarMult *= 1.25;
-        if (adventureLevelIndex === 19 && oFac === 'sith') oppRarMult *= 1.30;
-        if (adventureLevelIndex === 19 && oFac === 'imperium') oppRarMult *= 1.20;
-    }
+    const pSyn = getSynergyMult(calculateSynergy(playerDeck));
+    const oSyn = getSynergyMult(calculateSynergy(opponentDeck));
     
-    const pFinal = pBase * pRarMult * pFacMult * pSyn;
-    const oFinal = oBase * oppRarMult * oFacMult * oSyn;
+    const pRar = RARITY_MULT[playerCard.rarity] || 1.0;
+    const oRar = RARITY_MULT[oppCard.rarity] || 1.0;
+    
+    const pFinal = pBase * pRar * pFacMult * pSyn;
+    const oFinal = oBase * oRar * oFacMult * oSyn;
     
     let isWin = pFinal > oFinal;
     let isDraw = pFinal === oFinal;
@@ -805,15 +740,7 @@ function playRound(playerCard, explicitOppCard = null) {
     const user = getCurrentUser();
     if(user && liveMatchActive) updateLiveSpectator(user, `${playerScore}:${opponentScore} (Runde ${currentRound+1})`);
 
-    const resultIcon = isWin ? '&#x1F3C6;' : (isDraw ? '&#x1F91D;' : '&#x1F4A5;');
-    const resultLabel = isWin
-        ? `<span style="color:#2ed573; font-size:1.4rem; font-weight:bold;">RUNDE GEWONNEN!</span>`
-        : (isDraw
-            ? `<span style="color:#ffd700; font-size:1.4rem; font-weight:bold;">UNENTSCHIEDEN</span>`
-            : `<span style="color:#ff4757; font-size:1.4rem; font-weight:bold;">RUNDE VERLOREN!</span>`);
-
-    document.getElementById('match-round-result').innerHTML = `<div style="font-size:2rem; margin-bottom:8px;">${resultIcon}</div>${resultLabel}`;
-
+    // Helper: render a score row
     const fmtMultiplier = (label, val, color, active) => active
         ? `<div style="display:flex; justify-content:space-between; align-items:center; padding:4px 8px; background:rgba(255,255,255,0.05); border-radius:4px; border-left:3px solid ${color};">
               <span style="color:#aaa; font-size:0.78rem;">${label}</span>
@@ -825,14 +752,21 @@ function playRound(playerCard, explicitOppCard = null) {
     const oFacActive   = oFacMult !== 1.0;
     const pSynActive   = pSyn > 1.0;
     const oSynActive   = oSyn > 1.0;
-    const pRarActive   = pRarMult > 1.0 || pRarMult < 1.0;
-    const oRarActive   = oppRarMult > 1.0 || oppRarMult < 1.0;
+    const pRarActive   = pRar > 1.0;
+    const oRarActive   = oRar > 1.0;
 
-    const pPct = Math.round((pFinal / (pFinal + oFinal)) * 100) || 50;
+    const resultIcon = isWin ? '&#x1F3C6;' : (isDraw ? '&#x1F91D;' : '&#x1F4A5;');
+    const resultLabel = isWin
+        ? `<span style="color:#2ed573; font-size:1.4rem; font-weight:bold;">RUNDE GEWONNEN!</span>`
+        : (isDraw
+            ? `<span style="color:#ffd700; font-size:1.4rem; font-weight:bold;">UNENTSCHIEDEN</span>`
+            : `<span style="color:#ff4757; font-size:1.4rem; font-weight:bold;">RUNDE VERLOREN!</span>`);
+
+    document.getElementById('match-round-result').innerHTML = `<div style="font-size:2rem; margin-bottom:8px;">${resultIcon}</div>${resultLabel}`;
+
+    // Score bar visual
+    const pPct = Math.round((pFinal / (pFinal + oFinal)) * 100);
     const oPct = 100 - pPct;
-
-    let pRarLabel = (isAdventureMatch && pRarMult !== (RARITY_MULT[playerCard.rarity] || 1.0)) ? "Modifikator" : `${playerCard.rarity[0].toUpperCase() + playerCard.rarity.slice(1)}-Karte`;
-    let oRarLabel = (isAdventureMatch && oppRarMult !== (RARITY_MULT[oppCard.rarity] || 1.0)) ? "Modifikator" : `${oppCard.rarity[0].toUpperCase() + oppCard.rarity.slice(1)}-Karte`;
 
     document.getElementById('match-round-calc').innerHTML = `
         <div style="margin-bottom:12px;">
@@ -852,7 +786,7 @@ function playRound(playerCard, explicitOppCard = null) {
                     <span style="color:#aaa; font-size:0.78rem;">Basis-Score</span>
                     <span style="color:#fff; font-weight:bold; font-size:0.85rem;">${pBase.toFixed(2)}</span>
                 </div>
-                ${fmtMultiplier(pRarLabel, pRarMult, '#ff9f43', pRarActive)}
+                ${fmtMultiplier(`${playerCard.rarity[0].toUpperCase() + playerCard.rarity.slice(1)}-Karte`, pRar, '#ff9f43', pRarActive)}
                 ${fmtMultiplier(`Fraktions-Bonus (${pFac} > ${oFac})`, pFacMult, '#4da6ff', pFacActive)}
                 ${fmtMultiplier(`Synergie-Bonus`, pSyn, '#a855f7', pSynActive)}
                 <div style="margin-top:8px; padding-top:6px; border-top:1px solid #333; display:flex; justify-content:space-between;">
@@ -866,7 +800,7 @@ function playRound(playerCard, explicitOppCard = null) {
                     <span style="color:#aaa; font-size:0.78rem;">Basis-Score</span>
                     <span style="color:#fff; font-weight:bold; font-size:0.85rem;">${oBase.toFixed(2)}</span>
                 </div>
-                ${fmtMultiplier(oRarLabel, oppRarMult, '#ff9f43', oRarActive)}
+                ${fmtMultiplier(`${oppCard.rarity[0].toUpperCase() + oppCard.rarity.slice(1)}-Karte`, oRar, '#ff9f43', oRarActive)}
                 ${fmtMultiplier(`Fraktions-Bonus (${oFac} > ${pFac})`, oFacMult, '#4da6ff', oFacActive)}
                 ${fmtMultiplier(`Synergie-Bonus`, oSyn, '#a855f7', oSynActive)}
                 <div style="margin-top:8px; padding-top:6px; border-top:1px solid #333; display:flex; justify-content:space-between;">
@@ -881,12 +815,15 @@ function playRound(playerCard, explicitOppCard = null) {
     document.getElementById('match-player-hand').innerHTML = '';
 
     const maxRar = RARITY_ORDER[playerCard.rarity] > RARITY_ORDER[oppCard.rarity] ? playerCard.rarity : oppCard.rarity;
+
     const pLeg = (playerCard.rarity === "legendary" && typeof LEGENDARY_POOL !== 'undefined' && LEGENDARY_POOL[playerCard.charName]) ? LEGENDARY_POOL[playerCard.charName] : null;
     const oLeg = (!isBotMatch && oppCard.rarity === "legendary" && typeof LEGENDARY_POOL !== 'undefined' && LEGENDARY_POOL[oppCard.charName]) ? LEGENDARY_POOL[oppCard.charName] : null;
+    
     const triggerPlayerLegDelay = playerCard.rarity === "legendary";
     const triggerOppLegDelay = !isBotMatch && oppCard.rarity === "legendary";
     const hasLegendaryDelay = triggerPlayerLegDelay || triggerOppLegDelay;
 
+    // Apply legendary/epic visual effects and initial fanfare almost immediately
     setTimeout(() => {
         if(maxRar === "legendary") {
             if (pLeg || oLeg) {
@@ -899,12 +836,15 @@ function playRound(playerCard, explicitOppCard = null) {
             } else if (hasLegendaryDelay) {
                 playLegendaryFanfare();
             } else {
-                playEpicFanfare(); 
+                playEpicFanfare(); // Bot played a legendary, just do a normal epic fanfare
             }
+
             const pImg = pLeg ? pLeg.specialImg : pDb.img;
             const oImg = oLeg ? oLeg.specialImg : oDb.img;
+            
             const pFlicker = (triggerPlayerLegDelay || pLeg) ? 'animation: legendary-flicker 1.5s infinite;' : '';
             const oFlicker = (triggerOppLegDelay || oLeg) ? 'animation: legendary-flicker 1.5s infinite;' : '';
+
             document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${pImg}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(playerCard.rarity)}; ${triggerPlayerLegDelay ? getLegStyle(playerCard.rarity) : ''}; ${pFlicker}">${getHoloHTML(playerCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${playerCard.charName}</div></div>`;
             document.getElementById("match-opponent-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${oImg}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(oppCard.rarity)}; ${triggerOppLegDelay ? getLegStyle(oppCard.rarity) : ''}; ${oFlicker}">${getHoloHTML(oppCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${oppCard.charName}</div></div>`;
         } else if(maxRar === "epic") {
@@ -916,37 +856,19 @@ function playRound(playerCard, explicitOppCard = null) {
 
     const overlayDelay = hasLegendaryDelay ? 5000 : 200;
 
+    // Delay the win/loss sound and the popup overlay
     setTimeout(() => {
         if(isWin)       playWinSound();
         else if(isDraw) playDrawSound();
         else            playLoseSound();
-        if (currentRound > 10) {
-            document.getElementById('match-result-overlay').classList.remove('hidden');
-            setTimeout(() => {
-                document.getElementById('match-result-overlay').classList.add('hidden');
-                finishMatch();
-            }, 1500);
-        } else {
-            document.getElementById('match-result-overlay').classList.remove('hidden');
-        }
+
+        document.getElementById('match-result-overlay').classList.remove('hidden');
     }, overlayDelay);
 }
 
 async function finishMatch() {
     document.getElementById('cardgame-match').classList.add('hidden');
     document.getElementById('cardgame-main-menu').classList.remove('hidden');
-    document.getElementById('match-result-overlay').classList.add('hidden');
-    
-    if (isAdventureMatch) {
-        if (playerScore > opponentScore) {
-            handleAdventureWin(adventureLevelIndex);
-        } else {
-            handleAdventureLoss();
-        }
-        isAdventureMatch = false;
-        isBotMatch = false;
-        return;
-    }
     
     const user = getCurrentUser();
     if(user && liveMatchActive) {
@@ -996,9 +918,9 @@ async function finishMatch() {
                 }).catch(console.error);
                 
                 const cb = document.getElementById('topbar-credits');
-                if(cb) cb.innerHTML = `<span style="color:#ffd700;">💳</span> ${user.credits}`;
+                if(cb) cb.innerHTML = `<span style="color:#ffd700;">­ƒÆ│</span> ${user.credits}`;
                 
-                alert(`Du hast das Match ${playerScore}:${opponentScore} gewonnen!\n\nERSTER SIEG GEGEN STUFE ${opponentData.botLevel}!\nDu erhältst ${reward} Credits${unlockedNewTitle ? ' und einen neuen Titel!' : '!'}`);
+                alert(`Du hast das Match ${playerScore}:${opponentScore} gewonnen!\n\nERSTER SIEG GEGEN STUFE ${opponentData.botLevel}!\nDu erh├ñltst ${reward} Credits${unlockedNewTitle ? ' und einen neuen Titel!' : '!'}`);
             } else {
                 alert(`Du hast das Match ${playerScore}:${opponentScore} gewonnen!`);
             }
@@ -1008,7 +930,7 @@ async function finishMatch() {
             localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
             await updateDoc(doc(db, "users", user.uid), { credits: user.credits });
             const cb = document.getElementById('topbar-credits');
-            if(cb) cb.innerHTML = `<span style="color:#ffd700;">💳</span> ${user.credits}`;
+            if(cb) cb.innerHTML = `<span style="color:#ffd700;">­ƒÆ│</span> ${user.credits}`;
         } else {
             alert(`Du hast das Match ${playerScore}:${opponentScore} gewonnen!`);
         }
