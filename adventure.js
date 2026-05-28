@@ -158,6 +158,12 @@ async function verifyAdventureInit() {
         }
     }
     
+    if(!user.adventure_highest_level) {
+        user.adventure_highest_level = user.adventure_level || 1;
+        updates.adventure_highest_level = user.adventure_highest_level;
+        needsUpdate = true;
+    }
+    
     if(needsUpdate) {
         localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
         await updateDoc(doc(db, "users", user.uid), updates);
@@ -173,6 +179,7 @@ export function renderAdventureMap() {
     if(!user) return;
     
     const currentLvl = user.adventure_level || 1;
+    const highestLvl = user.adventure_highest_level || currentLvl;
     const container = document.getElementById('adventure-map-container');
     container.innerHTML = '';
     
@@ -180,21 +187,31 @@ export function renderAdventureMap() {
         const lvlNum = index + 1;
         const isPast = lvlNum < currentLvl;
         const isCurrent = lvlNum === currentLvl;
-        const isLocked = lvlNum > currentLvl;
+        let isLocked = lvlNum > currentLvl;
+        const isHighest = lvlNum === highestLvl;
         
-        let color = isLocked ? '#333' : (isPast ? '#2ed573' : '#ffd700');
-        let icon = isLocked ? 'ðŸ”’' : (isPast ? 'âœ“' : 'âš”ï¸');
+        let color = isLocked ? '#333' : (isPast ? '#2ed573' : '#3498db');
+        let icon = isLocked ? '🔒' : (isPast ? '✓' : '⚔️');
+        let glow = '';
+        
+        if (isHighest) {
+            color = '#ffd700';
+            icon = isCurrent ? '⚔️' : '⭐';
+            glow = `box-shadow: 0 0 15px ${color};`;
+        }
+        
+        const opacity = (isLocked && !isHighest) ? '0.5' : '1';
         
         const node = document.createElement('div');
         node.style.display = 'flex';
         node.style.flexDirection = 'column';
         node.style.alignItems = 'center';
-        node.style.opacity = isLocked ? '0.5' : '1';
+        node.style.opacity = opacity;
         node.title = `${level.name}\n${level.ruleText}`;
         
         node.innerHTML = `
-            <div style="width: 50px; height: 50px; border-radius: 50%; background: ${color}; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; border: 2px solid #111; color: #111; font-weight: bold; margin-bottom: 5px;">
-                ${isCurrent ? icon : lvlNum}
+            <div style="width: 50px; height: 50px; border-radius: 50%; background: ${color}; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; border: 2px solid #111; color: #111; font-weight: bold; margin-bottom: 5px; ${glow}">
+                ${isCurrent ? icon : (isHighest && !isPast ? icon : lvlNum)}
             </div>
             <div style="font-size: 0.7rem; color: ${color}; text-align: center; max-width: 60px; word-wrap: break-word;">${level.name}</div>
         `;
@@ -252,11 +269,14 @@ export function handleAdventureWin(levelIndex) {
     
     user.credits = (user.credits || 0) + creditsWon;
     const cb = document.getElementById('topbar-credits');
-    if(cb) cb.innerHTML = `<span style="color:#ffd700;">ðŸ’³</span> ${user.credits}`;
+    if(cb) cb.innerHTML = `<span style="color:#ffd700;">💰</span> ${user.credits}`;
     
     // Level up
     if(lvlNum === user.adventure_level) {
         user.adventure_level += 1;
+        if (user.adventure_level > (user.adventure_highest_level || 1)) {
+            user.adventure_highest_level = user.adventure_level;
+        }
     }
     
     // Reset to 1 if beaten the game! (or stay at 20? Let's stay at 21 to signify completion)
@@ -266,13 +286,14 @@ export function handleAdventureWin(levelIndex) {
         // Let's reset the run but keep the milestone flags so they can do it again for fun (5 credits).
         user.adventure_level = 1;
         user.adventure_deck = migrateDeck(BASE_ADVENTURE_DECK);
-        alert("HERZLICHEN GLÃœCKWUNSCH! Du hast die Abenteuer-Kampagne durchgespielt! Dein Run wird nun zurÃ¼ckgesetzt, du kannst aber jederzeit neu starten.");
+        alert("HERZLICHEN GLÜCKWUNSCH! Du hast die Abenteuer-Kampagne durchgespielt! Dein Run wird nun zurückgesetzt, du kannst aber jederzeit neu starten.");
     }
     
     // Save to DB
     const updates = {
         credits: user.credits,
         adventure_level: user.adventure_level,
+        adventure_highest_level: user.adventure_highest_level || user.adventure_level,
         adventure_deck: user.adventure_deck,
         adventure_completed_10: user.adventure_completed_10 || false,
         adventure_completed_20: user.adventure_completed_20 || false
