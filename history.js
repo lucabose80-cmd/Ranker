@@ -420,9 +420,9 @@ function renderHistoryHTML(games, container, displayNames) {
 
     container.innerHTML = "";
     games.forEach((game) => {
-        const dateObj = game.timestamp && typeof game.timestamp.toDate === 'function' 
+        const dateObj = (game.timestamp && typeof game.timestamp.toDate === 'function')
             ? game.timestamp.toDate() 
-            : new Date(game.timestamp.seconds * 1000);
+            : (game.timestamp && game.timestamp.seconds ? new Date(game.timestamp.seconds * 1000) : new Date());
             
         const date = dateObj.toLocaleString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
         
@@ -841,11 +841,13 @@ export async function renderHistory() {
                 if (selectedType === 'versus' && isVersus && gameCategory === 'normal') isMatch = true;
                 else if (selectedType === 'versus_klon' && isVersus && gameCategory === 'klon') isMatch = true;
                 else if (selectedType === 'versus_peak' && isVersus && gameCategory === 'peak') isMatch = true;
+                else if (selectedType === 'versus_hardcore' && isVersus && gameCategory === 'hardcore') isMatch = true;
                 else if (selectedType === 'versus_vehicle' && isVersus && gameCategory === 'vehicle') isMatch = true;
                 else if (selectedType === 'advanced' && isGameAdvanced && !isVersus) isMatch = true;
                 else if (selectedType === 'classic' && !isGameAdvanced && !isVersus && game.type !== 'cardgame' && gameCategory === 'normal') isMatch = true;
                 else if (selectedType === 'classic_klon' && !isGameAdvanced && !isVersus && gameCategory === 'klon') isMatch = true;
                 else if (selectedType === 'classic_peak' && !isGameAdvanced && !isVersus && gameCategory === 'peak') isMatch = true;
+                else if (selectedType === 'classic_hardcore' && !isGameAdvanced && !isVersus && gameCategory === 'hardcore') isMatch = true;
                 else if (selectedType === 'cardgame' && game.type === 'cardgame') isMatch = true;
                 else if (selectedType === 'classic_vehicle' && !isGameAdvanced && !isVersus && gameCategory === 'vehicle') isMatch = true;
                 
