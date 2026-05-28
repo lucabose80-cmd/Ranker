@@ -6,7 +6,7 @@ import { trackRead, trackWrite } from './tracker.js';
 import { THEMES } from './themes.js';
 import { TITLES } from './titles.js';
 
-const CURRENT_USER_KEY = 'ranking_game_active_user';
+export const CURRENT_USER_KEY = 'ranking_game_active_user';
 let heartbeatInterval;
 
 export async function initAuth() {}
@@ -180,6 +180,10 @@ export async function loginOrRegister(usernameInput, password) {
                 lastReadVersionStarWars: "", // NEU
                 lastReadVersionWaifu: "",    // NEU
                 lastCreditResetDate: (new Date(new Date() - new Date().getTimezoneOffset() * 60000)).toISOString().slice(0, 10),
+                adventure_level: 1,
+                adventure_deck: null,
+                adventure_completed_10: false,
+                adventure_completed_20: false,
                 uid: newUid
             };
             

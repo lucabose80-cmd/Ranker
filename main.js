@@ -18,6 +18,7 @@ import { initChangelog, updateChangelogContent } from './changelog.js';
 import { patchNotesStarWars } from './changelog-starwars.js';
 import { initAuth, loginOrRegister, logout, getCurrentUser, startPresenceHeartbeat, markCurrentUserOffline } from './auth.js';
 import { initAdminPanel, stopAdminPanel } from './admin.js';
+import { initAdventureMode } from './adventure.js';
 import { renderHistory, initHistoryListener, stopHistoryListener } from './history.js';
 import { renderScoreboard } from './scoreboard.js';
 import { renderLexikon, initLexikonTabs } from './lexikon.js';
@@ -382,6 +383,7 @@ function setupGameUI(user) {
 
     initRatingSystem();
     initChangelog();
+    initAdventureMode();
     updateChangelogContent(patchNotesStarWars);
     initProfile();
     initLexikonTabs();

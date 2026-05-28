@@ -1,5 +1,6 @@
 import { getCurrentUser } from './auth.js';
 import { activeCharacterDatabase } from './theme.js';
+import { handleAdventureWin, handleAdventureLoss } from './adventure.js';
 import { db } from './firebase-config.js';
 import { currentMode } from './mode-state.js';
 import { LEGENDARY_POOL } from './data-starwars.js';
@@ -18,6 +19,8 @@ let playedOpponentCards = [];
 let globalScoresCache = {};
 let isBotMatch = false;
 let liveMatchActive = false;
+let isAdventureMatch = false;
+let adventureLevelIndex = 0;
 
 const RARITY_MULT = { 'common': 1.0, 'rare': 1.1, 'epic': 1.3, 'legendary': 1.5 };
 const RARITY_ORDER = { 'legendary': 4, 'epic': 3, 'rare': 2, 'common': 1 };
@@ -517,6 +520,38 @@ async function startMatch(oppData, oppDeckArr) {
     renderOpponentDeckState();
 }
 
+export async function startAdventureMatch(levelIndex, oppData, oppDeckArr, playerAdventureDeckArr) {
+    await loadGlobalScores();
+    opponentData = oppData; 
+    opponentDeck = [...oppDeckArr];
+    playerDeck = [...playerAdventureDeckArr]; 
+    
+    currentRound = 1;
+    playerScore = 0;
+    opponentScore = 0;
+    playedPlayerCards = [];
+    playedOpponentCards = [];
+    
+    isBotMatch = true;
+    isAdventureMatch = true;
+    adventureLevelIndex = levelIndex;
+    
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+    document.getElementById('cardgame-match').classList.remove('hidden');
+    
+    document.getElementById('match-player-score').innerText = '0';
+    document.getElementById('match-opponent-score').innerText = '0';
+    
+    const pSyn = calculateSynergy(playerDeck);
+    const oSyn = calculateSynergy(opponentDeck);
+    
+    document.getElementById('match-player-synergy').innerHTML = pSyn.map(s => `${s.faction} (+${s.count}%)`).join('<br>') || 'Keine';
+    document.getElementById('match-opponent-synergy').innerHTML = oSyn.map(s => `${s.faction} (+${s.count}%)`).join('<br>') || 'Keine';
+    
+    renderHand();
+    renderOpponentDeckState();
+}
+
 function updateLiveSpectator(user, scoreText) {
     if(!liveMatchActive) return;
     try {
@@ -589,18 +624,25 @@ function playRound(playerCard, explicitOppCard = null) {
         oppCard = explicitOppCard;
     } else {
         const unplayedOpp = opponentDeck.filter(c => !playedOpponentCards.includes(c));
-        
-        if (typeof isBotMatch !== 'undefined' && isBotMatch && opponentData && opponentData.botLevel) {
+        if (typeof isBotMatch !== 'undefined' && isBotMatch && opponentData) {
             const pDb = activeCharacterDatabase.find(x => x.name === playerCard.charName);
             const pFac = getMainFaction(pDb.tags);
             const pSyn = getSynergyMult(calculateSynergy(playerDeck));
             const pBase = getCardScore(playerCard.charName);
             const pRar = RARITY_MULT[playerCard.rarity] || 1.0;
-            const pBaseFinal = pBase * pRar * pSyn;
+            let pBaseFinal = pBase * pRar * pSyn;
             
+            // Adventure Modifiers for Player
+            if (isAdventureMatch) {
+                if (adventureLevelIndex === 9 && pFac === 'rebell') pBaseFinal *= 1.15;
+                if (adventureLevelIndex === 17 && pFac === 'jedi') pBaseFinal *= 1.20;
+            }
+            
+            let bestOpp = null;
+            let bestScoreDiff = -999999;
             const oSyn = getSynergyMult(calculateSynergy(opponentDeck));
             
-            const oppOptions = unplayedOpp.map(c => {
+            unplayedOpp.forEach(c => {
                 const oDb = activeCharacterDatabase.find(x => x.name === c.charName);
                 const oFac = getMainFaction(oDb.tags);
                 let pFacMult = 1.0; let oFacMult = 1.0;
@@ -609,45 +651,48 @@ function playRound(playerCard, explicitOppCard = null) {
                 
                 const oBase = getCardScore(c.charName);
                 const oRar = RARITY_MULT[c.rarity] || 1.0;
-                const oFinal = oBase * oRar * oFacMult * oSyn;
-                const pFinal = pBaseFinal * pFacMult;
+                let oBaseFinal = oBase * oRar * oSyn;
                 
-                return {
-                    card: c,
-                    win: oFinal >= pFinal,
-                    oFinal: oFinal
-                };
+                // Adventure Modifiers for Bot
+                if (isAdventureMatch) {
+                    if (adventureLevelIndex === 2 && oFac === 'imperium') oBaseFinal *= 1.10;
+                    if (adventureLevelIndex === 3 && (oFac === 'kopfgeldjäger' || oFac === 'schurke')) oBaseFinal *= 1.15;
+                    if (adventureLevelIndex === 4) oBaseFinal *= 1.20;
+                    if (adventureLevelIndex === 5 && oDb.tags.includes('fahrzeug')) oBaseFinal *= 1.20;
+                    if (adventureLevelIndex === 7 && oFac === 'sith') oBaseFinal *= 1.25;
+                    if (adventureLevelIndex === 8 && c.charName === 'Emperor Palpatine') oBaseFinal *= 1.50;
+                    if (adventureLevelIndex === 9 && oFac === 'rebell') oBaseFinal *= 1.15;
+                    if (adventureLevelIndex === 10 && oDb.tags.includes('fahrzeug')) oBaseFinal *= 1.30;
+                    if (adventureLevelIndex === 11 && oDb.tags.includes('ewok')) oBaseFinal *= 1.20;
+                    if (adventureLevelIndex === 12 && oFac === 'imperium') oBaseFinal *= 1.15;
+                    if (adventureLevelIndex === 13 && (oDb.tags.includes('fahrzeug') || oFac === 'kopfgeldjäger')) oBaseFinal *= 1.15;
+                    if (adventureLevelIndex === 14) oBaseFinal *= 1.30;
+                    if (adventureLevelIndex === 15 && c.charName === 'Rancor') oBaseFinal *= 2.0;
+                    if (adventureLevelIndex === 16) oBaseFinal *= (1 + (Math.random() * 0.4));
+                    if (adventureLevelIndex === 18 && oFac === 'imperium') oBaseFinal *= 1.25;
+                    if (adventureLevelIndex === 19 && oFac === 'sith') oBaseFinal *= 1.30;
+                    if (adventureLevelIndex === 19 && oFac === 'imperium') oBaseFinal *= 1.20;
+                }
+                
+                const scoreDiff = (oBaseFinal * oFacMult) - (pBaseFinal * pFacMult);
+                if (scoreDiff > bestScoreDiff) {
+                    bestScoreDiff = scoreDiff;
+                    bestOpp = c;
+                }
             });
             
-            oppOptions.sort((a, b) => a.oFinal - b.oFinal);
-            
-            const botLvl = opponentData.botLevel;
-            const errorChance = Math.max(0, (10 - botLvl) * 0.1); // Lvl 10 = 0% error, Lvl 1 = 90% error
-            
-            if (Math.random() < errorChance) {
+            if (!isAdventureMatch && opponentData.botLevel === 1 && Math.random() < 0.6) {
+                oppCard = unplayedOpp[Math.floor(Math.random() * unplayedOpp.length)];
+            } else if (!isAdventureMatch && opponentData.botLevel === 2 && Math.random() < 0.3) {
                 oppCard = unplayedOpp[Math.floor(Math.random() * unplayedOpp.length)];
             } else {
-                const winningCards = oppOptions.filter(o => o.win);
-                if (winningCards.length > 0) {
-                    if (botLvl >= 7) {
-                        oppCard = winningCards[0].card; // Play weakest winning card
-                    } else {
-                        oppCard = winningCards[Math.floor(Math.random() * winningCards.length)].card;
-                    }
-                } else {
-                    if (botLvl >= 5) {
-                        oppCard = oppOptions[0].card; // Sacrifice weakest losing card
-                    } else {
-                        oppCard = oppOptions[Math.floor(Math.random() * oppOptions.length)].card;
-                    }
-                }
+                oppCard = bestOpp;
             }
         } else {
             oppCard = unplayedOpp[Math.floor(Math.random() * unplayedOpp.length)];
         }
     }
     
-    // Only push if not already pushed (to avoid double push in PvP)
     if (!playedOpponentCards.includes(oppCard)) {
         playedOpponentCards.push(oppCard);
     }
@@ -703,7 +748,6 @@ function playRound(playerCard, explicitOppCard = null) {
     const getHoloHTML = (rarity) => rarity === "epic" ? `<div style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; mix-blend-mode: color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear; border-radius:5px;"></div>` : "";
     const getLegStyle = (rarity) => rarity === "legendary" ? "animation: legendary-flicker 1.5s infinite;" : "";
 
-    // Show cards (no effect yet - just the card flip)
     document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${pDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(playerCard.rarity)};"><div style="color:#fff; font-size:0.8rem; margin-top:5px;">${playerCard.charName}</div></div>`;
     document.getElementById("match-opponent-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${oDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(oppCard.rarity)};"><div style="color:#fff; font-size:0.8rem; margin-top:5px;">${oppCard.charName}</div></div>`;
 
@@ -711,22 +755,43 @@ function playRound(playerCard, explicitOppCard = null) {
     
     const pBase = getCardScore(playerCard.charName);
     const oBase = getCardScore(oppCard.charName);
-    
     const pFac = getMainFaction(pDb.tags);
     const oFac = getMainFaction(oDb.tags);
-    
     let pFacMult = 1.0; let oFacMult = 1.0;
     if(FACTION_ADVANTAGE[pFac] === oFac) pFacMult = 1.2;
     if(FACTION_ADVANTAGE[oFac] === pFac) oFacMult = 1.2;
+    const pSynArr = calculateSynergy(playerDeck);
+    const oSynArr = calculateSynergy(opponentDeck);
+    const pSyn = getSynergyMult(pSynArr);
+    const oSyn = getSynergyMult(oSynArr);
+    let pRarMult = RARITY_MULT[playerCard.rarity] || 1.0;
+    let oppRarMult = RARITY_MULT[oppCard.rarity] || 1.0;
     
-    const pSyn = getSynergyMult(calculateSynergy(playerDeck));
-    const oSyn = getSynergyMult(calculateSynergy(opponentDeck));
+    if (isAdventureMatch) {
+        if (adventureLevelIndex === 2 && oFac === 'imperium') oppRarMult *= 1.10;
+        if (adventureLevelIndex === 3 && (oFac === 'kopfgeldjäger' || oFac === 'schurke')) oppRarMult *= 1.15;
+        if (adventureLevelIndex === 4) oppRarMult *= 1.20;
+        if (adventureLevelIndex === 5 && oDb.tags.includes('fahrzeug')) oppRarMult *= 1.20;
+        if (adventureLevelIndex === 6 && oFac === 'imperium') pRarMult *= 0.9;
+        if (adventureLevelIndex === 7 && oFac === 'sith') oppRarMult *= 1.25;
+        if (adventureLevelIndex === 8 && oppCard.charName === 'Emperor Palpatine') oppRarMult *= 1.50;
+        if (adventureLevelIndex === 9 && oFac === 'rebell') oppRarMult *= 1.15;
+        if (adventureLevelIndex === 9 && pFac === 'rebell') pRarMult *= 1.15;
+        if (adventureLevelIndex === 10 && oDb.tags.includes('fahrzeug')) oppRarMult *= 1.30;
+        if (adventureLevelIndex === 11 && oDb.tags.includes('ewok')) oppRarMult *= 1.20;
+        if (adventureLevelIndex === 12 && oFac === 'imperium') oppRarMult *= 1.15;
+        if (adventureLevelIndex === 13 && (oDb.tags.includes('fahrzeug') || oFac === 'kopfgeldjäger')) oppRarMult *= 1.15;
+        if (adventureLevelIndex === 14) oppRarMult *= 1.30;
+        if (adventureLevelIndex === 15 && oppCard.charName === 'Rancor') oppRarMult *= 2.0;
+        if (adventureLevelIndex === 16) oppRarMult *= (1 + (Math.random() * 0.4));
+        if (adventureLevelIndex === 17 && pFac === 'jedi') pRarMult *= 1.20;
+        if (adventureLevelIndex === 18 && oFac === 'imperium') oppRarMult *= 1.25;
+        if (adventureLevelIndex === 19 && oFac === 'sith') oppRarMult *= 1.30;
+        if (adventureLevelIndex === 19 && oFac === 'imperium') oppRarMult *= 1.20;
+    }
     
-    const pRar = RARITY_MULT[playerCard.rarity] || 1.0;
-    const oRar = RARITY_MULT[oppCard.rarity] || 1.0;
-    
-    const pFinal = pBase * pRar * pFacMult * pSyn;
-    const oFinal = oBase * oRar * oFacMult * oSyn;
+    const pFinal = pBase * pRarMult * pFacMult * pSyn;
+    const oFinal = oBase * oppRarMult * oFacMult * oSyn;
     
     let isWin = pFinal > oFinal;
     let isDraw = pFinal === oFinal;
@@ -740,21 +805,6 @@ function playRound(playerCard, explicitOppCard = null) {
     const user = getCurrentUser();
     if(user && liveMatchActive) updateLiveSpectator(user, `${playerScore}:${opponentScore} (Runde ${currentRound+1})`);
 
-    // Helper: render a score row
-    const fmtMultiplier = (label, val, color, active) => active
-        ? `<div style="display:flex; justify-content:space-between; align-items:center; padding:4px 8px; background:rgba(255,255,255,0.05); border-radius:4px; border-left:3px solid ${color};">
-              <span style="color:#aaa; font-size:0.78rem;">${label}</span>
-              <span style="color:${color}; font-weight:bold; font-size:0.85rem;">x${val.toFixed(2)}</span>
-           </div>`
-        : '';
-
-    const pFacActive   = pFacMult !== 1.0;
-    const oFacActive   = oFacMult !== 1.0;
-    const pSynActive   = pSyn > 1.0;
-    const oSynActive   = oSyn > 1.0;
-    const pRarActive   = pRar > 1.0;
-    const oRarActive   = oRar > 1.0;
-
     const resultIcon = isWin ? '&#x1F3C6;' : (isDraw ? '&#x1F91D;' : '&#x1F4A5;');
     const resultLabel = isWin
         ? `<span style="color:#2ed573; font-size:1.4rem; font-weight:bold;">RUNDE GEWONNEN!</span>`
@@ -763,67 +813,16 @@ function playRound(playerCard, explicitOppCard = null) {
             : `<span style="color:#ff4757; font-size:1.4rem; font-weight:bold;">RUNDE VERLOREN!</span>`);
 
     document.getElementById('match-round-result').innerHTML = `<div style="font-size:2rem; margin-bottom:8px;">${resultIcon}</div>${resultLabel}`;
-
-    // Score bar visual
-    const pPct = Math.round((pFinal / (pFinal + oFinal)) * 100);
-    const oPct = 100 - pPct;
-
-    document.getElementById('match-round-calc').innerHTML = `
-        <div style="margin-bottom:12px;">
-            <div style="display:flex; justify-content:space-between; font-size:0.9rem; font-weight:bold; margin-bottom:4px;">
-                <span style="color:#2ed573;">Du: ${pFinal.toFixed(2)}</span>
-                <span style="color:#ff4757;">Gegner: ${oFinal.toFixed(2)}</span>
-            </div>
-            <div style="height:12px; border-radius:6px; background:#222; overflow:hidden; border:1px solid #444;">
-                <div style="height:100%; width:${pPct}%; background:linear-gradient(to right,#2ed573,#20bf6b); display:inline-block; border-radius:6px 0 0 6px; transition:width 0.5s;"></div>
-            </div>
-        </div>
-
-        <div style="display:flex; gap:12px; text-align:left;">
-            <div style="flex:1; background:#111; border-radius:8px; padding:10px; border:1px solid #2ed57355;">
-                <div style="font-size:0.8rem; color:#2ed573; font-weight:bold; margin-bottom:6px; border-bottom:1px solid #2ed57333; padding-bottom:4px;">Du (${playerCard.charName})</div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                    <span style="color:#aaa; font-size:0.78rem;">Basis-Score</span>
-                    <span style="color:#fff; font-weight:bold; font-size:0.85rem;">${pBase.toFixed(2)}</span>
-                </div>
-                ${fmtMultiplier(`${playerCard.rarity[0].toUpperCase() + playerCard.rarity.slice(1)}-Karte`, pRar, '#ff9f43', pRarActive)}
-                ${fmtMultiplier(`Fraktions-Bonus (${pFac} > ${oFac})`, pFacMult, '#4da6ff', pFacActive)}
-                ${fmtMultiplier(`Synergie-Bonus`, pSyn, '#a855f7', pSynActive)}
-                <div style="margin-top:8px; padding-top:6px; border-top:1px solid #333; display:flex; justify-content:space-between;">
-                    <span style="color:#aaa; font-size:0.8rem;">Gesamt</span>
-                    <span style="color:#2ed573; font-size:1.1rem; font-weight:bold;">${pFinal.toFixed(2)}</span>
-                </div>
-            </div>
-            <div style="flex:1; background:#111; border-radius:8px; padding:10px; border:1px solid #ff475755;">
-                <div style="font-size:0.8rem; color:#ff4757; font-weight:bold; margin-bottom:6px; border-bottom:1px solid #ff475733; padding-bottom:4px;">Gegner (${oppCard.charName})</div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                    <span style="color:#aaa; font-size:0.78rem;">Basis-Score</span>
-                    <span style="color:#fff; font-weight:bold; font-size:0.85rem;">${oBase.toFixed(2)}</span>
-                </div>
-                ${fmtMultiplier(`${oppCard.rarity[0].toUpperCase() + oppCard.rarity.slice(1)}-Karte`, oRar, '#ff9f43', oRarActive)}
-                ${fmtMultiplier(`Fraktions-Bonus (${oFac} > ${pFac})`, oFacMult, '#4da6ff', oFacActive)}
-                ${fmtMultiplier(`Synergie-Bonus`, oSyn, '#a855f7', oSynActive)}
-                <div style="margin-top:8px; padding-top:6px; border-top:1px solid #333; display:flex; justify-content:space-between;">
-                    <span style="color:#aaa; font-size:0.8rem;">Gesamt</span>
-                    <span style="color:#ff4757; font-size:1.1rem; font-weight:bold;">${oFinal.toFixed(2)}</span>
-                </div>
-            </div>
-        </div>
-    `;
-
     currentRound++;
     document.getElementById('match-player-hand').innerHTML = '';
 
     const maxRar = RARITY_ORDER[playerCard.rarity] > RARITY_ORDER[oppCard.rarity] ? playerCard.rarity : oppCard.rarity;
-
     const pLeg = (playerCard.rarity === "legendary" && typeof LEGENDARY_POOL !== 'undefined' && LEGENDARY_POOL[playerCard.charName]) ? LEGENDARY_POOL[playerCard.charName] : null;
     const oLeg = (!isBotMatch && oppCard.rarity === "legendary" && typeof LEGENDARY_POOL !== 'undefined' && LEGENDARY_POOL[oppCard.charName]) ? LEGENDARY_POOL[oppCard.charName] : null;
-    
     const triggerPlayerLegDelay = playerCard.rarity === "legendary";
     const triggerOppLegDelay = !isBotMatch && oppCard.rarity === "legendary";
     const hasLegendaryDelay = triggerPlayerLegDelay || triggerOppLegDelay;
 
-    // Apply legendary/epic visual effects and initial fanfare almost immediately
     setTimeout(() => {
         if(maxRar === "legendary") {
             if (pLeg || oLeg) {
@@ -836,15 +835,12 @@ function playRound(playerCard, explicitOppCard = null) {
             } else if (hasLegendaryDelay) {
                 playLegendaryFanfare();
             } else {
-                playEpicFanfare(); // Bot played a legendary, just do a normal epic fanfare
+                playEpicFanfare(); 
             }
-
             const pImg = pLeg ? pLeg.specialImg : pDb.img;
             const oImg = oLeg ? oLeg.specialImg : oDb.img;
-            
             const pFlicker = (triggerPlayerLegDelay || pLeg) ? 'animation: legendary-flicker 1.5s infinite;' : '';
             const oFlicker = (triggerOppLegDelay || oLeg) ? 'animation: legendary-flicker 1.5s infinite;' : '';
-
             document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${pImg}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(playerCard.rarity)}; ${triggerPlayerLegDelay ? getLegStyle(playerCard.rarity) : ''}; ${pFlicker}">${getHoloHTML(playerCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${playerCard.charName}</div></div>`;
             document.getElementById("match-opponent-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${oImg}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(oppCard.rarity)}; ${triggerOppLegDelay ? getLegStyle(oppCard.rarity) : ''}; ${oFlicker}">${getHoloHTML(oppCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${oppCard.charName}</div></div>`;
         } else if(maxRar === "epic") {
@@ -856,19 +852,37 @@ function playRound(playerCard, explicitOppCard = null) {
 
     const overlayDelay = hasLegendaryDelay ? 5000 : 200;
 
-    // Delay the win/loss sound and the popup overlay
     setTimeout(() => {
         if(isWin)       playWinSound();
         else if(isDraw) playDrawSound();
         else            playLoseSound();
-
-        document.getElementById('match-result-overlay').classList.remove('hidden');
+        if (currentRound > 10) {
+            document.getElementById('match-result-overlay').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('match-result-overlay').classList.add('hidden');
+                finishMatch();
+            }, 1500);
+        } else {
+            document.getElementById('match-result-overlay').classList.remove('hidden');
+        }
     }, overlayDelay);
 }
 
 async function finishMatch() {
     document.getElementById('cardgame-match').classList.add('hidden');
     document.getElementById('cardgame-main-menu').classList.remove('hidden');
+    document.getElementById('match-result-overlay').classList.add('hidden');
+    
+    if (isAdventureMatch) {
+        if (playerScore > opponentScore) {
+            handleAdventureWin(adventureLevelIndex);
+        } else {
+            handleAdventureLoss();
+        }
+        isAdventureMatch = false;
+        isBotMatch = false;
+        return;
+    }
     
     const user = getCurrentUser();
     if(user && liveMatchActive) {

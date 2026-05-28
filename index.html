@@ -151,6 +151,7 @@
                 <button class="nav-link active" data-target="game-main-content">SPIEL</button>
                 <button class="nav-link" data-target="versus-content">VERSUS</button>
                 <button class="nav-link" data-target="cardgame-content" id="nav-cardgame">CARDGAME</button>
+                <button class="nav-link" data-target="adventure-content" id="nav-adventure">ABENTEUER</button>
                 <button class="nav-link" data-target="starwarsdle-content" id="nav-starwarsdle" style="position: relative;">STARWARSDLE <span id="starwarsdle-glow" style="position: absolute; top: 0; right: 0; width: 10px; height: 10px; background: #ffd700; border-radius: 50%; box-shadow: 0 0 10px #ffd700; display: none;"></span></button>
                 <button class="nav-link" data-target="live-content">LIVE</button>
                 <button class="nav-link" data-target="history-content">HISTORIE</button>
@@ -499,6 +500,92 @@
                             </tbody>
                         </table>
                     </div></div>
+            </div>
+            
+            <div id="adventure-content" class="tab-content app-container hidden">
+                <div class="panel history-panel" style="max-width: 1200px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <h2 class="theme-heading" style="margin: 0;">ABENTEUER-MODUS</h2>
+                        <button id="adventure-tutorial-btn" class="text-btn" style="color: #4cd137;">ANLEITUNG</button>
+                    </div>
+                    <p class="prompt-text">Besiege Gegner in einer roguelike Kampagne und stärke dein Deck!</p>
+                    
+                    <div id="adventure-main-screen">
+                        <!-- Progress info & Current Deck -->
+                        <div style="display:flex; flex-wrap:wrap; gap:20px; margin-bottom: 20px;">
+                            <div style="flex:1; min-width:300px; background:#1a1e29; padding:20px; border-radius:10px; border:1px solid #333;">
+                                <h3 style="color:#ffd700; margin-top:0;">Dein aktueller Lauf</h3>
+                                <div style="font-size:1.1rem; color:#fff; margin-bottom:10px;">
+                                    Level: <span id="adventure-current-level" style="color:#2ed573; font-weight:bold;">1 / 20</span>
+                                </div>
+                                <div style="font-size:0.9rem; color:#aaa; margin-bottom:15px;">
+                                    Tipp: Wenn du ein Match verlierst, startet dein gesamter Lauf von vorne!
+                                </div>
+                                <button id="adventure-play-btn" class="rank-btn" style="width:100%; padding:15px; font-size:1.1rem; background: linear-gradient(135deg, #a855f7, #6366f1);">Level <span id="adventure-next-level-btn-text">1</span> Spielen</button>
+                            </div>
+                            
+                            <div style="flex:2; min-width:300px; background:#1a1e29; padding:20px; border-radius:10px; border:1px solid #333;">
+                                <h3 style="color:#ffd700; margin-top:0;">Dein Abenteuer-Deck</h3>
+                                <div id="adventure-current-deck" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(80px, 1fr)); gap:10px; min-height:100px;">
+                                    <!-- Cards will be rendered here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Map -->
+                        <div style="background:#111; padding:20px; border-radius:10px; border:1px solid #333; overflow-x:auto;">
+                            <h3 style="color:#ffd700; margin-top:0; text-align:center;">Sternenkarte</h3>
+                            <div id="adventure-map-container" style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center; align-items:center; min-width:800px; padding:20px 0;">
+                                <!-- Map nodes rendered here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Draft Screen (Hidden by default) -->
+                    <div id="adventure-draft-screen" class="hidden" style="background:#1a1e29; padding:20px; border-radius:10px; border:2px solid #ffd700; text-align:center;">
+                        <h2 style="color:#2ed573; margin-top:0;">SIEG! Level abgeschlossen!</h2>
+                        <p style="color:#fff;">Du hast <strong id="adventure-draft-credit-reward" style="color:#ffd700;">5 Credits</strong> erhalten.</p>
+                        <hr style="border-color:#333; margin:20px 0;">
+                        
+                        <div id="adventure-draft-step1">
+                            <h3 style="color:#ffd700;">Wähle eine neue Karte für dein Deck:</h3>
+                            <p style="color:#aaa; font-size:0.9rem;">Diese Karte wird eine Karte aus deinem aktuellen Deck ersetzen.</p>
+                            <div id="adventure-draft-options" style="display:flex; justify-content:center; gap:20px; margin:20px 0;">
+                                <!-- 3 choices -->
+                            </div>
+                            <button id="adventure-draft-skip-btn" class="text-btn" style="color:#ff4757;">Neue Karte überspringen</button>
+                        </div>
+                        
+                        <div id="adventure-draft-step2" class="hidden">
+                            <h3 style="color:#ff4757;">Wähle die Karte, die du entfernen möchtest:</h3>
+                            <p style="color:#aaa; font-size:0.9rem;">Dein Deck darf nur 10 Karten enthalten.</p>
+                            <div style="display:flex; justify-content:center; gap:20px; margin:20px 0;">
+                                <div style="background:rgba(46,213,115,0.1); padding:10px; border-radius:8px; border:1px solid #2ed573;">
+                                    <div style="color:#2ed573; margin-bottom:5px; font-weight:bold;">Neu hinzugefügt:</div>
+                                    <div id="adventure-draft-new-card-preview"></div>
+                                </div>
+                            </div>
+                            <div id="adventure-draft-remove-options" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(80px, 1fr)); gap:10px; background:#111; padding:15px; border-radius:8px;">
+                                <!-- 10 current deck cards -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rules Modal -->
+                    <div id="adventure-tutorial-modal" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; display:flex; justify-content:center; align-items:center;">
+                        <div style="background:#1a1e29; border:2px solid #333; border-radius:10px; padding:30px; max-width:600px; width:90%; position:relative;">
+                            <h2 style="color:#ffd700; margin-top:0;">Abenteuer-Modus Anleitung</h2>
+                            <ul style="color:#aaa; font-size:1rem; line-height:1.6; padding-left:20px;">
+                                <li style="margin-bottom:10px;">Spiele dich durch eine 20-Level lange Kampagne.</li>
+                                <li style="margin-bottom:10px;">Jeder Spieler startet mit dem gleichen <b>10-Karten Standard-Deck</b> (Level 1 Raritäten).</li>
+                                <li style="margin-bottom:10px;">Nach jedem Sieg erhältst du <b>5 Credits</b>. Bei deinem ersten Sieg auf Level 10 erhältst du <b>50 Credits</b>, für Level 20 sogar <b>100 Credits</b>!</li>
+                                <li style="margin-bottom:10px;">Nach jedem Sieg darfst du außerdem eine von drei <b>Karten des Gegners auswählen</b> und in dein Deck aufnehmen (eine alte Karte musst du dafür abwerfen).</li>
+                                <li style="margin-bottom:10px;"><b>Achtung Roguelike:</b> Wenn du verlierst, verlierst du dein gesamtes aufgebautes Deck und startest wieder bei Level 1!</li>
+                            </ul>
+                            <button id="adventure-tutorial-close" class="rank-btn" style="width:100%; margin-top:20px;">Verstanden</button>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <div id="versus-content" class="tab-content app-container hidden">
