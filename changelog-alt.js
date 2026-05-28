@@ -1,5 +1,13 @@
 export const patchNotesWaifu = [
     {
+        version: "v7.9.6",
+        title: "QoL: Hover-Details für Titel & Themes",
+        isHotfix: false,
+        changes: [
+            "QoL: Wenn man im Profil über bereits freigeschaltete Titel oder Farb-Themes mit der Maus fährt (hover), wird nun in einem Tooltip angezeigt, welche Bedingung ursprünglich erfüllt werden musste, um sie freizuschalten."
+        ]
+    },
+    {
         version: "v7.9.5",
         title: "Hotfix: Cardgame Bot Duplikate",
         isHotfix: true,

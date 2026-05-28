@@ -454,10 +454,21 @@ function renderTitleSelection(user, gamesPlayed) {
             isLocked = false;
         }
         
-        let reqText = isLocked ? `Benötigt ${t.required} Spiele` : 'Freigeschaltet';
-        if (t.condition && t.condition.type === 'bot_defeat' && isLocked) {
-            reqText = `Besiege Bot Stufe ${t.condition.level} im Cardgame`;
+        let baseReqText = `Benötigt ${t.required > -1 ? t.required : '?'} Spiele`;
+        if (t.condition) {
+            if (t.condition.type === 'bot_defeat') {
+                baseReqText = `Besiege Bot Stufe ${t.condition.level} im Cardgame`;
+            } else if (t.condition.type === 'tag_full_team') {
+                const reqCount = t.condition.count || 5;
+                baseReqText = `Ranke ${reqCount} ${t.condition.tag.charAt(0).toUpperCase() + t.condition.tag.slice(1)} im selben Spiel`;
+            } else if (t.condition.type === 'has_characters' || t.condition.type === 'has_discovered_characters') {
+                baseReqText = `Finde bestimmte geheime Charaktere`;
+            } else if (t.condition.type === 'has_tag_in_round') {
+                baseReqText = `Finde geheime Kombinationen`;
+            }
         }
+        
+        let reqText = isLocked ? baseReqText : 'Freigeschaltet';
         let probHtml = '';
         
         if (t.secret && t.condition && (t.condition.type === 'has_characters' || t.condition.type === 'has_discovered_characters')) {
@@ -498,6 +509,7 @@ function renderTitleSelection(user, gamesPlayed) {
 
         const card = document.createElement('div');
         card.className = `title-card ${activeTitle === t.name ? 'selected' : ''} ${isLocked ? 'locked' : ''}`;
+        card.title = baseReqText; // Add tooltip for all titles
         
         const seenIds = getSeenIds();
         const isNew = !isLocked && !seenIds.includes(t.id);
@@ -585,15 +597,18 @@ function renderThemeSelection(user) {
             }
         }
 
-        if (!unlocked && t.condition) {
+        let baseReqText = `Benötigt ${t.required > -1 ? t.required : '?'} Spiele`;
+        if (t.condition) {
             const { type, tag, count } = t.condition;
             const reqCount = count || 5;
             if (type === 'tag_full_team') {
-                reqText = `Ranke ${reqCount} ${tag.charAt(0).toUpperCase() + tag.slice(1)} im selben Spiel`;
+                baseReqText = `Ranke ${reqCount} ${tag.charAt(0).toUpperCase() + tag.slice(1)} im selben Spiel`;
+            } else if (type === 'bot_defeat') {
+                baseReqText = `Besiege Bot Stufe ${t.condition.level} im Cardgame`;
             }
-        } else if (unlocked) {
-            reqText = 'Freigeschaltet';
         }
+        
+        let reqText = !unlocked ? baseReqText : 'Freigeschaltet';
         
         reqText += probHtml;
 
@@ -604,6 +619,7 @@ function renderThemeSelection(user) {
             <div class="title-card-name" style="color:${t.preview}">${!unlocked ? '🔒 ' : ''}${t.name}${isNew ? ' <span style="background:#ffd700; color:#000; font-size:0.55rem; font-weight:bold; padding:1px 3px; border-radius:3px; margin-left:5px; vertical-align:middle;">NEU</span>' : ''}</div>
             <div class="title-card-req">${reqText}</div>
         `;
+        card.title = baseReqText; // Add tooltip for themes
 
         if (isNew) {
             card.addEventListener('mouseenter', () => markAsSeen(t.id, card), { once: true });
