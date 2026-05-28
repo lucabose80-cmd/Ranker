@@ -69,7 +69,7 @@ function getSynergyMult(synergies) {
     return total;
 }
 
-async function loadGlobalScores() {
+export async function loadGlobalScores() {
     if(globalScoresCache[currentMode]) return globalScoresCache[currentMode];
     try {
         const docRef = doc(db, "scores", `${currentMode}_classic_global`);
@@ -87,7 +87,7 @@ async function loadGlobalScores() {
     return {};
 }
 
-function getCardScore(charName) {
+export function getCardScore(charName) {
     const scores = globalScoresCache[currentMode] || {};
     return scores[charName] || 9.0;
 }

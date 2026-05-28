@@ -4,7 +4,7 @@ import { doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11
 import { activeCharacterDatabase } from './theme.js';
 import { trackWrite, trackRead } from './tracker.js';
 
-import { startAdventureMatch } from './cardgame.js'; // We will add this export later
+import { startAdventureMatch, loadGlobalScores, getCardScore } from './cardgame.js';
 
 
 const ADVENTURE_LEVELS = 20;
@@ -281,7 +281,7 @@ export function handleAdventureLoss() {
     renderAdventureDeck();
 }
 
-function showDraftScreen(levelIndex, creditsWon) {
+async function showDraftScreen(levelIndex, creditsWon) {
     document.getElementById('adventure-main-screen').classList.add('hidden');
     document.getElementById('adventure-draft-screen').classList.remove('hidden');
     document.getElementById('adventure-draft-step1').classList.remove('hidden');
@@ -289,21 +289,19 @@ function showDraftScreen(levelIndex, creditsWon) {
     
     document.getElementById('adventure-draft-credit-reward').textContent = `${creditsWon} Credits`;
     
-    const opponentDeck = ADVENTURE_CAMPAIGN[levelIndex].deck;
+    await loadGlobalScores(); // Ensure scores are loaded for display
     
-    // Pick 3 random unique cards from opponent deck (or fallback to activeCharacterDatabase if deck has <3 unique)
-    const uniqueOpponentCards = [...new Set(opponentDeck)];
     draftOptions = [];
     
-    while(draftOptions.length < 3 && uniqueOpponentCards.length > 0) {
-        const randIdx = Math.floor(Math.random() * uniqueOpponentCards.length);
-        draftOptions.push(uniqueOpponentCards.splice(randIdx, 1)[0]);
-    }
-    
-    // Fallback if needed
-    while(draftOptions.length < 3) {
-        const fallback = activeCharacterDatabase[Math.floor(Math.random() * activeCharacterDatabase.length)].name;
-        if(!draftOptions.includes(fallback)) draftOptions.push(fallback);
+    // Pick 3 random unique cards from ENTIRE database
+    const dbCopy = [...activeCharacterDatabase];
+    while(draftOptions.length < 3 && dbCopy.length > 0) {
+        const randIdx = Math.floor(Math.random() * dbCopy.length);
+        const card = dbCopy.splice(randIdx, 1)[0];
+        // Ensure no duplicates
+        if(!draftOptions.includes(card.name)) {
+            draftOptions.push(card.name);
+        }
     }
     
     const optionsContainer = document.getElementById('adventure-draft-options');
@@ -313,6 +311,8 @@ function showDraftScreen(levelIndex, creditsWon) {
         const charObj = activeCharacterDatabase.find(c => c.name === cardName);
         if(!charObj) return;
         
+        const cardScore = getCardScore(cardName);
+        
         const cardEl = document.createElement('div');
         cardEl.style.width = '120px';
         cardEl.style.cursor = 'pointer';
@@ -320,7 +320,12 @@ function showDraftScreen(levelIndex, creditsWon) {
         cardEl.className = 'draft-card-option';
         
         cardEl.innerHTML = `
-            <img src="${charObj.img}" style="width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 6px; border: 2px solid #333;">
+            <div style="position:relative;">
+                <img src="${charObj.img}" style="width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 6px; border: 2px solid #333;">
+                <div style="position:absolute; top:5px; right:5px; background:rgba(0,0,0,0.8); border:1px solid #ffd700; color:#ffd700; border-radius:4px; padding:2px 5px; font-weight:bold; font-size:0.8rem;">
+                    ★ ${cardScore.toFixed(1)}
+                </div>
+            </div>
             <div style="color: #fff; font-size: 0.8rem; text-align: center; margin-top: 5px;">${charObj.name}</div>
         `;
         
@@ -328,19 +333,24 @@ function showDraftScreen(levelIndex, creditsWon) {
         cardEl.addEventListener('mouseleave', () => cardEl.style.transform = 'scale(1)');
         
         cardEl.addEventListener('click', () => {
-            selectDraftCard(cardName, charObj.img);
+            selectDraftCard(cardName, charObj.img, cardScore);
         });
         
         optionsContainer.appendChild(cardEl);
     });
 }
 
-function selectDraftCard(newCardName, newCardImage) {
+function selectDraftCard(newCardName, newCardImage, newCardScore) {
     document.getElementById('adventure-draft-step1').classList.add('hidden');
     document.getElementById('adventure-draft-step2').classList.remove('hidden');
     
     document.getElementById('adventure-draft-new-card-preview').innerHTML = `
-        <img src="${newCardImage}" style="width: 80px; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px;">
+        <div style="position:relative;">
+            <img src="${newCardImage}" style="width: 80px; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px;">
+            <div style="position:absolute; top:2px; right:2px; background:rgba(0,0,0,0.8); border:1px solid #2ed573; color:#2ed573; border-radius:4px; padding:1px 3px; font-weight:bold; font-size:0.7rem;">
+                ★ ${newCardScore.toFixed(1)}
+            </div>
+        </div>
     `;
     
     const user = getCurrentUser();
@@ -351,12 +361,25 @@ function selectDraftCard(newCardName, newCardImage) {
         const charObj = activeCharacterDatabase.find(c => c.name === cardName);
         if(!charObj) return;
         
+        const existingCardScore = getCardScore(cardName);
+        
         const cardEl = document.createElement('div');
+        cardEl.style.width = '80px';
         cardEl.style.cursor = 'pointer';
-        cardEl.style.transition = 'opacity 0.2s';
+        cardEl.style.transition = 'transform 0.2s';
+        
+        // Mark worse cards with red, better with green implicitly? Actually just show the number.
+        const diff = existingCardScore - newCardScore;
+        const diffColor = diff < 0 ? '#ff4757' : (diff > 0 ? '#2ed573' : '#aaa');
         
         cardEl.innerHTML = `
-            <img src="${charObj.img}" style="width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; border: 1px solid #333;">
+            <div style="position:relative;">
+                <img src="${charObj.img}" style="width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; border: 2px solid #555;">
+                <div style="position:absolute; top:2px; right:2px; background:rgba(0,0,0,0.8); border:1px solid ${diffColor}; color:${diffColor}; border-radius:4px; padding:1px 3px; font-weight:bold; font-size:0.7rem;">
+                    ★ ${existingCardScore.toFixed(1)}
+                </div>
+            </div>
+            <div style="color: #aaa; font-size: 0.65rem; text-align: center; margin-top: 3px; word-wrap: break-word;">${charObj.name}</div>
             <div style="color: #ff4757; font-size: 0.65rem; text-align: center; padding: 2px 0; background: rgba(0,0,0,0.8);">Entfernen</div>
         `;
         
