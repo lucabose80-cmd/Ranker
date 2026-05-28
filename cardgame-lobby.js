@@ -5,7 +5,6 @@ import { db } from './firebase-config.js';
 import { currentMode } from './mode-state.js';
 import { LEGENDARY_POOL } from './data-starwars.js';
 import { doc, getDoc, getDocs, updateDoc, collection, query, where, setDoc, deleteDoc, Timestamp, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-import { createCardHTML } from './components.js';
 
 let playerDecks = { deck0: [], deck1: [], deck2: [] };
 let activeDeckIndex = 0;
@@ -583,7 +582,7 @@ function renderOpponentDeckState() {
         const isPlayed = playedOpponentCards.includes(c);
         const div = document.createElement('div');
         div.style.cssText = `width:55px; height:55px; position:relative;`;
-        div.innerHTML = createCardHTML(dbC, c.rarity, isPlayed);
+        div.innerHTML = `<img src="${dbC.img}" style="width:100%; height:100%; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(c.rarity)}; ${isPlayed ? 'filter:grayscale(100%) opacity(0.3);' : ''}">`;
         div.title = c.charName;
         oppContainer.appendChild(div);
     });
@@ -599,7 +598,7 @@ function renderHand() {
         const dbC = activeCharacterDatabase.find(x => x.name === c.charName);
         if(!dbC) return;
         const div = document.createElement('div');
-        div.style.cssText = `cursor:${isPlayed ? 'not-allowed' : 'pointer'}; border-radius:5px; padding:5px; background:#222; text-align:center; width:80px; transition:transform 0.2s; ${isPlayed ? 'filter:grayscale(100%) opacity(0.4);' : ''}`;
+        div.style.cssText = `cursor:${isPlayed ? 'not-allowed' : 'pointer'}; border:2px solid ${getRarityColor(c.rarity)}; border-radius:5px; padding:5px; background:#222; text-align:center; width:80px; transition:transform 0.2s; ${isPlayed ? 'filter:grayscale(100%) opacity(0.4);' : ''}`;
         
         if (!isPlayed) {
             div.onmouseover = () => div.style.transform = 'translateY(-5px)';
@@ -614,8 +613,8 @@ function renderHand() {
             });
         }
         
-        div.innerHTML = createCardHTML(dbC, c.rarity, false, 'height:80px;') +
-            `<div style="font-size:0.65rem; color:#fff; text-align:center; padding:3px; background:rgba(0,0,0,0.8);">${c.charName}</div>`;
+        div.innerHTML = `<img src="${dbC.img}" style="width:100%; height:80px; object-fit:cover; border-radius:3px;">
+                         <div style="font-size:0.6rem; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${c.charName}</div>`;
         hand.appendChild(div);
     });
 }

@@ -1,5 +1,15 @@
 export const patchNotesStarWars = [
     {
+        version: "v8.3.0",
+        title: "Update: Codebase Refactoring & Cleanup",
+        isHotfix: false,
+        changes: [
+            "Optimierung: Die gesamte Projektstruktur wurde aufgeräumt. Es wurden über 500 KB an Dateileichen und veralteten Skripten entfernt, was die Ladezeit der Anwendung verbessert.",
+            "Performance: UI-Komponenten werden nun teilweise zentral über eine Komponenten-Logik geladen, um Code-Duplikate zu vermeiden.",
+            "Wichtig: Aufgrund der Vanilla-JS-Architektur ohne Bundler wurden tiefergreifende Logik-Splits zurückgehalten, um die Speicherstände und Live-Matches nicht zu gefährden."
+        ]
+    },
+    {
         version: "v8.2.2",
         title: "Performance & Datenbank-Optimierung",
         isHotfix: false,
