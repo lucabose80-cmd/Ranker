@@ -450,8 +450,23 @@ async function startBotMatch(bot) {
     }
     
     const finalDeck = deck.slice(0, 10).map(c => {
-        const assignedRarity = bot.rarities[Math.floor(Math.random() * bot.rarities.length)];
-        return { charName: c.name, rarity: assignedRarity };
+        let assignedRarity = bot.rarities[Math.floor(Math.random() * bot.rarities.length)];
+        let finalCharName = c.name;
+        
+        if (assignedRarity === 'legendary' && (typeof LEGENDARY_POOL === 'undefined' || !LEGENDARY_POOL[finalCharName])) {
+            if (typeof LEGENDARY_POOL !== 'undefined') {
+                const legChars = Object.keys(LEGENDARY_POOL).filter(name => activeCharacterDatabase.some(x => x.name === name));
+                if (legChars.length > 0) {
+                    finalCharName = legChars[Math.floor(Math.random() * legChars.length)];
+                } else {
+                    assignedRarity = 'epic';
+                }
+            } else {
+                assignedRarity = 'epic';
+            }
+        }
+        
+        return { charName: finalCharName, rarity: assignedRarity };
     });
     isBotMatch = true;
     startMatch({ username: `BOT: ${bot.name}`, displayName: `BOT: ${bot.name}`, botLevel: BOT_LEVELS.indexOf(bot) + 1 }, finalDeck);
@@ -789,30 +804,37 @@ function playRound(playerCard, explicitOppCard = null) {
 
     const maxRar = RARITY_ORDER[playerCard.rarity] > RARITY_ORDER[oppCard.rarity] ? playerCard.rarity : oppCard.rarity;
 
+    const pLeg = (playerCard.rarity === "legendary" && typeof LEGENDARY_POOL !== 'undefined' && LEGENDARY_POOL[playerCard.charName]) ? LEGENDARY_POOL[playerCard.charName] : null;
+    const oLeg = (!isBotMatch && oppCard.rarity === "legendary" && typeof LEGENDARY_POOL !== 'undefined' && LEGENDARY_POOL[oppCard.charName]) ? LEGENDARY_POOL[oppCard.charName] : null;
+    
+    const triggerPlayerLegDelay = playerCard.rarity === "legendary";
+    const triggerOppLegDelay = !isBotMatch && oppCard.rarity === "legendary";
+    const hasLegendaryDelay = triggerPlayerLegDelay || triggerOppLegDelay;
+
     // Apply legendary/epic visual effects and initial fanfare almost immediately
     setTimeout(() => {
         if(maxRar === "legendary") {
-            const pLeg = (playerCard.rarity === "legendary" && typeof LEGENDARY_POOL !== 'undefined' && LEGENDARY_POOL[playerCard.charName]) ? LEGENDARY_POOL[playerCard.charName] : null;
-            const oLeg = (oppCard.rarity === "legendary" && typeof LEGENDARY_POOL !== 'undefined' && LEGENDARY_POOL[oppCard.charName]) ? LEGENDARY_POOL[oppCard.charName] : null;
-
             if (pLeg || oLeg) {
-                const soundToPlay = pLeg ? pLeg.sound : oLeg.sound;
+                const soundToPlay = pLeg ? pLeg.sound : (oLeg ? oLeg.sound : null);
                 if (soundToPlay) {
                     const audio = new Audio(soundToPlay);
                     audio.volume = 0.5;
                     audio.play().catch(e => console.log('Audio autoplay blocked', e));
                 }
-            } else {
+            } else if (hasLegendaryDelay) {
                 playLegendaryFanfare();
+            } else {
+                playEpicFanfare(); // Bot played a legendary, just do a normal epic fanfare
             }
 
             const pImg = pLeg ? pLeg.specialImg : pDb.img;
             const oImg = oLeg ? oLeg.specialImg : oDb.img;
-            const pFlicker = pLeg ? 'animation: legendary-flicker 1.5s infinite;' : '';
-            const oFlicker = oLeg ? 'animation: legendary-flicker 1.5s infinite;' : '';
+            
+            const pFlicker = (triggerPlayerLegDelay || pLeg) ? 'animation: legendary-flicker 1.5s infinite;' : '';
+            const oFlicker = (triggerOppLegDelay || oLeg) ? 'animation: legendary-flicker 1.5s infinite;' : '';
 
-            document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${pImg}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(playerCard.rarity)}; ${getLegStyle(playerCard.rarity)}; ${pFlicker}">${getHoloHTML(playerCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${playerCard.charName}</div></div>`;
-            document.getElementById("match-opponent-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${oImg}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(oppCard.rarity)}; ${getLegStyle(oppCard.rarity)}; ${oFlicker}">${getHoloHTML(oppCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${oppCard.charName}</div></div>`;
+            document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${pImg}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(playerCard.rarity)}; ${triggerPlayerLegDelay ? getLegStyle(playerCard.rarity) : ''}; ${pFlicker}">${getHoloHTML(playerCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${playerCard.charName}</div></div>`;
+            document.getElementById("match-opponent-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${oImg}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(oppCard.rarity)}; ${triggerOppLegDelay ? getLegStyle(oppCard.rarity) : ''}; ${oFlicker}">${getHoloHTML(oppCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${oppCard.charName}</div></div>`;
         } else if(maxRar === "epic") {
             playEpicFanfare();
             document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${pDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(playerCard.rarity)};">${getHoloHTML(playerCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${playerCard.charName}</div></div>`;
@@ -820,7 +842,7 @@ function playRound(playerCard, explicitOppCard = null) {
         }
     }, 50);
 
-    const overlayDelay = maxRar === "legendary" ? 5000 : 200;
+    const overlayDelay = hasLegendaryDelay ? 5000 : 200;
 
     // Delay the win/loss sound and the popup overlay
     setTimeout(() => {

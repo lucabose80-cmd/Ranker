@@ -1,5 +1,14 @@
 export const patchNotesStarWars = [
     {
+        version: "v7.9.4",
+        title: "Update: Echte Cardgame Legendaries für Bots",
+        isHotfix: false,
+        changes: [
+            "Feature: Bots können nun keine 'Fake-Legendaries' mehr generieren. Wenn ein Bot eine legendäre Karte in sein Deck wählt, greift er nun ausschließlich auf den Pool echter legendärer Charaktere zurück.",
+            "QoL: Legendäre Animationen, Sounds und die 5-sekündige Wartezeit beim Aufdecken treten nun nur noch auf, wenn ein echter Spieler die Karte ausspielt. Bots spielen legendäre Karten ab sofort ohne Verzögerung und große Effekte."
+        ]
+    },
+    {
         version: "v7.9.3",
         title: "Update: Cardgame Bot Intelligenz",
         isHotfix: false,
