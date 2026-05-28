@@ -445,17 +445,16 @@ async function startBotMatch(bot) {
     }
     
     // Fallback if not enough
-    while (deck.length < 10 && activeCharacterDatabase.length > 0) {
-        deck.push(activeCharacterDatabase[Math.floor(Math.random() * activeCharacterDatabase.length)]);
-    }
+    const usedNames = new Set();
+    const finalDeck = [];
     
-    const finalDeck = deck.slice(0, 10).map(c => {
+    for (let c of deck.slice(0, 10)) {
         let assignedRarity = bot.rarities[Math.floor(Math.random() * bot.rarities.length)];
         let finalCharName = c.name;
         
         if (assignedRarity === 'legendary' && (typeof LEGENDARY_POOL === 'undefined' || !LEGENDARY_POOL[finalCharName])) {
             if (typeof LEGENDARY_POOL !== 'undefined') {
-                const legChars = Object.keys(LEGENDARY_POOL).filter(name => activeCharacterDatabase.some(x => x.name === name));
+                const legChars = Object.keys(LEGENDARY_POOL).filter(name => activeCharacterDatabase.some(x => x.name === name) && !usedNames.has(name));
                 if (legChars.length > 0) {
                     finalCharName = legChars[Math.floor(Math.random() * legChars.length)];
                 } else {
@@ -466,8 +465,21 @@ async function startBotMatch(bot) {
             }
         }
         
-        return { charName: finalCharName, rarity: assignedRarity };
-    });
+        // Prevent duplicate fallback
+        if (usedNames.has(finalCharName)) {
+            const unused = activeCharacterDatabase.filter(x => !usedNames.has(x.name));
+            if (unused.length > 0) {
+                finalCharName = unused[Math.floor(Math.random() * unused.length)].name;
+                if (assignedRarity === 'legendary' && (typeof LEGENDARY_POOL === 'undefined' || !LEGENDARY_POOL[finalCharName])) {
+                    assignedRarity = 'epic';
+                }
+            }
+        }
+        
+        usedNames.add(finalCharName);
+        finalDeck.push({ charName: finalCharName, rarity: assignedRarity });
+    }
+    
     isBotMatch = true;
     startMatch({ username: `BOT: ${bot.name}`, displayName: `BOT: ${bot.name}`, botLevel: BOT_LEVELS.indexOf(bot) + 1 }, finalDeck);
 }

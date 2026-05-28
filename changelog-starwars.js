@@ -1,5 +1,13 @@
 export const patchNotesStarWars = [
     {
+        version: "v7.9.5",
+        title: "Hotfix: Cardgame Bot Duplikate",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Ein Problem wurde behoben, bei dem Bots durch das Auffüllen mit legendären Karten versehentlich mehrmals denselben Charakter in ihr Deck aufnehmen konnten. Bot-Decks bestehen nun immer aus 10 einzigartigen Karten."
+        ]
+    },
+    {
         version: "v7.9.4",
         title: "Update: Echte Cardgame Legendaries für Bots",
         isHotfix: false,
