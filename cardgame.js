@@ -770,8 +770,8 @@ function playRound(playerCard, explicitOppCard = null) {
     let oppRarMult = RARITY_MULT[oppCard.rarity] || 1.0;
     
     if (isAdventureMatch) {
-        // Global difficulty scaling: Level 1 starts with 0.85x multiplier, goes up to 1.325x at Level 20
-        const globalAdvScaling = 0.85 + (adventureLevelIndex * 0.025);
+        // Global difficulty scaling: Level 1 starts with 0.85x multiplier, goes up to 1.61x at Level 20
+        const globalAdvScaling = 0.85 + (adventureLevelIndex * 0.04);
         oppRarMult *= globalAdvScaling;
     }
     

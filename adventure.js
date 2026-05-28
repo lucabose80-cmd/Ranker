@@ -42,16 +42,16 @@ const ADVENTURE_LEVELS = 20;
 
 // Base deck all players start with in Adventure Mode
 export const BASE_ADVENTURE_DECK = [
-    "Luke Skywalker", 
-    "C-3PO", 
-    "R2-D2", 
+    "Trace Martez", 
+    "Rafa Martez", 
     "B1 Battle Droide", 
+    "Gamorrean Guard", 
     "Benthic Two Tubes", 
     "Nien Nunb", 
-    "Obi-Wan Kenobi", 
-    "Han Solo", 
-    "Chewbacca", 
-    "Leia Organa"
+    "Wedge Antilles", 
+    "Bail Organa", 
+    "C-3PO", 
+    "R2-D2"
 ];
 
 // Adventure Campaign Configuration
@@ -369,7 +369,7 @@ async function showDraftScreen(levelIndex, creditsWon) {
         const charObj = activeCharacterDatabase.find(c => c.name === draftObj.charName);
         if(!charObj) return;
         
-        const cardScore = getCardScore(cardName);
+        const cardScore = getCardScore(draftObj.charName);
         
         const cardEl = document.createElement('div');
         cardEl.style.width = '120px';
