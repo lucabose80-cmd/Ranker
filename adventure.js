@@ -3,7 +3,7 @@ import { db } from './firebase-config.js';
 import { doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { activeCharacterDatabase } from './theme.js';
 import { trackWrite, trackRead } from './tracker.js';
-import { updateCreditUI } from './profile.js';
+
 import { startAdventureMatch } from './cardgame.js'; // We will add this export later
 
 
@@ -204,7 +204,8 @@ export function handleAdventureWin(levelIndex) {
     }
     
     user.credits = (user.credits || 0) + creditsWon;
-    updateCreditUI(user.credits);
+    const cb = document.getElementById('topbar-credits');
+    if(cb) cb.innerHTML = `<span style="color:#ffd700;">💳</span> ${user.credits}`;
     
     // Level up
     if(lvlNum === user.adventure_level) {
