@@ -1,5 +1,13 @@
 export const patchNotesStarWars = [
     {
+        version: "v8.2",
+        title: "Hotfix: Historien-Anzeige & Cache-Limit",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Historie zeigt nicht länger fälschlicherweise 'Keine Spiele' an, wenn viele andere Modi (wie Versus oder Cardgame) gespielt wurden. Das Lade-Limit für den lokalen Cache wurde von 24 auf 100 erhöht, damit Filter für spezifische Modi zuverlässig Spiele finden."
+        ]
+    },
+    {
         version: "v8.1",
         title: "Entwicklungs-Pause & Stabilisierung",
         isHotfix: false,
