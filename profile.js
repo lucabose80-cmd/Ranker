@@ -1014,7 +1014,8 @@ window.renderCommunityAlbum = async function(user, containerId, filterPack = 'al
             }
             
             stackContainer.appendChild(card);
-        });
+            });
+        }
         fragment.appendChild(stackContainer);
     });
     albumGrid.appendChild(fragment);
