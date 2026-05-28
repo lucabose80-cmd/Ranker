@@ -896,6 +896,7 @@ window.renderCommunityAlbum = async function(user, containerId, filterPack = 'al
         'legendary': '3px solid #ffd700'
     };
 
+    const fragment = document.createDocumentFragment();
     const charsToRender = Object.keys(grouped);
     const sortedChars = charsToRender.sort((a,b) => {
         const highestA = grouped[a].length > 0 ? Math.max(...grouped[a].map(c => rarVal[c.rarity])) : 0;
@@ -1012,8 +1013,11 @@ window.renderCommunityAlbum = async function(user, containerId, filterPack = 'al
                  card.appendChild(topBanner);
             }
             
-            stackContainer.appendChild(card); }); } albumGrid.appendChild(stackContainer);
+            stackContainer.appendChild(card);
+        });
+        fragment.appendChild(stackContainer);
     });
+    albumGrid.appendChild(fragment);
 }
 
 window.openShowcaseModal = function(user, slotIndex) {

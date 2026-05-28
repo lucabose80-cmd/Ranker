@@ -260,7 +260,7 @@ function renderInventory() {
         const div = document.createElement('div');
         div.style.cssText = `cursor:pointer; border:2px solid ${getRarityColor(c.rarity)}; border-radius:5px; padding:5px; background:#222; text-align:center; position:relative;`;
         div.innerHTML = `<div style="position:absolute; top:-5px; right:-5px; background:#1a1e29; color:#ffd700; border:1px solid #ffd700; border-radius:50%; width:24px; height:24px; font-size:0.6rem; font-weight:bold; display:flex; justify-content:center; align-items:center; z-index:10;">${score}</div>
-                         <img src="${dbC.img}" style="width:100%; height:100px; object-fit:cover; border-radius:3px;">
+                         <img loading="lazy" src="${dbC.img}" style="width:100%; height:100px; object-fit:cover; border-radius:3px;">
                          <div style="font-size:0.65rem; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-top:3px;">${c.charName}</div>`;
         div.addEventListener('click', () => {
             if(playerDeck.length < 10) {
@@ -288,7 +288,7 @@ function updateDeckUI() {
         const div = document.createElement('div');
         div.style.cssText = `cursor:pointer; border:2px solid ${getRarityColor(c.rarity)}; border-radius:5px; padding:5px; background:#222; text-align:center; position:relative;`;
         div.innerHTML = `<div style="position:absolute; top:-5px; right:-5px; background:#1a1e29; color:#ffd700; border:1px solid #ffd700; border-radius:50%; width:24px; height:24px; font-size:0.6rem; font-weight:bold; display:flex; justify-content:center; align-items:center; z-index:10;">${score}</div>
-                         <img src="${dbC.img}" style="width:100%; height:100px; object-fit:cover; border-radius:3px;">
+                         <img loading="lazy" src="${dbC.img}" style="width:100%; height:100px; object-fit:cover; border-radius:3px;">
                          <div style="font-size:0.6rem; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${c.charName}</div>`;
         div.addEventListener('click', () => {
             playerDeck.splice(idx, 1);
