@@ -102,6 +102,21 @@ export function initAdventureMode() {
         });
     }
     
+    const abortBtn = document.getElementById('adventure-abort-btn');
+    if(abortBtn) {
+        abortBtn.addEventListener('click', () => {
+            const user = getCurrentUser();
+            if(!user) return;
+            if (user.adventure_level > 1) {
+                if (confirm("Möchtest du deinen aktuellen Lauf wirklich abbrechen? Dein aktuelles Deck geht verloren und du startest wieder bei Level 1.")) {
+                    handleAdventureLoss(true);
+                }
+            } else {
+                alert("Du bist bereits auf Level 1! Wenn du das Start-Deck ändern möchtest, musst du in einem Match antreten.");
+            }
+        });
+    }
+    
     if(tutorialBtn) tutorialBtn.addEventListener('click', () => tutorialModal.classList.remove('hidden'));
     if(closeTutorial) closeTutorial.addEventListener('click', () => tutorialModal.classList.add('hidden'));
     
@@ -315,12 +330,16 @@ export function handleAdventureWin(levelIndex) {
     }
 }
 
-// Called from cardgame.js when player loses
-export function handleAdventureLoss() {
+// Called from cardgame.js when player loses, or when user aborts run
+export function handleAdventureLoss(isAbort = false) {
     const user = getCurrentUser();
     if(!user) return;
     
-    alert("NIEDERLAGE! Dein Abenteuer-Lauf ist beendet. Du startest wieder bei Level 1 mit dem Standard-Deck.");
+    if (isAbort) {
+        alert("Lauf abgebrochen. Du startest wieder bei Level 1 mit dem Standard-Deck.");
+    } else {
+        alert("NIEDERLAGE! Dein Abenteuer-Lauf ist beendet. Du startest wieder bei Level 1 mit dem Standard-Deck.");
+    }
     
     user.adventure_level = 1;
     user.adventure_deck = migrateDeck(BASE_ADVENTURE_DECK);

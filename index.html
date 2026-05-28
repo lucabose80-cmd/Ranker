@@ -521,7 +521,10 @@
                                 <div style="font-size:0.9rem; color:#aaa; margin-bottom:15px;">
                                     Tipp: Wenn du ein Match verlierst, startet dein gesamter Lauf von vorne!
                                 </div>
-                                <button id="adventure-play-btn" class="rank-btn" style="width:100%; padding:15px; font-size:1.1rem; background: linear-gradient(135deg, #a855f7, #6366f1);">Level <span id="adventure-next-level-btn-text">1</span> Spielen</button>
+                                <div style="display:flex; gap:10px;">
+                                    <button id="adventure-play-btn" class="rank-btn" style="flex:1; margin:0; padding:15px; font-size:1.1rem; background: linear-gradient(135deg, #a855f7, #6366f1);">Level <span id="adventure-next-level-btn-text">1</span> Spielen</button>
+                                    <button id="adventure-abort-btn" class="rank-btn" style="margin:0; padding:15px; font-size:1.1rem; background: #e74c3c; border-color: #c0392b;" title="Aktuellen Lauf abbrechen und bei Level 1 neustarten">🛑</button>
+                                </div>
                             </div>
                             
                             <div style="flex:2; min-width:300px; background:#1a1e29; padding:20px; border-radius:10px; border:1px solid #333;">
@@ -920,7 +923,7 @@
         </div>
     </div>
 
-    <script type="module" src="main.js?v=8.0.11"></script>
+    <script type="module" src="main.js?v=8.0.12"></script>
 </body>
 </html>
 
