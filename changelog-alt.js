@@ -1,5 +1,25 @@
 export const patchNotesWaifu = [
     {
+        version: "v8.0.1",
+        title: "Hotfix: Abenteuer-Modus",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Behebt einen Fehler, durch den der Abenteuer-Modus wegen einer falschen Datei-Verknüpfung (stats.js statt tracker.js) nicht geladen werden konnte."
+        ]
+    },
+    {
+        version: "v8.0.0",
+        title: "MAJOR UPDATE: Abenteuer-Modus (Kampagne)",
+        isHotfix: false,
+        changes: [
+            "NEUER MODUS: Der Abenteuer-Modus ist da! Kämpfe dich durch eine 20-Level lange Kampagne (Original Trilogie).",
+            "Deck-Building: Starte mit einem 10-Karten-Basis-Deck und tausche nach jedem Sieg eine Karte gegen eine Karte deines besiegten Gegners aus.",
+            "Rogue-like: Wenn du verlierst, startest du wieder komplett von vorn bei Level 1!",
+            "Belohnungen: Jeder Sieg bringt 5 Credits, Meilensteine bei Level 10 und 20 bringen 50 und 100 Credits (beim ersten Mal).",
+            "Boss-Mechaniken: Jeder Gegner hat spezielle Modifikatoren (z.B. Rancor hat +100% Stärke, Imperium blockt Schaden)."
+        ]
+    },
+    {
         version: "v7.9.7",
         title: "QoL: Geheime Titel aufdecken",
         isHotfix: false,
