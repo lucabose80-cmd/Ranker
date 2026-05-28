@@ -769,27 +769,29 @@ function playRound(playerCard, explicitOppCard = null) {
     let pRarMult = RARITY_MULT[playerCard.rarity] || 1.0;
     let oppRarMult = RARITY_MULT[oppCard.rarity] || 1.0;
     
-    if (isAdventureMatch) {
-        if (adventureLevelIndex === 2 && oFac === 'imperium') oppRarMult *= 1.10;
-        if (adventureLevelIndex === 3 && (oFac === 'kopfgeldjäger' || oFac === 'schurke')) oppRarMult *= 1.15;
-        if (adventureLevelIndex === 4) oppRarMult *= 1.20;
-        if (adventureLevelIndex === 5 && oDb.tags.includes('fahrzeug')) oppRarMult *= 1.20;
-        if (adventureLevelIndex === 6 && oFac === 'imperium') pRarMult *= 0.9;
-        if (adventureLevelIndex === 7 && oFac === 'sith') oppRarMult *= 1.25;
-        if (adventureLevelIndex === 8 && oppCard.charName === 'Emperor Palpatine') oppRarMult *= 1.50;
-        if (adventureLevelIndex === 9 && oFac === 'rebell') oppRarMult *= 1.15;
-        if (adventureLevelIndex === 9 && pFac === 'rebell') pRarMult *= 1.15;
-        if (adventureLevelIndex === 10 && oDb.tags.includes('fahrzeug')) oppRarMult *= 1.30;
-        if (adventureLevelIndex === 11 && oDb.tags.includes('ewok')) oppRarMult *= 1.20;
-        if (adventureLevelIndex === 12 && oFac === 'imperium') oppRarMult *= 1.15;
-        if (adventureLevelIndex === 13 && (oDb.tags.includes('fahrzeug') || oFac === 'kopfgeldjäger')) oppRarMult *= 1.15;
-        if (adventureLevelIndex === 14) oppRarMult *= 1.30;
-        if (adventureLevelIndex === 15 && oppCard.charName === 'Rancor') oppRarMult *= 2.0;
-        if (adventureLevelIndex === 16) oppRarMult *= (1 + (Math.random() * 0.4));
-        if (adventureLevelIndex === 17 && pFac === 'jedi') pRarMult *= 1.20;
-        if (adventureLevelIndex === 18 && oFac === 'imperium') oppRarMult *= 1.25;
-        if (adventureLevelIndex === 19 && oFac === 'sith') oppRarMult *= 1.30;
-        if (adventureLevelIndex === 19 && oFac === 'imperium') oppRarMult *= 1.20;
+    if (isAdventureMatch && typeof opponentData !== 'undefined' && opponentData) {
+        const advName = opponentData.name;
+        if (advName === "Droiden-Armee" && oFac === 'droid') oppRarMult *= 1.10;
+        if (advName === "Widerstand" && pFac === 'imperium') pRarMult *= 1.10;
+        if (advName === "Bestien") oppRarMult *= (1.10 + (Math.random() * 0.20));
+        if (advName === "Separatisten-Führung" && oFac === 'sith') oppRarMult *= 1.15;
+        if (advName === "Jedi-Padawane" && pFac === 'kopfgeldjäger') pRarMult *= 1.15;
+        if (advName === "Rebellen-Allianz" && oFac === 'rebell') oppRarMult *= 1.10;
+        if (advName === "Inquisitoren" && oFac === 'imperium') oppRarMult *= 1.15;
+        if (advName === "Nachtschwestern") oppRarMult *= 1.10;
+        if (advName === "Kopfgeldjäger" && oFac === 'kopfgeldjäger') oppRarMult *= 1.15;
+        if (advName === "Imperiale Flotte" && oDb.tags.includes('fahrzeug')) oppRarMult *= 1.20;
+        if (advName === "Graue Machtnutzer" && pFac === 'jedi') pRarMult *= 0.90;
+        if (advName === "Fahrzeuge der Republik" && oDb.tags.includes('fahrzeug')) oppRarMult *= 1.25;
+        if (advName === "Mandalorianer" && oFac === 'mandalorianer') oppRarMult *= 1.20;
+        if (advName === "Klon-Truppler" && oFac === 'klon') oppRarMult *= 1.25;
+        if (advName === "Jedi-Meister" && oFac === 'jedi') oppRarMult *= 1.20;
+        if (advName === "Jedi-Meister" && pFac === 'sith') pRarMult *= 1.15;
+        if (advName === "Das Imperium" && oFac === 'imperium') oppRarMult *= 1.25;
+        if (advName === "Die Sith") {
+            if (oFac === 'sith') oppRarMult *= 1.30;
+            if (oFac === 'imperium') oppRarMult *= 1.20;
+        }
     }
     
     const pFinal = pBase * pRarMult * pFacMult * pSyn;
