@@ -536,9 +536,9 @@ body.alt-theme .sticky-nav-container { border-bottom-color: #ff2a9d; }
 
 .game-nav {
     display: flex; justify-content: flex-start; gap: 10px; margin-bottom: 0;
-    overflow-x: auto; white-space: nowrap; margin: 0 auto;
+    overflow-x: auto; white-space: nowrap; margin: 8px 0 0 0;
     scrollbar-width: thin; scrollbar-color: #3b82f6 transparent;
-    order: 2; min-width: 0; flex-shrink: 1;
+    order: 3; width: 100%;
     padding-bottom: 8px;
 }
 .game-nav::-webkit-scrollbar { display: block; height: 6px; }
@@ -556,11 +556,11 @@ body.alt-theme .game-nav::-webkit-scrollbar-thumb { background: #ff2a9d; }
 body.alt-theme .nav-link.active { color: #ff2a9d; border-bottom-color: #ff2a9d; }
 
 .top-bar { display: flex; align-items: center; flex-shrink: 0; order: 1; }
-.nav-right-actions { display: flex; flex-direction: column; gap: 5px; align-items: flex-end; flex-shrink: 0; order: 3; }
+.nav-right-actions { display: flex; flex-direction: row; gap: 15px; align-items: center; flex-shrink: 0; order: 2; }
 .logout-btn { color: #ff6b6b; }
 .logout-btn:hover { color: #ff4757; }
 
-.main-scroll-content { margin-top: 110px; padding-bottom: 100px; }
+.main-scroll-content { margin-top: 130px; padding-bottom: 100px; }
 
 @media (max-width: 950px) {
     .sticky-nav-container {
@@ -594,7 +594,7 @@ body.alt-theme .nav-link.active { color: #ff2a9d; border-bottom-color: #ff2a9d; 
    ONLINE SIDEBAR (LINKS FIXIERT)
    ========================================================================== */
 .online-sidebar {
-    position: fixed; top: 110px; left: 20px; width: 260px; max-height: calc(100vh - 140px);
+    position: fixed; top: 130px; left: 20px; width: 260px; max-height: calc(100vh - 150px);
     background-color: #0a0e17; border: 2px solid #3b82f6; border-radius: 12px; padding: 15px;
     box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); z-index: 500; overflow-y: auto; text-align: left;
 }
