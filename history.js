@@ -859,7 +859,10 @@ export async function renderHistory() {
         
         let debugStr = '';
         if (limitGames.length === 0) {
-            debugStr = `(Debug - Cache: ${historyCache.length}, Filter: ${selectedType}, GlobalReset: ${globalHistoryResetSecs})`;
+            const firstGameSecs = historyCache.length > 0 ? (historyCache[0].timestamp ? historyCache[0].timestamp.seconds : 'no-sec') : 'empty';
+            const firstCat = historyCache.length > 0 ? (historyCache[0].category || 'norm') : 'empty';
+            const firstType = historyCache.length > 0 ? (historyCache[0].type || 'none') : 'empty';
+            debugStr = `(Debug2 - Cache: ${historyCache.length}, Filter: ${selectedType}, GlobalReset: ${globalHistoryResetSecs}, 1stGameSecs: ${firstGameSecs}, 1stCat: ${firstCat}, 1stType: ${firstType})`;
         }
 
         renderHistoryHTML(limitGames, container, displayNames, debugStr);
