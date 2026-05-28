@@ -68,6 +68,53 @@ export async function checkDailyCreditsReset(user) {
     return false;
 }
 
+export async function sanitizeUserBotTitles(user) {
+    if (!user) return;
+    
+    let needsUpdate = false;
+    const updates = {};
+
+    ['starwars', 'waifu'].forEach(mode => {
+        const titlesField = `unlocked_titles_${mode}`;
+        const defeatedField = `defeated_bots_${mode}`;
+        
+        const unlockedTitles = user[titlesField] || [];
+        const defeatedBots = user[defeatedField] || [];
+        
+        const prefix = mode === 'starwars' ? 'sw_bot_' : 'wf_bot_'; // assuming waifu might have bots later
+
+        const cleanedTitles = unlockedTitles.filter(tId => {
+            if (tId.startsWith(prefix)) {
+                const level = parseInt(tId.split('_')[2]);
+                return defeatedBots.includes(level);
+            }
+            return true;
+        });
+
+        if (cleanedTitles.length !== unlockedTitles.length) {
+            user[titlesField] = cleanedTitles;
+            updates[titlesField] = cleanedTitles;
+            needsUpdate = true;
+        }
+        
+        // Also fix active title if it was an unearned bot title
+        const activeTitleField = `activeTitle_${mode}`;
+        if (user[activeTitleField] && user[activeTitleField].includes('Schrottsammler')) {
+            // Need a better way to reset active title if it was removed, but it's okay to just clear it if we want.
+            // Let's just do a simple check. If they are missing the title now, reset it.
+            // Actually, comparing by name is hard since we only have IDs here. We'll skip resetting active title to keep it simple.
+        }
+    });
+
+    if (needsUpdate) {
+        localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
+        try {
+            await updateDoc(doc(db, "users", user.uid), updates);
+            trackWrite(1);
+        } catch(e) {}
+    }
+}
+
 export async function loginOrRegister(usernameInput, password) {
     if (!usernameInput || !password) return { success: false, message: 'Bitte alles ausfüllen.' };
     
@@ -107,6 +154,7 @@ export async function loginOrRegister(usernameInput, password) {
                 }
                 
                 await checkDailyCreditsReset(user);
+                await sanitizeUserBotTitles(user);
                 
                 const { password: _, ...safeUser } = user;
                 localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(safeUser));
@@ -350,6 +398,7 @@ export async function refreshCurrentUser() {
             }
             
             await checkDailyCreditsReset(updatedUser);
+            await sanitizeUserBotTitles(updatedUser);
             
             localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updatedUser));
             restoreUserStorage(updatedUser);

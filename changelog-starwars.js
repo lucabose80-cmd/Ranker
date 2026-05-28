@@ -1,5 +1,14 @@
 export const patchNotesStarWars = [
     {
+        version: "v7.9.2",
+        title: "Hotfix: Cardgame Bot Titel",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Es wurde ein Fehler behoben, bei dem die 10 geheimen Cardgame-Titel fälschlicherweise durch das Spielen im 'Expanded Universe' freigeschaltet wurden.",
+            "Sanitization: Fälschlicherweise erhaltene Bot-Titel wurden aus den Profilen der betroffenen Spieler entfernt."
+        ]
+    },
+    {
         version: "v7.9.1",
         title: "Hotfix: Daily Reset",
         isHotfix: true,

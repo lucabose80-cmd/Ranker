@@ -249,9 +249,9 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
                             if (window.showUnlockNotification) window.showUnlockNotification('title', t.name);
                         }
                     }
-                } else {
+                } else if (!t.condition || t.condition.type !== 'bot_defeat') {
                     // Regular titles
-                    if (newGamesPlayed >= t.required) {
+                    if (newGamesPlayed >= t.required && t.required > -1) {
                         if (!user[titlesField].includes(t.id)) {
                             user[titlesField].push(t.id);
                             unlockedAnyTitle = true;
