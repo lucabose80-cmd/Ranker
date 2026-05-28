@@ -1,5 +1,14 @@
 export const patchNotesStarWars = [
     {
+        version: "v8.1",
+        title: "Entwicklungs-Pause & Stabilisierung",
+        isHotfix: false,
+        changes: [
+            "Info: In den nächsten 5 Tagen werden keine neuen großen Features oder Inhalts-Updates mehr kommen.",
+            "Wichtig: Wir lassen das Spiel jetzt erstmal in Ruhe, damit ihr den neuen Abenteuer-Modus ungestört spielen könnt. Lediglich super wichtige Bug-Fixes werden bei Bedarf noch eingespielt."
+        ]
+    },
+    {
         version: "v8.0.1",
         title: "Hotfix: Abenteuer-Modus",
         isHotfix: true,
@@ -8,7 +17,7 @@ export const patchNotesStarWars = [
         ]
     },
     {
-        version: "v8.0.0",
+        version: "v8.0",
         title: "MAJOR UPDATE: Abenteuer-Modus (Kampagne)",
         isHotfix: false,
         changes: [
