@@ -18,7 +18,7 @@ import { initChangelog, updateChangelogContent } from './changelog.js';
 import { patchNotesStarWars } from './changelog-starwars.js';
 import { initAuth, loginOrRegister, logout, getCurrentUser, startPresenceHeartbeat, markCurrentUserOffline } from './auth.js';
 import { initAdminPanel, stopAdminPanel } from './admin.js';
-import { initAdventureMode } from './adventure.js?v=8.2.0';
+import { initAdventureMode } from './adventure.js?v=8.2.1';
 import { renderHistory, initHistoryListener, stopHistoryListener } from './history.js';
 import { renderScoreboard } from './scoreboard.js';
 import { renderLexikon, initLexikonTabs } from './lexikon.js';
@@ -236,7 +236,7 @@ function setupGameUI(user) {
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', () => {
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            tabs.forEach(t => document.getElementById(t).classList.add('hidden'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
             
             link.classList.add('active');
             const target = link.dataset.target;
@@ -442,7 +442,7 @@ function setupGameUI(user) {
         }
     });
 
-    tabs.forEach(t => document.getElementById(t).classList.add('hidden'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
     document.getElementById('game-main-content').classList.remove('hidden');
     
     // Erstes Spiel starten

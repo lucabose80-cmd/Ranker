@@ -241,6 +241,7 @@ function renderInventory() {
     const sortMode = document.getElementById('cardgame-sort-select').value;
     uniqueCards.sort((a, b) => {
         if(sortMode === 'rarity') return RARITY_ORDER[b.rarity] - RARITY_ORDER[a.rarity];
+        if(sortMode === 'score') return getCardScore(b.charName) - getCardScore(a.charName);
         if(sortMode === 'faction') {
             const dbA = activeCharacterDatabase.find(x => x.name === a.charName);
             const dbB = activeCharacterDatabase.find(x => x.name === b.charName);

@@ -1,10 +1,12 @@
 export const patchNotesStarWars = [
     {
-        version: "v8.2",
-        title: "Hotfix: Historien-Anzeige & Cache-Limit",
+        version: "v8.2.1",
+        title: "Hotfix: Historie Limit, Cardgame Sorting & Tab Bug",
         isHotfix: true,
         changes: [
-            "Hotfix: Historie zeigt nicht länger fälschlicherweise 'Keine Spiele' an, wenn viele andere Modi (wie Versus oder Cardgame) gespielt wurden. Das Lade-Limit für den lokalen Cache wurde von 24 auf 100 erhöht, damit Filter für spezifische Modi zuverlässig Spiele finden."
+            "Hotfix: Das History-Limit wurde wie gewünscht auf 24 zurückgesetzt, um Datenvolumen zu sparen.",
+            "Feature: Im Cardgame-Deckbuilder kann man die Karten jetzt nach 'Wertung' sortieren.",
+            "Bugfix: Ein Fehler wurde behoben, bei dem sich Tabs übereinander gelegt haben (z.B. Adventure Mode über Cardgame), weil alte Tabs beim Wechseln nicht immer korrekt ausgeblendet wurden."
         ]
     },
     {
