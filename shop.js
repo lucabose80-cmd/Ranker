@@ -258,8 +258,17 @@ async function openBooster(booster, pool, currentCost) {
         return rates.COMMON || RARITIES.COMMON;
     };
 
-    for (let i = 0; i < 5; i++) { let rarity; const isTest1 = user.username && user.username.toLowerCase() === 'test1'; if (isTest1) { rarity = (i === 4 && legendariesInPool.length > 0) ? RARITIES.LEGENDARY : RARITIES.EPIC; } else if (isGodPack) {
-            rarity = (Math.random() < 0.2 && legendariesInPool.length > 0) ? RARITIES.LEGENDARY : RARITIES.EPIC;
+    for (let i = 0; i < 5; i++) { 
+        let rarity; 
+        const isTest1 = user.username && user.username.toLowerCase() === 'test1'; 
+        if (isTest1) { 
+            rarity = (i === 4 && legendariesInPool.length > 0) ? RARITIES.LEGENDARY : RARITIES.EPIC; 
+        } else if (isGodPack) {
+            if (i === 4 && legendariesInPool.length > 0) {
+                rarity = RARITIES.LEGENDARY;
+            } else {
+                rarity = (Math.random() < 0.2 && legendariesInPool.length > 0) ? RARITIES.LEGENDARY : RARITIES.EPIC;
+            }
         } else if (i === 4) {
             let rates = {
                 RARE: { ...RARITIES.RARE, dropRate: 0.88 },
