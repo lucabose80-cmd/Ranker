@@ -87,7 +87,7 @@ export function initShop() {
         const pool = activeCharacterDatabase.filter(booster.filter);
         if (pool.length === 0) return;
         
-        const legendaryCharsInPack = (booster.id === 'starwars_jedi_sith' || booster.id === 'starwars_klon') ? pool.filter(c => LEGENDARY_POOL[c.name]) : [];
+        const legendaryCharsInPack = pool.filter(c => LEGENDARY_POOL[c.name]);
         const legCount = legendaryCharsInPack.length;
         const legNames = legendaryCharsInPack.map(c => c.name).join(', ');
         
@@ -243,7 +243,7 @@ async function openBooster(booster, pool, currentCost) {
     // Godpack Check (0.1% chance)
     const isGodPack = Math.random() < 0.001;
     
-    const legendariesInPool = (booster.id === 'starwars_jedi_sith' || booster.id === 'starwars_klon') ? pool.filter(c => LEGENDARY_POOL[c.name]) : [];
+    const legendariesInPool = pool.filter(c => LEGENDARY_POOL[c.name]);
     
     // Generate 5 cards
     const pulledCards = [];
