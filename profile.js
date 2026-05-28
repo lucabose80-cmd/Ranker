@@ -608,7 +608,7 @@ function renderThemeSelection(user) {
             }
         }
         
-        let reqText = !unlocked ? baseReqText : 'Freigeschaltet';
+        reqText = !unlocked ? baseReqText : 'Freigeschaltet';
         
         reqText += probHtml;
 
