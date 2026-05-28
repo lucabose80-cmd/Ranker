@@ -537,6 +537,8 @@ export async function startAdventureMatch(levelIndex, oppData, oppDeckArr, playe
     adventureLevelIndex = levelIndex;
     
     document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+    document.getElementById('cardgame-content').classList.remove('hidden');
+    document.getElementById('cardgame-main-menu').classList.add('hidden');
     document.getElementById('cardgame-match').classList.remove('hidden');
     
     document.getElementById('match-player-score').innerText = '0';
@@ -934,10 +936,12 @@ function playRound(playerCard, explicitOppCard = null) {
 
 async function finishMatch() {
     document.getElementById('cardgame-match').classList.add('hidden');
-    document.getElementById('cardgame-main-menu').classList.remove('hidden');
     document.getElementById('match-result-overlay').classList.add('hidden');
     
     if (isAdventureMatch) {
+        document.getElementById('cardgame-content').classList.add('hidden');
+        document.getElementById('adventure-content').classList.remove('hidden');
+        
         if (playerScore > opponentScore) {
             handleAdventureWin(adventureLevelIndex);
         } else {
@@ -947,6 +951,8 @@ async function finishMatch() {
         isBotMatch = false;
         return;
     }
+    
+    document.getElementById('cardgame-main-menu').classList.remove('hidden');
     
     const user = getCurrentUser();
     if(user && liveMatchActive) {
