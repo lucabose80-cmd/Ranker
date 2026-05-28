@@ -11,41 +11,40 @@ const ADVENTURE_LEVELS = 20;
 
 // Base deck all players start with in Adventure Mode
 export const BASE_ADVENTURE_DECK = [
-    "Luke Skywalker (Farmboy)", 
+    "Luke Skywalker", 
     "C-3PO", 
     "R2-D2", 
-    "Jawa", 
-    "Tusken Raider", 
-    "Greedo", 
+    "B1 Battle Droide", 
+    "Benthic Two Tubes", 
+    "Nien Nunb", 
     "Obi-Wan Kenobi", 
     "Han Solo", 
     "Chewbacca", 
-    "Prinzessin Leia"
+    "Leia Organa"
 ];
 
 // Adventure Campaign Configuration
 export const ADVENTURE_CAMPAIGN = [
-    { name: "Tusken Plünderer", avatar: "img/characters/Tusken Raider.webp", deck: ["Tusken Raider", "Tusken Raider", "Jawa", "Greedo", "Ponda Baba", "Dr. Evazan", "Wampa", "Jawa", "Tusken Raider", "R2-D2"], ruleText: "Keine Sonderregeln." },
-    { name: "Cantina Schläger", avatar: "img/characters/Ponda Baba.webp", deck: ["Ponda Baba", "Dr. Evazan", "Greedo", "Han Solo", "Chewbacca", "Obi-Wan Kenobi", "Jawa", "Figrin D'an", "Wuher", "Garindan"], ruleText: "Keine Sonderregeln." },
-    { name: "Sandtruppler", avatar: "img/characters/Sandtrooper.webp", deck: ["Sandtrooper", "Sandtrooper", "Sandtrooper", "Stormtrooper", "Stormtrooper", "Garindan", "Dewback", "Darth Vader", "Tarkin", "TIE Fighter Pilot"], ruleText: "Das Imperium hat +10% Stärke." },
-    { name: "Jabba the Hutt", avatar: "img/characters/Jabba the Hutt.webp", deck: ["Jabba the Hutt", "Bib Fortuna", "Boba Fett", "Salacious Crumb", "Oola", "Max Rebo", "Gamorrean Guard", "Gamorrean Guard", "Rancor", "Boushh"], ruleText: "Kopfgeldjäger und Schurken haben +15% Stärke." },
-    { name: "Boba Fett", avatar: "img/characters/Boba Fett.webp", deck: ["Boba Fett", "Bossk", "Dengar", "IG-88", "Zuckuss", "4-LOM", "Jango Fett", "Slave I", "Stormtrooper", "Darth Vader"], ruleText: "Boba Fett's Team hat perfekte Kopfgeldjäger-Synergie." },
-    { name: "AT-AT Commander", avatar: "img/characters/General Veers.webp", deck: ["General Veers", "Snowtrooper", "Snowtrooper", "AT-AT", "AT-ST", "Darth Vader", "Stormtrooper", "Stormtrooper Commander", "Probe Droid", "Wampa"], ruleText: "Fahrzeuge haben +20% Stärke." },
-    { name: "Imperiale Ehrengarde", avatar: "img/characters/Royal Guard.webp", deck: ["Royal Guard", "Royal Guard", "Emperor Palpatine", "Darth Vader", "Stormtrooper", "TIE Interceptor", "Moff Jerjerrod", "Admiral Piett", "Scout Trooper", "Biker Scout"], ruleText: "Imperium-Einheiten blocken 10% des Schadens." },
-    { name: "Darth Vader", avatar: "img/characters/Darth Vader.webp", deck: ["Darth Vader", "Emperor Palpatine", "Stormtrooper", "Tarkin", "Boba Fett", "Imperial Star Destroyer", "TIE Advanced", "Royal Guard", "Royal Guard", "Inquisitor"], ruleText: "Sith haben +25% Stärke." },
-    { name: "Imperator Palpatine", avatar: "img/characters/Emperor Palpatine.webp", deck: ["Emperor Palpatine", "Darth Vader", "Royal Guard", "Royal Guard", "Death Star", "Tarkin", "Stormtrooper", "Stormtrooper", "Imperial Officer", "TIE Fighter"], ruleText: "Imperator Palpatine hat +50% Basisstärke. Epische Karten sind für den Spieler gesperrt." },
-    { name: "Rebellen-Verräter", avatar: "img/characters/Lando Calrissian.webp", deck: ["Lando Calrissian", "Han Solo", "Chewbacca", "Leia Organa (Bespin)", "Lobot", "Cloud Car", "Boba Fett", "Stormtrooper", "Darth Vader", "Ugnaught"], ruleText: "Rebellen gegen Rebellen: Alle Rebellen haben +15%." },
-    // I will flesh out all 20 levels. Using simple copies for now to fill out 11-20.
-    { name: "TIE-Pilot Squad", avatar: "img/characters/TIE Fighter Pilot.webp", deck: ["TIE Fighter Pilot", "TIE Fighter Pilot", "TIE Fighter", "TIE Interceptor", "TIE Bomber", "Darth Vader", "Tarkin", "Death Star", "Stormtrooper", "Imperial Probe Droid"], ruleText: "Fahrzeuge (Schiffe) haben +30%." },
-    { name: "Ewok Stamm", avatar: "img/characters/Wicket.webp", deck: ["Wicket", "Chief Chirpa", "Logray", "Teebo", "Ewok Warrior", "Ewok Glider", "C-3PO", "R2-D2", "Chewbacca", "Han Solo (Endor)"], ruleText: "Ewoks haben +20%." },
-    { name: "Scout Trooper", avatar: "img/characters/Scout Trooper.webp", deck: ["Scout Trooper", "Scout Trooper", "Biker Scout", "Speeder Bike", "Speeder Bike", "AT-ST", "Stormtrooper", "General Veers", "Darth Vader", "Imperial Officer"], ruleText: "Das Imperium hat +15%." },
-    { name: "Admiral Piett", avatar: "img/characters/Admiral Piett.webp", deck: ["Admiral Piett", "Executor", "Imperial Star Destroyer", "Darth Vader", "Boba Fett", "Bossk", "Dengar", "IG-88", "Stormtrooper", "TIE Bomber"], ruleText: "Schiffe und Kopfgeldjäger haben +15%." },
-    { name: "Moff Jerjerrod", avatar: "img/characters/Moff Jerjerrod.webp", deck: ["Moff Jerjerrod", "Death Star II", "Emperor Palpatine", "Darth Vader", "Royal Guard", "Royal Guard", "Stormtrooper", "Stormtrooper", "TIE Interceptor", "TIE Defender"], ruleText: "Keine Sonderregeln, aber extrem hohe Basisstärken." },
-    { name: "Rancor", avatar: "img/characters/Rancor.webp", deck: ["Rancor", "Malakili", "Jabba the Hutt", "Oola", "Bib Fortuna", "Gamorrean Guard", "Gamorrean Guard", "Boba Fett", "Salacious Crumb", "Max Rebo"], ruleText: "Rancor hat +100% Stärke." },
-    { name: "Boushh", avatar: "img/characters/Boushh.webp", deck: ["Boushh", "Chewbacca", "Han Solo (Carbonite)", "Lando Calrissian (Skiff Guard)", "Luke Skywalker (Jedi Knight)", "R2-D2", "C-3PO", "Jabba the Hutt", "Boba Fett", "Gamorrean Guard"], ruleText: "Alle Fraktionen gemischt. Zufällige Buffs jede Runde." },
-    { name: "Luke Skywalker", avatar: "img/characters/Luke Skywalker (Jedi Knight).webp", deck: ["Luke Skywalker (Jedi Knight)", "Darth Vader", "Emperor Palpatine", "Obi-Wan Kenobi (Ghost)", "Yoda", "Leia Organa (Hoth)", "Han Solo", "Chewbacca", "Lando Calrissian", "Millennium Falcon"], ruleText: "Jedi haben +20%." },
-    { name: "Großmoff Tarkin", avatar: "img/characters/Grand Moff Tarkin.webp", deck: ["Grand Moff Tarkin", "Death Star", "Darth Vader", "Princess Leia", "Stormtrooper", "Stormtrooper", "TIE Fighter", "TIE Fighter", "Imperial Officer", "Death Star Gunner"], ruleText: "Das Imperium hat +25%." },
-    { name: "Der Imperator", avatar: "img/characters/Emperor Palpatine.webp", deck: ["Emperor Palpatine", "Darth Vader", "Luke Skywalker (Jedi Knight)", "Royal Guard", "Royal Guard", "Death Star II", "Admiral Piett", "Stormtrooper Commander", "TIE Interceptor", "Sith Eternal Fleet"], ruleText: "FINALER BOSS: Sith haben +30%, Imperium +20%. Legenden sind erlaubt." }
+    { name: "Die Unterwelt", avatar: "", deck: ["Trace Martez", "Rafa Martez", "Gamorrean Guard", "Bib Fortuna", "Rotta the Hutt", "Ziro the Hutt", "Gardulla the Hutt", "The Twins", "Jabba the Hutt", "Boba Fett"], ruleText: "Keine Sonderregeln." },
+    { name: "Piraten & Schmuggler", avatar: "", deck: ["Hondo Ohnaka", "DJ", "Enfys Nest", "Dryden Vos", "Qi'ra", "Gorian Shard", "Kragan Gorr", "Vane", "Han Solo", "Lando Calrissian"], ruleText: "Keine Sonderregeln." },
+    { name: "Klon-Truppler", avatar: "", deck: ["Captain Rex", "Commander Cody", "Fives", "Echo", "Jesse", "Wolffe", "Gregor", "Kix", "Hardcase", "Appo"], ruleText: "Das Imperium hat +10% Stärke." },
+    { name: "Jedi-Padawane", avatar: "", deck: ["Jecki Lon", "Ahsoka Tano", "Ezra Bridger", "Cal Kestis", "Barriss Offee", "Zett Jukassa", "Gungi", "Katooni", "Petro", "Nahdar Vebb"], ruleText: "Kopfgeldjäger und Schurken haben +15% Stärke." },
+    { name: "Kopfgeldjäger", avatar: "", deck: ["Cad Bane", "Jango Fett", "Boba Fett", "Zam Wesell", "Embo", "Aurra Sing", "Bossk", "Fennec Shand", "IG-88", "IG-11"], ruleText: "Boba Fett's Team hat perfekte Kopfgeldjäger-Synergie." },
+    { name: "Mandalorianer", avatar: "", deck: ["Din Djarin", "Bo-Katan Kryze", "Pre Vizsla", "Paz Vizsla", "The Armorer", "Ursa Wren", "Koska Reeves", "Axe Woves", "Fenn Rau", "Gar Saxon"], ruleText: "Fahrzeuge haben +20% Stärke." },
+    { name: "Fahrzeuge der Republik", avatar: "", deck: ["Republic Gunship (LAAT)", "AT-TE", "Venator-class Star Destroyer", "Jedi Starfighter (Delta-7)", "Jedi Interceptor (Eta-2)", "Naboo N-1 Starfighter", "Captain Rex", "Commander Cody", "Plo Koon", "Anakin Skywalker"], ruleText: "Imperium-Einheiten blocken 10% des Schadens." },
+    { name: "Separatisten-Führung", avatar: "", deck: ["Count Dooku", "General Grievous", "Wat Tambor", "Poggle the Lesser", "Nute Gunray", "Admiral Trench", "San Hill", "Lux Bonteri", "General Kalani", "Asajj Ventress"], ruleText: "Sith haben +25% Stärke." },
+    { name: "Droiden-Armee", avatar: "", deck: ["B1 Battle Droide", "B2 Super Battle Droide", "Droideka", "Kommando Droide", "Suchdroide", "Zwergspinnendroide", "Spybot", "General Grievous", "AZI-3", "IG-88"], ruleText: "Imperator Palpatine hat +50% Basisstärke. Epische Karten sind für den Spieler gesperrt." },
+    { name: "Inquisitoren", avatar: "", deck: ["Grand Inquisitor", "Second Sister", "Third Sister", "Fifth Brother", "Seventh Sister", "Darth Vader", "Suchdroide", "Imperial Royal Guard", "Iden Versio", "Director Krennic"], ruleText: "Rebellen gegen Rebellen: Alle Rebellen haben +15%." },
+    { name: "Graue Machtnutzer", avatar: "", deck: ["Baylan Skoll", "Shin Hati", "Morgan Elsbeth", "Starkiller", "Jod Na Nawood", "Ahsoka Tano", "Asajj Ventress", "Qimir (Der Fremde)", "Der Vater", "Die Tochter"], ruleText: "Fahrzeuge (Schiffe) haben +30%." },
+    { name: "Rebellen-Allianz", avatar: "", deck: ["Jyn Erso", "Cassian Andor", "Saw Gerrera", "Mon Mothma", "Admiral Ackbar", "Wedge Antilles", "Hera Syndulla", "Sabine Wren", "Nien Nunb", "Bail Organa"], ruleText: "Ewoks haben +20%." },
+    { name: "Widerstand", avatar: "", deck: ["Rey Skywalker", "Poe Dameron", "Finn", "Rose Tico", "Vice Admiral Holdo", "Maz Kanata", "BB-8", "D-O", "Leia Organa", "Han Solo"], ruleText: "Das Imperium hat +15%." },
+    { name: "Erste Ordnung", avatar: "", deck: ["Kylo Ren", "Captain Phasma", "General Hux", "Supreme Leader Snoke", "FN-2199", "Sith Trooper", "Allegiant General Pryde", "Captain Peavey", "Executioner Trooper", "BB-9E"], ruleText: "Schiffe und Kopfgeldjäger haben +15%." },
+    { name: "Imperiale Flotte", avatar: "", deck: ["Imperial Star Destroyer", "Death Star", "TIE Fighter", "TIE Interceptor", "TIE Advanced x1", "Imperial Shuttle", "AT-AT Walker", "AT-ST", "Grand Admiral Thrawn", "Admiral Piett"], ruleText: "Keine Sonderregeln, aber extrem hohe Basisstärken." },
+    { name: "Nachtschwestern", avatar: "", deck: ["Mother Talzin", "Asajj Ventress", "Merrin", "Morgan Elsbeth", "Savage Opress", "Darth Maul", "General Grievous", "Count Dooku", "Rancor", "Osha Aniseya"], ruleText: "Rancor hat +100% Stärke." },
+    { name: "Bestien", avatar: "", deck: ["Rancor", "Wampa", "Sarlacc", "Nexu", "Acklay", "Reek", "Rathtar", "Zillo Beast", "Mudhorn", "Gamorrean Guard"], ruleText: "Alle Fraktionen gemischt. Zufällige Buffs jede Runde." },
+    { name: "Jedi-Meister", avatar: "", deck: ["Yoda", "Mace Windu", "Qui-Gon Jinn", "Kit Fisto", "Plo Koon", "Ki-Adi-Mundi", "Aayla Secura", "Shaak Ti", "Luminara Unduli", "Obi-Wan Kenobi"], ruleText: "Jedi haben +20%." },
+    { name: "Das Imperium", avatar: "", deck: ["Emperor Palpatine", "Darth Vader", "Grand Moff Tarkin", "Grand Admiral Thrawn", "Director Krennic", "Moff Gideon", "Admiral Piett", "Imperial Royal Guard", "Death Star", "Iden Versio"], ruleText: "Das Imperium hat +25%." },
+    { name: "Die Sith", avatar: "", deck: ["Emperor Palpatine", "Darth Vader", "Darth Maul", "Count Dooku", "Darth Plagueis", "Darth Malgus", "Darth Jar Jar", "Kylo Ren", "Supreme Leader Snoke", "Savage Opress"], ruleText: "FINALER BOSS: Sith haben +30%, Imperium +20%. Legenden sind erlaubt." }
 ];
 
 let draftOptions = [];
@@ -109,6 +108,17 @@ async function verifyAdventureInit() {
         user.adventure_deck = [...BASE_ADVENTURE_DECK];
         updates.adventure_deck = user.adventure_deck;
         needsUpdate = true;
+    } else {
+        // Validate existing deck
+        let isInvalid = false;
+        user.adventure_deck.forEach(c => {
+            if(!activeCharacterDatabase.find(dbC => dbC.name === c)) isInvalid = true;
+        });
+        if(isInvalid) {
+            user.adventure_deck = [...BASE_ADVENTURE_DECK];
+            updates.adventure_deck = user.adventure_deck;
+            needsUpdate = true;
+        }
     }
     
     if(needsUpdate) {
@@ -136,7 +146,7 @@ export function renderAdventureMap() {
         const isLocked = lvlNum > currentLvl;
         
         let color = isLocked ? '#333' : (isPast ? '#2ed573' : '#ffd700');
-        let icon = isLocked ? '🔒' : (isPast ? '✓' : '⚔️');
+        let icon = isLocked ? 'ðŸ”’' : (isPast ? 'âœ“' : 'âš”ï¸');
         
         const node = document.createElement('div');
         node.style.display = 'flex';
@@ -179,7 +189,7 @@ export function renderAdventureDeck() {
         const cardEl = document.createElement('div');
         cardEl.style.position = 'relative';
         cardEl.innerHTML = `
-            <img src="${charObj.image}" style="width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; border: 1px solid #333;">
+            <img src="${charObj.img}" style="width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; border: 1px solid #333;">
             <div style="position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.8); color: #fff; font-size: 0.65rem; text-align: center; padding: 2px 0;">${charObj.name}</div>
         `;
         deckContainer.appendChild(cardEl);
@@ -205,7 +215,7 @@ export function handleAdventureWin(levelIndex) {
     
     user.credits = (user.credits || 0) + creditsWon;
     const cb = document.getElementById('topbar-credits');
-    if(cb) cb.innerHTML = `<span style="color:#ffd700;">💳</span> ${user.credits}`;
+    if(cb) cb.innerHTML = `<span style="color:#ffd700;">ðŸ’³</span> ${user.credits}`;
     
     // Level up
     if(lvlNum === user.adventure_level) {
@@ -219,7 +229,7 @@ export function handleAdventureWin(levelIndex) {
         // Let's reset the run but keep the milestone flags so they can do it again for fun (5 credits).
         user.adventure_level = 1;
         user.adventure_deck = [...BASE_ADVENTURE_DECK];
-        alert("HERZLICHEN GLÜCKWUNSCH! Du hast die Abenteuer-Kampagne durchgespielt! Dein Run wird nun zurückgesetzt, du kannst aber jederzeit neu starten.");
+        alert("HERZLICHEN GLÃœCKWUNSCH! Du hast die Abenteuer-Kampagne durchgespielt! Dein Run wird nun zurÃ¼ckgesetzt, du kannst aber jederzeit neu starten.");
     }
     
     // Save to DB
@@ -310,7 +320,7 @@ function showDraftScreen(levelIndex, creditsWon) {
         cardEl.className = 'draft-card-option';
         
         cardEl.innerHTML = `
-            <img src="${charObj.image}" style="width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 6px; border: 2px solid #333;">
+            <img src="${charObj.img}" style="width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 6px; border: 2px solid #333;">
             <div style="color: #fff; font-size: 0.8rem; text-align: center; margin-top: 5px;">${charObj.name}</div>
         `;
         
@@ -318,7 +328,7 @@ function showDraftScreen(levelIndex, creditsWon) {
         cardEl.addEventListener('mouseleave', () => cardEl.style.transform = 'scale(1)');
         
         cardEl.addEventListener('click', () => {
-            selectDraftCard(cardName, charObj.image);
+            selectDraftCard(cardName, charObj.img);
         });
         
         optionsContainer.appendChild(cardEl);
@@ -346,7 +356,7 @@ function selectDraftCard(newCardName, newCardImage) {
         cardEl.style.transition = 'opacity 0.2s';
         
         cardEl.innerHTML = `
-            <img src="${charObj.image}" style="width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; border: 1px solid #333;">
+            <img src="${charObj.img}" style="width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; border: 1px solid #333;">
             <div style="color: #ff4757; font-size: 0.65rem; text-align: center; padding: 2px 0; background: rgba(0,0,0,0.8);">Entfernen</div>
         `;
         
@@ -373,3 +383,4 @@ function selectDraftCard(newCardName, newCardImage) {
         removeContainer.appendChild(cardEl);
     });
 }
+
