@@ -537,10 +537,14 @@ body.alt-theme .sticky-nav-container { border-bottom-color: #ff2a9d; }
 .game-nav {
     display: flex; justify-content: flex-start; gap: 10px; margin-bottom: 0;
     overflow-x: auto; white-space: nowrap; margin: 0 auto;
-    scrollbar-width: none; -ms-overflow-style: none;
+    scrollbar-width: thin; scrollbar-color: #3b82f6 transparent;
     order: 2; min-width: 0; flex-shrink: 1;
+    padding-bottom: 8px;
 }
-.game-nav::-webkit-scrollbar { display: none; }
+.game-nav::-webkit-scrollbar { display: block; height: 6px; }
+.game-nav::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 3px; }
+.game-nav::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 3px; }
+body.alt-theme .game-nav::-webkit-scrollbar-thumb { background: #ff2a9d; }
 
 .nav-link {
     background: none; border: none; color: #888; font-size: 1.05rem; font-weight: bold;

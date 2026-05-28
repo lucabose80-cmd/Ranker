@@ -18,7 +18,7 @@ import { initChangelog, updateChangelogContent } from './changelog.js';
 import { patchNotesStarWars } from './changelog-starwars.js';
 import { initAuth, loginOrRegister, logout, getCurrentUser, startPresenceHeartbeat, markCurrentUserOffline } from './auth.js';
 import { initAdminPanel, stopAdminPanel } from './admin.js';
-import { initAdventureMode } from './adventure.js?v=8.1.2';
+import { initAdventureMode } from './adventure.js?v=8.1.3';
 import { renderHistory, initHistoryListener, stopHistoryListener } from './history.js';
 import { renderScoreboard } from './scoreboard.js';
 import { renderLexikon, initLexikonTabs } from './lexikon.js';
@@ -200,6 +200,17 @@ function setupGameUI(user) {
     updateTopbarAvatarElement(user);
     applyColorTheme(user);
     document.getElementById('logout-btn').addEventListener('click', logout);
+
+    // Horizontal scroll for game-nav on mouse wheel
+    const gameNav = document.querySelector('.game-nav');
+    if (gameNav) {
+        gameNav.addEventListener('wheel', (evt) => {
+            if (evt.deltaY !== 0) {
+                evt.preventDefault();
+                gameNav.scrollLeft += evt.deltaY;
+            }
+        }, { passive: false });
+    }
 
     window.top5GlobalChars = [];
     window.fetchTop5Global = async function() {
