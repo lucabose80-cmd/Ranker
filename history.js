@@ -411,10 +411,9 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
     }
 }
 
-// Hilfsfunktion zum Rendern der HTML Karten
-function renderHistoryHTML(games, container, displayNames) {
+function renderHistoryHTML(games, container, displayNames, debugInfo = '') {
     if (games.length === 0) {
-        container.innerHTML = '<p class="prompt-text">Noch keine Spiele in diesem Modus aufgezeichnet.</p>';
+        container.innerHTML = `<p class="prompt-text">Noch keine Spiele in diesem Modus aufgezeichnet. ${debugInfo}</p>`;
         return;
     }
 
@@ -857,8 +856,13 @@ export async function renderHistory() {
 
         // Zeige maximal die 12 neuesten an (bereits sortiert)
         const limitGames = filteredGames.slice(0, 12);
+        
+        let debugStr = '';
+        if (limitGames.length === 0) {
+            debugStr = `(Debug - Cache: ${historyCache.length}, Filter: ${selectedType}, GlobalReset: ${globalHistoryResetSecs})`;
+        }
 
-        renderHistoryHTML(limitGames, container, displayNames);
+        renderHistoryHTML(limitGames, container, displayNames, debugStr);
     } catch (error) {
         console.error("Fehler beim Rendern der Historie:", error);
         container.innerHTML = '<p class="prompt-text" style="color: #ff4757;">Fehler beim Laden der Historie.</p>';
