@@ -504,7 +504,7 @@ function renderHistoryHTML(games, container, displayNames) {
                 <span class="history-date">${date}</span>
             </div>
             <div class="history-images">
-                ${game.ranking.map(item => `
+                ${(game.ranking || []).map(item => `
                     <div class="history-img-slot" title="${item.name}">
                         <img src="${item.img}">
                         <span class="mini-rank">${item.rank}</span>
