@@ -769,6 +769,12 @@ function playRound(playerCard, explicitOppCard = null) {
     let pRarMult = RARITY_MULT[playerCard.rarity] || 1.0;
     let oppRarMult = RARITY_MULT[oppCard.rarity] || 1.0;
     
+    if (isAdventureMatch) {
+        // Global difficulty scaling: Level 1 starts with 0.70x multiplier, goes up to 1.65x at Level 20
+        const globalAdvScaling = 0.70 + (adventureLevelIndex * 0.05);
+        oppRarMult *= globalAdvScaling;
+    }
+    
     if (isAdventureMatch && typeof opponentData !== 'undefined' && opponentData) {
         const advName = opponentData.name;
         if (advName === "Droiden-Armee" && oFac === 'droid') oppRarMult *= 1.10;
