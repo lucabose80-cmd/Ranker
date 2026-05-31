@@ -1,5 +1,19 @@
 export const patchNotesStarWars = [
     {
+        version: "v8.5",
+        title: "Update: Cardgame Mechaniken Balance-Rework",
+        isHotfix: false,
+        changes: [
+            "Balancing: Instant-Win-Mechaniken (9999 Punkte) wurden aus dem Spiel entfernt, um faire und taktischere Duelle zu gewährleisten.",
+            "Feature: Imperium-Unterdrückung eingeführt. Anstelle eines Orbitalschlags zieht das Imperium nach einem Sieg der gegnerischen Karte in der Folgerunde nun 25% vom Score ab.",
+            "Feature: Rebellen-Hoffnung eingeführt. Wenn du im Gesamt-Match zurückliegst, verdoppeln deine Rebellen in ihrer Kampfrunde ihren Score als Comeback-Mechanik.",
+            "Feature: Jedi-Gedankentrick eingeführt. Das Ausspielen eines Jedi zwingt den Gegner nun dazu, in seiner nächsten Runde garantiert seine schwächste Karte auszuspielen.",
+            "Feature: Widerstand-Opfermut eingeführt. Verliert ein Widerstandskämpfer, motiviert er das Team und deine nächste Karte erhält sofort +4.0 Punkte Bonus.",
+            "Feature: Kopfgeldjäger angepasst. Besiegst du ein Fraktions-Ziel direkt, erhältst du für diese Runde 2 Match-Punkte anstatt nur 1.",
+            "Balancing: Fahrzeuge (Überrollen) triggern ihre Extra-Runde ab sofort nur noch, wenn sie die vorherige Runde aktiv gewonnen haben."
+        ]
+    },
+    {
         version: "v8.4.1",
         title: "Hotfix: UI-Update & Tooltips",
         isHotfix: true,

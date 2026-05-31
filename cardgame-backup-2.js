@@ -17,12 +17,6 @@ let playerScore = 0;
 let opponentScore = 0;
 let playedPlayerCards = [];
 let playedOpponentCards = [];
-let playerHandRemaining = [];
-let opponentHandRemaining = [];
-let playerGraveyard = [];
-let opponentGraveyard = [];
-let pEffects = { vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
-let oEffects = { vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
 let globalScoresCache = {};
 let isBotMatch = false;
 let liveMatchActive = false;
@@ -48,62 +42,13 @@ function getMainFaction(tags) {
     const tg = tags.map(t => t.toLowerCase());
     if(tg.includes('jedi')) return 'jedi';
     if(tg.includes('sith')) return 'sith';
-    if(tg.includes('rebell') || tg.includes('rebellen')) return 'rebell';
+    if(tg.includes('klon')) return 'klon';
+    if(tg.includes('rebell') || tg.includes('rebellion')) return 'rebell';
     if(tg.includes('imperium')) return 'imperium';
-    if(tg.includes('klon') || tg.includes('clone')) return 'klon';
     if(tg.includes('mandalorianer') || tg.includes('mandalorian')) return 'mandalorianer';
-    if(tg.includes('kopfgeldj?ger') || tg.includes('kopfgeldjaeger') || tg.includes('kopfgeldjäger')) return 'kopfgeldjäger';
+    if(tg.includes('kopfgeldj?ger') || tg.includes('kopfgeldjaeger')) return 'kopfgeldj?ger';
     if(tg.includes('droid') || tg.includes('droide')) return 'droid';
-    if(tg.includes('schurke') || tg.includes('unterwelt')) return 'schurke';
-    if(tg.includes('nachtschwester') || tg.includes('dathomir')) return 'nachtschwester';
-    if(tg.includes('erste ordnung')) return 'erste ordnung';
-    if(tg.includes('widerstand')) return 'widerstand';
-    if(tg.includes('senat') || tg.includes('republik')) return 'republik';
-    if(tg.includes('graue machtnutzer') || tg.includes('grau')) return 'graue machtnutzer';
-    if(tg.includes('fahrzeug')) return 'fahrzeug';
     return 'neutral';
-}
-
-function getFactionDescription(faction) {
-    const desc = {
-        'mandalorianer': 'Silence',
-        'graue machtnutzer': 'Lowest Wins',
-        'republik': 'Veto (0:0)',
-        'fahrzeug': 'Überrollen',
-        'sith': 'Zerstört Karte',
-        'schurke': 'Werte-Tausch',
-        'imperium': 'Orbitalschlag',
-        'jedi': 'Macht-Geist',
-        'rebell': 'Sabotage',
-        'klon': 'Klon-Kette',
-        'nachtschwester': 'Nekromantie',
-        'droid': 'Verschmelzung',
-        'kopfgeldjäger': 'Kopfgeld',
-        'erste ordnung': 'Rekrutierung',
-        'widerstand': 'Letzter Funke'
-    };
-    return desc[faction] || 'Aktiv';
-}
-
-function getFactionTooltip(faction) {
-    const desc = {
-        'mandalorianer': 'Silence: Deaktiviert sofort sämtliche aktiven und passiven Fraktions-Effekte der gegnerischen Karte.\n\n• Dauer: 1 Runde\n• Limit: Exklusiv (Max 3 erlaubt)',
-        'graue machtnutzer': 'Ausgleich: Dreht die Siegesbedingung komplett um. Die Karte mit dem NIEDRIGSTEN Score gewinnt.\n\n• Dauer: 1 Runde\n• Limit: Exklusiv (Max 3 erlaubt)',
-        'republik': 'Veto: Verhindert eine direkte Niederlage. Falls der Bot gewinnen würde, wird das Ergebnis auf ein Unentschieden (0:0) eingefroren.\n\n• Limit: Exklusiv (Max 3 erlaubt)',
-        'fahrzeug': 'Überrollen: Zwingt das Match in eine sofortige Extra-Runde. Das Fahrzeug behält seinen Score und kämpft direkt nochmal (nur bei Rundensieg).\n\n• Limit: Exklusiv (Max 3 erlaubt)',
-        'sith': 'Ausdünnung: Jede 2. gespielte Sith-Karte vernichtet sofort vor dem Aufdecken eine zufällige Karte auf der Hand des Bots.\n\n• Limit: Exklusiv (Max 4 erlaubt)',
-        'jedi': 'Gedankentrick: Zwingt den Bot dazu, in seiner NÄCHSTEN Runde garantiert seine schwächste verbleibende Karte auszuspielen.\n\n• Limit: Exklusiv (Max 3 erlaubt)',
-        'schurke': 'Falsches Spiel: Ein fieser Trick! Bevor Gewinner ermittelt werden, klaut der Schurke den Basis-Score der gegnerischen Karte und gibt ihr seinen eigenen.\n\n• Limit: Formation (Min 3 benötigt)',
-        'imperium': 'Unterdrückung: Wenn das Imperium gewinnt, wird der Gegner unterdrückt. Die gegnerische Karte in der NÄCHSTEN Runde verliert 25% ihres Basis-Scores.\n\n• Limit: Formation (Min 4 benötigt)',
-        'rebell': 'Hoffnung: Eine Comeback-Mechanik. Wenn du im aktuellen Match-Punktestand hinten liegst, verdoppeln Rebellen ihren Basis-Score.\n\n• Limit: Formation (Min 4 benötigt)',
-        'klon': 'Klon-Kette: Verliert ein Klon, wird sein Basis-Score global gespeichert. Der nächste Klon erhält diesen Score als permanenten Bonus on-top.\n\n• Limit: Formation (Min 4 benötigt)',
-        'nachtschwester': 'Nekromantie: Falls die Nachtschwester gewinnt, reißt sie die ZULETZT besiegte Karte aus dem gegnerischen Friedhof zurück in deine Hand.\n\n• Limit: Formation (Min 3 benötigt)',
-        'droid': 'Verschmelzung: Schwarm-Intelligenz! Wird dieser Droide gespielt, verdoppelt er den Basis-Score des NÄCHSTEN Droiden, den du ausspielst.\n\n• Limit: Formation (Min 5 benötigt)',
-        'kopfgeldjäger': 'Kopfgeld: Markiert die häufigste gegnerische Fraktion. Besiegt der Kopfgeldjäger dieses Ziel, erhältst du 2 Match-Punkte anstatt 1.\n\n• Limit: Formation (Min 3 benötigt)',
-        'erste ordnung': 'Zwangsrekrutierung: Wenn die Erste Ordnung gewinnt, wird die aktuell besiegte gegnerische Karte nicht auf den Friedhof gelegt, sondern deiner Hand hinzugefügt.\n\n• Limit: Formation (Min 4 benötigt)',
-        'widerstand': 'Opfermut: Wenn eine Widerstands-Karte ihre Runde verliert, erhält deine NÄCHSTE ausgespielte Karte einen Bonus von +4.0 Punkten.\n\n• Limit: Formation (Min 4 benötigt)'
-    };
-    return desc[faction] || 'Kein spezieller Effekt.';
 }
 
 function calculateSynergy(deck) {
@@ -114,34 +59,15 @@ function calculateSynergy(deck) {
         const f = getMainFaction(dbC ? dbC.tags : []);
         if(f !== 'neutral') { counts[f] = (counts[f] || 0) + 1; }
     });
-    
-    let activeFactions = [];
-    const checkMax = (fac, max) => { if(counts[fac] > 0 && counts[fac] <= max) activeFactions.push({ faction: fac, count: counts[fac] }); };
-    const checkMin = (fac, min) => { if(counts[fac] >= min) activeFactions.push({ faction: fac, count: counts[fac] }); };
-    const checkExact = (fac, ext) => { if(counts[fac] === ext) activeFactions.push({ faction: fac, count: counts[fac] }); };
-    
-    checkMax('mandalorianer', 3);
-    checkMax('graue machtnutzer', 3);
-    checkMax('republik', 3);
-    checkMax('fahrzeug', 3);
-    checkMax('sith', 4);
-    checkMax('jedi', 3);
-    
-    checkMin('schurke', 3);
-    checkMin('imperium', 4);
-    checkMin('rebell', 4);
-    checkMin('klon', 4);
-    checkMin('nachtschwester', 3);
-    checkMin('droid', 5);
-    checkMin('kopfgeldjäger', 3);
-    checkMin('erste ordnung', 4);
-    checkMin('widerstand', 4);
-    
-    return activeFactions;
+    const sorted = Object.entries(counts).sort((a,b) => b[1] - a[1]);
+    const top2 = sorted.slice(0, 2);
+    return top2.map(t => ({ faction: t[0], count: t[1], mult: 1.0 + (t[1] * 0.01) }));
 }
 
 function getSynergyMult(synergies) {
-    return 1.0;
+    let total = 1.0;
+    synergies.forEach(s => { total += (s.mult - 1.0); });
+    return total;
 }
 
 export async function loadGlobalScores() {
@@ -260,7 +186,7 @@ export function initCardgame() {
         document.getElementById('match-result-overlay').classList.add('hidden');
         document.getElementById('match-player-active').innerHTML = '';
         document.getElementById('match-opponent-active').innerHTML = '';
-        if(playerHandRemaining.length === 0 && opponentHandRemaining.length === 0 && !pEffects.vehicles && !oEffects.vehicles) {
+        if(currentRound > 10) {
             finishMatch();
         } else {
             renderHand();
@@ -376,10 +302,10 @@ function updateDeckUI() {
     const synContainer = document.getElementById('cardgame-synergy-info');
     synContainer.innerHTML = '';
     if(syns.length === 0) {
-        synContainer.innerHTML = 'Keine Effekte aktiv';
+        synContainer.innerHTML = 'Keine (0%)';
     } else {
         syns.forEach(s => {
-            synContainer.innerHTML += `<div><span class="has-tooltip" data-tooltip="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ffd700; font-weight:bold; border-bottom:1px dotted #ffd700;">${s.faction.toUpperCase()}</span> <span style="color:#aaa;">(${s.count} Karten):</span> <span style="color:#2ed573;">${getFactionDescription(s.faction)}</span></div>`;
+            synContainer.innerHTML += `<div>${s.faction.toUpperCase()} (${s.count} Karten: +${s.count}%)</div>`;
         });
     }
 }
@@ -572,12 +498,6 @@ async function startMatch(oppData, oppDeckArr) {
     opponentScore = 0;
     playedPlayerCards = [];
     playedOpponentCards = [];
-    playerHandRemaining = [...playerDeck];
-    opponentHandRemaining = [...opponentDeck];
-    playerGraveyard = [];
-    opponentGraveyard = [];
-    pEffects = { vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
-    oEffects = { vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
     
     document.getElementById('cardgame-matchmaking').classList.add('hidden');
     document.getElementById('cardgame-bots').classList.add('hidden');
@@ -589,11 +509,8 @@ async function startMatch(oppData, oppDeckArr) {
     const pSyn = calculateSynergy(playerDeck);
     const oSyn = calculateSynergy(opponentDeck);
     
-    if (pSyn.some(s => s.faction === 'kopfgeldjäger')) pEffects.bountyTarget = oSyn.length > 0 ? oSyn[0].faction : 'neutral';
-    if (oSyn.some(s => s.faction === 'kopfgeldjäger')) oEffects.bountyTarget = pSyn.length > 0 ? pSyn[0].faction : 'neutral';
-    
-    document.getElementById('match-player-synergy').innerHTML = pSyn.map(s => `<span class="has-tooltip" data-tooltip="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ffd700; border-bottom:1px dotted #ffd700;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
-    document.getElementById('match-opponent-synergy').innerHTML = oSyn.map(s => `<span class="has-tooltip" data-tooltip="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ff4757; border-bottom:1px dotted #ff4757;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
+    document.getElementById('match-player-synergy').innerHTML = pSyn.map(s => `${s.faction} (+${s.count}%)`).join('<br>') || 'Keine';
+    document.getElementById('match-opponent-synergy').innerHTML = oSyn.map(s => `${s.faction} (+${s.count}%)`).join('<br>') || 'Keine';
     
     const user = getCurrentUser();
     if(user && !isBotMatch) {
@@ -616,12 +533,6 @@ export async function startAdventureMatch(levelIndex, oppData, oppDeckArr, playe
     opponentScore = 0;
     playedPlayerCards = [];
     playedOpponentCards = [];
-    playerHandRemaining = [...playerDeck];
-    opponentHandRemaining = [...opponentDeck];
-    playerGraveyard = [];
-    opponentGraveyard = [];
-    pEffects = { vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
-    oEffects = { vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
     
     isBotMatch = true;
     isAdventureMatch = true;
@@ -638,11 +549,8 @@ export async function startAdventureMatch(levelIndex, oppData, oppDeckArr, playe
     const pSyn = calculateSynergy(playerDeck);
     const oSyn = calculateSynergy(opponentDeck);
     
-    if (pSyn.some(s => s.faction === 'kopfgeldjäger')) pEffects.bountyTarget = oSyn.length > 0 ? oSyn[0].faction : 'neutral';
-    if (oSyn.some(s => s.faction === 'kopfgeldjäger')) oEffects.bountyTarget = pSyn.length > 0 ? pSyn[0].faction : 'neutral';
-    
-    document.getElementById('match-player-synergy').innerHTML = pSyn.map(s => `<span class="has-tooltip" data-tooltip="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ffd700; border-bottom:1px dotted #ffd700;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
-    document.getElementById('match-opponent-synergy').innerHTML = oSyn.map(s => `<span class="has-tooltip" data-tooltip="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ff4757; border-bottom:1px dotted #ff4757;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
+    document.getElementById('match-player-synergy').innerHTML = pSyn.map(s => `${s.faction} (+${s.count}%)`).join('<br>') || 'Keine';
+    document.getElementById('match-opponent-synergy').innerHTML = oSyn.map(s => `${s.faction} (+${s.count}%)`).join('<br>') || 'Keine';
     
     renderHand();
     renderOpponentDeckState();
@@ -682,24 +590,12 @@ function renderOpponentDeckState() {
 }
 
 function renderHand() {
-    document.getElementById('match-round-number').innerText = `Runde ${currentRound}`;
+    document.getElementById('match-round-number').innerText = `${currentRound}/10`;
     const hand = document.getElementById('match-player-hand');
     hand.innerHTML = '';
     
-    if (pEffects.vehicles) {
-        hand.innerHTML = '<div style="color:#fff; text-align:center; padding:20px; font-weight:bold;">Fahrzeug greift erneut an...</div>';
-        setTimeout(() => { playRound(null); }, 1500);
-        return;
-    }
-    
-    if (playerHandRemaining.length === 0) {
-        hand.innerHTML = '<div style="color:#fff; text-align:center; padding:20px; font-weight:bold;">Keine Karten mehr! Du setzt aus.</div>';
-        setTimeout(() => { playRound(null); }, 1500);
-        return;
-    }
-    
     playerDeck.forEach((c) => {
-        const isPlayed = !playerHandRemaining.includes(c);
+        const isPlayed = playedPlayerCards.includes(c);
         const dbC = activeCharacterDatabase.find(x => x.name === c.charName);
         if(!dbC) return;
         const div = document.createElement('div');
@@ -725,265 +621,341 @@ function renderHand() {
 }
 
 function playRound(playerCard, explicitOppCard = null) {
-    let pForcedJedi = false;
-    let oForcedJedi = false;
-
-    if (playerCard && !pEffects.vehicles && oEffects.forceWeakest) {
-        let allValid = [...playerHandRemaining];
-        if (!allValid.includes(playerCard)) allValid.push(playerCard);
-        allValid.sort((a,b) => (getCardScore(a.charName)*(RARITY_MULT[a.rarity]||1.0)) - (getCardScore(b.charName)*(RARITY_MULT[b.rarity]||1.0)));
-        playerCard = allValid[0];
-        oEffects.forceWeakest = false;
-        pForcedJedi = true;
-    }
-
-    if (playerCard) {
-        const idx = playerHandRemaining.findIndex(c => c === playerCard);
-        if(idx > -1) playerHandRemaining.splice(idx, 1);
-        playedPlayerCards.push(playerCard);
-    }
+    playedPlayerCards.push(playerCard);
     
-    let oppCard = explicitOppCard;
-    if (!oppCard) {
-        if (oEffects.vehicles) {
-            oppCard = oEffects.vehicles;
-            oEffects.vehicles = null;
-        } else if (opponentHandRemaining.length > 0) {
-            if (pEffects.forceWeakest) {
-                opponentHandRemaining.sort((a,b) => (getCardScore(a.charName)*(RARITY_MULT[a.rarity]||1.0)) - (getCardScore(b.charName)*(RARITY_MULT[b.rarity]||1.0)));
-                oppCard = opponentHandRemaining[0];
-                pEffects.forceWeakest = false;
-                oForcedJedi = true;
-            } else {
-                oppCard = opponentHandRemaining[Math.floor(Math.random() * opponentHandRemaining.length)];
-            }
-        }
-    }
-    
-    if (oppCard && !explicitOppCard && !oEffects.vehicles) {
-        const idx = opponentHandRemaining.findIndex(c => c === oppCard);
-        if(idx > -1) opponentHandRemaining.splice(idx, 1);
-        if(!playedOpponentCards.includes(oppCard)) playedOpponentCards.push(oppCard);
-    }
-    
-    let pDb = playerCard ? activeCharacterDatabase.find(x => x.name === playerCard.charName) : null;
-    let oDb = oppCard ? activeCharacterDatabase.find(x => x.name === oppCard.charName) : null;
-    
-    let pFac = pDb ? getMainFaction(pDb.tags) : 'neutral';
-    let oFac = oDb ? getMainFaction(oDb.tags) : 'neutral';
-    
-    let pRarMult = playerCard ? (RARITY_MULT[playerCard.rarity] || 1.0) : 1.0;
-    let oRarMult = oppCard ? (RARITY_MULT[oppCard.rarity] || 1.0) : 1.0;
-    
-    let pBaseRaw = playerCard ? (playerCard.isGhost ? 0 : getCardScore(playerCard.charName)) : 0;
-    let oBaseRaw = oppCard ? (oppCard.isGhost ? 0 : getCardScore(oppCard.charName)) : 0;
-    
-    let pBase = pBaseRaw * pRarMult;
-    let oBase = oBaseRaw * oRarMult;
-    
-    let pSyn = calculateSynergy(playerDeck);
-    let oSyn = calculateSynergy(opponentDeck);
-    let pHas = (fac) => pSyn.some(s => s.faction === fac);
-    let oHas = (fac) => oSyn.some(s => s.faction === fac);
-    
-    let pSilence = pHas('mandalorianer') && pFac === 'mandalorianer';
-    let oSilence = oHas('mandalorianer') && oFac === 'mandalorianer';
-    
-    let pLog = [];
-    let oLog = [];
-
-    if (pForcedJedi) pLog.push("Gedankentrick (Schwächste Karte erzwungen)");
-    if (oForcedJedi) oLog.push("Gedankentrick (Schwächste Karte erzwungen)");
-    
-    if (!pSilence && !oSilence) {
-        let pSwap = pHas('schurke') && pFac === 'schurke';
-        let oSwap = oHas('schurke') && oFac === 'schurke';
-        if (pSwap !== oSwap && playerCard && oppCard) {
-            let tempC = playerCard; playerCard = oppCard; oppCard = tempC;
-            let tempDb = pDb; pDb = oDb; oDb = tempDb;
-            let tempFac = pFac; pFac = oFac; oFac = tempFac;
-            let tempBase = pBase; pBase = oBase; oBase = tempBase;
-            if (pSwap) pLog.push("Falsches Spiel (Karten getauscht)");
-            if (oSwap) oLog.push("Falsches Spiel (Karten getauscht)");
-        }
-    }
-    
-    if (pEffects.orbitalStrike) { pBase = 0; oBase = 0; pEffects.orbitalStrike = false; pLog.push("Orbitalschlag (Zerstört)"); oLog.push("Orbitalschlag (Zerstört)"); }
-    if (oEffects.orbitalStrike) { pBase = 0; oBase = 0; oEffects.orbitalStrike = false; oLog.push("Orbitalschlag (Zerstört)"); pLog.push("Orbitalschlag (Zerstört)"); }
-    
-    if (pEffects.oppression) { pBase *= 0.75; pEffects.oppression = false; pLog.push("Unterdrückt (-25% Score)"); }
-    if (oEffects.oppression) { oBase *= 0.75; oEffects.oppression = false; oLog.push("Unterdrückt (-25% Score)"); }
-
-    if (pEffects.martyrBuff) { pBase += 4.0; pEffects.martyrBuff = false; pLog.push("Opfermut (+4.0 Score)"); }
-    if (oEffects.martyrBuff) { oBase += 4.0; oEffects.martyrBuff = false; oLog.push("Opfermut (+4.0 Score)"); }
-
-    if (playerCard) {
-        if (!oSilence && pHas('klon') && pFac === 'klon') pEffects.cloneChain++; else pEffects.cloneChain = 0;
-        if (!oSilence && pEffects.nextDroidDouble && pFac === 'droid') { pBase *= 2; pEffects.nextDroidDouble = false; pLog.push("Verschmelzung (Score x2)"); }
-        if (!oSilence && pHas('rebell') && pFac === 'rebell' && playerScore < opponentScore) { pBase *= 2; pLog.push("Hoffnung (Score x2)"); }
-        if (pSilence) pLog.push("Beskar (Silence)");
-    }
-    if (oppCard) {
-        if (!pSilence && oHas('klon') && oFac === 'klon') oEffects.cloneChain++; else oEffects.cloneChain = 0;
-        if (!pSilence && oEffects.nextDroidDouble && oFac === 'droid') { oBase *= 2; oEffects.nextDroidDouble = false; oLog.push("Verschmelzung (Score x2)"); }
-        if (!pSilence && oHas('rebell') && oFac === 'rebell' && opponentScore < playerScore) { oBase *= 2; oLog.push("Hoffnung (Score x2)"); }
-        if (oSilence) oLog.push("Beskar (Silence)");
-    }
-    
-    let isWin = false;
-    let isDraw = false;
-    
-    let lowestWins = false;
-    if (!oSilence && pHas('graue machtnutzer') && pFac === 'graue machtnutzer') { lowestWins = true; pLog.push("Ausgleich (Niedriger gewinnt)"); }
-    if (!pSilence && oHas('graue machtnutzer') && oFac === 'graue machtnutzer') { lowestWins = true; oLog.push("Ausgleich (Niedriger gewinnt)"); }
-    
-    if (pBase === oBase) {
-        isDraw = true;
+    let oppCard;
+    if (explicitOppCard) {
+        oppCard = explicitOppCard;
     } else {
-        isWin = lowestWins ? (pBase < oBase) : (pBase > oBase);
-        if(!playerCard) isWin = false;
-        if(!oppCard) isWin = true;
-    }
-    
-    if (playerCard && !oSilence && pHas('republik') && pFac === 'republik' && !isWin && !isDraw) {
-        isDraw = true; isWin = false; pBase = 0; oBase = 0; pLog.push("Vorladung (Runde eingefroren)"); oLog.push("Vorladung (Runde eingefroren)");
-    }
-    if (oppCard && !pSilence && oHas('republik') && oFac === 'republik' && isWin && !isDraw) {
-        isDraw = true; isWin = false; pBase = 0; oBase = 0; oLog.push("Vorladung (Runde eingefroren)"); pLog.push("Vorladung (Runde eingefroren)");
-    }
-    
-    if (isWin && !isDraw) {
-        playerScore++;
-        if (!oSilence && pHas('kopfgeldjäger') && pFac === 'kopfgeldjäger' && oFac === pEffects.bountyTarget) { playerScore++; pLog.push("Kopfgeldjäger (+1 Extra-Punkt)"); }
-    } else if (!isWin && !isDraw) {
-        opponentScore++;
-        if (!pSilence && oHas('kopfgeldjäger') && oFac === 'kopfgeldjäger' && pFac === oEffects.bountyTarget) { opponentScore++; oLog.push("Kopfgeldjäger (+1 Extra-Punkt)"); }
-    }
-    
-    if (playerCard) {
-        if (!isWin && !isDraw && !oSilence) {
-            if (pHas('widerstand') && pFac === 'widerstand') { pEffects.martyrBuff = true; pLog.push("Widerstand geopfert"); }
-            if (pHas('jedi') && pFac === 'jedi') { pEffects.forceWeakest = true; pLog.push("Gedankentrick initiiert"); }
-            if (pFac === 'klon') { pEffects.lastCloneDead = pBase; }
-            if (pFac === 'droid') { pEffects.nextDroidDouble = true; }
-            playerGraveyard.push(playerCard);
-        }
-        if (isWin && !isDraw && !oSilence) {
-            if (pHas('imperium') && pFac === 'imperium') { pEffects.oppression = true; pLog.push("Unterdrückung aktiviert"); }
-            if (pHas('jedi') && pFac === 'jedi') { pEffects.forceWeakest = true; pLog.push("Gedankentrick initiiert"); }
-            if (pHas('fahrzeug') && pFac === 'fahrzeug') { pEffects.vehicles = playerCard; playerCard.isGhost = false; pLog.push("Überrollen (Bleibt auf Feld)"); }
-            if (pHas('nachtschwester') && pFac === 'nachtschwester' && opponentGraveyard.length > 0) {
-                let stolen = opponentGraveyard.pop();
-                playerHandRemaining.push(stolen);
-                pLog.push("Nekromantie (Karte geklaut)");
+        const unplayedOpp = opponentDeck.filter(c => !playedOpponentCards.includes(c));
+        if (typeof isBotMatch !== 'undefined' && isBotMatch && opponentData) {
+            const pDb = activeCharacterDatabase.find(x => x.name === playerCard.charName);
+            const pFac = getMainFaction(pDb.tags);
+            const pSyn = getSynergyMult(calculateSynergy(playerDeck));
+            const pBase = getCardScore(playerCard.charName);
+            const pRar = RARITY_MULT[playerCard.rarity] || 1.0;
+            let pBaseFinal = pBase * pRar * pSyn;
+            
+            // Adventure Modifiers for Player
+            if (isAdventureMatch) {
+                if (adventureLevelIndex === 9 && pFac === 'rebell') pBaseFinal *= 1.15;
+                if (adventureLevelIndex === 17 && pFac === 'jedi') pBaseFinal *= 1.20;
             }
-            if (pHas('erste ordnung') && pFac === 'erste ordnung' && oppCard) {
-                playerHandRemaining.push(oppCard);
-                pLog.push("Zwangsrekrutierung");
+            
+            let evalOpp = [];
+            const oSyn = getSynergyMult(calculateSynergy(opponentDeck));
+            
+            unplayedOpp.forEach(c => {
+                const oDb = activeCharacterDatabase.find(x => x.name === c.charName);
+                const oFac = getMainFaction(oDb.tags);
+                let pFacMult = 1.0; let oFacMult = 1.0;
+                if(FACTION_ADVANTAGE[pFac] === oFac) pFacMult = 1.2;
+                if(FACTION_ADVANTAGE[oFac] === pFac) oFacMult = 1.2;
+                
+                const oBase = getCardScore(c.charName);
+                const oRar = RARITY_MULT[c.rarity] || 1.0;
+                let oBaseFinal = oBase * oRar * oSyn;
+                
+                // Adventure Modifiers for Bot
+                if (isAdventureMatch) {
+                    if (adventureLevelIndex === 2 && oFac === 'imperium') oBaseFinal *= 1.10;
+                    if (adventureLevelIndex === 3 && (oFac === 'kopfgeldjäger' || oFac === 'schurke')) oBaseFinal *= 1.15;
+                    if (adventureLevelIndex === 4) oBaseFinal *= 1.20;
+                    if (adventureLevelIndex === 5 && oDb.tags.includes('fahrzeug')) oBaseFinal *= 1.20;
+                    if (adventureLevelIndex === 7 && oFac === 'sith') oBaseFinal *= 1.25;
+                    if (adventureLevelIndex === 8 && c.charName === 'Emperor Palpatine') oBaseFinal *= 1.50;
+                    if (adventureLevelIndex === 9 && oFac === 'rebell') oBaseFinal *= 1.15;
+                    if (adventureLevelIndex === 10 && oDb.tags.includes('fahrzeug')) oBaseFinal *= 1.30;
+                    if (adventureLevelIndex === 11 && oDb.tags.includes('ewok')) oBaseFinal *= 1.20;
+                    if (adventureLevelIndex === 12 && oFac === 'imperium') oBaseFinal *= 1.15;
+                    if (adventureLevelIndex === 13 && (oDb.tags.includes('fahrzeug') || oFac === 'kopfgeldjäger')) oBaseFinal *= 1.15;
+                    if (adventureLevelIndex === 14) oBaseFinal *= 1.30;
+                    if (adventureLevelIndex === 15 && c.charName === 'Rancor') oBaseFinal *= 2.0;
+                    if (adventureLevelIndex === 16) oBaseFinal *= (1 + (Math.random() * 0.4));
+                    if (adventureLevelIndex === 18 && oFac === 'imperium') oBaseFinal *= 1.25;
+                    if (adventureLevelIndex === 19 && oFac === 'sith') oBaseFinal *= 1.30;
+                    if (adventureLevelIndex === 19 && oFac === 'imperium') oBaseFinal *= 1.20;
+                }
+                
+                evalOpp.push({
+                    card: c,
+                    botScore: oBaseFinal * oFacMult,
+                    playerScoreReq: pBaseFinal * pFacMult
+                });
+            });
+            
+            // Sort from weakest to strongest bot score
+            evalOpp.sort((a, b) => a.botScore - b.botScore);
+            
+            // Find all cards that would win against the player's card
+            let winningPlays = evalOpp.filter(x => x.botScore > x.playerScoreReq);
+            
+            let bestOpp = null;
+            if (winningPlays.length > 0) {
+                // Smart Play: Use the WEAKEST card that still guarantees a win (efficient victory)
+                bestOpp = winningPlays[0].card;
+            } else {
+                // Sacrifice Play: Cannot win, so throw away the ABSOLUTE WEAKEST card to save strong cards
+                bestOpp = evalOpp[0].card;
             }
-        }
-        if (isDraw && !oSilence) {
-            if (pHas('jedi') && pFac === 'jedi') { pEffects.forceWeakest = true; pLog.push("Gedankentrick initiiert"); }
+            
+            if (!isAdventureMatch && opponentData.botLevel === 1 && Math.random() < 0.6) {
+                oppCard = unplayedOpp[Math.floor(Math.random() * unplayedOpp.length)];
+            } else if (!isAdventureMatch && opponentData.botLevel === 2 && Math.random() < 0.3) {
+                oppCard = unplayedOpp[Math.floor(Math.random() * unplayedOpp.length)];
+            } else {
+                oppCard = bestOpp;
+            }
+        } else {
+            oppCard = unplayedOpp[Math.floor(Math.random() * unplayedOpp.length)];
         }
     }
     
-    if (oppCard) {
-        if (isWin && !isDraw && !pSilence) {
-            if (oHas('widerstand') && oFac === 'widerstand') { oEffects.martyrBuff = true; oLog.push("Widerstand geopfert"); }
-            if (oHas('jedi') && oFac === 'jedi') { oEffects.forceWeakest = true; oLog.push("Gedankentrick initiiert"); }
-            if (oFac === 'klon') { oEffects.lastCloneDead = oBase; }
-            if (oFac === 'droid') { oEffects.nextDroidDouble = true; }
-            opponentGraveyard.push(oppCard);
-        } else if (!isWin && !isDraw && !pSilence) {
-            if (oHas('imperium') && oFac === 'imperium') { oEffects.oppression = true; oLog.push("Unterdrückung aktiviert"); }
-            if (oHas('jedi') && oFac === 'jedi') { oEffects.forceWeakest = true; oLog.push("Gedankentrick initiiert"); }
-            if (oHas('fahrzeug') && oFac === 'fahrzeug') { oEffects.vehicles = oppCard; oppCard.isGhost = false; oLog.push("Überrollen (Bleibt auf Feld)"); }
-            if (oHas('nachtschwester') && oFac === 'nachtschwester' && playerGraveyard.length > 0) {
-                let stolen = playerGraveyard.pop();
-                opponentHandRemaining.push(stolen);
-                oLog.push("Nekromantie (Karte geklaut)");
-            }
-            if (oHas('erste ordnung') && oFac === 'erste ordnung' && playerCard) {
-                opponentHandRemaining.push(playerCard);
-                oLog.push("Zwangsrekrutierung");
-            }
-        }
-        if (isDraw && !pSilence) {
-            if (oHas('jedi') && oFac === 'jedi') { oEffects.forceWeakest = true; oLog.push("Gedankentrick initiiert"); }
-        }
+    if (!playedOpponentCards.includes(oppCard)) {
+        playedOpponentCards.push(oppCard);
     }
     
-    if (playerCard && pFac === 'sith' && !oSilence) {
-        pEffects.sithPlayed++;
-        if (pEffects.sithPlayed === 2 && opponentHandRemaining.length > 0) {
-            opponentGraveyard.push(opponentHandRemaining.pop());
-            pLog.push("Ausdünnung (Karte vernichtet)");
-        }
-    }
-    if (oppCard && oFac === 'sith' && !pSilence) {
-        oEffects.sithPlayed++;
-        if (oEffects.sithPlayed === 2 && playerHandRemaining.length > 0) {
-            playerGraveyard.push(playerHandRemaining.pop());
-            oLog.push("Ausdünnung (Karte vernichtet)");
-        }
+    const pDb = activeCharacterDatabase.find(x => x.name === playerCard.charName);
+    const oDb = activeCharacterDatabase.find(x => x.name === oppCard.charName);
+    
+    const actx = window.getSharedAudioContext ? window.getSharedAudioContext() : (window.sharedAudioContext || new (window.AudioContext || window.webkitAudioContext)());
+    
+    function playTone(freq, time, dur, type="square", vol=0.1) {
+        try {
+            const osc = actx.createOscillator();
+            const gain = actx.createGain();
+            osc.type = type; osc.frequency.setValueAtTime(freq, time);
+            gain.gain.setValueAtTime(vol, time); gain.gain.exponentialRampToValueAtTime(0.001, time + dur);
+            osc.connect(gain); gain.connect(actx.destination);
+            osc.start(time); osc.stop(time + dur);
+        } catch(e){}
     }
 
+    function playWinSound() {
+        const t = actx.currentTime;
+        playTone(523.25, t,      0.08, "sine", 0.12);
+        playTone(659.25, t+0.09, 0.08, "sine", 0.12);
+        playTone(783.99, t+0.18, 0.08, "sine", 0.12);
+        playTone(1046.5, t+0.27, 0.3,  "sine", 0.15);
+    }
+    function playLoseSound() {
+        const t = actx.currentTime;
+        playTone(440,    t,      0.1,  "sine", 0.1);
+        playTone(349.23, t+0.12, 0.1,  "sine", 0.1);
+        playTone(293.66, t+0.25, 0.35, "sine", 0.12);
+    }
+    function playDrawSound() {
+        const t = actx.currentTime;
+        playTone(440, t, 0.15, "triangle", 0.08);
+        playTone(440, t+0.2, 0.15, "triangle", 0.06);
+    }
+    function playLegendaryFanfare() {
+        const t = actx.currentTime;
+        playTone(440,   t,      0.1, "square", 0.08);
+        playTone(554.37,t+0.1,  0.1, "square", 0.08);
+        playTone(659.25,t+0.2,  0.1, "square", 0.08);
+        playTone(880,   t+0.3,  0.5, "sine",   0.12);
+    }
+    function playEpicFanfare() {
+        const t = actx.currentTime;
+        playTone(523.25,t,      0.1, "square", 0.07);
+        playTone(659.25,t+0.1,  0.1, "square", 0.07);
+        playTone(783.99,t+0.2,  0.3, "sine",   0.1);
+    }
+
+    const getHoloHTML = (rarity) => rarity === "epic" ? `<div style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; mix-blend-mode: color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear; border-radius:5px;"></div>` : "";
+    const getLegStyle = (rarity) => rarity === "legendary" ? "animation: legendary-flicker 1.5s infinite;" : "";
+
+    document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${pDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(playerCard.rarity)};"><div style="color:#fff; font-size:0.8rem; margin-top:5px;">${playerCard.charName}</div></div>`;
+    document.getElementById("match-opponent-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${oDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(oppCard.rarity)};"><div style="color:#fff; font-size:0.8rem; margin-top:5px;">${oppCard.charName}</div></div>`;
+
+    renderOpponentDeckState();
+    
+    const pBase = getCardScore(playerCard.charName);
+    const oBase = getCardScore(oppCard.charName);
+    const pFac = getMainFaction(pDb.tags);
+    const oFac = getMainFaction(oDb.tags);
+    let pFacMult = 1.0; let oFacMult = 1.0;
+    if(FACTION_ADVANTAGE[pFac] === oFac) pFacMult = 1.2;
+    if(FACTION_ADVANTAGE[oFac] === pFac) oFacMult = 1.2;
+    const pSynArr = calculateSynergy(playerDeck);
+    const oSynArr = calculateSynergy(opponentDeck);
+    const pSyn = getSynergyMult(pSynArr);
+    const oSyn = getSynergyMult(oSynArr);
+    let pRarMult = RARITY_MULT[playerCard.rarity] || 1.0;
+    let oppRarMult = RARITY_MULT[oppCard.rarity] || 1.0;
+    
+    if (isAdventureMatch) {
+        // Global difficulty scaling: Level 1 starts with 0.85x multiplier, goes up to 1.61x at Level 20
+        const globalAdvScaling = 0.85 + (adventureLevelIndex * 0.04);
+        oppRarMult *= globalAdvScaling;
+    }
+    
+    if (isAdventureMatch && typeof opponentData !== 'undefined' && opponentData) {
+        const advName = opponentData.name;
+        if (advName === "Droiden-Armee" && oFac === 'droid') oppRarMult *= 1.10;
+        if (advName === "Widerstand" && pFac === 'imperium') pRarMult *= 1.10;
+        if (advName === "Bestien") oppRarMult *= (1.10 + (Math.random() * 0.20));
+        if (advName === "Separatisten-Führung" && oFac === 'sith') oppRarMult *= 1.15;
+        if (advName === "Jedi-Padawane" && pFac === 'kopfgeldjäger') pRarMult *= 1.15;
+        if (advName === "Rebellen-Allianz" && oFac === 'rebell') oppRarMult *= 1.10;
+        if (advName === "Inquisitoren" && oFac === 'imperium') oppRarMult *= 1.15;
+        if (advName === "Nachtschwestern") oppRarMult *= 1.10;
+        if (advName === "Kopfgeldjäger" && oFac === 'kopfgeldjäger') oppRarMult *= 1.15;
+        if (advName === "Imperiale Flotte" && oDb.tags.includes('fahrzeug')) oppRarMult *= 1.20;
+        if (advName === "Graue Machtnutzer" && pFac === 'jedi') pRarMult *= 0.90;
+        if (advName === "Fahrzeuge der Republik" && oDb.tags.includes('fahrzeug')) oppRarMult *= 1.25;
+        if (advName === "Mandalorianer" && oFac === 'mandalorianer') oppRarMult *= 1.20;
+        if (advName === "Klon-Truppler" && oFac === 'klon') oppRarMult *= 1.25;
+        if (advName === "Jedi-Meister" && oFac === 'jedi') oppRarMult *= 1.20;
+        if (advName === "Jedi-Meister" && pFac === 'sith') pRarMult *= 1.15;
+        if (advName === "Das Imperium" && oFac === 'imperium') oppRarMult *= 1.25;
+        if (advName === "Die Sith") {
+            if (oFac === 'sith') oppRarMult *= 1.30;
+            if (oFac === 'imperium') oppRarMult *= 1.20;
+        }
+    }
+    
+    const pFinal = pBase * pRarMult * pFacMult * pSyn;
+    const oFinal = oBase * oppRarMult * oFacMult * oSyn;
+    
+    let isWin = pFinal > oFinal;
+    let isDraw = pFinal === oFinal;
+    
+    if(isWin)       { playerScore++; }
+    else if(!isDraw){ opponentScore++; }
+    
     document.getElementById('match-player-score').innerText = playerScore;
     document.getElementById('match-opponent-score').innerText = opponentScore;
     
+    const user = getCurrentUser();
+    if(user && liveMatchActive) updateLiveSpectator(user, `${playerScore}:${opponentScore} (Runde ${currentRound+1})`);
+
     const resultIcon = isWin ? '&#x1F3C6;' : (isDraw ? '&#x1F91D;' : '&#x1F4A5;');
     const resultLabel = isWin
         ? `<span style="color:#2ed573; font-size:1.4rem; font-weight:bold;">RUNDE GEWONNEN!</span>`
-        : (isDraw ? `<span style="color:#ffd700; font-size:1.4rem; font-weight:bold;">UNENTSCHIEDEN</span>` : `<span style="color:#ff4757; font-size:1.4rem; font-weight:bold;">RUNDE VERLOREN!</span>`);
-            
+        : (isDraw
+            ? `<span style="color:#ffd700; font-size:1.4rem; font-weight:bold;">UNENTSCHIEDEN</span>`
+            : `<span style="color:#ff4757; font-size:1.4rem; font-weight:bold;">RUNDE VERLOREN!</span>`);
+
     document.getElementById('match-round-result').innerHTML = `<div style="font-size:2rem; margin-bottom:8px;">${resultIcon}</div>${resultLabel}`;
-    
-    const pName = playerCard ? playerCard.charName : 'Niemand';
-    const oName = oppCard ? oppCard.charName : 'Niemand';
-    
-    const formatLog = (logs) => logs.length > 0 ? logs.map(l => `<div style="color:#a855f7; font-size:0.75rem; margin-top:4px;">✨ ${l}</div>`).join('') : '';
-    
+
+    const fmtMultiplier = (label, val, color, active) => active
+        ? `<div style="display:flex; justify-content:space-between; align-items:center; padding:4px 8px; background:rgba(255,255,255,0.05); border-radius:4px; border-left:3px solid ${color};">
+              <span style="color:#aaa; font-size:0.78rem;">${label}</span>
+              <span style="color:${color}; font-weight:bold; font-size:0.85rem;">x${val.toFixed(2)}</span>
+           </div>`
+        : '';
+
+    const pFacActive   = pFacMult !== 1.0;
+    const oFacActive   = oFacMult !== 1.0;
+    const pSynActive   = pSyn > 1.0;
+    const oSynActive   = oSyn > 1.0;
+    const pRarActive   = pRarMult > 1.0 || pRarMult < 1.0;
+    const oRarActive   = oppRarMult > 1.0 || oppRarMult < 1.0;
+
+    const pPct = Math.round((pFinal / (pFinal + oFinal)) * 100) || 50;
+    const oPct = 100 - pPct;
+
+    let pRarLabel = (isAdventureMatch && pRarMult !== (RARITY_MULT[playerCard.rarity] || 1.0)) ? "Modifikator" : `${playerCard.rarity[0].toUpperCase() + playerCard.rarity.slice(1)}-Karte`;
+    let oRarLabel = (isAdventureMatch && oppRarMult !== (RARITY_MULT[oppCard.rarity] || 1.0)) ? "Modifikator" : `${oppCard.rarity[0].toUpperCase() + oppCard.rarity.slice(1)}-Karte`;
+
     document.getElementById('match-round-calc').innerHTML = `
+        <div style="margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; font-size:0.9rem; font-weight:bold; margin-bottom:4px;">
+                <span style="color:#2ed573;">Du: ${pFinal.toFixed(2)}</span>
+                <span style="color:#ff4757;">Gegner: ${oFinal.toFixed(2)}</span>
+            </div>
+            <div style="height:12px; border-radius:6px; background:#222; overflow:hidden; border:1px solid #444;">
+                <div style="height:100%; width:${pPct}%; background:linear-gradient(to right,#2ed573,#20bf6b); display:inline-block; border-radius:6px 0 0 6px; transition:width 0.5s;"></div>
+            </div>
+        </div>
+
         <div style="display:flex; gap:12px; text-align:left;">
             <div style="flex:1; background:#111; border-radius:8px; padding:10px; border:1px solid #2ed57355;">
-                <div style="font-size:0.8rem; color:#2ed573; font-weight:bold; margin-bottom:2px;">Du (${pName})</div>
-                <div style="font-size:0.7rem; color:#aaa; margin-bottom:6px;">Basis: ${pBaseRaw.toFixed(1)} &bull; Seltenheit: x${pRarMult.toFixed(2)}</div>
-                <div style="color:#fff; font-size:1.2rem; font-weight:bold;">Score: ${pBase.toFixed(1)}</div>
-                ${formatLog(pLog)}
+                <div style="font-size:0.8rem; color:#2ed573; font-weight:bold; margin-bottom:6px; border-bottom:1px solid #2ed57333; padding-bottom:4px;">Du (${playerCard.charName})</div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                    <span style="color:#aaa; font-size:0.78rem;">Basis-Score</span>
+                    <span style="color:#fff; font-weight:bold; font-size:0.85rem;">${pBase.toFixed(2)}</span>
+                </div>
+                ${fmtMultiplier(pRarLabel, pRarMult, '#ff9f43', pRarActive)}
+                ${fmtMultiplier(`Fraktions-Bonus (${pFac} > ${oFac})`, pFacMult, '#4da6ff', pFacActive)}
+                ${fmtMultiplier(`Synergie-Bonus`, pSyn, '#a855f7', pSynActive)}
+                <div style="margin-top:8px; padding-top:6px; border-top:1px solid #333; display:flex; justify-content:space-between;">
+                    <span style="color:#aaa; font-size:0.8rem;">Gesamt</span>
+                    <span style="color:#2ed573; font-size:1.1rem; font-weight:bold;">${pFinal.toFixed(2)}</span>
+                </div>
             </div>
             <div style="flex:1; background:#111; border-radius:8px; padding:10px; border:1px solid #ff475755;">
-                <div style="font-size:0.8rem; color:#ff4757; font-weight:bold; margin-bottom:2px;">Gegner (${oName})</div>
-                <div style="font-size:0.7rem; color:#aaa; margin-bottom:6px;">Basis: ${oBaseRaw.toFixed(1)} &bull; Seltenheit: x${oRarMult.toFixed(2)}</div>
-                <div style="color:#fff; font-size:1.2rem; font-weight:bold;">Score: ${oBase.toFixed(1)}</div>
-                ${formatLog(oLog)}
+                <div style="font-size:0.8rem; color:#ff4757; font-weight:bold; margin-bottom:6px; border-bottom:1px solid #ff475733; padding-bottom:4px;">Gegner (${oppCard.charName})</div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                    <span style="color:#aaa; font-size:0.78rem;">Basis-Score</span>
+                    <span style="color:#fff; font-weight:bold; font-size:0.85rem;">${oBase.toFixed(2)}</span>
+                </div>
+                ${fmtMultiplier(oRarLabel, oppRarMult, '#ff9f43', oRarActive)}
+                ${fmtMultiplier(`Fraktions-Bonus (${oFac} > ${pFac})`, oFacMult, '#4da6ff', oFacActive)}
+                ${fmtMultiplier(`Synergie-Bonus`, oSyn, '#a855f7', oSynActive)}
+                <div style="margin-top:8px; padding-top:6px; border-top:1px solid #333; display:flex; justify-content:space-between;">
+                    <span style="color:#aaa; font-size:0.8rem;">Gesamt</span>
+                    <span style="color:#ff4757; font-size:1.1rem; font-weight:bold;">${oFinal.toFixed(2)}</span>
+                </div>
             </div>
         </div>
     `;
-    
+
     currentRound++;
     document.getElementById('match-player-hand').innerHTML = '';
-    
-    if (playerCard && pDb) {
-        document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${pDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid #fff;"><div style="color:#fff; font-size:0.8rem; margin-top:5px;">${pName}</div></div>`;
-    } else {
-        document.getElementById("match-player-active").innerHTML = ``;
-    }
-    
-    if (oppCard && oDb) {
-        document.getElementById("match-opponent-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${oDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid #fff;"><div style="color:#fff; font-size:0.8rem; margin-top:5px;">${oName}</div></div>`;
-    } else {
-        document.getElementById("match-opponent-active").innerHTML = ``;
-    }
+
+    const maxRar = RARITY_ORDER[playerCard.rarity] > RARITY_ORDER[oppCard.rarity] ? playerCard.rarity : oppCard.rarity;
+    const pLeg = (playerCard.rarity === "legendary" && typeof LEGENDARY_POOL !== 'undefined' && LEGENDARY_POOL[playerCard.charName]) ? LEGENDARY_POOL[playerCard.charName] : null;
+    const oLeg = (!isBotMatch && oppCard.rarity === "legendary" && typeof LEGENDARY_POOL !== 'undefined' && LEGENDARY_POOL[oppCard.charName]) ? LEGENDARY_POOL[oppCard.charName] : null;
+    const triggerPlayerLegDelay = playerCard.rarity === "legendary";
+    const triggerOppLegDelay = !isBotMatch && oppCard.rarity === "legendary";
+    const hasLegendaryDelay = triggerPlayerLegDelay || triggerOppLegDelay;
 
     setTimeout(() => {
-        document.getElementById('match-result-overlay').classList.remove('hidden');
-        if (playerHandRemaining.length === 0 && opponentHandRemaining.length === 0 && !pEffects.vehicles && !oEffects.vehicles) {
+        if(maxRar === "legendary") {
+            if (pLeg || oLeg) {
+                const soundToPlay = pLeg ? pLeg.sound : (oLeg ? oLeg.sound : null);
+                if (soundToPlay) {
+                    const audio = new Audio(soundToPlay);
+                    audio.volume = 0.5;
+                    audio.play().catch(e => console.log('Audio autoplay blocked', e));
+                }
+            } else if (hasLegendaryDelay) {
+                playLegendaryFanfare();
+            } else {
+                playEpicFanfare(); 
+            }
+            const pImg = pLeg ? pLeg.specialImg : pDb.img;
+            const oImg = oLeg ? oLeg.specialImg : oDb.img;
+            const pFlicker = (triggerPlayerLegDelay || pLeg) ? 'animation: legendary-flicker 1.5s infinite;' : '';
+            const oFlicker = (triggerOppLegDelay || oLeg) ? 'animation: legendary-flicker 1.5s infinite;' : '';
+            document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${pImg}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(playerCard.rarity)}; ${triggerPlayerLegDelay ? getLegStyle(playerCard.rarity) : ''}; ${pFlicker}">${getHoloHTML(playerCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${playerCard.charName}</div></div>`;
+            document.getElementById("match-opponent-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${oImg}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(oppCard.rarity)}; ${triggerOppLegDelay ? getLegStyle(oppCard.rarity) : ''}; ${oFlicker}">${getHoloHTML(oppCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${oppCard.charName}</div></div>`;
+        } else if(maxRar === "epic") {
+            playEpicFanfare();
+            document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${pDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(playerCard.rarity)};">${getHoloHTML(playerCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${playerCard.charName}</div></div>`;
+            document.getElementById("match-opponent-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${oDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid ${getRarityColor(oppCard.rarity)};">${getHoloHTML(oppCard.rarity)}<div style="color:#fff; font-size:0.8rem; margin-top:5px;">${oppCard.charName}</div></div>`;
+        }
+    }, 50);
+
+    const overlayDelay = hasLegendaryDelay ? 5000 : 200;
+
+    setTimeout(() => {
+        if(isWin)       playWinSound();
+        else if(isDraw) playDrawSound();
+        else            playLoseSound();
+        if (currentRound > 10) {
+            document.getElementById('match-result-overlay').classList.remove('hidden');
             setTimeout(() => {
                 document.getElementById('match-result-overlay').classList.add('hidden');
                 finishMatch();
             }, 1500);
+        } else {
+            document.getElementById('match-result-overlay').classList.remove('hidden');
         }
-    }, 200);
+    }, overlayDelay);
 }
 
 async function finishMatch() {
