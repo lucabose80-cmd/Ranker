@@ -87,21 +87,21 @@ function getFactionDescription(faction) {
 
 function getFactionTooltip(faction) {
     const desc = {
-        'mandalorianer': 'Silence: Deaktiviert sofort sämtliche aktiven und passiven Fraktions-Effekte der gegnerischen Karte.\n\n• Dauer: 1 Runde\n• Limit: Exklusiv (Max 3 erlaubt)',
-        'graue machtnutzer': 'Ausgleich: Dreht die Siegesbedingung komplett um. Die Karte mit dem NIEDRIGSTEN Score gewinnt.\n\n• Dauer: 1 Runde\n• Limit: Exklusiv (Max 3 erlaubt)',
-        'republik': 'Veto: Verhindert eine direkte Niederlage. Falls der Bot gewinnen würde, wird das Ergebnis auf ein Unentschieden (0:0) eingefroren.\n\n• Limit: Exklusiv (Max 3 erlaubt)',
-        'fahrzeug': 'Überrollen: Zwingt das Match in eine sofortige Extra-Runde. Das Fahrzeug behält seinen Score und kämpft direkt nochmal (nur bei Rundensieg).\n\n• Limit: Exklusiv (Max 3 erlaubt)',
-        'sith': 'Ausdünnung: Jede 2. gespielte Sith-Karte vernichtet sofort vor dem Aufdecken eine zufällige Karte auf der Hand des Bots.\n\n• Limit: Exklusiv (Max 4 erlaubt)',
-        'jedi': 'Gedankentrick: Zwingt den Bot dazu, in seiner NÄCHSTEN Runde garantiert seine schwächste verbleibende Karte auszuspielen.\n\n• Limit: Exklusiv (Max 3 erlaubt)',
-        'schurke': 'Falsches Spiel: Ein fieser Trick! Bevor Gewinner ermittelt werden, klaut der Schurke den Basis-Score der gegnerischen Karte und gibt ihr seinen eigenen.\n\n• Limit: Formation (Min 3 benötigt)',
-        'imperium': 'Unterdrückung: Wenn das Imperium gewinnt, wird der Gegner unterdrückt. Die gegnerische Karte in der NÄCHSTEN Runde verliert 25% ihres Basis-Scores.\n\n• Limit: Formation (Min 4 benötigt)',
-        'rebell': 'Hoffnung: Eine Comeback-Mechanik. Wenn du im aktuellen Match-Punktestand hinten liegst, verdoppeln Rebellen ihren Basis-Score.\n\n• Limit: Formation (Min 4 benötigt)',
-        'klon': 'Klon-Kette: Verliert ein Klon, wird sein Basis-Score global gespeichert. Der nächste Klon erhält diesen Score als permanenten Bonus on-top.\n\n• Limit: Formation (Min 4 benötigt)',
-        'nachtschwester': 'Nekromantie: Falls die Nachtschwester gewinnt, reißt sie die ZULETZT besiegte Karte aus dem gegnerischen Friedhof zurück in deine Hand.\n\n• Limit: Formation (Min 3 benötigt)',
-        'droid': 'Verschmelzung: Schwarm-Intelligenz! Wird dieser Droide gespielt, verdoppelt er den Basis-Score des NÄCHSTEN Droiden, den du ausspielst.\n\n• Limit: Formation (Min 5 benötigt)',
-        'kopfgeldjäger': 'Kopfgeld: Markiert die häufigste gegnerische Fraktion. Besiegt der Kopfgeldjäger dieses Ziel, erhältst du 2 Match-Punkte anstatt 1.\n\n• Limit: Formation (Min 3 benötigt)',
-        'erste ordnung': 'Zwangsrekrutierung: Wenn die Erste Ordnung gewinnt, wird die aktuell besiegte gegnerische Karte nicht auf den Friedhof gelegt, sondern deiner Hand hinzugefügt.\n\n• Limit: Formation (Min 4 benötigt)',
-        'widerstand': 'Opfermut: Wenn eine Widerstands-Karte ihre Runde verliert, erhält deine NÄCHSTE ausgespielte Karte einen Bonus von +4.0 Punkten.\n\n• Limit: Formation (Min 4 benötigt)'
+        'mandalorianer': 'Silence: Deaktiviert für dieses Duell sofort sämtliche aktiven und passiven Fraktions-Effekte der gegnerischen Karte.\n\n• Ende: Gilt nur für diese eine Runde.\n• Limit: Exklusiv (Maximal 3 erlaubt)',
+        'graue machtnutzer': 'Ausgleich: Dreht in dieser Runde die Siegesbedingung komplett um. Die Karte mit dem NIEDRIGSTEN Score gewinnt.\n\n• Ende: Gilt nur für diese eine Runde.\n• Limit: Exklusiv (Maximal 3 erlaubt)',
+        'republik': 'Veto: Verhindert eine direkte Niederlage. Falls dein Gegner gewinnen würde, wird das Ergebnis auf ein Unentschieden (0:0) eingefroren.\n\n• Ende: Gilt nur für diese eine Runde.\n• Limit: Exklusiv (Maximal 3 erlaubt)',
+        'fahrzeug': 'Überrollen: Gewinnt das Fahrzeug die Runde, greift es sofort in einer Extra-Runde nochmals an und behält seinen Score.\n\n• Ende: Endet sofort und das Fahrzeug wird zerstört, falls es eine Runde verliert.\n• Limit: Exklusiv (Maximal 3 erlaubt)',
+        'sith': 'Ausdünnung: Jede zweite (2.) gespielte Sith-Karte vernichtet sofort und dauerhaft eine zufällige Karte direkt von der feindlichen Hand.\n\n• Ende: Der Zähler ist während des gesamten Matches permanent aktiv.\n• Limit: Exklusiv (Maximal 4 erlaubt)',
+        'jedi': 'Gedankentrick: Spielst du einen Jedi, zwingt dieser den Bot dazu, in seiner NÄCHSTEN Runde garantiert seine schwächste Karte auszuspielen.\n\n• Ende: Der Effekt verbraucht sich automatisch beim Ausspielen der gegnerischen Karte.\n• Limit: Exklusiv (Maximal 3 erlaubt)',
+        'schurke': 'Falsches Spiel: Vor der Gewinn-Ermittlung stiehlt der Schurke heimlich den aktuellen Score des Gegners und tauscht ihn gegen seinen eigenen.\n\n• Ende: Die geklauten Werte gelten ausschließlich in dieser Runde.\n• Limit: Formation (Mindestens 3 benötigt)',
+        'imperium': 'Unterdrückung: Gewinnt das Imperium, baut es starken Druck auf. Die gegnerische Karte in der NÄCHSTEN Runde verliert pauschal 25% Basis-Score.\n\n• Ende: Verliert das Imperium, triggert der Effekt nicht. Der 25% Abzug verfällt nach 1 Runde.\n• Limit: Formation (Mindestens 4 benötigt)',
+        'rebell': 'Hoffnung: Rebellen kämpfen aus Verzweiflung stärker. Liegst du im aktuellen Gesamt-Match hinten (weniger Siege), verdoppelt der Rebell seinen Score.\n\n• Ende: Sobald du Gleichstand erreichst oder führst, entfällt die Verdopplung.\n• Limit: Formation (Mindestens 4 benötigt)',
+        'klon': 'Klon-Kette: Stirbt ein Klon, wird sein Score global gespeichert. Der nächste gespielte Klon erhält diesen Score als permanenten Boost oben drauf.\n\n• Ende: Die Kette reißt sofort ab (Bonus = 0), wenn zwischen zwei Klonen eine andere Fraktion gespielt wird.\n• Limit: Formation (Mindestens 4 benötigt)',
+        'nachtschwester': 'Nekromantie: Gewinnt die Nachtschwester, holt sie mit dunkler Magie die vom Gegner ZULETZT besiegte Karte aus dem feindlichen Friedhof in deine Hand.\n\n• Ende: Funktioniert nur bei einem aktiven Rundensieg.\n• Limit: Formation (Mindestens 3 benötigt)',
+        'droid': 'Verschmelzung: Spielst du diesen Droiden, verdoppelt sich durch Schwarm-Intelligenz automatisch der Score deines NÄCHSTEN Droiden.\n\n• Ende: Der Verdopplungs-Bonus wird direkt beim Einsatz des nächsten Droiden verbraucht.\n• Limit: Formation (Mindestens 5 benötigt)',
+        'kopfgeldjäger': 'Kopfgeld: Zu Beginn des Matches wird die häufigste feindliche Fraktion als Ziel markiert. Besiegst du dieses Ziel im Duell, erhältst du 2 Match-Punkte (statt 1).\n\n• Ende: Das Hauptziel bleibt das ganze Match über dauerhaft markiert.\n• Limit: Formation (Mindestens 3 benötigt)',
+        'erste ordnung': 'Zwangsrekrutierung: Gewinnt die Erste Ordnung, wird die gerade besiegte feindliche Karte nicht zerstört, sondern sofort in deine eigene Hand rekrutiert.\n\n• Ende: Der Effekt ist nur während der exakten Runde des Sieges aktiv.\n• Limit: Formation (Mindestens 4 benötigt)',
+        'widerstand': 'Opfermut: Verliert ein Widerstandskämpfer, inspiriert sein Opfer das Team. Deine NÄCHSTE ausgespielte Karte erhält einen massiven Bonus von +4.0 Punkten.\n\n• Ende: Der Bonus verbraucht sich direkt in der Folgerunde.\n• Limit: Formation (Mindestens 4 benötigt)'
     };
     return desc[faction] || 'Kein spezieller Effekt.';
 }
@@ -941,23 +941,47 @@ function playRound(playerCard, explicitOppCard = null) {
     const pName = playerCard ? playerCard.charName : 'Niemand';
     const oName = oppCard ? oppCard.charName : 'Niemand';
     
-    const formatLog = (logs) => logs.length > 0 ? logs.map(l => `<div style="color:#a855f7; font-size:0.75rem; margin-top:4px;">✨ ${l}</div>`).join('') : '';
+    const pRarityName = playerCard ? playerCard.rarity : '';
+    const oRarityName = oppCard ? oppCard.rarity : '';
     
+    const formatDetailedCalc = (baseRaw, rarMult, rarName, finalScore, logs) => {
+        let effHTML = '';
+        if (logs.length > 0) {
+            effHTML = `<div style="margin-top:8px; border-top:1px dashed #444; padding-top:8px;">
+                          <div style="font-size:0.7rem; color:#888; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Aktive Effekte:</div>
+                          ${logs.map(l => `<div style="color:#a855f7; font-size:0.75rem; margin-bottom:2px;">✨ ${l}</div>`).join('')}
+                       </div>`;
+        } else {
+            effHTML = `<div style="margin-top:8px; border-top:1px dashed #444; padding-top:8px; font-size:0.7rem; color:#555;">Keine aktiven Effekte</div>`;
+        }
+        
+        return `
+            <div style="font-size:0.8rem; color:#ccc; display:flex; justify-content:space-between; margin-bottom:4px;">
+                <span>Basiswert:</span> <span>${baseRaw.toFixed(1)}</span>
+            </div>
+            <div style="font-size:0.8rem; color:#ccc; display:flex; justify-content:space-between; margin-bottom:4px;">
+                <span>Seltenheit (${rarName}):</span> <span>x${rarMult.toFixed(2)}</span>
+            </div>
+            ${effHTML}
+            <div style="margin-top:8px; border-top:1px solid #444; padding-top:8px; display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size:0.8rem; color:#aaa;">Endgültiger Score:</span>
+                <span style="color:#fff; font-size:1.4rem; font-weight:bold;">${finalScore.toFixed(1)}</span>
+            </div>
+        `;
+    };
+
     document.getElementById('match-round-calc').innerHTML = `
         <div style="display:flex; gap:12px; text-align:left;">
-            <div style="flex:1; background:#111; border-radius:8px; padding:10px; border:1px solid #2ed57355;">
-                <div style="font-size:0.8rem; color:#2ed573; font-weight:bold; margin-bottom:2px;">Du (${pName})</div>
-                <div style="font-size:0.7rem; color:#aaa; margin-bottom:6px;">Basis: ${pBaseRaw.toFixed(1)} &bull; Seltenheit: x${pRarMult.toFixed(2)}</div>
-                <div style="color:#fff; font-size:1.2rem; font-weight:bold;">Score: ${pBase.toFixed(1)}</div>
-                ${formatLog(pLog)}
+            <div style="flex:1; background:#111; border-radius:8px; padding:12px; border:1px solid #2ed57355; box-shadow: 0 4px 10px rgba(46,213,115,0.1);">
+                <div style="font-size:0.9rem; color:#2ed573; font-weight:bold; margin-bottom:8px; text-align:center; border-bottom:1px solid #2ed57355; padding-bottom:4px;">Du (${pName})</div>
+                ${formatDetailedCalc(pBaseRaw, pRarMult, pRarityName, pBase, pLog)}
             </div>
-            <div style="flex:1; background:#111; border-radius:8px; padding:10px; border:1px solid #ff475755;">
-                <div style="font-size:0.8rem; color:#ff4757; font-weight:bold; margin-bottom:2px;">Gegner (${oName})</div>
-                <div style="font-size:0.7rem; color:#aaa; margin-bottom:6px;">Basis: ${oBaseRaw.toFixed(1)} &bull; Seltenheit: x${oRarMult.toFixed(2)}</div>
-                <div style="color:#fff; font-size:1.2rem; font-weight:bold;">Score: ${oBase.toFixed(1)}</div>
-                ${formatLog(oLog)}
+            <div style="flex:1; background:#111; border-radius:8px; padding:12px; border:1px solid #ff475755; box-shadow: 0 4px 10px rgba(255,71,87,0.1);">
+                <div style="font-size:0.9rem; color:#ff4757; font-weight:bold; margin-bottom:8px; text-align:center; border-bottom:1px solid #ff475755; padding-bottom:4px;">Gegner (${oName})</div>
+                ${formatDetailedCalc(oBaseRaw, oRarMult, oRarityName, oBase, oLog)}
             </div>
         </div>
+
     `;
     
     currentRound++;

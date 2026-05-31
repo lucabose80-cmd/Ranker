@@ -1,5 +1,14 @@
 export const patchNotesStarWars = [
     {
+        version: "v8.5.1",
+        title: "Hotfix: Detaillierte Tooltips & Match-Berechnung",
+        isHotfix: true,
+        changes: [
+            "UI-Update: Die Fraktions-Tooltips erklären nun exakt, wann ein Effekt endet und wie viele Karten man exakt benötigt.",
+            "UI-Update: Das Ergebnis-Fenster nach einem Duell zeigt nun eine detaillierte und übersichtliche Aufschlüsselung der Berechnung (Basiswert + Seltenheits-Multiplikator + Fraktions-Effekte = Endgültiger Score)."
+        ]
+    },
+    {
         version: "v8.5",
         title: "Update: Cardgame Mechaniken Balance-Rework",
         isHotfix: false,
