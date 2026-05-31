@@ -364,9 +364,24 @@
                         </div>
                         <div style="width:300px; flex-shrink:0; background:#1a1e29; padding:20px; border-radius:10px; border:1px solid #333; box-shadow:0 4px 15px rgba(0,0,0,0.5); position:sticky; top:20px;">
                             <h4 style="margin-top:0; color:#2ed573; text-align:center; border-bottom:1px solid #333; padding-bottom:10px;">Mechaniken & Limits</h4>
-                            <div style="font-size:0.85rem; color:#ccc; margin-bottom:20px; display:flex; flex-direction:column; gap:6px;">
-                                <div><strong style="color:#ffd700;">Tech-Limits (Max):</strong><br>Mächtige Effekte mit einer Obergrenze. (Z.B. Max 3 Mandalorianer).</div>
-                                <div style="margin-top:5px;"><strong style="color:#2ed573;">Synergie-Limits (Min):</strong><br>Schwarm-Effekte mit einer Untergrenze. (Z.B. Min 4 Klone).</div>
+                            <div style="font-size:0.75rem; color:#ccc; margin-bottom:20px; display:flex; flex-direction:column; gap:4px; max-height:250px; overflow-y:auto; padding-right:5px; scrollbar-width:thin;">
+                                <div style="color:#ffd700; margin-top:5px; font-weight:bold; border-bottom:1px solid #444;">Tech-Limits (Max)</div>
+                                <div><span style="color:#ff9f43; font-weight:bold;">Mandalorianer (Max 3)</span>: Silence (Deaktiviert Gegner-Effekte)</div>
+                                <div><span style="color:#ccc; font-weight:bold;">Grau (Max 3)</span>: Ausgleich (Niedriger Score gewinnt)</div>
+                                <div><span style="color:#4da6ff; font-weight:bold;">Republik (Max 3)</span>: Veto (Friert verlorene Runde auf 0:0 ein)</div>
+                                <div><span style="color:#aaa; font-weight:bold;">Fahrzeuge (Max 3)</span>: Überrollen (Greift in Extra-Runde an)</div>
+                                <div><span style="color:#cc4444; font-weight:bold;">Sith (Max 4)</span>: Ausdünnung (Jede 2. Karte zerstört Gegner-Karte)</div>
+                                <div style="color:#2ed573; margin-top:10px; font-weight:bold; border-bottom:1px solid #444;">Synergie-Limits (Min)</div>
+                                <div><span style="color:#e67e22; font-weight:bold;">Schurke (Min 3)</span>: Falsches Spiel (Karten-Werte tauschen)</div>
+                                <div><span style="color:#888; font-weight:bold;">Imperium (Min 4)</span>: Orbitalschlag (Nächste Runde beide 0)</div>
+                                <div><span style="color:#5dade2; font-weight:bold;">Jedi (Min 4)</span>: Macht-Geist (Kehrt bei Tod ins Deck zurück)</div>
+                                <div><span style="color:#e74c3c; font-weight:bold;">Rebell (Min 4)</span>: Sabotage (Gegner spielt offene Karten)</div>
+                                <div><span style="color:#f1c40f; font-weight:bold;">Klon (Min 4)</span>: Klon-Kette (Bonus nach Clone-Tod)</div>
+                                <div><span style="color:#9b59b6; font-weight:bold;">Nachtschwester (Min 3)</span>: Nekromantie (Klaut aus gegn. Friedhof)</div>
+                                <div><span style="color:#95a5a6; font-weight:bold;">Droid (Min 5)</span>: Verschmelzung (Nächster Droid x2 Punkte)</div>
+                                <div><span style="color:#34495e; font-weight:bold;">Kopfgeldjäger (Min 3)</span>: Kopfgeld (Insta-Kill vs markierte Fraktion)</div>
+                                <div><span style="color:#e74c3c; font-weight:bold;">Erste Ordnung (Min 4)</span>: Rekrutierung (Gewonnene Karte ins Deck)</div>
+                                <div><span style="color:#f39c12; font-weight:bold;">Widerstand (Min 4)</span>: Letzter Funke (Unendlich Punkte ab R10)</div>
                             </div>
                             <h4 style="margin-top:0; color:#ffd700; text-align:center; border-bottom:1px solid #333; padding-bottom:10px;">Aktuelle Synergien</h4>
                             <div id="cardgame-synergy-info" style="font-size:0.85rem; color:#fff; text-align:center; min-height:40px; display:flex; flex-direction:column; gap:5px; justify-content:center;">Keine (0%)</div>
@@ -435,9 +450,24 @@
 
                             <hr style="border-color:#333; margin:0;">
                             <h5 style="margin:0; color:#fff; text-align:center;">Mechaniken & Limits</h5>
-                            <div style="font-size:0.8rem; color:#ccc; display:flex; flex-direction:column; gap:4px; margin-bottom:10px;">
-                                <div><strong style="color:#ffd700;">Tech (Max):</strong> Mächtige Einzeleffekte.</div>
-                                <div><strong style="color:#2ed573;">Synergie (Min):</strong> Schwarm-Effekte.</div>
+                            <div style="font-size:0.75rem; color:#ccc; margin-bottom:10px; display:flex; flex-direction:column; gap:4px; max-height:250px; overflow-y:auto; padding-right:5px; scrollbar-width:thin;">
+                                <div style="color:#ffd700; margin-top:5px; font-weight:bold; border-bottom:1px solid #444;">Tech-Limits (Max)</div>
+                                <div><span style="color:#ff9f43; font-weight:bold;">Mandalorianer (Max 3)</span>: Silence (Deaktiviert Gegner-Effekte)</div>
+                                <div><span style="color:#ccc; font-weight:bold;">Grau (Max 3)</span>: Ausgleich (Niedriger Score gewinnt)</div>
+                                <div><span style="color:#4da6ff; font-weight:bold;">Republik (Max 3)</span>: Veto (Friert verlorene Runde auf 0:0 ein)</div>
+                                <div><span style="color:#aaa; font-weight:bold;">Fahrzeuge (Max 3)</span>: Überrollen (Greift in Extra-Runde an)</div>
+                                <div><span style="color:#cc4444; font-weight:bold;">Sith (Max 4)</span>: Ausdünnung (Jede 2. Karte zerstört Gegner-Karte)</div>
+                                <div style="color:#2ed573; margin-top:10px; font-weight:bold; border-bottom:1px solid #444;">Synergie-Limits (Min)</div>
+                                <div><span style="color:#e67e22; font-weight:bold;">Schurke (Min 3)</span>: Falsches Spiel (Karten-Werte tauschen)</div>
+                                <div><span style="color:#888; font-weight:bold;">Imperium (Min 4)</span>: Orbitalschlag (Nächste Runde beide 0)</div>
+                                <div><span style="color:#5dade2; font-weight:bold;">Jedi (Min 4)</span>: Macht-Geist (Kehrt bei Tod ins Deck zurück)</div>
+                                <div><span style="color:#e74c3c; font-weight:bold;">Rebell (Min 4)</span>: Sabotage (Gegner spielt offene Karten)</div>
+                                <div><span style="color:#f1c40f; font-weight:bold;">Klon (Min 4)</span>: Klon-Kette (Bonus nach Clone-Tod)</div>
+                                <div><span style="color:#9b59b6; font-weight:bold;">Nachtschwester (Min 3)</span>: Nekromantie (Klaut aus gegn. Friedhof)</div>
+                                <div><span style="color:#95a5a6; font-weight:bold;">Droid (Min 5)</span>: Verschmelzung (Nächster Droid x2 Punkte)</div>
+                                <div><span style="color:#34495e; font-weight:bold;">Kopfgeldjäger (Min 3)</span>: Kopfgeld (Insta-Kill vs markierte Fraktion)</div>
+                                <div><span style="color:#e74c3c; font-weight:bold;">Erste Ordnung (Min 4)</span>: Rekrutierung (Gewonnene Karte ins Deck)</div>
+                                <div><span style="color:#f39c12; font-weight:bold;">Widerstand (Min 4)</span>: Letzter Funke (Unendlich Punkte ab R10)</div>
                             </div>
 
                             <hr style="border-color:#333; margin:0;">
