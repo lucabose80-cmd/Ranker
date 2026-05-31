@@ -48,11 +48,11 @@ function getMainFaction(tags) {
     const tg = tags.map(t => t.toLowerCase());
     if(tg.includes('jedi')) return 'jedi';
     if(tg.includes('sith')) return 'sith';
-    if(tg.includes('klon')) return 'klon';
-    if(tg.includes('rebell') || tg.includes('rebellion')) return 'rebell';
+    if(tg.includes('rebell') || tg.includes('rebellen')) return 'rebell';
     if(tg.includes('imperium')) return 'imperium';
+    if(tg.includes('klon') || tg.includes('clone')) return 'klon';
     if(tg.includes('mandalorianer') || tg.includes('mandalorian')) return 'mandalorianer';
-    if(tg.includes('kopfgeldj?ger') || tg.includes('kopfgeldjaeger')) return 'kopfgeldj?ger';
+    if(tg.includes('kopfgeldj?ger') || tg.includes('kopfgeldjaeger') || tg.includes('kopfgeldjäger')) return 'kopfgeldjäger';
     if(tg.includes('droid') || tg.includes('droide')) return 'droid';
     if(tg.includes('schurke') || tg.includes('unterwelt')) return 'schurke';
     if(tg.includes('nachtschwester') || tg.includes('dathomir')) return 'nachtschwester';
@@ -62,6 +62,27 @@ function getMainFaction(tags) {
     if(tg.includes('graue machtnutzer') || tg.includes('grau')) return 'graue machtnutzer';
     if(tg.includes('fahrzeug')) return 'fahrzeug';
     return 'neutral';
+}
+
+function getFactionDescription(faction) {
+    const desc = {
+        'mandalorianer': 'Silence',
+        'graue machtnutzer': 'Lowest Wins',
+        'republik': 'Veto (0:0)',
+        'fahrzeug': 'Überrollen',
+        'sith': 'Zerstört Karte',
+        'schurke': 'Werte-Tausch',
+        'imperium': 'Orbitalschlag',
+        'jedi': 'Macht-Geist',
+        'rebell': 'Sabotage',
+        'klon': 'Klon-Kette',
+        'nachtschwester': 'Nekromantie',
+        'droid': 'Verschmelzung',
+        'kopfgeldjäger': 'Kopfgeld',
+        'erste ordnung': 'Rekrutierung',
+        'widerstand': 'Letzter Funke'
+    };
+    return desc[faction] || 'Aktiv';
 }
 
 function calculateSynergy(deck) {
@@ -91,7 +112,7 @@ function calculateSynergy(deck) {
     checkMin('klon', 4);
     checkMin('nachtschwester', 3);
     checkMin('droid', 5);
-    checkMin('kopfgeldj?ger', 3);
+    checkMin('kopfgeldjäger', 3);
     checkMin('erste ordnung', 4);
     checkMin('widerstand', 4);
     
@@ -334,10 +355,10 @@ function updateDeckUI() {
     const synContainer = document.getElementById('cardgame-synergy-info');
     synContainer.innerHTML = '';
     if(syns.length === 0) {
-        synContainer.innerHTML = 'Keine (0%)';
+        synContainer.innerHTML = 'Keine Effekte aktiv';
     } else {
         syns.forEach(s => {
-            synContainer.innerHTML += `<div>${s.faction.toUpperCase()} (${s.count} Karten: +${s.count}%)</div>`;
+            synContainer.innerHTML += `<div><span style="color:#ffd700; font-weight:bold;">${s.faction.toUpperCase()}</span> <span style="color:#aaa;">(${s.count} Karten):</span> <span style="color:#2ed573;">${getFactionDescription(s.faction)}</span></div>`;
         });
     }
 }
@@ -547,11 +568,11 @@ async function startMatch(oppData, oppDeckArr) {
     const pSyn = calculateSynergy(playerDeck);
     const oSyn = calculateSynergy(opponentDeck);
     
-    if (pSyn.some(s => s.faction === 'kopfgeldj?ger')) pEffects.bountyTarget = oSyn.length > 0 ? oSyn[0].faction : 'neutral';
-    if (oSyn.some(s => s.faction === 'kopfgeldj?ger')) oEffects.bountyTarget = pSyn.length > 0 ? pSyn[0].faction : 'neutral';
+    if (pSyn.some(s => s.faction === 'kopfgeldjäger')) pEffects.bountyTarget = oSyn.length > 0 ? oSyn[0].faction : 'neutral';
+    if (oSyn.some(s => s.faction === 'kopfgeldjäger')) oEffects.bountyTarget = pSyn.length > 0 ? pSyn[0].faction : 'neutral';
     
-    document.getElementById('match-player-synergy').innerHTML = pSyn.map(s => `${s.faction} (Limit ok)`).join('<br>') || 'Keine';
-    document.getElementById('match-opponent-synergy').innerHTML = oSyn.map(s => `${s.faction} (Limit ok)`).join('<br>') || 'Keine';
+    document.getElementById('match-player-synergy').innerHTML = pSyn.map(s => `<span style="color:#ffd700;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
+    document.getElementById('match-opponent-synergy').innerHTML = oSyn.map(s => `<span style="color:#ff4757;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
     
     const user = getCurrentUser();
     if(user && !isBotMatch) {
@@ -596,11 +617,11 @@ export async function startAdventureMatch(levelIndex, oppData, oppDeckArr, playe
     const pSyn = calculateSynergy(playerDeck);
     const oSyn = calculateSynergy(opponentDeck);
     
-    if (pSyn.some(s => s.faction === 'kopfgeldj?ger')) pEffects.bountyTarget = oSyn.length > 0 ? oSyn[0].faction : 'neutral';
-    if (oSyn.some(s => s.faction === 'kopfgeldj?ger')) oEffects.bountyTarget = pSyn.length > 0 ? pSyn[0].faction : 'neutral';
+    if (pSyn.some(s => s.faction === 'kopfgeldjäger')) pEffects.bountyTarget = oSyn.length > 0 ? oSyn[0].faction : 'neutral';
+    if (oSyn.some(s => s.faction === 'kopfgeldjäger')) oEffects.bountyTarget = pSyn.length > 0 ? pSyn[0].faction : 'neutral';
     
-    document.getElementById('match-player-synergy').innerHTML = pSyn.map(s => `${s.faction} (Limit ok)`).join('<br>') || 'Keine';
-    document.getElementById('match-opponent-synergy').innerHTML = oSyn.map(s => `${s.faction} (Limit ok)`).join('<br>') || 'Keine';
+    document.getElementById('match-player-synergy').innerHTML = pSyn.map(s => `<span style="color:#ffd700;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
+    document.getElementById('match-opponent-synergy').innerHTML = oSyn.map(s => `<span style="color:#ff4757;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
     
     renderHand();
     renderOpponentDeckState();
