@@ -1,11 +1,10 @@
 export const patchNotesWaifu = [
     {
         version: "v8.3.1",
-        title: "Hotfix: Online-Scoreboard & Anime Modus",
+        title: "Hotfix: Online-Scoreboard Anzeige",
         isHotfix: true,
         changes: [
-            "Hotfix: Ein Bug wurde behoben, durch den Spieler fälschlicherweise als 'Anime' im Online-Scoreboard angezeigt wurden, obwohl sie im Star Wars Modus aktiv waren.",
-            "Update: Der geheime Tastencode, um in den Anime Modus zu wechseln, wurde geändert. (Tipp: Pfeiltaste)"
+            "Hotfix: Ein Bug wurde behoben, durch den Spieler fälschlicherweise fehlerhafte Mode-Tags im Online-Scoreboard angezeigt bekamen."
         ]
     },
     {

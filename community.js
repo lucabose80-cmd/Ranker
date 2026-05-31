@@ -233,8 +233,6 @@ export function initCommunity() {
                 const uMode = currentMode;
                 const userAvatar = uMode === 'starwars' ? user.avatarStarWars : user.avatarWaifu;
                 const avatarHtml = userAvatar ? `<img src="${userAvatar}" class="mini-avatar">` : `<div class="mini-avatar" style="background:#444"></div>`;
-                const modeText = uMode === 'starwars' ? 'SW' : 'Anime';
-                const modeClass = uMode === 'starwars' ? 'tag-sw' : 'tag-anime';
                 const activeTitle = uMode === 'starwars' ? user.activeTitle_starwars : user.activeTitle_waifu;
                 const titleHtml = activeTitle && activeTitle !== 'Kein Titel'
                     ? `<div style="font-size:0.65rem; color:#ffd700; font-weight:bold; margin-top:2px; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${activeTitle}</div>` : '';
@@ -250,11 +248,9 @@ export function initCommunity() {
                             </strong>
                             ${titleHtml}
                         </div>
-                        <span class="chat-mode-tag ${modeClass}" style="margin-left:auto; flex-shrink:0;">${modeText}</span>
                     </div>
                 `;
             }
-
 
             // Alle anderen User (skip aktueller User)
             allUsers.forEach(u => {
@@ -265,8 +261,6 @@ export function initCommunity() {
                 const otherAvatarHtml = otherAvatar
                     ? `<img src="${otherAvatar}" class="mini-avatar">`
                     : `<div class="mini-avatar" style="background:#333"></div>`;
-                const otherModeText = otherMode === 'starwars' ? 'SW' : 'Anime';
-                const otherModeClass = otherMode === 'starwars' ? 'tag-sw' : 'tag-anime';
                 const otherTitle = otherMode === 'starwars' ? u.activeTitle_starwars : u.activeTitle_waifu;
                 const otherTitleHtml = otherTitle && otherTitle !== 'Kein Titel'
                     ? `<div style="font-size:0.65rem; color:#ffd700; font-weight:bold; margin-top:2px; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${otherTitle}</div>` : '';
@@ -282,7 +276,6 @@ export function initCommunity() {
                             <strong style="flex: unset; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${u.displayName || u.username}</strong>
                             ${otherTitleHtml}
                         </div>
-                        <span class="chat-mode-tag ${otherModeClass}" style="margin-left:auto; flex-shrink:0;">${otherModeText}</span>
                     </div>
                 `;
             });
