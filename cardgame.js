@@ -92,7 +92,7 @@ function getFactionTooltip(faction) {
         'republik': 'Veto: Verhindert eine direkte Niederlage. Falls dein Gegner gewinnen würde, wird das Ergebnis auf ein Unentschieden (0:0) eingefroren.\n\n• Ende: Gilt nur für diese eine Runde.\n• Limit: Exklusiv (Maximal 3 erlaubt)',
         'fahrzeug': 'Überrollen: Gewinnt das Fahrzeug die Runde, greift es sofort in einer Extra-Runde nochmals an und behält seinen Score.\n\n• Ende: Endet sofort und das Fahrzeug wird zerstört, falls es eine Runde verliert.\n• Limit: Exklusiv (Maximal 3 erlaubt)',
         'sith': 'Ausdünnung: Jede zweite (2.) gespielte Sith-Karte vernichtet sofort und dauerhaft eine zufällige Karte direkt von der feindlichen Hand.\n\n• Ende: Der Zähler ist während des gesamten Matches permanent aktiv.\n• Limit: Exklusiv (Maximal 4 erlaubt)',
-        'jedi': 'Gedankentrick: Spielst du einen Jedi, zwingt dieser den Bot dazu, in seiner NÄCHSTEN Runde garantiert seine schwächste Karte auszuspielen.\n\n• Ende: Der Effekt verbraucht sich automatisch beim Ausspielen der gegnerischen Karte.\n• Limit: Exklusiv (Maximal 3 erlaubt)',
+        'jedi': 'Gedankentrick: Spielst du einen Jedi, zwingt dieser den Bot dazu, in seiner NÄCHSTEN Runde garantiert eine seiner 2 schwächsten Karten auszuspielen.\n\n• Ende: Der Effekt verbraucht sich automatisch beim Ausspielen der gegnerischen Karte.\n• Limit: Exklusiv (Maximal 3 erlaubt)',
         'schurke': 'Falsches Spiel: Vor der Gewinn-Ermittlung stiehlt der Schurke heimlich den aktuellen Score des Gegners und tauscht ihn gegen seinen eigenen.\n\n• Ende: Die geklauten Werte gelten ausschließlich in dieser Runde.\n• Limit: Formation (Mindestens 3 benötigt)',
         'imperium': 'Unterdrückung: Gewinnt das Imperium, baut es starken Druck auf. Die gegnerische Karte in der NÄCHSTEN Runde verliert pauschal 25% Basis-Score.\n\n• Ende: Verliert das Imperium, triggert der Effekt nicht. Der 25% Abzug verfällt nach 1 Runde.\n• Limit: Formation (Mindestens 4 benötigt)',
         'rebell': 'Hoffnung: Rebellen kämpfen aus Verzweiflung stärker. Liegst du im aktuellen Gesamt-Match hinten (weniger Siege), verdoppelt der Rebell seinen Score.\n\n• Ende: Sobald du Gleichstand erreichst oder führst, entfällt die Verdopplung.\n• Limit: Formation (Mindestens 4 benötigt)',
@@ -698,14 +698,25 @@ function renderHand() {
         return;
     }
     
+    let forcedCards = [];
+    if (oEffects.forceWeakest && !pEffects.vehicles && playerHandRemaining.length > 0) {
+        let sorted = [...playerHandRemaining].sort((a,b) => (getCardScore(a.charName)*(RARITY_MULT[a.rarity]||1.0)) - (getCardScore(b.charName)*(RARITY_MULT[b.rarity]||1.0)));
+        forcedCards.push(sorted[0]);
+        if(sorted.length > 1) forcedCards.push(sorted[1]);
+    }
+
     playerDeck.forEach((c) => {
         const isPlayed = !playerHandRemaining.includes(c);
+        const isForcedOut = forcedCards.length > 0 && !forcedCards.includes(c) && !isPlayed;
+        const disabled = isPlayed || isForcedOut;
+        
         const dbC = activeCharacterDatabase.find(x => x.name === c.charName);
         if(!dbC) return;
         const div = document.createElement('div');
-        div.style.cssText = `cursor:${isPlayed ? 'not-allowed' : 'pointer'}; border-radius:5px; padding:5px; background:#222; text-align:center; width:80px; transition:transform 0.2s; ${isPlayed ? 'filter:grayscale(100%) opacity(0.4);' : ''}`;
+        div.style.cssText = `cursor:${disabled ? 'not-allowed' : 'pointer'}; border-radius:5px; padding:5px; background:#222; text-align:center; width:80px; transition:transform 0.2s; ${disabled ? 'filter:grayscale(100%) opacity(0.4);' : ''}`;
+        if (isForcedOut) div.style.border = '1px solid #ff4757';
         
-        if (!isPlayed) {
+        if (!disabled) {
             div.onmouseover = () => div.style.transform = 'translateY(-5px)';
             div.onmouseout = () => div.style.transform = 'translateY(0)';
             div.addEventListener('click', () => {
@@ -732,7 +743,13 @@ function playRound(playerCard, explicitOppCard = null) {
         let allValid = [...playerHandRemaining];
         if (!allValid.includes(playerCard)) allValid.push(playerCard);
         allValid.sort((a,b) => (getCardScore(a.charName)*(RARITY_MULT[a.rarity]||1.0)) - (getCardScore(b.charName)*(RARITY_MULT[b.rarity]||1.0)));
-        playerCard = allValid[0];
+        
+        let validChoices = [allValid[0]];
+        if(allValid.length > 1) validChoices.push(allValid[1]);
+        
+        if (!validChoices.includes(playerCard)) {
+            playerCard = allValid[0];
+        }
         oEffects.forceWeakest = false;
         pForcedJedi = true;
     }
@@ -751,7 +768,9 @@ function playRound(playerCard, explicitOppCard = null) {
         } else if (opponentHandRemaining.length > 0) {
             if (pEffects.forceWeakest) {
                 opponentHandRemaining.sort((a,b) => (getCardScore(a.charName)*(RARITY_MULT[a.rarity]||1.0)) - (getCardScore(b.charName)*(RARITY_MULT[b.rarity]||1.0)));
-                oppCard = opponentHandRemaining[0];
+                let validChoices = [opponentHandRemaining[0]];
+                if(opponentHandRemaining.length > 1) validChoices.push(opponentHandRemaining[1]);
+                oppCard = validChoices[Math.floor(Math.random() * validChoices.length)];
                 pEffects.forceWeakest = false;
                 oForcedJedi = true;
             } else {
@@ -792,8 +811,8 @@ function playRound(playerCard, explicitOppCard = null) {
     let pLog = [];
     let oLog = [];
 
-    if (pForcedJedi) pLog.push("Gedankentrick (Schwächste Karte erzwungen)");
-    if (oForcedJedi) oLog.push("Gedankentrick (Schwächste Karte erzwungen)");
+    if (pForcedJedi) pLog.push("Gedankentrick (Schwächere Karte erzwungen)");
+    if (oForcedJedi) oLog.push("Gedankentrick (Schwächere Karte erzwungen)");
     
     if (!pSilence && !oSilence) {
         let pSwap = pHas('schurke') && pFac === 'schurke';
