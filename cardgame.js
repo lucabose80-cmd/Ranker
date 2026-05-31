@@ -379,7 +379,7 @@ function updateDeckUI() {
         synContainer.innerHTML = 'Keine Effekte aktiv';
     } else {
         syns.forEach(s => {
-            synContainer.innerHTML += `<div><span title="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ffd700; font-weight:bold; border-bottom:1px dotted #ffd700;">${s.faction.toUpperCase()}</span> <span style="color:#aaa;">(${s.count} Karten):</span> <span style="color:#2ed573;">${getFactionDescription(s.faction)}</span></div>`;
+            synContainer.innerHTML += `<div><span class="has-tooltip" data-tooltip="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ffd700; font-weight:bold; border-bottom:1px dotted #ffd700;">${s.faction.toUpperCase()}</span> <span style="color:#aaa;">(${s.count} Karten):</span> <span style="color:#2ed573;">${getFactionDescription(s.faction)}</span></div>`;
         });
     }
 }
@@ -592,8 +592,8 @@ async function startMatch(oppData, oppDeckArr) {
     if (pSyn.some(s => s.faction === 'kopfgeldjäger')) pEffects.bountyTarget = oSyn.length > 0 ? oSyn[0].faction : 'neutral';
     if (oSyn.some(s => s.faction === 'kopfgeldjäger')) oEffects.bountyTarget = pSyn.length > 0 ? pSyn[0].faction : 'neutral';
     
-    document.getElementById('match-player-synergy').innerHTML = pSyn.map(s => `<span title="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ffd700; border-bottom:1px dotted #ffd700;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
-    document.getElementById('match-opponent-synergy').innerHTML = oSyn.map(s => `<span title="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ff4757; border-bottom:1px dotted #ff4757;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
+    document.getElementById('match-player-synergy').innerHTML = pSyn.map(s => `<span class="has-tooltip" data-tooltip="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ffd700; border-bottom:1px dotted #ffd700;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
+    document.getElementById('match-opponent-synergy').innerHTML = oSyn.map(s => `<span class="has-tooltip" data-tooltip="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ff4757; border-bottom:1px dotted #ff4757;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
     
     const user = getCurrentUser();
     if(user && !isBotMatch) {
@@ -641,8 +641,8 @@ export async function startAdventureMatch(levelIndex, oppData, oppDeckArr, playe
     if (pSyn.some(s => s.faction === 'kopfgeldjäger')) pEffects.bountyTarget = oSyn.length > 0 ? oSyn[0].faction : 'neutral';
     if (oSyn.some(s => s.faction === 'kopfgeldjäger')) oEffects.bountyTarget = pSyn.length > 0 ? pSyn[0].faction : 'neutral';
     
-    document.getElementById('match-player-synergy').innerHTML = pSyn.map(s => `<span title="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ffd700; border-bottom:1px dotted #ffd700;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
-    document.getElementById('match-opponent-synergy').innerHTML = oSyn.map(s => `<span title="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ff4757; border-bottom:1px dotted #ff4757;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
+    document.getElementById('match-player-synergy').innerHTML = pSyn.map(s => `<span class="has-tooltip" data-tooltip="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ffd700; border-bottom:1px dotted #ffd700;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
+    document.getElementById('match-opponent-synergy').innerHTML = oSyn.map(s => `<span class="has-tooltip" data-tooltip="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ff4757; border-bottom:1px dotted #ff4757;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
     
     renderHand();
     renderOpponentDeckState();

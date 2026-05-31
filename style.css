@@ -1644,3 +1644,40 @@ body.alt-theme #db-tracker-reads {
     transform: scale(1.3);
     z-index: 10;
 }
+
+/* Custom Tooltip */
+.has-tooltip {
+    position: relative;
+    cursor: help;
+}
+
+.has-tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1a1e29;
+    color: #eee;
+    padding: 10px 14px;
+    border-radius: 6px;
+    border: 1px solid #ffd700;
+    font-size: 0.85rem;
+    font-weight: normal;
+    width: max-content;
+    max-width: 240px;
+    white-space: normal;
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s, bottom 0.2s;
+    z-index: 1000;
+    pointer-events: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+}
+
+.has-tooltip:hover::after {
+    opacity: 1;
+    visibility: visible;
+    bottom: 110%;
+}
