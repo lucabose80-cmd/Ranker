@@ -642,8 +642,7 @@ function playRound(playerCard, explicitOppCard = null) {
                 if (adventureLevelIndex === 17 && pFac === 'jedi') pBaseFinal *= 1.20;
             }
             
-            let bestOpp = null;
-            let bestScoreDiff = -999999;
+            let evalOpp = [];
             const oSyn = getSynergyMult(calculateSynergy(opponentDeck));
             
             unplayedOpp.forEach(c => {
@@ -678,12 +677,27 @@ function playRound(playerCard, explicitOppCard = null) {
                     if (adventureLevelIndex === 19 && oFac === 'imperium') oBaseFinal *= 1.20;
                 }
                 
-                const scoreDiff = (oBaseFinal * oFacMult) - (pBaseFinal * pFacMult);
-                if (scoreDiff > bestScoreDiff) {
-                    bestScoreDiff = scoreDiff;
-                    bestOpp = c;
-                }
+                evalOpp.push({
+                    card: c,
+                    botScore: oBaseFinal * oFacMult,
+                    playerScoreReq: pBaseFinal * pFacMult
+                });
             });
+            
+            // Sort from weakest to strongest bot score
+            evalOpp.sort((a, b) => a.botScore - b.botScore);
+            
+            // Find all cards that would win against the player's card
+            let winningPlays = evalOpp.filter(x => x.botScore > x.playerScoreReq);
+            
+            let bestOpp = null;
+            if (winningPlays.length > 0) {
+                // Smart Play: Use the WEAKEST card that still guarantees a win (efficient victory)
+                bestOpp = winningPlays[0].card;
+            } else {
+                // Sacrifice Play: Cannot win, so throw away the ABSOLUTE WEAKEST card to save strong cards
+                bestOpp = evalOpp[0].card;
+            }
             
             if (!isAdventureMatch && opponentData.botLevel === 1 && Math.random() < 0.6) {
                 oppCard = unplayedOpp[Math.floor(Math.random() * unplayedOpp.length)];
