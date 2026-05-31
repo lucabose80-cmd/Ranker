@@ -722,6 +722,9 @@ function playRound(playerCard, explicitOppCard = null) {
     let pSilence = pHas('mandalorianer') && pFac === 'mandalorianer';
     let oSilence = oHas('mandalorianer') && oFac === 'mandalorianer';
     
+    let pLog = [];
+    let oLog = [];
+    
     if (!pSilence && !oSilence) {
         let pSwap = pHas('schurke') && pFac === 'schurke';
         let oSwap = oHas('schurke') && oFac === 'schurke';
@@ -730,31 +733,35 @@ function playRound(playerCard, explicitOppCard = null) {
             let tempDb = pDb; pDb = oDb; oDb = tempDb;
             let tempFac = pFac; pFac = oFac; oFac = tempFac;
             let tempBase = pBase; pBase = oBase; oBase = tempBase;
+            if (pSwap) pLog.push("Falsches Spiel (Karten getauscht)");
+            if (oSwap) oLog.push("Falsches Spiel (Karten getauscht)");
         }
     }
     
-    if (pEffects.orbitalStrike) { pBase = 0; oBase = 0; pEffects.orbitalStrike = false; }
-    if (oEffects.orbitalStrike) { pBase = 0; oBase = 0; oEffects.orbitalStrike = false; }
+    if (pEffects.orbitalStrike) { pBase = 0; oBase = 0; pEffects.orbitalStrike = false; pLog.push("Orbitalschlag (Zerstört)"); oLog.push("Orbitalschlag (Zerstört)"); }
+    if (oEffects.orbitalStrike) { pBase = 0; oBase = 0; oEffects.orbitalStrike = false; oLog.push("Orbitalschlag (Zerstört)"); pLog.push("Orbitalschlag (Zerstört)"); }
     
     if (playerCard) {
         if (!oSilence && pHas('klon') && pFac === 'klon') pEffects.cloneChain++; else pEffects.cloneChain = 0;
-        if (!oSilence && pEffects.nextDroidDouble && pFac === 'droid') { pBase *= 2; pEffects.nextDroidDouble = false; }
-        if (!oSilence && pHas('widerstand') && pFac === 'widerstand' && currentRound >= 10 && pEffects.resistanceSacrificed >= 3) pBase = 9999;
-        if (!oSilence && pFac === 'kopfgeldj?ger' && oFac === pEffects.bountyTarget) pBase = 9999;
+        if (!oSilence && pEffects.nextDroidDouble && pFac === 'droid') { pBase *= 2; pEffects.nextDroidDouble = false; pLog.push("Verschmelzung (Score x2)"); }
+        if (!oSilence && pHas('widerstand') && pFac === 'widerstand' && currentRound >= 10 && pEffects.resistanceSacrificed >= 3) { pBase = 9999; pLog.push("Letzter Funke (Unendlich)"); }
+        if (!oSilence && pFac === 'kopfgeldj?ger' && oFac === pEffects.bountyTarget) { pBase = 9999; pLog.push("Kopfgeldjäger (Ziel gefasst)"); }
+        if (pSilence) pLog.push("Beskar (Silence)");
     }
     if (oppCard) {
         if (!pSilence && oHas('klon') && oFac === 'klon') oEffects.cloneChain++; else oEffects.cloneChain = 0;
-        if (!pSilence && oEffects.nextDroidDouble && oFac === 'droid') { oBase *= 2; oEffects.nextDroidDouble = false; }
-        if (!pSilence && oHas('widerstand') && oFac === 'widerstand' && currentRound >= 10 && oEffects.resistanceSacrificed >= 3) oBase = 9999;
-        if (!pSilence && oFac === 'kopfgeldj?ger' && pFac === oEffects.bountyTarget) oBase = 9999;
+        if (!pSilence && oEffects.nextDroidDouble && oFac === 'droid') { oBase *= 2; oEffects.nextDroidDouble = false; oLog.push("Verschmelzung (Score x2)"); }
+        if (!pSilence && oHas('widerstand') && oFac === 'widerstand' && currentRound >= 10 && oEffects.resistanceSacrificed >= 3) { oBase = 9999; oLog.push("Letzter Funke (Unendlich)"); }
+        if (!pSilence && oFac === 'kopfgeldj?ger' && pFac === oEffects.bountyTarget) { oBase = 9999; oLog.push("Kopfgeldjäger (Ziel gefasst)"); }
+        if (oSilence) oLog.push("Beskar (Silence)");
     }
     
     let isWin = false;
     let isDraw = false;
     
     let lowestWins = false;
-    if (!oSilence && pHas('graue machtnutzer') && pFac === 'graue machtnutzer') lowestWins = true;
-    if (!pSilence && oHas('graue machtnutzer') && oFac === 'graue machtnutzer') lowestWins = true;
+    if (!oSilence && pHas('graue machtnutzer') && pFac === 'graue machtnutzer') { lowestWins = true; pLog.push("Ausgleich (Niedriger gewinnt)"); }
+    if (!pSilence && oHas('graue machtnutzer') && oFac === 'graue machtnutzer') { lowestWins = true; oLog.push("Ausgleich (Niedriger gewinnt)"); }
     
     if (pBase === oBase) {
         isDraw = true;
@@ -765,10 +772,10 @@ function playRound(playerCard, explicitOppCard = null) {
     }
     
     if (playerCard && !oSilence && pHas('republik') && pFac === 'republik' && !isWin && !isDraw) {
-        isDraw = true; isWin = false; pBase = 0; oBase = 0;
+        isDraw = true; isWin = false; pBase = 0; oBase = 0; pLog.push("Vorladung (Runde eingefroren)"); oLog.push("Vorladung (Runde eingefroren)");
     }
     if (oppCard && !pSilence && oHas('republik') && oFac === 'republik' && isWin && !isDraw) {
-        isDraw = true; isWin = false; pBase = 0; oBase = 0;
+        isDraw = true; isWin = false; pBase = 0; oBase = 0; oLog.push("Vorladung (Runde eingefroren)"); pLog.push("Vorladung (Runde eingefroren)");
     }
     
     if (isWin && !isDraw) playerScore++;
@@ -776,41 +783,45 @@ function playRound(playerCard, explicitOppCard = null) {
     
     if (playerCard) {
         if (!isWin && !isDraw && !oSilence) {
-            if (pHas('imperium') && pFac === 'imperium') pEffects.orbitalStrike = true;
-            if (pHas('jedi') && pFac === 'jedi') { playerCard.isGhost = true; playerHandRemaining.push(playerCard); }
-            if (pFac === 'klon') pEffects.lastCloneDead = pBase;
-            if (pFac === 'droid') pEffects.nextDroidDouble = true;
-            if (pFac === 'widerstand') pEffects.resistanceSacrificed++;
+            if (pHas('imperium') && pFac === 'imperium') { pEffects.orbitalStrike = true; pLog.push("Orbitalschlag angefordert"); }
+            if (pHas('jedi') && pFac === 'jedi') { playerCard.isGhost = true; playerHandRemaining.push(playerCard); pLog.push("Macht-Geist (Kehrt zurück)"); }
+            if (pFac === 'klon') { pEffects.lastCloneDead = pBase; }
+            if (pFac === 'droid') { pEffects.nextDroidDouble = true; }
+            if (pFac === 'widerstand') { pEffects.resistanceSacrificed++; }
             playerGraveyard.push(playerCard);
         }
         if (isWin && !isDraw && !oSilence) {
-            if (pHas('fahrzeug') && pFac === 'fahrzeug') { pEffects.vehicles = playerCard; playerCard.isGhost = false; }
+            if (pHas('fahrzeug') && pFac === 'fahrzeug') { pEffects.vehicles = playerCard; playerCard.isGhost = false; pLog.push("Überrollen (Bleibt auf Feld)"); }
             if (pHas('nachtschwester') && pFac === 'nachtschwester' && opponentGraveyard.length > 0) {
                 let stolen = opponentGraveyard.pop();
                 playerHandRemaining.push(stolen);
+                pLog.push("Nekromantie (Karte geklaut)");
             }
             if (pHas('erste ordnung') && pFac === 'erste ordnung' && oppCard) {
                 playerHandRemaining.push(oppCard);
+                pLog.push("Zwangsrekrutierung");
             }
         }
     }
     
     if (oppCard) {
         if (isWin && !isDraw && !pSilence) {
-            if (oHas('imperium') && oFac === 'imperium') oEffects.orbitalStrike = true;
-            if (oHas('jedi') && oFac === 'jedi') { oppCard.isGhost = true; opponentHandRemaining.push(oppCard); }
-            if (oFac === 'klon') oEffects.lastCloneDead = oBase;
-            if (oFac === 'droid') oEffects.nextDroidDouble = true;
-            if (oFac === 'widerstand') oEffects.resistanceSacrificed++;
+            if (oHas('imperium') && oFac === 'imperium') { oEffects.orbitalStrike = true; oLog.push("Orbitalschlag angefordert"); }
+            if (oHas('jedi') && oFac === 'jedi') { oppCard.isGhost = true; opponentHandRemaining.push(oppCard); oLog.push("Macht-Geist (Kehrt zurück)"); }
+            if (oFac === 'klon') { oEffects.lastCloneDead = oBase; }
+            if (oFac === 'droid') { oEffects.nextDroidDouble = true; }
+            if (oFac === 'widerstand') { oEffects.resistanceSacrificed++; }
             opponentGraveyard.push(oppCard);
         } else if (!isWin && !isDraw && !pSilence) {
-            if (oHas('fahrzeug') && oFac === 'fahrzeug') { oEffects.vehicles = oppCard; oppCard.isGhost = false; }
+            if (oHas('fahrzeug') && oFac === 'fahrzeug') { oEffects.vehicles = oppCard; oppCard.isGhost = false; oLog.push("Überrollen (Bleibt auf Feld)"); }
             if (oHas('nachtschwester') && oFac === 'nachtschwester' && playerGraveyard.length > 0) {
                 let stolen = playerGraveyard.pop();
                 opponentHandRemaining.push(stolen);
+                oLog.push("Nekromantie (Karte geklaut)");
             }
             if (oHas('erste ordnung') && oFac === 'erste ordnung' && playerCard) {
                 opponentHandRemaining.push(playerCard);
+                oLog.push("Zwangsrekrutierung");
             }
         }
     }
@@ -819,12 +830,14 @@ function playRound(playerCard, explicitOppCard = null) {
         pEffects.sithPlayed++;
         if (pEffects.sithPlayed === 2 && opponentHandRemaining.length > 0) {
             opponentGraveyard.push(opponentHandRemaining.pop());
+            pLog.push("Ausdünnung (Karte vernichtet)");
         }
     }
     if (oppCard && oFac === 'sith' && !pSilence) {
         oEffects.sithPlayed++;
         if (oEffects.sithPlayed === 2 && playerHandRemaining.length > 0) {
             playerGraveyard.push(playerHandRemaining.pop());
+            oLog.push("Ausdünnung (Karte vernichtet)");
         }
     }
 
@@ -841,15 +854,19 @@ function playRound(playerCard, explicitOppCard = null) {
     const pName = playerCard ? playerCard.charName : 'Niemand';
     const oName = oppCard ? oppCard.charName : 'Niemand';
     
+    const formatLog = (logs) => logs.length > 0 ? logs.map(l => `<div style="color:#a855f7; font-size:0.75rem; margin-top:4px;">✨ ${l}</div>`).join('') : '';
+    
     document.getElementById('match-round-calc').innerHTML = `
         <div style="display:flex; gap:12px; text-align:left;">
             <div style="flex:1; background:#111; border-radius:8px; padding:10px; border:1px solid #2ed57355;">
                 <div style="font-size:0.8rem; color:#2ed573; font-weight:bold; margin-bottom:6px;">Du (${pName})</div>
                 <div style="color:#fff; font-size:1.2rem; font-weight:bold;">Score: ${pBase.toFixed(1)}</div>
+                ${formatLog(pLog)}
             </div>
             <div style="flex:1; background:#111; border-radius:8px; padding:10px; border:1px solid #ff475755;">
                 <div style="font-size:0.8rem; color:#ff4757; font-weight:bold; margin-bottom:6px;">Gegner (${oName})</div>
                 <div style="color:#fff; font-size:1.2rem; font-weight:bold;">Score: ${oBase.toFixed(1)}</div>
+                ${formatLog(oLog)}
             </div>
         </div>
     `;
