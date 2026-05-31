@@ -1,5 +1,17 @@
 export const patchNotesStarWars = [
     {
+        version: "v8.4",
+        title: "MAJOR UPDATE: Cardgame 15-Fraktionen Rework",
+        isHotfix: false,
+        changes: [
+            "Cardgame: Das komplette Cardgame-System wurde grundlegend überarbeitet! Statt simplen +20% Fraktionsboni gibt es nun für jede der 15 Fraktionen einzigartige Synergie-Effekte und Thresholds.",
+            "Cardgame: Dynamische Match-Länge. Ein Spiel endet nun nicht mehr exakt nach 10 Runden, sondern erst dann, wenn beide Spieler keine Karten (und keine Fahrzeuge) mehr spielen können.",
+            "Feature: 'Max-Limit' Mechaniken. Bestimmte Fraktionen erfordern exakte Anzahlen im Deck, wie Mandalorianer (Silence), Graue Machtnutzer (Lowest Wins) oder Sith (Karten-Zerstörung).",
+            "Feature: 'Min-Limit' Mechaniken. Andere Fraktionen benötigen eine Mindestanzahl im Deck, wie Schurken (Wertetausch), Imperium (Orbitalschlag) oder Jedi (Machtgeister).",
+            "Balancing: Der Cardgame-Bot wurde an die neuen Regeln angepasst. Zudem wurden die Score-Anzeigen für Spieler deutlich nachvollziehbarer gestaltet."
+        ]
+    },
+    {
         version: "v8.3.1",
         title: "Hotfix: Online-Scoreboard Anzeige",
         isHotfix: true,
