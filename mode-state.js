@@ -1,4 +1,4 @@
-export let currentMode = localStorage.getItem('last_played_mode') || 'starwars';
+export let currentMode = 'starwars';
 export let currentGameType = localStorage.getItem('last_played_type') || 'classic'; // 'classic' oder 'advanced'
 export let currentGameCategory = localStorage.getItem('last_played_category') || 'normal'; // 'normal' oder 'klon'
 

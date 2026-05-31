@@ -1,5 +1,14 @@
 export const patchNotesStarWars = [
     {
+        version: "v8.3.1",
+        title: "Hotfix: Online-Scoreboard & Anime Modus",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Ein Bug wurde behoben, durch den Spieler fälschlicherweise als 'Anime' im Online-Scoreboard angezeigt wurden, obwohl sie im Star Wars Modus aktiv waren.",
+            "Update: Der geheime Tastencode, um in den Anime Modus zu wechseln, wurde geändert. (Tipp: Pfeiltaste)"
+        ]
+    },
+    {
         version: "v8.3.0",
         title: "Update: Codebase Refactoring & Cleanup",
         isHotfix: false,

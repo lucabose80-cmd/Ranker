@@ -436,9 +436,20 @@ function setupGameUI(user) {
         openTutorial();
     }
 
-    // Tastenanschläge abfangen (Entf = Moduswechsel, Esc = Profil / Zuschauen schließen)
+    // Tastenanschläge abfangen (5x ArrowUp = Moduswechsel, Esc = Profil / Zuschauen schließen)
+    let arrowUpCounter = 0;
     document.addEventListener('keydown', (e) => { 
-        if (e.key === 'Delete') { e.preventDefault(); toggleTheme(); }
+        if (e.key === 'ArrowUp') {
+            arrowUpCounter++;
+            if (arrowUpCounter >= 5) {
+                e.preventDefault();
+                toggleTheme();
+                arrowUpCounter = 0;
+            }
+        } else {
+            arrowUpCounter = 0;
+        }
+        
         if (e.key === 'Escape') {
             closeProfileOverlay();
             closeSpectatorModal();
