@@ -1671,7 +1671,7 @@ body.alt-theme #db-tracker-reads {
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.2s, visibility 0.2s, bottom 0.2s;
-    z-index: 1000;
+    z-index: 9999;
     pointer-events: none;
     box-shadow: 0 4px 15px rgba(0,0,0,0.8);
 }

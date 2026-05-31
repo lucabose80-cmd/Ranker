@@ -87,21 +87,21 @@ function getFactionDescription(faction) {
 
 function getFactionTooltip(faction) {
     const desc = {
-        'mandalorianer': 'Silence: Deaktiviert sofort sämtliche Fraktions-Effekte der gegnerischen Karte für diese Runde. (Exklusiv: max 3)',
-        'graue machtnutzer': 'Ausgleich: Die Siegesbedingung wird invertiert. Die Karte mit dem NIEDRIGSTEN Score gewinnt die Runde. (Exklusiv: max 3)',
-        'republik': 'Veto: Falls die Republik die Runde verliert, wird das Ergebnis eingefroren. Die Runde endet als Unentschieden (0:0). (Exklusiv: max 3)',
-        'fahrzeug': 'Überrollen: Ein Fahrzeug wird nach dem Einsatz nicht abgelegt. Es bleibt bestehen und greift in einer Extra-Runde nochmals an. (Exklusiv: max 3)',
-        'sith': 'Ausdünnung: Jede 2. gespielte Sith-Karte vernichtet sofort eine zufällige Karte auf der gegnerischen Hand. (Exklusiv: max 4)',
-        'schurke': 'Falsches Spiel: Bevor die Punkte verglichen werden, vertauscht der Schurke seinen eigenen Score mit dem der gegnerischen Karte. (Formation: min 3)',
-        'imperium': 'Orbitalschlag: Startet einen Countdown. In der nächsten Runde werden die gespielten Karten beider Seiten komplett vernichtet (0:0). (Formation: min 4)',
-        'jedi': 'Macht-Geist: Wenn der Jedi besiegt wird, kehrt er als Macht-Geist (mit 0 Punkten) in dein Deck zurück und kann als Schutzschild dienen. (Formation: min 4)',
-        'rebell': 'Sabotage: Zwingt den Gegner (Bot), für den Rest des Matches alle seine verbleibenden Handkarten offen zu spielen. (Formation: min 4)',
-        'klon': 'Klon-Kette: Stirbt ein Klon, speichert er seine Basis-Werte. Der nächste gespielte Klon erhält diese Punkte als permanenten Bonus on-top. (Formation: min 4)',
-        'nachtschwester': 'Nekromantie: Falls sie die Runde gewinnt, belebt die Nachtschwester die als letztes gestorbene feindliche Karte für dein eigenes Deck wieder. (Formation: min 3)',
-        'droid': 'Verschmelzung: Wird dieser Droide gespielt, überlädt er den darauffolgenden Droiden, den du ausspielst, und verdoppelt dessen Basis-Score. (Formation: min 5)',
-        'kopfgeldjäger': 'Kopfgeld: Markiert die feindliche Hauptfraktion zu Beginn. Trifft der Kopfgeldjäger auf diese Fraktion, gewinnt er sofort mit 9999 Punkten. (Formation: min 3)',
-        'erste ordnung': 'Zwangsrekrutierung: Gewinnt die Erste Ordnung das direkte Duell, wird die besiegte gegnerische Karte übernommen und deinem Deck hinzugefügt. (Formation: min 4)',
-        'widerstand': 'Letzter Funke: Ab Runde 10 und sobald 3 Widerständler gefallen sind, erhalten alle weiteren Widerstands-Karten unendliche Stärke. (Formation: min 4)'
+        'mandalorianer': 'Silence: Deaktiviert sofort sämtliche aktiven und passiven Fraktions-Effekte der direkt gegenüberliegenden gegnerischen Karte für diese einzelne Runde. Nach der Runde endet der Effekt. (Exklusiv: Max 3 erlaubt)',
+        'graue machtnutzer': 'Ausgleich: Dreht die Siegesbedingung der aktuellen Runde komplett um. Die Karte mit dem NIEDRIGSTEN Score gewinnt. Dies gilt nur für den direkten Kampf in dieser einen Runde. (Exklusiv: Max 3 erlaubt)',
+        'republik': 'Veto: Verhindert eine direkte Niederlage. Falls der Bot in dieser Runde eigentlich gewinnen würde, wird das Ergebnis auf ein Unentschieden (0:0) eingefroren. Bei einem Sieg erhält die Republik normale Punkte. (Exklusiv: Max 3 erlaubt)',
+        'fahrzeug': 'Überrollen: Ein gespieltes Fahrzeug zwingt das Match in eine sofortige Extra-Runde. Das Fahrzeug wird nicht abgeworfen, sondern behält seinen Score und kämpft direkt noch einmal gegen die nächste Karte des Bots. (Exklusiv: Max 3 erlaubt)',
+        'sith': 'Ausdünnung: Jede zweite von dir gespielte Sith-Karte vernichtet sofort vor dem Aufdecken eine zufällige, ungespielte Karte auf der Hand des Bots. Der Bot verliert dadurch zukünftige Runden kampflos! (Exklusiv: Max 4 erlaubt)',
+        'schurke': 'Falsches Spiel: Ein fieser Trick! Bevor Gewinner und Verlierer ermittelt werden, klaut der Schurke den Basis-Score der gegnerischen Karte und gibt ihr stattdessen seinen eigenen Score. (Formation: Min 3 benötigt)',
+        'imperium': 'Orbitalschlag: Startet nach dem Ausspielen einen Timer. Die Karten, die in der DARAUFFOLGENDEN Runde von beiden Seiten gespielt werden, werden komplett vernichtet (0:0 Unentschieden). (Formation: Min 4 benötigt)',
+        'jedi': 'Macht-Geist: Sollte der Jedi seine Runde verlieren, wird er nicht vernichtet. Er kehrt als "Macht-Geist" ohne Punkte (Score: 0) auf deine Hand zurück. Du kannst ihn später ausspielen, um gegnerische Effekte abzufangen. (Formation: Min 4 benötigt)',
+        'rebell': 'Sabotage: Zwingt den Gegner dazu, für den gesamten restlichen Verlauf dieses Matches alle seine verbleibenden Handkarten komplett offenzulegen, sodass du seine Taktik genau sehen kannst. (Formation: Min 4 benötigt)',
+        'klon': 'Klon-Kette: Verliert ein Klon, wird sein Basis-Score global gespeichert. Der nächste Klon, den du in diesem Match ausspielst, erhält diesen gespeicherten Score als Bonus on-top. (Formation: Min 4 benötigt)',
+        'nachtschwester': 'Nekromantie: Falls die Nachtschwester gewinnt, reißt sie die ZULETZT besiegte Karte aus dem gegnerischen Friedhof zurück in deine Hand. Du kannst diese Karte dann für den Rest des Matches selbst ausspielen! (Formation: Min 3 benötigt)',
+        'droid': 'Verschmelzung: Schwarm-Intelligenz! Wird dieser Droide gespielt, lädt er einen Bonus auf. Der NÄCHSTE Droide, den du im Match ausspielst, profitiert davon und verdoppelt seinen Basis-Score! (Formation: Min 5 benötigt)',
+        'kopfgeldjäger': 'Kopfgeld: Markiert die häufigste Fraktion im gegnerischen Deck zu Matchbeginn. Spielst du einen Kopfgeldjäger in einer Runde exakt gegen diese markierte Fraktion aus, gewinnt er sofort mit 9999 Punkten! (Formation: Min 3 benötigt)',
+        'erste ordnung': 'Zwangsrekrutierung: Wenn die Erste Ordnung ihr Duell gewinnt, wird die aktuell besiegte gegnerische Karte nicht auf den Friedhof gelegt, sondern sofort deiner Hand für dieses Match hinzugefügt. (Formation: Min 4 benötigt)',
+        'widerstand': 'Letzter Funke: Sobald das Match Runde 10 erreicht UND sich bereits mindestens 3 Widerstands-Karten auf deinem Friedhof befinden, erhalten alle verbleibenden Widerstands-Karten auf deiner Hand 9999 Punkte! (Formation: Min 4 benötigt)'
     };
     return desc[faction] || 'Kein spezieller Effekt.';
 }
