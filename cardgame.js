@@ -85,6 +85,27 @@ function getFactionDescription(faction) {
     return desc[faction] || 'Aktiv';
 }
 
+function getFactionTooltip(faction) {
+    const desc = {
+        'mandalorianer': 'Blockiert feindliche Fähigkeiten komplett (Tech-Limit: max 3).',
+        'graue machtnutzer': 'Invertiert die Siegbedingung: Der niedrigste Score gewinnt (Tech-Limit: max 3).',
+        'republik': 'Zwingt eine verlorene Runde zum Unentschieden 0:0 (Tech-Limit: max 3).',
+        'fahrzeug': 'Überlebt die Runde und greift in einer Extra-Runde nochmal an (Tech-Limit: max 3).',
+        'sith': 'Jede 2. gespielte Sith-Karte vernichtet eine zufällige Gegner-Karte auf der Hand (Tech-Limit: max 4).',
+        'schurke': 'Tauscht heimlich die Werte beider gespielten Karten aus (Synergie-Limit: min 3).',
+        'imperium': 'Startet einen Orbitalschlag: Zerstört beide Karten in der darauffolgenden Runde, Score 0:0 (Synergie-Limit: min 4).',
+        'jedi': 'Stirbt der Jedi, kehrt er als schützender Macht-Geist mit 0 Punkten auf die Hand zurück (Synergie-Limit: min 4).',
+        'rebell': 'Sabotage: Deckt die gegnerischen Bot-Karten auf, er spielt offen (Synergie-Limit: min 4).',
+        'klon': 'Baut eine Kette auf: Verstirbt ein Klon, erhält der nächste Klon Bonuspunkte in Höhe der Basiswerte (Synergie-Limit: min 4).',
+        'nachtschwester': 'Nekromantie: Belebt bei Sieg die zuletzt gestorbene feindliche Karte für die eigene Hand wieder (Synergie-Limit: min 3).',
+        'droid': 'Verschmelzung: Der nächste gespielte Droide verdoppelt seinen Basis-Score (Synergie-Limit: min 5).',
+        'kopfgeldjäger': 'Setzt ein Kopfgeld auf die feindliche Haupt-Fraktion aus. Trifft er sie, erhält er 9999 Punkte (Synergie-Limit: min 3).',
+        'erste ordnung': 'Zwangsrekrutierung: Gewinnt die Erste Ordnung, wird die gegnerische Karte übernommen (Synergie-Limit: min 4).',
+        'widerstand': 'Letzter Funke: Ab Runde 10 und 3 gefallenen Widerständlern erhält jede weitere Karte unendlich Punkte (Synergie-Limit: min 4).'
+    };
+    return desc[faction] || 'Kein spezieller Effekt.';
+}
+
 function calculateSynergy(deck) {
     if(!deck || deck.length === 0) return [];
     const counts = {};
@@ -358,7 +379,7 @@ function updateDeckUI() {
         synContainer.innerHTML = 'Keine Effekte aktiv';
     } else {
         syns.forEach(s => {
-            synContainer.innerHTML += `<div><span style="color:#ffd700; font-weight:bold;">${s.faction.toUpperCase()}</span> <span style="color:#aaa;">(${s.count} Karten):</span> <span style="color:#2ed573;">${getFactionDescription(s.faction)}</span></div>`;
+            synContainer.innerHTML += `<div><span title="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ffd700; font-weight:bold; border-bottom:1px dotted #ffd700;">${s.faction.toUpperCase()}</span> <span style="color:#aaa;">(${s.count} Karten):</span> <span style="color:#2ed573;">${getFactionDescription(s.faction)}</span></div>`;
         });
     }
 }
@@ -571,8 +592,8 @@ async function startMatch(oppData, oppDeckArr) {
     if (pSyn.some(s => s.faction === 'kopfgeldjäger')) pEffects.bountyTarget = oSyn.length > 0 ? oSyn[0].faction : 'neutral';
     if (oSyn.some(s => s.faction === 'kopfgeldjäger')) oEffects.bountyTarget = pSyn.length > 0 ? pSyn[0].faction : 'neutral';
     
-    document.getElementById('match-player-synergy').innerHTML = pSyn.map(s => `<span style="color:#ffd700;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
-    document.getElementById('match-opponent-synergy').innerHTML = oSyn.map(s => `<span style="color:#ff4757;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
+    document.getElementById('match-player-synergy').innerHTML = pSyn.map(s => `<span title="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ffd700; border-bottom:1px dotted #ffd700;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
+    document.getElementById('match-opponent-synergy').innerHTML = oSyn.map(s => `<span title="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ff4757; border-bottom:1px dotted #ff4757;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
     
     const user = getCurrentUser();
     if(user && !isBotMatch) {
@@ -620,8 +641,8 @@ export async function startAdventureMatch(levelIndex, oppData, oppDeckArr, playe
     if (pSyn.some(s => s.faction === 'kopfgeldjäger')) pEffects.bountyTarget = oSyn.length > 0 ? oSyn[0].faction : 'neutral';
     if (oSyn.some(s => s.faction === 'kopfgeldjäger')) oEffects.bountyTarget = pSyn.length > 0 ? pSyn[0].faction : 'neutral';
     
-    document.getElementById('match-player-synergy').innerHTML = pSyn.map(s => `<span style="color:#ffd700;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
-    document.getElementById('match-opponent-synergy').innerHTML = oSyn.map(s => `<span style="color:#ff4757;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
+    document.getElementById('match-player-synergy').innerHTML = pSyn.map(s => `<span title="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ffd700; border-bottom:1px dotted #ffd700;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
+    document.getElementById('match-opponent-synergy').innerHTML = oSyn.map(s => `<span title="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ff4757; border-bottom:1px dotted #ff4757;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
     
     renderHand();
     renderOpponentDeckState();
