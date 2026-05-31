@@ -837,13 +837,33 @@ function playRound(playerCard, explicitOppCard = null) {
     if (oEffects.martyrBuff) { oBase += 4.0; oEffects.martyrBuff = false; oLog.push("Opfermut (+4.0 Score)"); }
 
     if (playerCard) {
-        if (!oSilence && pHas('klon') && pFac === 'klon') pEffects.cloneChain++; else pEffects.cloneChain = 0;
+        if (!oSilence && pHas('klon') && pFac === 'klon') {
+            pEffects.cloneChain++;
+            if (pEffects.lastCloneDead) {
+                pBase += pEffects.lastCloneDead;
+                pLog.push(`Klon-Kette (+${pEffects.lastCloneDead.toFixed(1)} Score)`);
+            }
+        } else {
+            pEffects.cloneChain = 0;
+            pEffects.lastCloneDead = null;
+        }
+        
         if (!oSilence && pEffects.nextDroidDouble && pFac === 'droid') { pBase *= 2; pEffects.nextDroidDouble = false; pLog.push("Verschmelzung (Score x2)"); }
         if (!oSilence && pHas('rebell') && pFac === 'rebell' && playerScore < opponentScore) { pBase *= 2; pLog.push("Hoffnung (Score x2)"); }
         if (pSilence) pLog.push("Beskar (Silence)");
     }
     if (oppCard) {
-        if (!pSilence && oHas('klon') && oFac === 'klon') oEffects.cloneChain++; else oEffects.cloneChain = 0;
+        if (!pSilence && oHas('klon') && oFac === 'klon') {
+            oEffects.cloneChain++;
+            if (oEffects.lastCloneDead) {
+                oBase += oEffects.lastCloneDead;
+                oLog.push(`Klon-Kette (+${oEffects.lastCloneDead.toFixed(1)} Score)`);
+            }
+        } else {
+            oEffects.cloneChain = 0;
+            oEffects.lastCloneDead = null;
+        }
+        
         if (!pSilence && oEffects.nextDroidDouble && oFac === 'droid') { oBase *= 2; oEffects.nextDroidDouble = false; oLog.push("Verschmelzung (Score x2)"); }
         if (!pSilence && oHas('rebell') && oFac === 'rebell' && opponentScore < playerScore) { oBase *= 2; oLog.push("Hoffnung (Score x2)"); }
         if (oSilence) oLog.push("Beskar (Silence)");
