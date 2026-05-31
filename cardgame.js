@@ -87,21 +87,21 @@ function getFactionDescription(faction) {
 
 function getFactionTooltip(faction) {
     const desc = {
-        'mandalorianer': 'Silence: Deaktiviert sofort sämtliche Fraktions-Effekte der gegnerischen Karte für diese Runde. (Tech-Limit: max 3)',
-        'graue machtnutzer': 'Ausgleich: Die Siegesbedingung wird invertiert. Die Karte mit dem NIEDRIGSTEN Score gewinnt die Runde. (Tech-Limit: max 3)',
-        'republik': 'Veto: Falls die Republik die Runde verliert, wird das Ergebnis eingefroren. Die Runde endet als Unentschieden (0:0). (Tech-Limit: max 3)',
-        'fahrzeug': 'Überrollen: Ein Fahrzeug wird nach dem Einsatz nicht abgelegt. Es bleibt bestehen und greift in einer Extra-Runde nochmals an. (Tech-Limit: max 3)',
-        'sith': 'Ausdünnung: Jede 2. gespielte Sith-Karte vernichtet sofort eine zufällige Karte auf der gegnerischen Hand. (Tech-Limit: max 4)',
-        'schurke': 'Falsches Spiel: Bevor die Punkte verglichen werden, vertauscht der Schurke seinen eigenen Score mit dem der gegnerischen Karte. (Synergie-Limit: min 3)',
-        'imperium': 'Orbitalschlag: Startet einen Countdown. In der nächsten Runde werden die gespielten Karten beider Seiten komplett vernichtet (0:0). (Synergie-Limit: min 4)',
-        'jedi': 'Macht-Geist: Wenn der Jedi besiegt wird, kehrt er als Macht-Geist (mit 0 Punkten) in dein Deck zurück und kann als Schutzschild dienen. (Synergie-Limit: min 4)',
-        'rebell': 'Sabotage: Zwingt den Gegner (Bot), für den Rest des Matches alle seine verbleibenden Handkarten offen zu spielen. (Synergie-Limit: min 4)',
-        'klon': 'Klon-Kette: Stirbt ein Klon, speichert er seine Basis-Werte. Der nächste gespielte Klon erhält diese Punkte als permanenten Bonus on-top. (Synergie-Limit: min 4)',
-        'nachtschwester': 'Nekromantie: Falls sie die Runde gewinnt, belebt die Nachtschwester die als letztes gestorbene feindliche Karte für dein eigenes Deck wieder. (Synergie-Limit: min 3)',
-        'droid': 'Verschmelzung: Wird dieser Droide gespielt, überlädt er den darauffolgenden Droiden, den du ausspielst, und verdoppelt dessen Basis-Score. (Synergie-Limit: min 5)',
-        'kopfgeldjäger': 'Kopfgeld: Markiert die feindliche Hauptfraktion zu Beginn. Trifft der Kopfgeldjäger auf diese Fraktion, gewinnt er sofort mit 9999 Punkten. (Synergie-Limit: min 3)',
-        'erste ordnung': 'Zwangsrekrutierung: Gewinnt die Erste Ordnung das direkte Duell, wird die besiegte gegnerische Karte übernommen und deinem Deck hinzugefügt. (Synergie-Limit: min 4)',
-        'widerstand': 'Letzter Funke: Ab Runde 10 und sobald 3 Widerständler gefallen sind, erhalten alle weiteren Widerstands-Karten unendliche Stärke. (Synergie-Limit: min 4)'
+        'mandalorianer': 'Silence: Deaktiviert sofort sämtliche Fraktions-Effekte der gegnerischen Karte für diese Runde. (Exklusiv: max 3)',
+        'graue machtnutzer': 'Ausgleich: Die Siegesbedingung wird invertiert. Die Karte mit dem NIEDRIGSTEN Score gewinnt die Runde. (Exklusiv: max 3)',
+        'republik': 'Veto: Falls die Republik die Runde verliert, wird das Ergebnis eingefroren. Die Runde endet als Unentschieden (0:0). (Exklusiv: max 3)',
+        'fahrzeug': 'Überrollen: Ein Fahrzeug wird nach dem Einsatz nicht abgelegt. Es bleibt bestehen und greift in einer Extra-Runde nochmals an. (Exklusiv: max 3)',
+        'sith': 'Ausdünnung: Jede 2. gespielte Sith-Karte vernichtet sofort eine zufällige Karte auf der gegnerischen Hand. (Exklusiv: max 4)',
+        'schurke': 'Falsches Spiel: Bevor die Punkte verglichen werden, vertauscht der Schurke seinen eigenen Score mit dem der gegnerischen Karte. (Formation: min 3)',
+        'imperium': 'Orbitalschlag: Startet einen Countdown. In der nächsten Runde werden die gespielten Karten beider Seiten komplett vernichtet (0:0). (Formation: min 4)',
+        'jedi': 'Macht-Geist: Wenn der Jedi besiegt wird, kehrt er als Macht-Geist (mit 0 Punkten) in dein Deck zurück und kann als Schutzschild dienen. (Formation: min 4)',
+        'rebell': 'Sabotage: Zwingt den Gegner (Bot), für den Rest des Matches alle seine verbleibenden Handkarten offen zu spielen. (Formation: min 4)',
+        'klon': 'Klon-Kette: Stirbt ein Klon, speichert er seine Basis-Werte. Der nächste gespielte Klon erhält diese Punkte als permanenten Bonus on-top. (Formation: min 4)',
+        'nachtschwester': 'Nekromantie: Falls sie die Runde gewinnt, belebt die Nachtschwester die als letztes gestorbene feindliche Karte für dein eigenes Deck wieder. (Formation: min 3)',
+        'droid': 'Verschmelzung: Wird dieser Droide gespielt, überlädt er den darauffolgenden Droiden, den du ausspielst, und verdoppelt dessen Basis-Score. (Formation: min 5)',
+        'kopfgeldjäger': 'Kopfgeld: Markiert die feindliche Hauptfraktion zu Beginn. Trifft der Kopfgeldjäger auf diese Fraktion, gewinnt er sofort mit 9999 Punkten. (Formation: min 3)',
+        'erste ordnung': 'Zwangsrekrutierung: Gewinnt die Erste Ordnung das direkte Duell, wird die besiegte gegnerische Karte übernommen und deinem Deck hinzugefügt. (Formation: min 4)',
+        'widerstand': 'Letzter Funke: Ab Runde 10 und sobald 3 Widerständler gefallen sind, erhalten alle weiteren Widerstands-Karten unendliche Stärke. (Formation: min 4)'
     };
     return desc[faction] || 'Kein spezieller Effekt.';
 }

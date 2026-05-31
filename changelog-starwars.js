@@ -1,5 +1,14 @@
 export const patchNotesStarWars = [
     {
+        version: "v8.4.1",
+        title: "Hotfix: UI-Update & Tooltips",
+        isHotfix: true,
+        changes: [
+            "UI-Update: Die Texte für 'Tech-Limits' und 'Synergie-Limits' wurden im Cardgame-Deckbuilder und im Match-Modus durch thematisch passendere Begriffe ('Spezial-Einsatzkräfte' und 'Truppen-Formationen') ersetzt.",
+            "QoL: Die Tooltips der Fraktionsboni erklären nun die spielerische Bedeutung der Limits deutlich anschaulicher."
+        ]
+    },
+    {
         version: "v8.4",
         title: "MAJOR UPDATE: Cardgame 15-Fraktionen Rework",
         isHotfix: false,
