@@ -732,8 +732,14 @@ function playRound(playerCard, explicitOppCard = null) {
     let pFac = pDb ? getMainFaction(pDb.tags) : 'neutral';
     let oFac = oDb ? getMainFaction(oDb.tags) : 'neutral';
     
-    let pBase = playerCard ? (playerCard.isGhost ? 0 : getCardScore(playerCard.charName)) : 0;
-    let oBase = oppCard ? (oppCard.isGhost ? 0 : getCardScore(oppCard.charName)) : 0;
+    let pRarMult = playerCard ? (RARITY_MULT[playerCard.rarity] || 1.0) : 1.0;
+    let oRarMult = oppCard ? (RARITY_MULT[oppCard.rarity] || 1.0) : 1.0;
+    
+    let pBaseRaw = playerCard ? (playerCard.isGhost ? 0 : getCardScore(playerCard.charName)) : 0;
+    let oBaseRaw = oppCard ? (oppCard.isGhost ? 0 : getCardScore(oppCard.charName)) : 0;
+    
+    let pBase = pBaseRaw * pRarMult;
+    let oBase = oBaseRaw * oRarMult;
     
     let pSyn = calculateSynergy(playerDeck);
     let oSyn = calculateSynergy(opponentDeck);
@@ -766,14 +772,14 @@ function playRound(playerCard, explicitOppCard = null) {
         if (!oSilence && pHas('klon') && pFac === 'klon') pEffects.cloneChain++; else pEffects.cloneChain = 0;
         if (!oSilence && pEffects.nextDroidDouble && pFac === 'droid') { pBase *= 2; pEffects.nextDroidDouble = false; pLog.push("Verschmelzung (Score x2)"); }
         if (!oSilence && pHas('widerstand') && pFac === 'widerstand' && currentRound >= 10 && pEffects.resistanceSacrificed >= 3) { pBase = 9999; pLog.push("Letzter Funke (Unendlich)"); }
-        if (!oSilence && pFac === 'kopfgeldj?ger' && oFac === pEffects.bountyTarget) { pBase = 9999; pLog.push("Kopfgeldjäger (Ziel gefasst)"); }
+        if (!oSilence && pFac === 'kopfgeldjäger' && oFac === pEffects.bountyTarget) { pBase = 9999; pLog.push("Kopfgeldjäger (Ziel gefasst)"); }
         if (pSilence) pLog.push("Beskar (Silence)");
     }
     if (oppCard) {
         if (!pSilence && oHas('klon') && oFac === 'klon') oEffects.cloneChain++; else oEffects.cloneChain = 0;
         if (!pSilence && oEffects.nextDroidDouble && oFac === 'droid') { oBase *= 2; oEffects.nextDroidDouble = false; oLog.push("Verschmelzung (Score x2)"); }
         if (!pSilence && oHas('widerstand') && oFac === 'widerstand' && currentRound >= 10 && oEffects.resistanceSacrificed >= 3) { oBase = 9999; oLog.push("Letzter Funke (Unendlich)"); }
-        if (!pSilence && oFac === 'kopfgeldj?ger' && pFac === oEffects.bountyTarget) { oBase = 9999; oLog.push("Kopfgeldjäger (Ziel gefasst)"); }
+        if (!pSilence && oFac === 'kopfgeldjäger' && pFac === oEffects.bountyTarget) { oBase = 9999; oLog.push("Kopfgeldjäger (Ziel gefasst)"); }
         if (oSilence) oLog.push("Beskar (Silence)");
     }
     
@@ -880,12 +886,14 @@ function playRound(playerCard, explicitOppCard = null) {
     document.getElementById('match-round-calc').innerHTML = `
         <div style="display:flex; gap:12px; text-align:left;">
             <div style="flex:1; background:#111; border-radius:8px; padding:10px; border:1px solid #2ed57355;">
-                <div style="font-size:0.8rem; color:#2ed573; font-weight:bold; margin-bottom:6px;">Du (${pName})</div>
+                <div style="font-size:0.8rem; color:#2ed573; font-weight:bold; margin-bottom:2px;">Du (${pName})</div>
+                <div style="font-size:0.7rem; color:#aaa; margin-bottom:6px;">Basis: ${pBaseRaw.toFixed(1)} &bull; Seltenheit: x${pRarMult.toFixed(2)}</div>
                 <div style="color:#fff; font-size:1.2rem; font-weight:bold;">Score: ${pBase.toFixed(1)}</div>
                 ${formatLog(pLog)}
             </div>
             <div style="flex:1; background:#111; border-radius:8px; padding:10px; border:1px solid #ff475755;">
-                <div style="font-size:0.8rem; color:#ff4757; font-weight:bold; margin-bottom:6px;">Gegner (${oName})</div>
+                <div style="font-size:0.8rem; color:#ff4757; font-weight:bold; margin-bottom:2px;">Gegner (${oName})</div>
+                <div style="font-size:0.7rem; color:#aaa; margin-bottom:6px;">Basis: ${oBaseRaw.toFixed(1)} &bull; Seltenheit: x${oRarMult.toFixed(2)}</div>
                 <div style="color:#fff; font-size:1.2rem; font-weight:bold;">Score: ${oBase.toFixed(1)}</div>
                 ${formatLog(oLog)}
             </div>
