@@ -67,20 +67,20 @@ function getMainFaction(tags) {
 function getFactionDescription(faction) {
     const desc = {
         'mandalorianer': 'Silence',
-        'graue machtnutzer': 'Lowest Wins',
+        'graue machtnutzer': 'Ausgleich',
         'republik': 'Veto (0:0)',
         'fahrzeug': 'Überrollen',
-        'sith': 'Zerstört Karte',
-        'schurke': 'Werte-Tausch',
-        'imperium': 'Orbitalschlag',
-        'jedi': 'Macht-Geist',
-        'rebell': 'Sabotage',
+        'sith': 'Ausdünnung',
+        'schurke': 'Falsches Spiel',
+        'imperium': 'Unterdrückung',
+        'jedi': 'Gedankentrick',
+        'rebell': 'Hoffnung',
         'klon': 'Klon-Kette',
         'nachtschwester': 'Nekromantie',
         'droid': 'Verschmelzung',
         'kopfgeldjäger': 'Kopfgeld',
-        'erste ordnung': 'Rekrutierung',
-        'widerstand': 'Letzter Funke'
+        'erste ordnung': 'Zwangsrekrutierung',
+        'widerstand': 'Opfermut'
     };
     return desc[faction] || 'Aktiv';
 }
