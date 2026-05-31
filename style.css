@@ -1665,9 +1665,9 @@ body.alt-theme #db-tracker-reads {
     font-size: 0.85rem;
     font-weight: normal;
     width: max-content;
-    max-width: 240px;
-    white-space: normal;
-    text-align: center;
+    max-width: 260px;
+    white-space: pre-wrap;
+    text-align: left;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.2s, visibility 0.2s, bottom 0.2s;
@@ -1681,3 +1681,4 @@ body.alt-theme #db-tracker-reads {
     visibility: visible;
     bottom: 110%;
 }
+
