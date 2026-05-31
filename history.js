@@ -413,7 +413,7 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
 
 function renderHistoryHTML(games, container, displayNames, debugInfo = '') {
     if (games.length === 0) {
-        container.innerHTML = `<p class="prompt-text">Noch keine Spiele in diesem Modus aufgezeichnet. ${debugInfo}</p>`;
+        container.innerHTML = `<p class="prompt-text">In den letzten 24 systemweiten Spielen (Cache) wurde dieser Modus nicht gespielt. ${debugInfo}</p>`;
         return;
     }
 
