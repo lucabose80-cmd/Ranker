@@ -1190,8 +1190,8 @@ function playRound(playerCard, explicitOppCard = null) {
                           <div style="font-size:0.7rem; color:#888; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Aktive Effekte:</div>
                           ${logs.map(l => {
                               const tip = getEffectTooltip(l);
-                              if(tip) return \`<div class="has-tooltip" data-tooltip="\${tip}" style="color:#a855f7; font-size:0.75rem; margin-bottom:2px; cursor:help; border-bottom:1px dotted #a855f7; display:inline-block; margin-right:5px;">✨ \${l}</div><br>\`;
-                              return \`<div style="color:#a855f7; font-size:0.75rem; margin-bottom:2px;">✨ \${l}</div>\`;
+                              if(tip) return `<div class="has-tooltip" data-tooltip="${tip}" style="color:#a855f7; font-size:0.75rem; margin-bottom:2px; cursor:help; border-bottom:1px dotted #a855f7; display:inline-block; margin-right:5px;">✨ ${l}</div><br>`;
+                              return `<div style="color:#a855f7; font-size:0.75rem; margin-bottom:2px;">✨ ${l}</div>`;
                           }).join('')}
                        </div>`;
         } else {
