@@ -23,6 +23,7 @@ export function stopCommunity() {
     chatUnsubscribe = null;
     onlineInterval = null;
     allUsersCache = [];
+    isOnlineListBound = false;
 }
 
 export function initCommunity() {
@@ -227,6 +228,16 @@ export function initCommunity() {
             });
 
             onlineList.innerHTML = '';
+            
+            // Hilfsfunktion: Section -> lesbares Label
+            function getSectionBadge(section) {
+                if (!section || section === 'hub-content') return '';
+                if (section === 'ranking-hub-content') return '<span style="font-size:0.6rem; color:#ffd700; background:rgba(255,215,0,0.15); border:1px solid rgba(255,215,0,0.4); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">🏆 Ranking</span>';
+                if (section === 'cardgame-hub-content') return '<span style="font-size:0.6rem; color:#a78bfa; background:rgba(167,139,250,0.15); border:1px solid rgba(167,139,250,0.4); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">🃏 Cardgame</span>';
+                if (section === 'starwarsdle-hub-content') return '<span style="font-size:0.6rem; color:#60a5fa; background:rgba(96,165,250,0.15); border:1px solid rgba(96,165,250,0.4); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">🔤 Starwarsdle</span>';
+                if (section === 'scoreboard-hub-content') return '<span style="font-size:0.6rem; color:#34d399; background:rgba(52,211,153,0.15); border:1px solid rgba(52,211,153,0.4); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">📊 Scoreboard</span>';
+                return '';
+            }
 
             // Aktuellen User immer ganz oben (immer online), falls kein Geister-Account
             if (!user.isTestUser) {
@@ -236,6 +247,7 @@ export function initCommunity() {
                 const activeTitle = uMode === 'starwars' ? user.activeTitle_starwars : user.activeTitle_waifu;
                 const titleHtml = activeTitle && activeTitle !== 'Kein Titel'
                     ? `<div style="font-size:0.65rem; color:#ffd700; font-weight:bold; margin-top:2px; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${activeTitle}</div>` : '';
+                const sectionBadge = getSectionBadge(window.currentAppSection);
 
                 onlineList.innerHTML += `
                     <div class="online-user-card" style="cursor:pointer;" data-uid="${user.uid}">
@@ -247,6 +259,7 @@ export function initCommunity() {
                                 <span style="flex-shrink:0; color:#888; font-size:0.8rem; margin-left:5px;">(Du)</span>
                             </strong>
                             ${titleHtml}
+                            ${sectionBadge}
                         </div>
                     </div>
                 `;
@@ -267,6 +280,7 @@ export function initCommunity() {
 
                 const offlineCss = u._isOnline ? '' : 'opacity: 0.45; filter: grayscale(0.5);';
                 const indicatorClass = u._isOnline ? 'online-indicator' : 'online-indicator offline';
+                const otherSectionBadge = u._isOnline ? getSectionBadge(u.activeAppSection) : '';
 
                 onlineList.innerHTML += `
                     <div class="online-user-card" style="${offlineCss} cursor:pointer;" data-uid="${u.uid}">
@@ -275,6 +289,7 @@ export function initCommunity() {
                         <div class="online-user-info" style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; text-align: left;">
                             <strong style="flex: unset; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${u.displayName || u.username}</strong>
                             ${otherTitleHtml}
+                            ${otherSectionBadge}
                         </div>
                     </div>
                 `;

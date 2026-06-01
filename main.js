@@ -267,6 +267,7 @@ function setupGameUI(user) {
     };
 
     window.openSection = function(target) {
+        window.currentAppSection = target;
         document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
         const el = document.getElementById(target);
         if (el) el.classList.remove('hidden');
@@ -805,5 +806,6 @@ window.checkGlobalNotifications = function() {
 };
 
 setInterval(window.checkGlobalNotifications, 5000);
+
 
 

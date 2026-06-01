@@ -2,43 +2,17 @@ const fs = require('fs');
 
 let content = fs.readFileSync('profile.js', 'utf8');
 
-const oldFunc = export function clearProfileUnlockDot(user) {
-    if (!user) return;
-    const currentIds = [
-        ...(user.unlocked_themes_starwars || []),
-        ...(user.unlocked_themes_waifu || []),
-        ...(user.unlocked_titles_starwars || []),
-        ...(user.unlocked_titles_waifu || [])
-    ];
-    localStorage.setItem('seen_unlock_ids', JSON.stringify(currentIds));
-    const dot = document.getElementById('profile-unlock-dot');
-    if (dot) dot.style.display = 'none';
-};
+const oldCheck = const hasUnseenTitle = (TITLES[currentMode] || []).some(t => {
+        const isUnlocked = t.secret ? unlockedTitles.includes(t.id) : gamesPlayed >= t.required;
+        return isUnlocked && !seenIds.includes(t.id);
+    });;
 
-const newFunc = export function clearProfileUnlockDot(user) {
-    if (!user) return;
-    const currentIds = [
-        ...(user.unlocked_themes_starwars || []),
-        ...(user.unlocked_themes_waifu || []),
-        ...(user.unlocked_titles_starwars || []),
-        ...(user.unlocked_titles_waifu || [])
-    ];
-    const seenIds = getSeenIds();
-    currentIds.forEach(id => {
-        if (!seenIds.includes(id)) seenIds.push(id);
-    });
-    // Also, um den User nicht zu nerven, markieren wir einfach alle bisher entdeckten Karten als gelesen, 
-    // falls sie durch den Bug gelscht wurden. (Nur um es angenehmer zu machen)
-    if (user.discovered) {
-        user.discovered.forEach(id => {
-            if (!seenIds.includes(id)) seenIds.push(id);
-        });
-    }
-    localStorage.setItem('seen_unlock_ids', JSON.stringify(seenIds));
-    const dot = document.getElementById('profile-unlock-dot');
-    if (dot) dot.style.display = 'none';
-};
+const newCheck = const hasUnseenTitle = (TITLES[currentMode] || []).some(t => {
+        let isUnlocked = t.secret ? unlockedTitles.includes(t.id) : gamesPlayed >= t.required;
+        if (t.condition && (t.condition.type === 'bot_defeat' || t.condition.type === 'custom')) isUnlocked = unlockedTitles.includes(t.id);
+        return isUnlocked && !seenIds.includes(t.id);
+    });;
 
-content = content.replace(oldFunc, newFunc);
+content = content.replace(oldCheck, newCheck);
 fs.writeFileSync('profile.js', content, 'utf8');
-console.log('Fixed profile.js');
+console.log('Fixed profile.js title logic');

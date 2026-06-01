@@ -372,7 +372,8 @@ export function updateTabNotificationDots(user) {
 
     const unlockedTitles = currentMode === 'starwars' ? (user.unlocked_titles_starwars || []) : (user.unlocked_titles_waifu || []);
     const hasUnseenTitle = (TITLES[currentMode] || []).some(t => {
-        const isUnlocked = t.secret ? unlockedTitles.includes(t.id) : gamesPlayed >= t.required;
+        let isUnlocked = t.secret ? unlockedTitles.includes(t.id) : gamesPlayed >= t.required;
+        if (t.condition && (t.condition.type === 'bot_defeat' || t.condition.type === 'custom')) isUnlocked = unlockedTitles.includes(t.id);
         return isUnlocked && !seenIds.includes(t.id);
     });
 

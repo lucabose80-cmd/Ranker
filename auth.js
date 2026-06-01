@@ -252,7 +252,7 @@ export function startPresenceHeartbeat() {
         try { 
             await updateDoc(doc(db, "users", user.uid), { 
                 lastActive: Timestamp.now(),
-                activeMode: currentMode
+                activeMode: currentMode, activeAppSection: window.currentAppSection || 'hub'
             }); 
             trackWrite(1); 
         } catch (e) {}
@@ -413,3 +413,4 @@ export async function refreshCurrentUser() {
     }
     return user;
 }
+
