@@ -45,15 +45,24 @@ export const BOOSTERS = [
 ];
 
 export function initShop() {
-    const user = getCurrentUser();
+    let user = getCurrentUser();
     if (!user) return;
 
+    // Force fresh read from localStorage in case in-memory object is stale
+    try {
+        const freshRaw = localStorage.getItem('ranking_game_active_user');
+        if (freshRaw) {
+            const fresh = JSON.parse(freshRaw);
+            if (fresh && fresh.uid === user.uid) user = fresh;
+        }
+    } catch(e) {}
+
     const isAdmin = (user.username && (user.username.toLowerCase() === 'test1' || user.username.toLowerCase() === 'test2'));
-    document.getElementById('shop-credits-display').textContent = isAdmin ? '∞' : (user.credits || 0);
+    document.getElementById('shop-credits-display').textContent = isAdmin ? '∞' : (user.credits ?? 0);
 
     const kyberField = currentMode === 'starwars' ? 'kyber_crystals_starwars' : 'kyber_crystals_waifu';
     const kyberDisplay = document.getElementById('shop-kyber-display');
-    if (kyberDisplay) kyberDisplay.textContent = user[kyberField] || 0;
+    if (kyberDisplay) kyberDisplay.textContent = user[kyberField] ?? 0;
 
     const craftBtn = document.getElementById('shop-crafting-btn');
     if (craftBtn) {

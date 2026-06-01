@@ -1,5 +1,17 @@
 export const patchNotesStarWars = [
     {
+        version: "v9.1",
+        title: "Update: Legendäre Karte neu würfeln",
+        isHotfix: false,
+        changes: [
+            "Feature: Neues System im Shop: 'Legendäre neu würfeln'! Opfere 2 Legendäre Karten aus demselben Pack und erhalte eine zufällige neue Legendäre aus diesem Pack – inklusive der vollen Pack-Opening-Animation und Sound!",
+            "Feature: Im Neu-Würfeln-Menü wird jede Kopie einer Legendären einzeln angezeigt. Wenn du z.B. 3x Anakin hast, kannst du 2 davon auswählen und opfern.",
+            "Feature: Das Ergebnis ist (wenn möglich) immer eine andere Legendäre als die geopferten Karten.",
+            "Bugfix: Credits und Kyber Kristalle wurden im Shop manchmal als 0 angezeigt, obwohl man welche besaß. Behoben durch direkten Zugriff auf den frischen Spielstand."
+        ]
+    },
+    {
+
         version: "v9.0.1",
         title: "Hotfix: Profil-Dot, Online-Klicks & Modus-Anzeige",
         isHotfix: true,
