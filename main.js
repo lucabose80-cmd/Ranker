@@ -33,6 +33,7 @@ import { initSuggestions, renderSuggestions, stopSuggestions } from './suggestio
 import { initInactivityWatcher } from './inactivity.js';
 import { initPrivateChat } from './private-chat.js';
 import { initShop } from './shop.js';
+window.openShop = function() { document.getElementById('shop-modal').classList.remove('hidden'); initShop(); };
 import { initCardgame } from './cardgame.js';
 
 const eyeOpenSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
@@ -751,6 +752,7 @@ document.addEventListener("keydown", (e) => {
         });
     }
 });
+
 
 
 

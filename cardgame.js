@@ -133,8 +133,17 @@ function calculateSynergy(deck) {
     const counts = {};
     deck.forEach(c => {
         const dbC = activeCharacterDatabase.find(x => x.name === c.charName);
-        const f = getMainFaction(dbC ? dbC.tags : []);
-        if(f !== 'neutral') { counts[f] = (counts[f] || 0) + 1; }
+        if(dbC && dbC.tags) {
+            let tags = dbC.tags.map(t => t.toLowerCase());
+            let seenFacs = new Set();
+            tags.forEach(t => {
+                let f = getMainFaction([t]);
+                if(f !== 'neutral') seenFacs.add(f);
+            });
+            seenFacs.forEach(f => {
+                counts[f] = (counts[f] || 0) + 1;
+            });
+        }
     });
     
     let activeFactions = [];
@@ -542,8 +551,12 @@ async function startBotMatch(bot) {
         let synChars = candidates.filter(c => {
             if(!c.tags) return false;
             let tags = c.tags.map(t => t.toLowerCase());
-            if (bot.factionFocus === 'senat' && (tags.includes('senat') || tags.includes('republik'))) return true;
-            return tags.includes(bot.factionFocus);
+            let hasFac = false;
+            tags.forEach(t => {
+                let f = getMainFaction([t]);
+                if(f === bot.factionFocus || (bot.factionFocus === 'senat' && f === 'senat')) hasFac = true;
+            });
+            return hasFac;
         }).sort(() => 0.5 - Math.random());
         
         let otherChars = candidates.filter(c => !synChars.includes(c)).sort(() => 0.5 - Math.random());
@@ -910,6 +923,8 @@ function playRound(playerCard, explicitOppCard = null) {
     let pFac = pDb ? getMainFaction(pDb.tags) : 'neutral';
     let oFac = oDb ? getMainFaction(oDb.tags) : 'neutral';
     
+    let pTags = pDb && pDb.tags ? pDb.tags.map(t => t.toLowerCase()) : [];
+    let oTags = oDb && oDb.tags ? oDb.tags.map(t => t.toLowerCase()) : [];
     let pSyn = calculateSynergy(playerDeck);
     let oSyn = calculateSynergy(opponentDeck);
     let pHas = (fac) => pSyn.some(s => s.faction === fac);
@@ -1051,7 +1066,7 @@ function playRound(playerCard, explicitOppCard = null) {
     if (playerCard) {
         if (!isWin && !isDraw && !oSilence) {
             if (pHas('widerstand') && pFac === 'widerstand') { pEffects.martyrBuff = true; pLog.push("Widerstand geopfert"); }
-            if (pHas('jedi') && pFac === 'jedi') { pEffects.forceWeakest = true; pLog.push("Gedankentrick initiiert"); }
+            if (pHas('jedi') && (pFac === 'jedi' || pTags.includes('jedi'))) { pEffects.forceWeakest = true; pLog.push("Gedankentrick initiiert"); }
             if (pFac === 'klon') { pEffects.lastCloneDead = pBase; }
             if (pFac === 'droid') { pEffects.nextDroidDouble = true; }
             
@@ -1064,7 +1079,7 @@ function playRound(playerCard, explicitOppCard = null) {
         }
         if (isWin && !isDraw && !oSilence) {
             if (pHas('imperium') && pFac === 'imperium') { pEffects.oppression = true; pLog.push("Unterdrückung aktiviert"); }
-            if (pHas('jedi') && pFac === 'jedi') { pEffects.forceWeakest = true; pLog.push("Gedankentrick initiiert"); }
+            if (pHas('jedi') && (pFac === 'jedi' || pTags.includes('jedi'))) { pEffects.forceWeakest = true; pLog.push("Gedankentrick initiiert"); }
             if (pHas('fahrzeug') && pFac === 'fahrzeug') { pEffects.vehicles = playerCard; playerCard.isGhost = false; pLog.push("Überrollen (Bleibt auf Feld)"); }
             const pHas501stLeader = playerDeck.some(c => c.charName === 'Darth Vader' || c.charName === 'Anakin Skywalker');
             if (pHas('501st') && pFac === '501st' && opponentHandRemaining.length > 0 && pHas501stLeader) {
@@ -1082,14 +1097,14 @@ function playRound(playerCard, explicitOppCard = null) {
             }
         }
         if (isDraw && !oSilence) {
-            if (pHas('jedi') && pFac === 'jedi') { pEffects.forceWeakest = true; pLog.push("Gedankentrick initiiert"); }
+            if (pHas('jedi') && (pFac === 'jedi' || pTags.includes('jedi'))) { pEffects.forceWeakest = true; pLog.push("Gedankentrick initiiert"); }
         }
     }
     
     if (oppCard) {
         if (isWin && !isDraw && !pSilence) {
             if (oHas('widerstand') && oFac === 'widerstand') { oEffects.martyrBuff = true; oLog.push("Widerstand geopfert"); }
-            if (oHas('jedi') && oFac === 'jedi') { oEffects.forceWeakest = true; oLog.push("Gedankentrick initiiert"); }
+            if (oHas('jedi') && (oFac === 'jedi' || oTags.includes('jedi'))) { oEffects.forceWeakest = true; oLog.push("Gedankentrick initiiert"); }
             if (oFac === 'klon') { oEffects.lastCloneDead = oBase; }
             if (oFac === 'droid') { oEffects.nextDroidDouble = true; }
             
@@ -1101,7 +1116,7 @@ function playRound(playerCard, explicitOppCard = null) {
             }
         } else if (!isWin && !isDraw && !pSilence) {
             if (oHas('imperium') && oFac === 'imperium') { oEffects.oppression = true; oLog.push("Unterdrückung aktiviert"); }
-            if (oHas('jedi') && oFac === 'jedi') { oEffects.forceWeakest = true; oLog.push("Gedankentrick initiiert"); }
+            if (oHas('jedi') && (oFac === 'jedi' || oTags.includes('jedi'))) { oEffects.forceWeakest = true; oLog.push("Gedankentrick initiiert"); }
             if (oHas('fahrzeug') && oFac === 'fahrzeug') { oEffects.vehicles = oppCard; oppCard.isGhost = false; oLog.push("Überrollen (Bleibt auf Feld)"); }
             const oHas501stLeader = opponentDeck.some(c => c.charName === 'Darth Vader' || c.charName === 'Anakin Skywalker');
             if (oHas('501st') && oFac === '501st' && playerHandRemaining.length > 0 && oHas501stLeader) {
@@ -1119,7 +1134,7 @@ function playRound(playerCard, explicitOppCard = null) {
             }
         }
         if (isDraw && !pSilence) {
-            if (oHas('jedi') && oFac === 'jedi') { oEffects.forceWeakest = true; oLog.push("Gedankentrick initiiert"); }
+            if (oHas('jedi') && (oFac === 'jedi' || oTags.includes('jedi'))) { oEffects.forceWeakest = true; oLog.push("Gedankentrick initiiert"); }
         }
     }
     

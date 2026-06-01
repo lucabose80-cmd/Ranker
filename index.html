@@ -166,7 +166,7 @@
 
         <!-- DOCK UNTEN -->
         <div class="game-dock" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; background: rgba(20, 24, 34, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); padding: 15px 25px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 100;">
-            <button class="dock-btn" onclick="document.getElementById('shop-modal').classList.remove('hidden')" title="Shop" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px;">
+            <button class="dock-btn" onclick="openShop()" title="Shop" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px;">
                 <span style="font-size: 1.5rem; margin-bottom: 5px;">🛒</span>
                 <span style="font-size: 0.7rem; color: #aaa;">Shop</span>
             </button>
@@ -1050,6 +1050,7 @@
     <script type="module" src="main.js?v=8.3.0"></script>
 </body>
 </html>
+
 
 
 
