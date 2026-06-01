@@ -238,6 +238,12 @@ export async function updateUserProfile(newDisplayName, newPassword, newAvatarPa
         
         const updatedUser = { ...user, ...updates };
         localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updatedUser));
+        
+        // If name changed: clear the autocomplete cache so the old name no longer appears in login
+        if (updates.username) {
+            localStorage.removeItem('ranker_resets_cache');
+        }
+        
         return { success: true, user: updatedUser };
     } catch (e) {
         return { success: false, message: e.message };

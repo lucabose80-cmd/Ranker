@@ -151,7 +151,16 @@ function setupAuthUI() {
         if (cacheStr) {
             const cache = JSON.parse(cacheStr);
             if (cache.userResets && Object.keys(cache.userResets).length > 0) {
-                loadUsernames(cache.userResets);
+                // Clear stale cache if user was renamed
+                try {
+                    const _auRaw = localStorage.getItem('ranking_game_active_user');
+                    if (_auRaw) {
+                        const _au = JSON.parse(_auRaw);
+                        if (_au && _au.username && !cache.userResets[_au.username]) {
+                            localStorage.removeItem('ranker_resets_cache');
+                        } else { loadUsernames(cache.userResets); }
+                    } else { loadUsernames(cache.userResets); }
+                } catch(_e2) { loadUsernames(cache.userResets); }
             }
         }
     } catch (e) {}
