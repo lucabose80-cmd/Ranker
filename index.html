@@ -146,37 +146,46 @@
 
     <div id="game-view" class="view-container hidden">
         
-        <div class="sticky-nav-container">
-            <nav class="game-nav">
-                <button class="nav-link active" data-target="game-main-content">SPIEL</button>
-                <button class="nav-link" data-target="versus-content">VERSUS</button>
-                <button class="nav-link" data-target="cardgame-content" id="nav-cardgame">CARDGAME</button>
-                <button class="nav-link" data-target="adventure-content" id="nav-adventure">ABENTEUER</button>
-                <button class="nav-link" data-target="starwarsdle-content" id="nav-starwarsdle" style="position: relative;">STARWARSDLE <span id="starwarsdle-glow" style="position: absolute; top: 0; right: 0; width: 10px; height: 10px; background: #ffd700; border-radius: 50%; box-shadow: 0 0 10px #ffd700; display: none;"></span></button>
-                <button class="nav-link" data-target="live-content">LIVE</button>
-                <button class="nav-link" data-target="history-content">HISTORIE</button>
-                <button class="nav-link" data-target="scoreboard-content">SCOREBOARD</button>
-                <button class="nav-link" data-target="lexikon-content">LEXIKON</button>
-                <button class="nav-link" data-target="suggestions-content">VORSCHLÄGE</button>
-                <button class="nav-link" data-target="shop-content">SHOP & KARTEN</button>
-            </nav>
-
-            <div class="top-bar">
-                <div id="profile-trigger" class="profile-trigger" title="Profil öffnen" style="position:relative;">
-                    <img id="topbar-avatar" class="mini-avatar hidden" src="" alt="Avatar">
-                    <div style="display:flex; flex-direction:column; align-items:flex-start;">
-                        <span id="player-greeting" class="prompt-text"></span>
-                        <span id="player-title" class="title-badge" style="display:none; font-size:0.7rem; color:#ffd700; margin-top:-5px; font-weight:bold; letter-spacing:1px; text-transform:uppercase;"></span>
+        <!-- NEUER HUB HEADER -->
+        <header class="hub-header">
+            <div id="profile-trigger" class="profile-trigger" title="Profil öffnen" style="position:relative;">
+                <img id="topbar-avatar" class="mini-avatar hidden" src="" alt="Avatar">
+                <div style="display:flex; flex-direction:column; align-items:flex-start;">
+                    <span id="player-greeting" class="prompt-text"></span>
+                    <span id="player-title" class="title-badge" style="display:none; font-size:0.7rem; color:#ffd700; margin-top:-5px; font-weight:bold; letter-spacing:1px; text-transform:uppercase;"></span>
                     <span id="profile-unlock-dot" style="display:none; position:absolute; top:2px; right:2px; width:10px; height:10px; background:#ffd700; border-radius:50%; box-shadow:0 0 6px #ffd700; border:2px solid #0a0e17;"></span>
-                    </div>
                 </div>
             </div>
-            
-            <div class="nav-right-actions">
-                <button id="tutorial-open-btn" class="text-btn" style="color: #4cd137;">ANLEITUNG</button>
-                <button id="changelog-open-btn" class="text-btn">UPDATES</button>
+            <div class="hub-header-actions">
+                <button id="hub-options-btn" class="icon-btn" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;" title="Optionen">⚙️</button>
                 <button id="logout-btn" class="text-btn logout-btn">LOGOUT</button>
             </div>
+        </header>
+
+
+
+        <!-- DOCK UNTEN -->
+        <div class="game-dock" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; background: rgba(20, 24, 34, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); padding: 15px 25px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 100;">
+            <button class="dock-btn nav-link" data-target="shop-content" title="Shop" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px;">
+                <span style="font-size: 1.5rem; margin-bottom: 5px;">🛒</span>
+                <span style="font-size: 0.7rem; color: #aaa;">Shop</span>
+            </button>
+            <button class="dock-btn nav-link" data-target="lexikon-content" title="Lexikon" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px;">
+                <span style="font-size: 1.5rem; margin-bottom: 5px;">📖</span>
+                <span style="font-size: 0.7rem; color: #aaa;">Lexikon</span>
+            </button>
+            <button class="dock-btn nav-link" data-target="suggestions-content" title="Vorschläge" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px;">
+                <span style="font-size: 1.5rem; margin-bottom: 5px;">💡</span>
+                <span style="font-size: 0.7rem; color: #aaa;">Ideen</span>
+            </button>
+            <button id="changelog-open-btn-dock" class="dock-btn" title="Updates" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px;">
+                <span style="font-size: 1.5rem; margin-bottom: 5px;">📢</span>
+                <span style="font-size: 0.7rem; color: #aaa;">Updates</span>
+            </button>
+            <button id="tutorial-open-btn-dock" class="dock-btn" title="Anleitung" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px;">
+                <span style="font-size: 1.5rem; margin-bottom: 5px; color: #4cd137;">❓</span>
+                <span style="font-size: 0.7rem; color: #aaa;">Hilfe</span>
+            </button>
         </div>
 
         <div class="online-sidebar panel" id="online-sidebar">
@@ -189,17 +198,59 @@
         </div>
 
         <div class="main-scroll-content">
+
+        <!-- HAUPT HUB BEREICH -->
+        <div id="hub-content" class="tab-content app-container">
+            <div style="text-align: center; margin-bottom: 40px; margin-top: 40px;">
+                <h1 id="hub-title" style="font-size: 2.5rem; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); margin: 0; letter-spacing: 2px;">WÄHLE DEINEN MODUS</h1>
+            </div>
             
-            <div id="game-main-content" class="tab-content app-container">
-                <header>
-                    <h1 id="main-title">STAR WARS RANKING</h1>
-                    <p id="game-subtitle">Ordne 5 Charaktere blind ein. Wo landen sie?</p>
-                </header>
-                
-                <div class="mode-selector">
-                    <button id="mode-classic-btn" class="mode-toggle-btn active">Klassisch (5 Slots)</button>
-                    <button id="mode-advanced-btn" class="mode-toggle-btn">Advanced (10 Slots)</button>
+            <div class="hub-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; max-width: 900px; margin: 0 auto; padding: 20px;">
+                <!-- RANKING CARD -->
+                <div class="hub-card nav-link" data-target="ranking-hub-content" style="background: rgba(26,30,41,0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 40px 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.3); cursor: pointer; text-align: center; transition: all 0.3s ease;">
+                    <div style="font-size: 4rem; margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(255,215,0,0.5));">🏆</div>
+                    <h3 style="color: #ffd700; margin: 0 0 10px 0; font-size: 1.5rem; letter-spacing: 1px;">RANKING</h3>
+                    <p style="color: #aaa; font-size: 0.95rem; margin: 0;">Classic, Advanced, Versus & Live</p>
                 </div>
+                <!-- CARDGAME CARD -->
+                <div class="hub-card nav-link" data-target="cardgame-content" id="nav-cardgame" style="background: rgba(26,30,41,0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 40px 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.3); cursor: pointer; text-align: center; transition: all 0.3s ease;">
+                    <div style="font-size: 4rem; margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(46,213,115,0.5));">🃏</div>
+                    <h3 style="color: #2ed573; margin: 0 0 10px 0; font-size: 1.5rem; letter-spacing: 1px;">CARDGAME</h3>
+                    <p style="color: #aaa; font-size: 0.95rem; margin: 0;">PvP, Abenteuer & Deckbuilder</p>
+                </div>
+                <!-- STARWARSDLE CARD -->
+                <div class="hub-card nav-link" data-target="starwarsdle-content" id="nav-starwarsdle" style="background: rgba(26,30,41,0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 40px 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.3); cursor: pointer; text-align: center; transition: all 0.3s ease;">
+                    <div style="font-size: 4rem; margin-bottom: 15px; position:relative; display:inline-block; filter: drop-shadow(0 0 10px rgba(52,152,219,0.5));">🌍<span id="starwarsdle-glow" style="position: absolute; top: 0; right: -5px; width: 12px; height: 12px; background: #ffd700; border-radius: 50%; box-shadow: 0 0 15px #ffd700; display: none;"></span></div>
+                    <h3 style="color: #3498db; margin: 0 0 10px 0; font-size: 1.5rem; letter-spacing: 1px;">STARWARSDLE</h3>
+                    <p style="color: #aaa; font-size: 0.95rem; margin: 0;">Tägliches Raten</p>
+                </div>
+                <!-- SCOREBOARD CARD -->
+                <div class="hub-card nav-link" data-target="scoreboard-hub-content" style="background: rgba(26,30,41,0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 40px 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.3); cursor: pointer; text-align: center; transition: all 0.3s ease;">
+                    <div style="font-size: 4rem; margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(155,89,182,0.5));">🏅</div>
+                    <h3 style="color: #9b59b6; margin: 0 0 10px 0; font-size: 1.5rem; letter-spacing: 1px;">SCOREBOARD</h3>
+                    <p style="color: #aaa; font-size: 0.95rem; margin: 0;">Global Rankings & Historie</p>
+                </div>
+            </div>
+        </div>
+            
+            <div id="ranking-hub-content" class="tab-content app-container hidden">
+                <div class="section-header" style="display:flex; align-items:center; margin-bottom: 20px;">
+                    <button class="nav-link rank-btn" data-target="hub-content" style="padding: 10px 20px; font-size: 1rem; margin-right: 20px; background: rgba(0,0,0,0.5);">&❮ Home</button>
+                    <h1 style="margin: 0; color: #fff; font-size: 1.5rem;">RANKING</h1>
+                </div>
+                
+                <div class="mode-selector ranking-sub-nav" style="margin-bottom: 20px;">
+                    <button id="mode-classic-btn" class="mode-toggle-btn active">Klassisch</button>
+                    <button id="mode-advanced-btn" class="mode-toggle-btn">Advanced</button>
+                    <button id="subnav-versus-btn" class="mode-toggle-btn nav-link" data-target="versus-content">Versus</button>
+                    <button id="subnav-live-btn" class="mode-toggle-btn nav-link" data-target="live-content">Live</button>
+                </div>
+
+                <div id="game-main-content" class="ranking-sub-view">
+                    <header>
+                        <h1 id="main-title">STAR WARS RANKING</h1>
+                        <p id="game-subtitle">Ordne 5 Charaktere blind ein. Wo landen sie?</p>
+                    </header>
                 <div id="category-selector-container" class="mode-selector" style="margin-top: 10px;">
                     <button id="cat-normal-btn" class="mode-toggle-btn active" style="font-size: 0.8rem; padding: 5px 15px;">Expanded Universe</button>
                     <button id="cat-klon-btn" class="mode-toggle-btn" style="font-size: 0.8rem; padding: 5px 15px;">Nur Klone</button>
@@ -248,8 +299,11 @@
                     </div>
                 </div>
             </div>
+            <!-- Ende game-main-content -->
+            </div>
+            <!-- Ende ranking-hub-content -->
 
-            <div id="live-content" class="tab-content app-container hidden">
+            <div id="live-content" class="ranking-sub-view hidden">
                 <div class="panel history-panel">
                     <h2 class="theme-heading">LIVE SPIELE</h2>
                     <p class="prompt-text">Schau anderen Spielern in Echtzeit zu</p>
@@ -257,7 +311,7 @@
                 </div>
             </div>
 
-            <div id="history-content" class="tab-content app-container hidden">
+            <div id="history-content" class="scoreboard-sub-view hidden">
                 <div class="panel history-panel">
                     <h2 class="theme-heading">GALAKTISCHE ARCHIVE</h2>
                     <div class="history-controls">
@@ -280,9 +334,19 @@
                 </div>
             </div>
 
-            <div id="scoreboard-content" class="tab-content app-container hidden">
-                <div class="panel history-panel">
-                    <h2 class="theme-heading">SCOREBOARD</h2>
+            <div id="scoreboard-hub-content" class="tab-content app-container hidden">
+                <div class="section-header" style="display:flex; align-items:center; margin-bottom: 20px;">
+                    <button class="nav-link rank-btn" data-target="hub-content" style="padding: 10px 20px; font-size: 1rem; margin-right: 20px; background: rgba(0,0,0,0.5);">&❮ Home</button>
+                    <h1 style="margin: 0; color: #fff; font-size: 1.5rem;">SCOREBOARD & HISTORIE</h1>
+                </div>
+
+                <div class="mode-selector scoreboard-sub-nav" style="margin-bottom: 20px;">
+                    <button class="mode-toggle-btn active" data-subtarget="scoreboard-content">Scoreboard</button>
+                    <button class="mode-toggle-btn" data-subtarget="history-content">Historie</button>
+                </div>
+                
+                <div id="scoreboard-content" class="scoreboard-sub-view">
+                    <div class="panel history-panel">
                     <div class="scoreboard-controls">
                         <select id="scoreboard-user-filter">
                             <option value="global">Global (Alle)</option>
@@ -309,13 +373,26 @@
                     <div id="scoreboard-list" class="history-list"></div>
                 </div>
             </div>
+            <!-- Ende scoreboard-content -->
+            </div>
+            <!-- Ende scoreboard-hub-content -->
 
             
             
             <div id="cardgame-content" class="tab-content app-container hidden" style="max-width:1600px; width:98%; padding: 20px;">
-                <h2 class="theme-heading" style="text-align: center; margin-bottom: 30px;">CARDGAME</h2>
+                <div class="section-header" style="display:flex; align-items:center; margin-bottom: 20px;">
+                    <button class="nav-link rank-btn" data-target="hub-content" style="padding: 10px 20px; font-size: 1rem; margin-right: 20px; background: rgba(0,0,0,0.5);">&❮ Home</button>
+                    <h1 style="margin: 0; color: #fff; font-size: 1.5rem;">CARDGAME</h1>
+                </div>
+
+                <div class="mode-selector cardgame-sub-nav" style="margin-bottom: 20px;">
+                    <button id="subnav-cardgame-lobby" class="mode-toggle-btn active" data-sub="cardgame-matchmaking">Lobby (PvP)</button>
+                    <button id="subnav-cardgame-deck" class="mode-toggle-btn" data-sub="cardgame-deckbuilder">Deckbuilder</button>
+                    <button id="subnav-cardgame-adventure" class="mode-toggle-btn" data-sub="adventure-content">Abenteuer</button>
+                    <button id="subnav-cardgame-bots" class="mode-toggle-btn" data-sub="cardgame-bots">Tutorial Bots</button>
+                </div>
                 
-                <div id="cardgame-main-menu" style="display:flex; gap:30px; flex-wrap:wrap; justify-content:center; max-width:900px; margin:0 auto;">
+                <div id="cardgame-main-menu" class="hidden" style="display:none !important;">
                     <div style="flex:1; min-width:300px; background:#1a1e29; padding:20px; border-radius:10px; border:1px solid #333;">
                         <h3 style="color:#ffd700; margin-top:0;">Spielanleitung</h3>
                         <ul style="color:#aaa; font-size:0.9rem; line-height:1.6; padding-left:20px;">
@@ -502,7 +579,10 @@
                 </div>
             </div>
             <div id="starwarsdle-content" class="tab-content app-container hidden">
-                <h2 class="theme-heading" style="text-align: center;">STARWARSDLE</h2>
+                <div class="section-header" style="display:flex; align-items:center; margin-bottom: 20px;">
+                    <button class="nav-link rank-btn" data-target="hub-content" style="padding: 10px 20px; font-size: 1rem; margin-right: 20px; background: rgba(0,0,0,0.5);">&❮ Home</button>
+                    <h1 style="margin: 0; color: #fff; font-size: 1.5rem;">STARWARSDLE</h1>
+                </div>
                 <p class="prompt-text" style="text-align: center;">Errate den täglichen Charakter!</p>
                 
                 <div style="max-width: 800px; margin: 0 auto;">
@@ -628,7 +708,7 @@
                 </div>
             </div>
             
-            <div id="versus-content" class="tab-content app-container hidden">
+            <div id="versus-content" class="ranking-sub-view hidden">
                 <div class="panel history-panel" id="versus-lobby-list-view">
                     <h2 class="theme-heading">VERSUS LOBBYS</h2>
                     <p class="prompt-text">Spiele gegen andere. Wer rankt am besten?</p>
@@ -655,8 +735,9 @@
                 </div>
             </div>
 
-            <div id="lexikon-content" class="tab-content app-container hidden">
-                <div class="panel history-panel">
+            <div id="lexikon-modal" class="profile-overlay hidden">
+                <div class="panel history-panel profile-panel">
+                    <button class="close-overlay-btn" onclick="document.getElementById('lexikon-modal').classList.add('hidden')">✕</button>
                     <h2 class="theme-heading">LEXIKON</h2>
                     <div class="changelog-tabs" style="margin-bottom: 15px;">
                         <button class="changelog-tab lexikon-tab-btn active" data-view="all">Alle</button>
@@ -670,8 +751,9 @@
                 </div>
             </div>
 
-            <div id="suggestions-content" class="tab-content app-container hidden">
-                <div class="panel history-panel">
+            <div id="suggestions-modal" class="profile-overlay hidden">
+                <div class="panel history-panel profile-panel">
+                    <button class="close-overlay-btn" onclick="document.getElementById('suggestions-modal').classList.add('hidden')">✕</button>
                     <h2 class="theme-heading">COMMUNITY VORSCHLÄGE</h2>
                     <div class="history-controls">
                         <select id="suggestion-type-filter">
@@ -714,7 +796,10 @@
 
             <div id="shop-content" class="tab-content app-container hidden">
                 <div class="panel history-panel">
-                    <h2 class="theme-heading">SHOP & KARTEN</h2>
+                    <div class="section-header" style="display:flex; align-items:center; margin-bottom: 20px;">
+                        <button class="nav-link rank-btn" data-target="hub-content" style="padding: 10px 20px; font-size: 1rem; margin-right: 20px; background: rgba(0,0,0,0.5);">&❮ Home</button>
+                        <h1 style="margin: 0; color: #fff; font-size: 1.5rem;">SHOP & KARTEN</h1>
+                    </div>
                     <p class="prompt-text">Öffne Booster-Packs und sammle exklusive Karten!</p>
                     
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background:rgba(0,0,0,0.3); padding:15px; border-radius:8px; border:1px solid #333;">

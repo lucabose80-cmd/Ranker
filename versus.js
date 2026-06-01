@@ -941,12 +941,11 @@ function showInviteToast(invite, id) {
         document.body.removeChild(toast);
         
         // Go to versus tab
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        const vsTab = document.querySelector('.nav-link[data-target="versus-content"]');
-        if (vsTab) vsTab.classList.add('active');
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
-        document.getElementById('versus-content').classList.remove('hidden');
-        
+        const vsBtn = document.getElementById('subnav-versus-btn');
+        if (vsBtn) {
+            window.openSection('ranking-hub-content');
+            vsBtn.click();
+        }
         // Switch mode if needed
         if (currentMode !== invite.mode) {
             import('./theme.js').then(m => m.toggleTheme());

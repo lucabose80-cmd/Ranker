@@ -229,94 +229,176 @@ function setupGameUI(user) {
     };
     window.fetchTop5Global();
 
-    // Die Tabs des Spiels (ohne Community, ohne Profil)
-    const tabs = ['game-main-content', 'live-content', 'history-content', 'scoreboard-content', 'lexikon-content', 'suggestions-content', 'versus-content', 'starwarsdle-content', 'shop-content', 'cardgame-content'];
+    // === RESTRUCTURE DOM ON LOAD ===
+    const rankHub = document.getElementById('ranking-hub-content');
+    if (rankHub) {
+        const vs = document.getElementById('versus-content');
+        if (vs) rankHub.appendChild(vs);
+        const lc = document.getElementById('live-content');
+        if (lc) rankHub.appendChild(lc);
+    }
     
-    // Tab-Navigation mit erzwungenem Live-Reload bei JEDEM Klick
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', () => {
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
-            
-            link.classList.add('active');
-            const target = link.dataset.target;
-            document.getElementById(target).classList.remove('hidden');
-            
-            // Stoppe Listener, um Reads zu sparen, wenn Tabs verlassen werden!
-            if (target !== 'history-content' && target !== 'scoreboard-content') {
-                stopHistoryListener();
-            }
-            if (target !== 'live-content') {
-                stopLiveSpectating();
-            }
+    const cgHub = document.getElementById('cardgame-content');
+    if (cgHub) {
+        const adv = document.getElementById('adventure-content');
+        if (adv) cgHub.appendChild(adv);
+        const bots = document.getElementById('cardgame-bots');
+        if (bots) cgHub.appendChild(bots);
+        const deck = document.getElementById('cardgame-deckbuilder');
+        if (deck) cgHub.appendChild(deck);
+        const match = document.getElementById('cardgame-matchmaking');
+        if (match) cgHub.appendChild(match);
+        // We will manage active visibility using standard CSS logic
+    }
+    
+    const sbHub = document.getElementById('scoreboard-hub-content');
+    if (sbHub) {
+        const hc = document.getElementById('history-content');
+        if (hc) sbHub.appendChild(hc);
+    }
 
-            // SOFORTIGES ERZWUNGENES NEULADEN BEI TAB-KLICK
-            if (target === 'history-content') {
-                initHistoryListener();
-                renderHistory();
+    // === NAVIGATION LOGIC ===
+    window.showHub = function() {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+        const hub = document.getElementById('hub-content');
+        if (hub) hub.classList.remove('hidden');
+        cleanupAllListeners();
+    };
+
+    window.openSection = function(target) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+        const el = document.getElementById(target);
+        if (el) el.classList.remove('hidden');
+
+        // Stop all listeners first to avoid memory leaks
+        cleanupAllListeners();
+
+        // Init specific logic for sections
+        if (target === 'shop-content') initShop();
+        if (target === 'scoreboard-hub-content') {
+            initHistoryListener();
+            renderScoreboard();
+        }
+        
+        // Restore active sub-nav content
+        if (el) {
+            const activeSubBtn = el.querySelector('.mode-selector .mode-toggle-btn.active');
+            if (activeSubBtn) activeSubBtn.click();
+        }
+    };
+
+    window.openModal = function(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) modal.classList.remove('hidden');
+        
+        if (modalId === 'suggestions-modal') {
+            initSuggestions();
+            renderSuggestions();
+        }
+        if (modalId === 'lexikon-modal') {
+            renderLexikon();
+        }
+    };
+
+    // Attach Main Nav Links
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const target = link.dataset.target;
+            
+            if (target === 'hub-content') {
+                showHub();
+            } else if (target === 'lexikon-content') {
+                openModal('lexikon-modal');
+            } else if (target === 'suggestions-content') {
+                openModal('suggestions-modal');
+            } else {
+                openSection(target);
             }
-            if (target === 'scoreboard-content') {
-                initHistoryListener();
-                renderScoreboard();
-            }
-            if (target === 'suggestions-content') {
-                initSuggestions();
-                renderSuggestions();
-            }
-            if (target === 'lexikon-content') renderLexikon();
-            if (target === 'live-content') initLiveSpectating();
-            if (target === 'versus-content') initVersus();
-            if (target === 'shop-content') initShop();
         });
+    });
+
+    // Handle Dock Buttons that open Modals
+    const updateDockBtn = document.getElementById('changelog-open-btn-dock');
+    if (updateDockBtn) updateDockBtn.addEventListener('click', () => {
+        const modal = document.getElementById('changelog-modal');
+        if (modal) modal.classList.remove('hidden');
+        else document.getElementById('changelog-open-btn')?.click(); // fallback
+    });
+
+    const tutDockBtn = document.getElementById('tutorial-open-btn-dock');
+    if (tutDockBtn) tutDockBtn.addEventListener('click', () => openModal('tutorial-modal'));
+
+    // Options Gear
+    const optionsBtn = document.getElementById('hub-options-btn');
+    if (optionsBtn) {
+        optionsBtn.addEventListener('click', () => {
+            document.getElementById('profile-overlay').classList.remove('hidden');
+            refreshProfileContent();
+        });
+    }
+
+    // Attach Sub-Navs
+    function setupSubNav(navContainerClass, contentContainerIds, callbackMap) {
+        document.querySelectorAll(navContainerClass + ' .mode-toggle-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const parent = btn.closest(navContainerClass);
+                parent.querySelectorAll('.mode-toggle-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                contentContainerIds.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.add('hidden');
+                });
+
+                let targetId = btn.dataset.subtarget || btn.dataset.sub;
+                
+                if (targetId === 'classic' || targetId === 'advanced') {
+                    targetId = 'game-main-content';
+                }
+
+                const targetEl = document.getElementById(targetId);
+                if (targetEl) targetEl.classList.remove('hidden');
+
+                const dataSub = btn.dataset.subtarget || btn.dataset.sub;
+                if (callbackMap && callbackMap[dataSub]) {
+                    callbackMap[dataSub]();
+                }
+            });
+        });
+    }
+
+    setupSubNav('.ranking-sub-nav', ['game-main-content', 'versus-content', 'live-content'], {
+        'classic': () => {
+            if (currentGameType === 'classic' && document.getElementById('game-main-content').classList.contains('hidden') === false && window.isGameActive) return;
+            setCurrentGameType('classic');
+            const catContainer = document.getElementById('category-selector-container');
+            if (catContainer && currentMode === 'starwars') catContainer.classList.remove('hidden');
+            document.getElementById('game-subtitle').textContent = "Ordne 5 Charaktere blind ein. Wo landen sie?";
+            initGame();
+            window.isGameActive = true;
+        },
+        'advanced': () => {
+            if (currentGameType === 'advanced' && document.getElementById('game-main-content').classList.contains('hidden') === false && window.isGameActive) return;
+            setCurrentGameType('advanced');
+            const catContainer = document.getElementById('category-selector-container');
+            if (catContainer) catContainer.classList.add('hidden');
+            document.getElementById('game-subtitle').textContent = "Ordne 10 Charaktere blind ein. Wo landen sie und nutze deinen Joker!";
+            initAdvancedGame();
+            window.isGameActive = true;
+        },
+        'versus-content': () => { initVersus(); window.isGameActive = false; },
+        'live-content': () => { initLiveSpectating(); window.isGameActive = false; }
+    });
+
+    setupSubNav('.cardgame-sub-nav', ['cardgame-matchmaking', 'cardgame-deckbuilder', 'adventure-content', 'cardgame-bots']);
+    
+    setupSubNav('.scoreboard-sub-nav', ['scoreboard-content', 'history-content'], {
+        'history-content': () => { renderHistory(); }
     });
 
     initStarWarsdle();
     initCardgame();
-
-    // Modus-Selector Buttons konfigurieren
-    const mClassicBtn = document.getElementById('mode-classic-btn');
-    const mAdvancedBtn = document.getElementById('mode-advanced-btn');
-    
-    // Initialize state
-    if (currentGameType === 'advanced') {
-        mAdvancedBtn.classList.add('active');
-        mClassicBtn.classList.remove('active');
-        const catContainer = document.getElementById('category-selector-container');
-        if (catContainer) catContainer.classList.add('hidden');
-        document.getElementById('game-subtitle').textContent = "Ordne 10 Charaktere blind ein. Wo landen sie und nutze deinen Joker!";
-    } else {
-        mClassicBtn.classList.add('active');
-        mAdvancedBtn.classList.remove('active');
-        const catContainer = document.getElementById('category-selector-container');
-        if (catContainer && currentMode === 'starwars') catContainer.classList.remove('hidden');
-        document.getElementById('game-subtitle').textContent = "Ordne 5 Charaktere blind ein. Wo landen sie?";
-    }
-    
-    mClassicBtn.addEventListener('click', () => {
-        if (currentGameType === 'classic') return;
-        setCurrentGameType('classic');
-        mClassicBtn.classList.add('active');
-        mAdvancedBtn.classList.remove('active');
-        
-        const catContainer = document.getElementById('category-selector-container');
-        if (catContainer && currentMode === 'starwars') catContainer.classList.remove('hidden');
-        
-        document.getElementById('game-subtitle').textContent = "Ordne 5 Charaktere blind ein. Wo landen sie?";
-        initGame();
-    });
-    
-    mAdvancedBtn.addEventListener('click', () => {
-        if (currentGameType === 'advanced') return;
-        setCurrentGameType('advanced');
-        mAdvancedBtn.classList.add('active');
-        mClassicBtn.classList.remove('active');
-        
-        const catContainer = document.getElementById('category-selector-container');
-        if (catContainer) catContainer.classList.add('hidden');
-        
-        document.getElementById('game-subtitle').textContent = "Ordne 10 Charaktere blind ein. Wo landen sie und nutze deinen Joker!";
-        initAdvancedGame();
-    });
 
     const catNormalBtn = document.getElementById('cat-normal-btn');
     const catKlonBtn = document.getElementById('cat-klon-btn');
@@ -458,16 +540,14 @@ function setupGameUI(user) {
     });
 
     document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
-    document.getElementById('game-main-content').classList.remove('hidden');
     
-    // Erstes Spiel starten
+    // Start Hub view
+    if (window.showHub) window.showHub();
+
+    // Erstes Spiel initialisieren
     if (currentGameType === 'advanced') {
-        mAdvancedBtn.classList.add('active');
-        mClassicBtn.classList.remove('active');
         initAdvancedGame();
     } else {
-        mClassicBtn.classList.add('active');
-        mAdvancedBtn.classList.remove('active');
         initGame();
     }
     
