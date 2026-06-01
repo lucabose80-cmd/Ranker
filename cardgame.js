@@ -491,7 +491,7 @@ function renderBots() {
     list.innerHTML = '';
     
     const user = getCurrentUser();
-    const defeatedField = currentMode === 'starwars' ? 'defeated_tut_bots_starwars' : 'defeated_bots_waifu';
+    const defeatedField = currentMode === 'starwars' ? 'defeated_tut2_bots_starwars' : 'defeated_bots_waifu';
     const defeatedBots = user ? (user[defeatedField] || []) : [];
     
     BOT_LEVELS.forEach((bot, idx) => {
@@ -1280,7 +1280,7 @@ async function finishMatch() {
         finalRes = "Sieg";
         
         if(isBotMatch && user && opponentData.botLevel) {
-            const defeatedField = currentMode === 'starwars' ? 'defeated_tut_bots_starwars' : 'defeated_bots_waifu';
+            const defeatedField = currentMode === 'starwars' ? 'defeated_tut2_bots_starwars' : 'defeated_bots_waifu';
             const defeatedBots = user[defeatedField] || [];
             
             if (!defeatedBots.includes(opponentData.botLevel)) {
@@ -1293,7 +1293,7 @@ async function finishMatch() {
                 user.credits = (user.credits || 0) + reward;
                 
                 // Unlock Title
-                const titleId = `sw_tut_bot_${opponentData.botLevel}`;
+                const titleId = `sw_tut2_bot_${opponentData.botLevel}`;
                 const titlesField = currentMode === 'starwars' ? 'unlocked_titles_starwars' : 'unlocked_titles_waifu';
                 let unlockedTitles = user[titlesField] || [];
                 
