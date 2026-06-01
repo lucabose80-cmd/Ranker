@@ -1237,7 +1237,7 @@ async function showMatchToast(text, isPlayer, color = '#ffd700') {
     setTimeout(() => toast.remove(), 2000);
 }
 
-function finishMatch() {
+async function finishMatch() {
     document.getElementById('cardgame-match').classList.add('hidden');
     document.getElementById('match-result-overlay').classList.add('hidden');
     
