@@ -1732,6 +1732,7 @@ body.alt-theme #db-tracker-reads {
 /* HUB ARCHITECTURE OVERRIDES */
 .main-scroll-content {
     margin-top: 0 !important;
+    margin-left: 0 !important;
     padding-bottom: 120px !important;
 }
 .online-sidebar {

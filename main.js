@@ -319,12 +319,6 @@ function setupGameUI(user) {
     });
 
     // Handle Dock Buttons that open Modals
-    const updateDockBtn = document.getElementById('changelog-open-btn-dock');
-    if (updateDockBtn) updateDockBtn.addEventListener('click', () => {
-        const modal = document.getElementById('changelog-modal');
-        if (modal) modal.classList.remove('hidden');
-        else document.getElementById('changelog-open-btn')?.click(); // fallback
-    });
 
     const tutDockBtn = document.getElementById('tutorial-open-btn-dock');
     if (tutDockBtn) tutDockBtn.addEventListener('click', () => openModal('tutorial-modal'));
