@@ -712,7 +712,7 @@ function renderOpponentDeckState() {
     opponentDeck.forEach(c => {
         const dbC = activeCharacterDatabase.find(x => x.name === c.charName);
         if(!dbC) return;
-        const isPlayed = playedOpponentCards.includes(c);
+        const isPlayed = playedOpponentCards.includes(c) || opponentGraveyard.includes(c);
         const div = document.createElement('div');
         div.style.cssText = `width:55px; height:55px; position:relative;`;
         div.innerHTML = createCardHTML(dbC, c.rarity, isPlayed);
