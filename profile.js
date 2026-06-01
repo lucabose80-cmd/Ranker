@@ -434,17 +434,17 @@ function renderTitleSelection(user, gamesPlayed) {
     availableTitles.sort((a, b) => {
         const aUnlockedList = currentMode === 'starwars' ? (user.unlocked_titles_starwars || []) : (user.unlocked_titles_waifu || []);
         let aLocked = a.secret ? !aUnlockedList.includes(a.id) : gamesPlayed < a.required;
-        if (a.condition && a.condition.type === 'bot_defeat') aLocked = !aUnlockedList.includes(a.id);
+        if (a.condition && (a.condition.type === 'bot_defeat' || a.condition.type === 'custom')) aLocked = !aUnlockedList.includes(a.id);
         const bUnlockedList = currentMode === 'starwars' ? (user.unlocked_titles_starwars || []) : (user.unlocked_titles_waifu || []);
         let bLocked = b.secret ? !bUnlockedList.includes(b.id) : gamesPlayed < b.required;
-        if (b.condition && b.condition.type === 'bot_defeat') bLocked = !bUnlockedList.includes(b.id);
+        if (b.condition && (b.condition.type === 'bot_defeat' || b.condition.type === 'custom')) bLocked = !bUnlockedList.includes(b.id);
         return (aLocked === bLocked) ? 0 : aLocked ? 1 : -1;
     });
 
     availableTitles.forEach(t => {
         let isLocked = gamesPlayed < t.required;
         const unlockedList = currentMode === 'starwars' ? (user.unlocked_titles_starwars || []) : (user.unlocked_titles_waifu || []);
-        if (t.condition && t.condition.type === 'bot_defeat') {
+        if (t.condition && (t.condition.type === 'bot_defeat' || t.condition.type === 'custom')) {
             isLocked = !unlockedList.includes(t.id);
         }
         
@@ -458,6 +458,8 @@ function renderTitleSelection(user, gamesPlayed) {
         if (t.condition) {
             if (t.condition.type === 'bot_defeat') {
                 baseReqText = `Besiege Bot Stufe ${t.condition.level} im Cardgame`;
+            } else if (t.condition.type === 'custom') {
+                baseReqText = t.condition.desc;
             } else if (t.condition.type === 'tag_full_team') {
                 const reqCount = t.condition.count || 5;
                 baseReqText = `Ranke ${reqCount} ${t.condition.tag.charAt(0).toUpperCase() + t.condition.tag.slice(1)} im selben Spiel`;
@@ -618,6 +620,8 @@ function renderThemeSelection(user) {
                 baseReqText = `Ranke ${reqCount} ${tag.charAt(0).toUpperCase() + tag.slice(1)} im selben Spiel`;
             } else if (type === 'bot_defeat') {
                 baseReqText = `Besiege Bot Stufe ${t.condition.level} im Cardgame`;
+            } else if (type === 'custom') {
+                baseReqText = t.condition.desc;
             } else if (type === 'has_characters' || type === 'has_discovered_characters') {
                 const targetChars = t.condition.chars || t.condition.characters || [];
                 baseReqText = `Finde: ${targetChars.join(', ')}`;
