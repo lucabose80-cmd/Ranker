@@ -1650,6 +1650,9 @@ body.alt-theme #db-tracker-reads {
     position: relative;
     cursor: help;
 }
+.has-tooltip:hover {
+    z-index: 99999;
+}
 
 .has-tooltip::after {
     content: attr(data-tooltip);

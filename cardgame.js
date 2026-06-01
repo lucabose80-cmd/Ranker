@@ -21,8 +21,8 @@ let playerHandRemaining = [];
 let opponentHandRemaining = [];
 let playerGraveyard = [];
 let opponentGraveyard = [];
-let pEffects = { vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
-let oEffects = { vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
+let pEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
+let oEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
 let globalScoresCache = {};
 let isBotMatch = false;
 let liveMatchActive = false;
@@ -46,21 +46,29 @@ const FACTION_ADVANTAGE = {
 function getMainFaction(tags) {
     if(!tags) return 'neutral';
     const tg = tags.map(t => t.toLowerCase());
+    if(tg.includes('501st')) return '501st';
+    if(tg.includes('212th')) return '212th';
+    if(tg.includes('bad_batch')) return 'bad_batch';
+    if(tg.includes('hutte')) return 'hutte';
+    if(tg.includes('schmuggel')) return 'schmuggel';
+    
     if(tg.includes('jedi')) return 'jedi';
     if(tg.includes('sith')) return 'sith';
     if(tg.includes('rebell') || tg.includes('rebellen')) return 'rebell';
     if(tg.includes('imperium')) return 'imperium';
     if(tg.includes('klon') || tg.includes('clone')) return 'klon';
     if(tg.includes('mandalorianer') || tg.includes('mandalorian')) return 'mandalorianer';
-    if(tg.includes('kopfgeldj?ger') || tg.includes('kopfgeldjaeger') || tg.includes('kopfgeldjäger')) return 'kopfgeldjäger';
+    if(tg.includes('kopfgeldjäger') || tg.includes('kopfgeldjaeger') || tg.includes('kopfgeldjger')) return 'kopfgeldjäger';
     if(tg.includes('droid') || tg.includes('droide')) return 'droid';
-    if(tg.includes('schurke') || tg.includes('unterwelt')) return 'schurke';
+    if(tg.includes('schurke') || tg.includes('unterwelt') || tg.includes('pirat')) return 'schurke';
     if(tg.includes('nachtschwester') || tg.includes('dathomir')) return 'nachtschwester';
     if(tg.includes('erste ordnung')) return 'erste ordnung';
     if(tg.includes('widerstand')) return 'widerstand';
-    if(tg.includes('senat') || tg.includes('republik')) return 'republik';
+    if(tg.includes('senat') || tg.includes('republik')) return 'senat';
     if(tg.includes('graue machtnutzer') || tg.includes('grau')) return 'graue machtnutzer';
     if(tg.includes('fahrzeug')) return 'fahrzeug';
+    if(tg.includes('separatist')) return 'separatist';
+    if(tg.includes('monster') || tg.includes('kreatur')) return 'monster';
     return 'neutral';
 }
 
@@ -68,7 +76,7 @@ function getFactionDescription(faction) {
     const desc = {
         'mandalorianer': 'Silence',
         'graue machtnutzer': 'Ausgleich',
-        'republik': 'Veto (0:0)',
+        'senat': 'Veto (0:0)',
         'fahrzeug': 'Überrollen',
         'sith': 'Ausdünnung',
         'schurke': 'Falsches Spiel',
@@ -80,16 +88,23 @@ function getFactionDescription(faction) {
         'droid': 'Verschmelzung',
         'kopfgeldjäger': 'Kopfgeld',
         'erste ordnung': 'Zwangsrekrutierung',
-        'widerstand': 'Opfermut'
+        'widerstand': 'Opfermut',
+        'separatist': 'Übermacht',
+        'monster': 'Raserei',
+        'schmuggel': 'Flucht',
+        'hutte': 'Erpressung',
+        '501st': 'Vaders Faust',
+        '212th': 'High Ground',
+        'bad_batch': 'Kloneinheit 99'
     };
     return desc[faction] || 'Aktiv';
 }
 
 function getFactionTooltip(faction) {
     const desc = {
-        'mandalorianer': 'Silence: Deaktiviert für dieses Duell sofort sämtliche aktiven und passiven Fraktions-Effekte der gegnerischen Karte.\n\n• Ende: Gilt nur für diese eine Runde.\n• Limit: Exklusiv (Maximal 3 erlaubt)',
-        'graue machtnutzer': 'Ausgleich: Dreht in dieser Runde die Siegesbedingung komplett um. Die Karte mit dem NIEDRIGSTEN Score gewinnt.\n\n• Ende: Gilt nur für diese eine Runde.\n• Limit: Exklusiv (Maximal 3 erlaubt)',
-        'republik': 'Veto: Verhindert eine direkte Niederlage. Falls dein Gegner gewinnen würde, wird das Ergebnis auf ein Unentschieden (0:0) eingefroren.\n\n• Ende: Gilt nur für diese eine Runde.\n• Limit: Exklusiv (Maximal 3 erlaubt)',
+        'mandalorianer': 'Silence: Der Mandalorianer nutzt Beskar, um gegnerische Buff-Fähigkeiten (Score-Modifikatoren) für diese Runde komplett zu annullieren.\n\n• Ende: Die Silence-Wirkung hält genau eine Runde an.\n• Limit: Formation (Mindestens 4 benötigt)',
+        'graue machtnutzer': 'Ausgleich: Die Grauen Machtnutzer streben nach Balance. In der Endabrechnung des Matches (Sieg/Niederlage) gewinnt ausnahmsweise derjenige, der WENIGER Runden gewonnen hat.\n\n• Ende: Die Regelumkehr gilt permanent für den finalen Ausgang des gesamten Matches.\n• Limit: Exklusiv (Maximal 1 erlaubt)',
+        'senat': 'Veto: Verhindert eine direkte Niederlage. Falls dein Gegner gewinnen würde, wird das Ergebnis auf ein Unentschieden (0:0) eingefroren.\n\n• Ende: Gilt nur für diese eine Runde.\n• Limit: Exklusiv (Maximal 3 erlaubt)',
         'fahrzeug': 'Überrollen: Gewinnt das Fahrzeug die Runde, greift es sofort in einer Extra-Runde nochmals an und behält seinen Score.\n\n• Ende: Endet sofort und das Fahrzeug wird zerstört, falls es eine Runde verliert.\n• Limit: Exklusiv (Maximal 3 erlaubt)',
         'sith': 'Ausdünnung: Jede zweite (2.) gespielte Sith-Karte vernichtet sofort und dauerhaft eine zufällige Karte direkt von der feindlichen Hand.\n\n• Ende: Der Zähler ist während des gesamten Matches permanent aktiv.\n• Limit: Exklusiv (Maximal 4 erlaubt)',
         'jedi': 'Gedankentrick: Spielst du einen Jedi, zwingt dieser den Bot dazu, in seiner NÄCHSTEN Runde garantiert eine seiner 2 schwächsten Karten auszuspielen.\n\n• Ende: Der Effekt verbraucht sich automatisch beim Ausspielen der gegnerischen Karte.\n• Limit: Exklusiv (Maximal 3 erlaubt)',
@@ -101,7 +116,14 @@ function getFactionTooltip(faction) {
         'droid': 'Verschmelzung: Spielst du diesen Droiden, verdoppelt sich durch Schwarm-Intelligenz automatisch der Score deines NÄCHSTEN Droiden.\n\n• Ende: Der Verdopplungs-Bonus wird direkt beim Einsatz des nächsten Droiden verbraucht.\n• Limit: Formation (Mindestens 5 benötigt)',
         'kopfgeldjäger': 'Kopfgeld: Zu Beginn des Matches wird die häufigste feindliche Fraktion als Ziel markiert. Besiegst du dieses Ziel im Duell, erhältst du 2 Match-Punkte (statt 1).\n\n• Ende: Das Hauptziel bleibt das ganze Match über dauerhaft markiert.\n• Limit: Formation (Mindestens 3 benötigt)',
         'erste ordnung': 'Zwangsrekrutierung: Gewinnt die Erste Ordnung, wird die gerade besiegte feindliche Karte nicht zerstört, sondern sofort in deine eigene Hand rekrutiert.\n\n• Ende: Der Effekt ist nur während der exakten Runde des Sieges aktiv.\n• Limit: Formation (Mindestens 4 benötigt)',
-        'widerstand': 'Opfermut: Verliert ein Widerstandskämpfer, inspiriert sein Opfer das Team. Deine NÄCHSTE ausgespielte Karte erhält einen massiven Bonus von +4.0 Punkten.\n\n• Ende: Der Bonus verbraucht sich direkt in der Folgerunde.\n• Limit: Formation (Mindestens 4 benötigt)'
+        'widerstand': 'Opfermut: Verliert ein Widerstandskämpfer, inspiriert sein Opfer das Team. Deine NÄCHSTE ausgespielte Karte erhält einen massiven Bonus von +4.0 Punkten.\n\n• Ende: Der Bonus verbraucht sich direkt in der Folgerunde.\n• Limit: Formation (Mindestens 4 benötigt)',
+        'separatist': 'Übermacht: Hat die gegnerische Karte einen HÖHEREN Basis-Score als der Separatist, ruft dieser sofort Verstärkung und erhält pauschal +2.5 Score dazu.\n\n• Limit: Formation (Mindestens 4 benötigt)',
+        'monster': 'Raserei: Monster sind absolut unberechenbar. Ihr finaler Score schwankt nach dem Ausspielen zufällig zwischen -20% und +20%.\n\n• Limit: Exklusiv (Maximal 3 erlaubt)',
+        'schmuggel': 'Flucht: Schmuggler lassen sich ungern schnappen. Verliert der Schmuggler die Runde, wird er nicht zerstört, sondern mischt sich unauffällig zurück in dein Nachzieh-Deck.\n\n• Limit: Exklusiv (Maximal 3 erlaubt)',
+        'hutte': 'Erpressung: Spielst du einen Hutten, zwingt dieser den Bot dazu, in seiner NÄCHSTEN Runde garantiert seine STÄRKSTE verbleibende Karte auszuspielen (Gegenteil vom Jedi).\n\n• Limit: Exklusiv (Maximal 2 erlaubt)',
+        '501st': 'Vaders Faust: Gewinnt die 501st Legion ihre Runde, kennt sie keine Gnade und vernichtet sofort die nächste Karte auf dem gegnerischen Nachzieh-Deck.\n\n• Limit: Exklusiv (Maximal 3 erlaubt)',
+        '212th': 'High Ground: Die 212th agiert taktisch. Ist der Rarity-Multiplikator des Gegners höher als der eigene, wird dieser einfach kopiert und übernommen.\n\n• Limit: Exklusiv (Maximal 3 erlaubt)',
+        'bad_batch': 'Kloneinheit 99: Massiver +4.0 Buff. Da sie aber Befehle verweigern, darfst du in deiner NÄCHSTEN Runde deine Karte nicht selbst wählen (Zufallszug).\n\n• Limit: Exklusiv (Maximal 2 erlaubt)'
     };
     return desc[faction] || 'Kein spezieller Effekt.';
 }
@@ -122,7 +144,7 @@ function calculateSynergy(deck) {
     
     checkMax('mandalorianer', 3);
     checkMax('graue machtnutzer', 3);
-    checkMax('republik', 3);
+    checkMax('senat', 3);
     checkMax('fahrzeug', 3);
     checkMax('sith', 4);
     checkMax('jedi', 3);
@@ -136,6 +158,14 @@ function calculateSynergy(deck) {
     checkMin('kopfgeldjäger', 3);
     checkMin('erste ordnung', 4);
     checkMin('widerstand', 4);
+    checkMin('separatist', 4);
+    
+    checkMax('monster', 3);
+    checkMax('schmuggel', 3);
+    checkMax('hutte', 2);
+    checkMax('501st', 3);
+    checkMax('212th', 3);
+    checkMax('bad_batch', 2);
     
     return activeFactions;
 }
@@ -431,16 +461,28 @@ async function renderMatchmaking() {
 }
 
 const BOT_LEVELS = [
-    { name: "Trainingsdroide (Lvl 1)", rarities: ['common'], popFilter: 'low', synergy: 'none', color: '#888', desc: "Nutzt nur häufige & unbeliebte Karten.", reward: 5 },
-    { name: "Jawa (Lvl 2)", rarities: ['common', 'rare'], popFilter: 'low', synergy: 'none', color: '#a0a0a0', desc: "Nutzt schwache Karten, manchmal seltene.", reward: 10 },
-    { name: "Sturmtruppler (Lvl 3)", rarities: ['common', 'rare'], popFilter: 'any', synergy: 'low', color: '#fff', desc: "Durchschnittliche Karten ohne Strategie.", reward: 20 },
-    { name: "Kopfgeldjäger (Lvl 4)", rarities: ['rare'], popFilter: 'high', synergy: 'low', color: '#f39c12', desc: "Nutzt starke, seltene Karten.", reward: 50 },
-    { name: "Inquisitor (Lvl 5)", rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'low', color: '#e74c3c', desc: "Solide Mischung aus selten und episch.", reward: 75 },
-    { name: "Ritter der Ren (Lvl 6)", rarities: ['rare', 'epic'], popFilter: 'high', synergy: 'low', color: '#8e44ad', desc: "Starke epische Karten, wenig Synergie.", reward: 100 },
-    { name: "Jedi-Ritter (Lvl 7)", rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#2ed573', desc: "Epische Karten mit gezielten Synergien.", reward: 150 },
-    { name: "General Grievous (Lvl 8)", rarities: ['epic', 'legendary'], popFilter: 'any', synergy: 'high', color: '#95a5a6', desc: "Gefährliche Legendäre und starke Synergie.", reward: 200 },
-    { name: "Darth Vader (Lvl 9)", rarities: ['epic', 'legendary'], popFilter: 'high', synergy: 'high', color: '#c0392b', desc: "Nur die stärksten Karten mit extremen Synergien.", reward: 300 },
-    { name: "Großmeister Yoda (Lvl 10)", rarities: ['legendary'], popFilter: 'high', synergy: 'max', color: '#ffd700', desc: "Das perfekte Deck. Maximale Stärke.", reward: 500 }
+    { name: "Droiden (Lvl 1)", factionFocus: 'droid', rarities: ['common', 'rare'], popFilter: 'any', synergy: 'high', color: '#95a5a6', desc: "Nutzt viele Droiden für Verschmelzungs-Boni.", reward: 150 },
+    { name: "Klone (Lvl 2)", factionFocus: 'klon', rarities: ['common', 'rare'], popFilter: 'any', synergy: 'high', color: '#f1c40f', desc: "Spielt Klone in Folge, um Ketten-Boni zu maximieren.", reward: 150 },
+    { name: "Rebellen (Lvl 3)", factionFocus: 'rebell', rarities: ['common', 'rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#e74c3c', desc: "Hofft auf Comebacks bei Rückstand.", reward: 150 },
+    { name: "Erste Ordnung (Lvl 4)", factionFocus: 'erste ordnung', rarities: ['common', 'rare'], popFilter: 'any', synergy: 'high', color: '#e74c3c', desc: "Rekrutiert besiegte Karten.", reward: 150 },
+    { name: "Imperium (Lvl 5)", factionFocus: 'imperium', rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#888', desc: "Unterdrückt Gegner nach einem Sieg.", reward: 150 },
+    { name: "Nachtschwestern (Lvl 6)", factionFocus: 'nachtschwester', rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#9b59b6', desc: "Nutzt dunkle Magie für Nekromantie.", reward: 150 },
+    { name: "Schurken (Lvl 7)", factionFocus: 'schurke', rarities: ['rare'], popFilter: 'any', synergy: 'high', color: '#e67e22', desc: "Klaut hinterlistig deine Score-Werte.", reward: 150 },
+    { name: "Kopfgeldjäger (Lvl 8)", factionFocus: 'kopfgeldjäger', rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#34495e', desc: "Macht Jagd auf deine häufigste Fraktion.", reward: 150 },
+    { name: "Mandalorianer (Lvl 9)", factionFocus: 'mandalorianer', rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#ff9f43', desc: "Nutzt Beskar für Silence-Effekte.", reward: 150 },
+    { name: "Senat (Lvl 10)", factionFocus: 'senat', rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#4da6ff', desc: "Friert Runden bei Niederlagen ein.", reward: 150 },
+    { name: "Fahrzeuge (Lvl 11)", factionFocus: 'fahrzeug', rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#aaa', desc: "Gefährliche Überrollen-Taktik.", reward: 150 },
+    { name: "Graue Machtnutzer (Lvl 12)", factionFocus: 'graue machtnutzer', rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#ccc', desc: "Dreht die Siegesbedingung um.", reward: 150 },
+    { name: "Sith (Lvl 13)", factionFocus: 'sith', rarities: ['epic', 'legendary'], popFilter: 'any', synergy: 'high', color: '#cc4444', desc: "Zerstört passiv Karten auf deiner Hand.", reward: 150 },
+    { name: "Jedi (Lvl 14)", factionFocus: 'jedi', rarities: ['epic', 'legendary'], popFilter: 'any', synergy: 'high', color: '#5dade2', desc: "Zwingt dich durch Gedankentricks zu Fehlern.", reward: 150 },
+    { name: "Widerstand (Lvl 15)", factionFocus: 'widerstand', rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#f39c12', desc: "Opfert Einheiten für brachiale Folge-Buffs.", reward: 150 },
+    { name: "Separatisten (Lvl 16)", factionFocus: 'separatist', rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#e67e22', desc: "Übermacht: Stark gegen Decks mit hohen Base-Stats.", reward: 150 },
+    { name: "Monster (Lvl 17)", factionFocus: 'monster', rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#8b4513', desc: "Unberechenbare Raserei-Schwankungen.", reward: 150 },
+    { name: "Schmuggel (Lvl 18)", factionFocus: 'schmuggel', rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#a0522d', desc: "Unverwüstlich: Kehren ins Deck zurück.", reward: 150 },
+    { name: "212th (Lvl 19)", factionFocus: '212th', rarities: ['common', 'rare'], popFilter: 'any', synergy: 'high', color: '#d2691e', desc: "High Ground: Kopiert gegnerische Multiplikatoren.", reward: 150 },
+    { name: "501st (Lvl 20)", factionFocus: '501st', rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#00008b', desc: "Vaders Faust: Vernichtet zusätzliche Karten.", reward: 150 },
+    { name: "Bad Batch (Lvl 21)", factionFocus: 'bad_batch', rarities: ['epic', 'legendary'], popFilter: 'any', synergy: 'high', color: '#696969', desc: "Kloneinheit 99: Hoher Buff, aber zufällige Folgezüge.", reward: 150 },
+    { name: "Hutten (Lvl 22)", factionFocus: 'hutte', rarities: ['legendary'], popFilter: 'any', synergy: 'high', color: '#2e8b57', desc: "Erpressung: Zwingt dich, deine stärkste Karte zu spielen.", reward: 150 }
 ];
 
 function renderBots() {
@@ -498,29 +540,21 @@ async function startBotMatch(bot) {
     }
 
     let deck = [];
-    if (bot.synergy === 'none' || candidates.length < 10) {
-        deck = candidates.sort(() => 0.5 - Math.random()).slice(0, 10);
-    } else {
-        const baseChar = candidates[Math.floor(Math.random() * candidates.length)];
-        const targetFaction = (baseChar.faction && baseChar.faction.length > 0) ? baseChar.faction[0] : null;
+    if (bot.factionFocus) {
+        let synChars = candidates.filter(c => {
+            if(!c.tags) return false;
+            let tags = c.tags.map(t => t.toLowerCase());
+            if (bot.factionFocus === 'senat' && (tags.includes('senat') || tags.includes('republik'))) return true;
+            return tags.includes(bot.factionFocus);
+        }).sort(() => 0.5 - Math.random());
         
-        if (targetFaction) {
-            let synChars = candidates.filter(c => c.faction && c.faction.includes(targetFaction)).sort(() => 0.5 - Math.random());
-            let otherChars = candidates.filter(c => !c.faction || !c.faction.includes(targetFaction)).sort(() => 0.5 - Math.random());
-            
-            if (bot.synergy === 'max') {
-                deck = synChars.slice(0, 10);
-                if (deck.length < 10) deck = deck.concat(otherChars.slice(0, 10 - deck.length));
-            } else if (bot.synergy === 'high') {
-                const amountSyn = Math.min(synChars.length, 7);
-                deck = synChars.slice(0, amountSyn).concat(otherChars.slice(0, 10 - amountSyn));
-            } else if (bot.synergy === 'low') {
-                const amountSyn = Math.min(synChars.length, 3);
-                deck = synChars.slice(0, amountSyn).concat(otherChars.slice(0, 10 - amountSyn));
-            }
-        } else {
-            deck = candidates.sort(() => 0.5 - Math.random()).slice(0, 10);
-        }
+        let otherChars = candidates.filter(c => !synChars.includes(c)).sort(() => 0.5 - Math.random());
+        
+        // Versuche 7-10 Karten der Fraktion zu bekommen, Rest wird aufgefüllt
+        const amountSyn = Math.min(synChars.length, 10); // Idealerweise 10!
+        deck = synChars.slice(0, amountSyn).concat(otherChars.slice(0, 10 - amountSyn));
+    } else {
+        deck = candidates.sort(() => 0.5 - Math.random()).slice(0, 10);
     }
     
     // Fallback if not enough
@@ -576,8 +610,8 @@ async function startMatch(oppData, oppDeckArr) {
     opponentHandRemaining = [...opponentDeck];
     playerGraveyard = [];
     opponentGraveyard = [];
-    pEffects = { vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
-    oEffects = { vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
+    pEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
+    oEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
     
     document.getElementById('cardgame-matchmaking').classList.add('hidden');
     document.getElementById('cardgame-bots').classList.add('hidden');
@@ -620,8 +654,8 @@ export async function startAdventureMatch(levelIndex, oppData, oppDeckArr, playe
     opponentHandRemaining = [...opponentDeck];
     playerGraveyard = [];
     opponentGraveyard = [];
-    pEffects = { vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
-    oEffects = { vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
+    pEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
+    oEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
     
     isBotMatch = true;
     isAdventureMatch = true;
@@ -738,20 +772,30 @@ function renderHand() {
 function playRound(playerCard, explicitOppCard = null) {
     let pForcedJedi = false;
     let oForcedJedi = false;
+    let pLog = [];
+    let oLog = [];
 
-    if (playerCard && !pEffects.vehicles && oEffects.forceWeakest) {
+    if (playerCard && !pEffects.vehicles) {
         let allValid = [...playerHandRemaining];
         if (!allValid.includes(playerCard)) allValid.push(playerCard);
-        allValid.sort((a,b) => (getCardScore(a.charName)*(RARITY_MULT[a.rarity]||1.0)) - (getCardScore(b.charName)*(RARITY_MULT[b.rarity]||1.0)));
-        
-        let validChoices = [allValid[0]];
-        if(allValid.length > 1) validChoices.push(allValid[1]);
-        
-        if (!validChoices.includes(playerCard)) {
+
+        if (oEffects.forceWeakest) {
+            allValid.sort((a,b) => (getCardScore(a.charName)*(RARITY_MULT[a.rarity]||1.0)) - (getCardScore(b.charName)*(RARITY_MULT[b.rarity]||1.0)));
+            let validChoices = [allValid[0]];
+            if(allValid.length > 1) validChoices.push(allValid[1]);
+            if (!validChoices.includes(playerCard)) playerCard = allValid[0];
+            oEffects.forceWeakest = false;
+            pForcedJedi = true;
+        } else if (oEffects.forceStrongest) {
+            allValid.sort((a,b) => (getCardScore(b.charName)*(RARITY_MULT[b.rarity]||1.0)) - (getCardScore(a.charName)*(RARITY_MULT[a.rarity]||1.0)));
             playerCard = allValid[0];
+            oEffects.forceStrongest = false;
+            pLog.push("Erpressung (Stärkste Karte erzwungen)");
+        } else if (pEffects.forceRandom) {
+            playerCard = allValid[Math.floor(Math.random() * allValid.length)];
+            pEffects.forceRandom = false;
+            pLog.push("Befehlsverweigerung (Zufällige Karte gezogen)");
         }
-        oEffects.forceWeakest = false;
-        pForcedJedi = true;
     }
 
     if (playerCard) {
@@ -773,6 +817,15 @@ function playRound(playerCard, explicitOppCard = null) {
                 oppCard = validChoices[Math.floor(Math.random() * validChoices.length)];
                 pEffects.forceWeakest = false;
                 oForcedJedi = true;
+            } else if (pEffects.forceStrongest) {
+                opponentHandRemaining.sort((a,b) => (getCardScore(b.charName)*(RARITY_MULT[b.rarity]||1.0)) - (getCardScore(a.charName)*(RARITY_MULT[a.rarity]||1.0)));
+                oppCard = opponentHandRemaining[0];
+                pEffects.forceStrongest = false;
+                oLog.push("Erpressung (Stärkste Karte erzwungen)");
+            } else if (oEffects.forceRandom) {
+                oppCard = opponentHandRemaining[Math.floor(Math.random() * opponentHandRemaining.length)];
+                oEffects.forceRandom = false;
+                oLog.push("Befehlsverweigerung (Zufällige Karte gezogen)");
             } else {
                 oppCard = opponentHandRemaining[Math.floor(Math.random() * opponentHandRemaining.length)];
             }
@@ -791,15 +844,6 @@ function playRound(playerCard, explicitOppCard = null) {
     let pFac = pDb ? getMainFaction(pDb.tags) : 'neutral';
     let oFac = oDb ? getMainFaction(oDb.tags) : 'neutral';
     
-    let pRarMult = playerCard ? (RARITY_MULT[playerCard.rarity] || 1.0) : 1.0;
-    let oRarMult = oppCard ? (RARITY_MULT[oppCard.rarity] || 1.0) : 1.0;
-    
-    let pBaseRaw = playerCard ? (playerCard.isGhost ? 0 : getCardScore(playerCard.charName)) : 0;
-    let oBaseRaw = oppCard ? (oppCard.isGhost ? 0 : getCardScore(oppCard.charName)) : 0;
-    
-    let pBase = pBaseRaw * pRarMult;
-    let oBase = oBaseRaw * oRarMult;
-    
     let pSyn = calculateSynergy(playerDeck);
     let oSyn = calculateSynergy(opponentDeck);
     let pHas = (fac) => pSyn.some(s => s.faction === fac);
@@ -807,10 +851,45 @@ function playRound(playerCard, explicitOppCard = null) {
     
     let pSilence = pHas('mandalorianer') && pFac === 'mandalorianer';
     let oSilence = oHas('mandalorianer') && oFac === 'mandalorianer';
-    
-    let pLog = [];
-    let oLog = [];
 
+    let pRarMult = playerCard ? (RARITY_MULT[playerCard.rarity] || 1.0) : 1.0;
+    let oRarMult = oppCard ? (RARITY_MULT[oppCard.rarity] || 1.0) : 1.0;
+    
+    if (!oSilence && pHas('212th') && pFac === '212th' && oRarMult > pRarMult) {
+        pRarMult = oRarMult;
+        pLog.push("High Ground (Rarity kopiert)");
+    }
+    if (!pSilence && oHas('212th') && oFac === '212th' && pRarMult > oRarMult) {
+        oRarMult = pRarMult;
+        oLog.push("High Ground (Rarity kopiert)");
+    }
+
+    let pBaseRaw = playerCard ? (playerCard.isGhost ? 0 : getCardScore(playerCard.charName)) : 0;
+    let oBaseRaw = oppCard ? (oppCard.isGhost ? 0 : getCardScore(oppCard.charName)) : 0;
+    
+    let pBase = pBaseRaw * pRarMult;
+    let oBase = oBaseRaw * oRarMult;
+
+    if (!oSilence && pHas('monster') && pFac === 'monster') {
+        const factor = 1.0 + ((Math.random() * 40 - 20) / 100);
+        pBase *= factor;
+        pLog.push(`Raserei (${factor < 1 ? '-' : '+'}${Math.abs(Math.round((factor - 1) * 100))}%)`);
+    }
+    if (!pSilence && oHas('monster') && oFac === 'monster') {
+        const factor = 1.0 + ((Math.random() * 40 - 20) / 100);
+        oBase *= factor;
+        oLog.push(`Raserei (${factor < 1 ? '-' : '+'}${Math.abs(Math.round((factor - 1) * 100))}%)`);
+    }
+
+    if (!oSilence && pHas('separatist') && pFac === 'separatist' && oBaseRaw > pBaseRaw) {
+        pBase += 2.5;
+        pLog.push("Übermacht (+2.5 Score)");
+    }
+    if (!pSilence && oHas('separatist') && oFac === 'separatist' && pBaseRaw > oBaseRaw) {
+        oBase += 2.5;
+        oLog.push("Übermacht (+2.5 Score)");
+    }
+    
     if (pForcedJedi) pLog.push("Gedankentrick (Schwächere Karte erzwungen)");
     if (oForcedJedi) oLog.push("Gedankentrick (Schwächere Karte erzwungen)");
     
@@ -850,6 +929,8 @@ function playRound(playerCard, explicitOppCard = null) {
         
         if (!oSilence && pEffects.nextDroidDouble && pFac === 'droid') { pBase *= 2; pEffects.nextDroidDouble = false; pLog.push("Verschmelzung (Score x2)"); }
         if (!oSilence && pHas('rebell') && pFac === 'rebell' && playerScore < opponentScore) { pBase *= 2; pLog.push("Hoffnung (Score x2)"); }
+        if (!oSilence && pHas('bad_batch') && pFac === 'bad_batch') { pBase += 4.0; pEffects.forceRandom = true; pLog.push("Kloneinheit 99 (+4.0 Score, Random Next)"); }
+        if (!oSilence && pHas('hutte') && pFac === 'hutte') { pEffects.forceStrongest = true; pLog.push("Erpressung initiiert"); }
         if (pSilence) pLog.push("Beskar (Silence)");
     }
     if (oppCard) {
@@ -866,6 +947,8 @@ function playRound(playerCard, explicitOppCard = null) {
         
         if (!pSilence && oEffects.nextDroidDouble && oFac === 'droid') { oBase *= 2; oEffects.nextDroidDouble = false; oLog.push("Verschmelzung (Score x2)"); }
         if (!pSilence && oHas('rebell') && oFac === 'rebell' && opponentScore < playerScore) { oBase *= 2; oLog.push("Hoffnung (Score x2)"); }
+        if (!pSilence && oHas('bad_batch') && oFac === 'bad_batch') { oBase += 4.0; oEffects.forceRandom = true; oLog.push("Kloneinheit 99 (+4.0 Score, Random Next)"); }
+        if (!pSilence && oHas('hutte') && oFac === 'hutte') { oEffects.forceStrongest = true; oLog.push("Erpressung initiiert"); }
         if (oSilence) oLog.push("Beskar (Silence)");
     }
     
@@ -884,10 +967,10 @@ function playRound(playerCard, explicitOppCard = null) {
         if(!oppCard) isWin = true;
     }
     
-    if (playerCard && !oSilence && pHas('republik') && pFac === 'republik' && !isWin && !isDraw) {
+    if (playerCard && !oSilence && pHas('senat') && pFac === 'senat' && !isWin && !isDraw) {
         isDraw = true; isWin = false; pBase = 0; oBase = 0; pLog.push("Vorladung (Runde eingefroren)"); oLog.push("Vorladung (Runde eingefroren)");
     }
-    if (oppCard && !pSilence && oHas('republik') && oFac === 'republik' && isWin && !isDraw) {
+    if (oppCard && !pSilence && oHas('senat') && oFac === 'senat' && isWin && !isDraw) {
         isDraw = true; isWin = false; pBase = 0; oBase = 0; oLog.push("Vorladung (Runde eingefroren)"); pLog.push("Vorladung (Runde eingefroren)");
     }
     
@@ -905,12 +988,22 @@ function playRound(playerCard, explicitOppCard = null) {
             if (pHas('jedi') && pFac === 'jedi') { pEffects.forceWeakest = true; pLog.push("Gedankentrick initiiert"); }
             if (pFac === 'klon') { pEffects.lastCloneDead = pBase; }
             if (pFac === 'droid') { pEffects.nextDroidDouble = true; }
-            playerGraveyard.push(playerCard);
+            
+            if (pHas('schmuggel') && pFac === 'schmuggel') {
+                playerHandRemaining.push(playerCard);
+                pLog.push("Hyperraum-Flucht");
+            } else {
+                playerGraveyard.push(playerCard);
+            }
         }
         if (isWin && !isDraw && !oSilence) {
             if (pHas('imperium') && pFac === 'imperium') { pEffects.oppression = true; pLog.push("Unterdrückung aktiviert"); }
             if (pHas('jedi') && pFac === 'jedi') { pEffects.forceWeakest = true; pLog.push("Gedankentrick initiiert"); }
             if (pHas('fahrzeug') && pFac === 'fahrzeug') { pEffects.vehicles = playerCard; playerCard.isGhost = false; pLog.push("Überrollen (Bleibt auf Feld)"); }
+            if (pHas('501st') && pFac === '501st' && opponentHandRemaining.length > 0) {
+                let destroyed = opponentHandRemaining.pop();
+                if(destroyed) { opponentGraveyard.push(destroyed); pLog.push("Vaders Faust (Karte vernichtet)"); }
+            }
             if (pHas('nachtschwester') && pFac === 'nachtschwester' && opponentGraveyard.length > 0) {
                 let stolen = opponentGraveyard.pop();
                 playerHandRemaining.push(stolen);
@@ -932,11 +1025,21 @@ function playRound(playerCard, explicitOppCard = null) {
             if (oHas('jedi') && oFac === 'jedi') { oEffects.forceWeakest = true; oLog.push("Gedankentrick initiiert"); }
             if (oFac === 'klon') { oEffects.lastCloneDead = oBase; }
             if (oFac === 'droid') { oEffects.nextDroidDouble = true; }
-            opponentGraveyard.push(oppCard);
+            
+            if (oHas('schmuggel') && oFac === 'schmuggel') {
+                opponentHandRemaining.push(oppCard);
+                oLog.push("Hyperraum-Flucht");
+            } else {
+                opponentGraveyard.push(oppCard);
+            }
         } else if (!isWin && !isDraw && !pSilence) {
             if (oHas('imperium') && oFac === 'imperium') { oEffects.oppression = true; oLog.push("Unterdrückung aktiviert"); }
             if (oHas('jedi') && oFac === 'jedi') { oEffects.forceWeakest = true; oLog.push("Gedankentrick initiiert"); }
             if (oHas('fahrzeug') && oFac === 'fahrzeug') { oEffects.vehicles = oppCard; oppCard.isGhost = false; oLog.push("Überrollen (Bleibt auf Feld)"); }
+            if (oHas('501st') && oFac === '501st' && playerHandRemaining.length > 0) {
+                let destroyed = playerHandRemaining.pop();
+                if(destroyed) { playerGraveyard.push(destroyed); oLog.push("Vaders Faust (Karte vernichtet)"); }
+            }
             if (oHas('nachtschwester') && oFac === 'nachtschwester' && playerGraveyard.length > 0) {
                 let stolen = playerGraveyard.pop();
                 opponentHandRemaining.push(stolen);
