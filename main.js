@@ -763,9 +763,15 @@ window.checkGlobalNotifications = function() {
     // 1. Starwarsdle
     const starwarsdleDot = document.getElementById('starwarsdle-glow');
     if (starwarsdleDot) {
-        const starwarsdleState = JSON.parse(localStorage.getItem('starwarsdle_state') || '{}');
-        const today = new Date().toLocaleDateString();
-        if (starwarsdleState.date === today && starwarsdleState.solved === true) {
+        const swdPrefix = (typeof currentMode !== 'undefined' ? currentMode : 'starwars') + 'dle';
+        const swdWon = localStorage.getItem(swdPrefix + '_won') === 'true';
+        const swdDate = localStorage.getItem(swdPrefix + '_date');
+        const swdToday = (() => {
+            const d = new Date();
+            const offset = d.getTimezoneOffset() * 60000;
+            return (new Date(d - offset)).toISOString().slice(0, 10);
+        })();
+        if (swdWon && swdDate === swdToday) {
             starwarsdleDot.style.display = 'none';
         } else {
             starwarsdleDot.style.display = 'block';
