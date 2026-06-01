@@ -232,10 +232,10 @@ export function initCommunity() {
             // Hilfsfunktion: Section -> lesbares Label
             function getSectionBadge(section) {
                 if (!section || section === 'hub-content') return '';
-                if (section === 'ranking-hub-content') return '<span style="font-size:0.6rem; color:#ffd700; background:rgba(255,215,0,0.15); border:1px solid rgba(255,215,0,0.4); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">🏆 Ranking</span>';
-                if (section === 'cardgame-content') return '<span style="font-size:0.6rem; color:#a78bfa; background:rgba(167,139,250,0.15); border:1px solid rgba(167,139,250,0.4); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">🃏 Cardgame</span>';
-                if (section === 'starwarsdle-content') return '<span style="font-size:0.6rem; color:#60a5fa; background:rgba(96,165,250,0.15); border:1px solid rgba(96,165,250,0.4); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">🔤 Starwarsdle</span>';
-                if (section === 'scoreboard-hub-content') return '<span style="font-size:0.6rem; color:#34d399; background:rgba(52,211,153,0.15); border:1px solid rgba(52,211,153,0.4); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">📊 Scoreboard</span>';
+                if (section === 'ranking-hub-content') return '<span style="font-size:0.6rem; color:#ffd700; background:rgba(255,215,0,0.15); border:1px solid rgba(255,215,0,0.5); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">🏆 Ranking</span>';
+                if (section === 'cardgame-content') return '<span style="font-size:0.6rem; color:#2ed573; background:rgba(46,213,115,0.15); border:1px solid rgba(46,213,115,0.5); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">🃏 Cardgame</span>';
+                if (section === 'starwarsdle-content') return '<span style="font-size:0.6rem; color:#3498db; background:rgba(52,152,219,0.15); border:1px solid rgba(52,152,219,0.5); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">🔤 Starwarsdle</span>';
+                if (section === 'scoreboard-hub-content') return '<span style="font-size:0.6rem; color:#9b59b6; background:rgba(155,89,182,0.15); border:1px solid rgba(155,89,182,0.5); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">📊 Scoreboard</span>';
                 return '';
             }
 
