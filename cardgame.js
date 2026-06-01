@@ -1292,16 +1292,18 @@ async function finishMatch() {
                 const reward = creditRewards[opponentData.botLevel] || 0;
                 user.credits = (user.credits || 0) + reward;
                 
-                // Unlock Title
-                const titleId = `sw_tut2_bot_${opponentData.botLevel}`;
+                // Unlock Title if all bots defeated
                 const titlesField = currentMode === 'starwars' ? 'unlocked_titles_starwars' : 'unlocked_titles_waifu';
                 let unlockedTitles = user[titlesField] || [];
-                
                 let unlockedNewTitle = false;
-                if (!unlockedTitles.includes(titleId)) {
-                    unlockedTitles.push(titleId);
-                    user[titlesField] = unlockedTitles;
-                    unlockedNewTitle = true;
+                
+                if (defeatedBots.length === 22) {
+                    const titleId = 'sw_tut_master';
+                    if (!unlockedTitles.includes(titleId)) {
+                        unlockedTitles.push(titleId);
+                        user[titlesField] = unlockedTitles;
+                        unlockedNewTitle = true;
+                    }
                 }
                 
                 localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
