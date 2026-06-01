@@ -548,8 +548,10 @@ async function startBotMatch(bot) {
         
         let otherChars = candidates.filter(c => !synChars.includes(c)).sort(() => 0.5 - Math.random());
         
-        // Versuche 7-10 Karten der Fraktion zu bekommen, Rest wird aufgefüllt
-        const amountSyn = Math.min(synChars.length, 10); // Idealerweise 10!
+        // Versuche 7-10 Karten der Fraktion zu bekommen, aber respektiere Maximal-Limits!
+        const MAX_LIMITS = { 'mandalorianer': 3, 'mandalorian': 3, 'graue machtnutzer': 3, 'senat': 3, 'fahrzeug': 3, 'sith': 4, 'jedi': 3, 'monster': 3, 'schmuggel': 3, 'hutte': 2, '501st': 3, '212th': 3, 'bad_batch': 2 };
+        const maxAllowed = MAX_LIMITS[bot.factionFocus] || 10;
+        const amountSyn = Math.min(synChars.length, maxAllowed);
         deck = synChars.slice(0, amountSyn).concat(otherChars.slice(0, 10 - amountSyn));
     } else {
         deck = candidates.sort(() => 0.5 - Math.random()).slice(0, 10);
@@ -853,7 +855,12 @@ function playRound(playerCard, explicitOppCard = null) {
                     if (oEffects.droid && fac === 'droid') simulatedScore *= 2;
                     if (fac === 'bad_batch') simulatedScore += 4.0;
                     
-                    let diff = simulatedScore - pSimScore;
+                    let pSimScoreLocal = pSimScore;
+                    if (fac === 'mandalorianer' || fac === 'mandalorian') pSimScoreLocal = pScoreBase; // Silence
+                    
+                    let diff = simulatedScore - pSimScoreLocal;
+                    if (fac === 'graue machtnutzer') diff = pSimScoreLocal - simulatedScore; // Ausgleich
+                    
                     let aiScore = 0;
                     
                     if (diff > 0) {
