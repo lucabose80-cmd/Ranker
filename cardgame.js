@@ -1154,12 +1154,45 @@ function playRound(playerCard, explicitOppCard = null) {
     const pRarityName = playerCard ? playerCard.rarity : '';
     const oRarityName = oppCard ? oppCard.rarity : '';
     
+    function getEffectTooltip(logMsg) {
+        const m = logMsg.toLowerCase();
+        if(m.includes('gedankentrick')) return 'Jedi: Zwingt den Gegner, seine schwächste Karte zu spielen.';
+        if(m.includes('verschmelzung')) return 'Droiden: Verdoppelt den Basis-Score des nächsten gespielten Droiden.';
+        if(m.includes('vaders faust')) return '501st: Zerstört eine zufällige Karte auf der Hand des Gegners.';
+        if(m.includes('erpressung')) return 'Hutten: Zwingt den Gegner, seine stärkste Karte zu spielen.';
+        if(m.includes('befehlsverweigerung')) return 'Befehl wurde durch einen Effekt blockiert, zufällige Karte gezogen.';
+        if(m.includes('high ground')) return '212th: Kopiert den Seltenheits-Multiplikator des Gegners, wenn dieser höher ist.';
+        if(m.includes('raserei')) return 'Monster: Erhöht oder verringert den Basis-Score drastisch.';
+        if(m.includes('übermacht')) return 'Separatisten: Bonus-Score gegen Decks mit höheren Basis-Stats.';
+        if(m.includes('falsches spiel')) return 'Schurken: Tauscht die gespielten Karten beider Spieler.';
+        if(m.includes('orbitalschlag')) return 'Eine Karte wurde durch einen zerstörerischen Effekt vernichtet.';
+        if(m.includes('unterdrückt') || m.includes('unterdrückung')) return 'Imperium: Reduziert den Score des Gegners in der nächsten Runde um 25%.';
+        if(m.includes('opfermut')) return 'Widerstand: Gibt in der nächsten Runde einen massiven +4.0 Score Bonus.';
+        if(m.includes('klon-kette')) return 'Klone: Bonuspunkte basierend auf vorherigen Klone-Scores in Folge.';
+        if(m.includes('hoffnung')) return 'Rebellen: Verdoppelt den Score, wenn du insgesamt im Rückstand bist.';
+        if(m.includes('kloneinheit 99')) return 'Bad Batch: Massiver Score-Bonus, aber erzwingt danach einen zufälligen Zug.';
+        if(m.includes('beskar')) return 'Mandalorianer: Unterdrückt gegnerische Effekte.';
+        if(m.includes('ausgleich')) return 'Graue Machtnutzer: Die niedrigste Punktzahl gewinnt diese Runde.';
+        if(m.includes('vorladung')) return 'Senat: Friert die Runde ein und macht sie zu einem Unentschieden.';
+        if(m.includes('kopfgeld')) return 'Kopfgeldjäger: Gibt einen Extra-Punkt beim Besiegen der Ziel-Fraktion.';
+        if(m.includes('hyperraum')) return 'Schmuggler: Die Karte kehrt bei Niederlage in die Hand zurück.';
+        if(m.includes('überrollen')) return 'Fahrzeug: Die Karte bleibt nach einem Sieg auf dem Feld.';
+        if(m.includes('nekromantie')) return 'Nachtschwestern: Klaut die zerstörte Karte des Gegners.';
+        if(m.includes('zwangsrekrutierung')) return 'Erste Ordnung: Fügt die besiegte gegnerische Karte deiner Hand hinzu.';
+        if(m.includes('ausdünnung')) return 'Sith: Vernichtet eine zusätzliche gegnerische Karte nach zwei gespielten Sith.';
+        return '';
+    }
+
     const formatDetailedCalc = (baseRaw, rarMult, rarName, finalScore, logs) => {
         let effHTML = '';
         if (logs.length > 0) {
             effHTML = `<div style="margin-top:8px; border-top:1px dashed #444; padding-top:8px;">
                           <div style="font-size:0.7rem; color:#888; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Aktive Effekte:</div>
-                          ${logs.map(l => `<div style="color:#a855f7; font-size:0.75rem; margin-bottom:2px;">✨ ${l}</div>`).join('')}
+                          ${logs.map(l => {
+                              const tip = getEffectTooltip(l);
+                              if(tip) return \`<div class="has-tooltip" data-tooltip="\${tip}" style="color:#a855f7; font-size:0.75rem; margin-bottom:2px; cursor:help; border-bottom:1px dotted #a855f7; display:inline-block; margin-right:5px;">✨ \${l}</div><br>\`;
+                              return \`<div style="color:#a855f7; font-size:0.75rem; margin-bottom:2px;">✨ \${l}</div>\`;
+                          }).join('')}
                        </div>`;
         } else {
             effHTML = `<div style="margin-top:8px; border-top:1px dashed #444; padding-top:8px; font-size:0.7rem; color:#555;">Keine aktiven Effekte</div>`;
@@ -1288,8 +1321,7 @@ async function finishMatch() {
                 user[defeatedField] = defeatedBots;
                 
                 // Credit rewards for level 1 to 10
-                const creditRewards = {1:5, 2:10, 3:20, 4:50, 5:75, 6:100, 7:150, 8:200, 9:300, 10:500};
-                const reward = creditRewards[opponentData.botLevel] || 0;
+                const reward = opponentData.reward || 0;
                 user.credits = (user.credits || 0) + reward;
                 
                 // Unlock Title if all bots defeated
@@ -1611,3 +1643,4 @@ function handleCardgameLiveState(lobby) {
         }
     }
 }
+

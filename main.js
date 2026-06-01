@@ -328,8 +328,8 @@ function setupGameUI(user) {
     if (optionsBtn) {
         optionsBtn.addEventListener('click', () => {
             document.getElementById('profile-overlay').classList.remove('hidden');
-            refreshProfileContent();
-        });
+            refreshProfileContent(); clearProfileUnlockDot(getCurrentUser());
+    });
     }
 
     // Attach Sub-Navs
@@ -751,5 +751,6 @@ document.addEventListener("keydown", (e) => {
         });
     }
 });
+
 
 
