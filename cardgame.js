@@ -469,7 +469,7 @@ const BOT_LEVELS = [
     { name: "Nachtschwestern (Lvl 6)", factionFocus: 'nachtschwester', rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#9b59b6', desc: "Nutzt dunkle Magie für Nekromantie.", reward: 150 },
     { name: "Schurken (Lvl 7)", factionFocus: 'schurke', rarities: ['rare'], popFilter: 'any', synergy: 'high', color: '#e67e22', desc: "Klaut hinterlistig deine Score-Werte.", reward: 150 },
     { name: "Kopfgeldjäger (Lvl 8)", factionFocus: 'kopfgeldjäger', rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#34495e', desc: "Macht Jagd auf deine häufigste Fraktion.", reward: 150 },
-    { name: "Mandalorianer (Lvl 9)", factionFocus: 'mandalorianer', rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#ff9f43', desc: "Nutzt Beskar für Silence-Effekte.", reward: 150 },
+    { name: "Mandalorianer (Lvl 9)", factionFocus: 'mandalorian', rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#ff9f43', desc: "Nutzt Beskar für Silence-Effekte.", reward: 150 },
     { name: "Senat (Lvl 10)", factionFocus: 'senat', rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#4da6ff', desc: "Friert Runden bei Niederlagen ein.", reward: 150 },
     { name: "Fahrzeuge (Lvl 11)", factionFocus: 'fahrzeug', rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#aaa', desc: "Gefährliche Überrollen-Taktik.", reward: 150 },
     { name: "Graue Machtnutzer (Lvl 12)", factionFocus: 'graue machtnutzer', rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#ccc', desc: "Dreht die Siegesbedingung um.", reward: 150 },
@@ -831,33 +831,52 @@ function playRound(playerCard, explicitOppCard = null) {
                 oEffects.forceRandom = false;
                 oLog.push("Befehlsverweigerung (Zufällige Karte gezogen)");
             } else {
+                let pDbCheat = playerCard ? activeCharacterDatabase.find(x => x.name === playerCard.charName) : null;
+                let pFacCheat = pDbCheat ? getMainFaction(pDbCheat.tags) : 'neutral';
+                let pScoreBase = playerCard ? (getCardScore(playerCard.charName) * (RARITY_MULT[playerCard.rarity] || 1.0)) : 0;
+                
+                let pSimScore = pScoreBase;
+                if (pEffects.klon && pFacCheat === 'klon') pSimScore += pEffects.lastCloneDead;
+                if (pEffects.droid && pFacCheat === 'droid') pSimScore *= 2;
+                if (pFacCheat === 'bad_batch') pSimScore += 4.0;
+                
                 let bestCards = [];
-                let bestScore = -9999;
+                let bestScore = -99999;
                 
                 opponentHandRemaining.forEach(card => {
                     let db = activeCharacterDatabase.find(x => x.name === card.charName);
                     let fac = db ? getMainFaction(db.tags) : 'neutral';
                     let baseScore = getCardScore(card.charName) * (RARITY_MULT[card.rarity] || 1.0);
                     
-                    let aiScore = baseScore;
+                    let simulatedScore = baseScore;
+                    if (oEffects.klon && fac === 'klon') simulatedScore += oEffects.lastCloneDead;
+                    if (oEffects.droid && fac === 'droid') simulatedScore *= 2;
+                    if (fac === 'bad_batch') simulatedScore += 4.0;
                     
-                    // Synergy priorities (don't break chains)
-                    if (oEffects.klon && fac === 'klon') aiScore += 100;
-                    if (oEffects.droid && fac === 'droid') aiScore += 100;
+                    let diff = simulatedScore - pSimScore;
+                    let aiScore = 0;
                     
-                    // Setup priorities (play them early)
-                    if (fac === 'klon' && !oEffects.klon) aiScore += 10;
-                    if (fac === 'droid' && !oEffects.droid) aiScore += 10;
-                    
-                    // Utility cards (better saved for later if possible, give them slight penalty so they are kept)
-                    if (fac === 'senat' || fac === 'schurke' || fac === 'mandalorianer' || fac === 'hutte') aiScore -= 5;
+                    if (diff > 0) {
+                        // Winning! Optimize to win with the smallest margin.
+                        aiScore = 1000 - diff;
+                    } else {
+                        // Losing!
+                        if (fac === 'senat') {
+                            aiScore = 800; // Veto saves the round, great move!
+                        } else if (fac === 'schmuggel') {
+                            aiScore = 700; // Schmuggler returns to deck, good sacrifice!
+                        } else {
+                            // Sacrifice worst card (lowest score)
+                            aiScore = -simulatedScore; 
+                        }
+                    }
                     
                     // Specific timing based on board state
-                    if (fac === '501st' && playerHandRemaining.length > 0) aiScore += 5;
-                    if (fac === 'nachtschwester' && playerGraveyard.length > 0) aiScore += 5;
+                    if (fac === '501st' && diff > 0 && playerHandRemaining.length > 0) aiScore += 5;
+                    if (fac === 'nachtschwester' && diff > 0 && playerGraveyard.length > 0) aiScore += 5;
 
                     // Add small randomness to prevent total predictability
-                    aiScore += Math.random() * 3;
+                    aiScore += Math.random() * 0.5;
                     
                     if (aiScore > bestScore) {
                         bestScore = aiScore;
@@ -1183,6 +1202,13 @@ function playRound(playerCard, explicitOppCard = null) {
         document.getElementById("match-opponent-active").innerHTML = ``;
     }
 
+    pLog.forEach((msg, i) => {
+        setTimeout(() => showMatchToast(msg.split(' (')[0], true, '#2ed573'), 200 + (i * 600));
+    });
+    oLog.forEach((msg, i) => {
+        setTimeout(() => showMatchToast(msg.split(' (')[0], false, '#ff4757'), 200 + (i * 600));
+    });
+
     setTimeout(() => {
         document.getElementById('match-result-overlay').classList.remove('hidden');
         if (playerHandRemaining.length === 0 && opponentHandRemaining.length === 0 && !pEffects.vehicles && !oEffects.vehicles) {
@@ -1194,7 +1220,24 @@ function playRound(playerCard, explicitOppCard = null) {
     }, 200);
 }
 
-async function finishMatch() {
+async function showMatchToast(text, isPlayer, color = '#ffd700') {
+    const containerId = isPlayer ? 'match-player-active' : 'match-opponent-active';
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    const toast = document.createElement('div');
+    toast.className = 'match-toast';
+    toast.innerText = text;
+    toast.style.color = color;
+    // Randomize slight left/right to prevent overlapping
+    toast.style.left = (20 + Math.random() * 60) + '%';
+    toast.style.top = '20%';
+    
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 2000);
+}
+
+function finishMatch() {
     document.getElementById('cardgame-match').classList.add('hidden');
     document.getElementById('match-result-overlay').classList.add('hidden');
     
@@ -1243,7 +1286,7 @@ async function finishMatch() {
                 user.credits = (user.credits || 0) + reward;
                 
                 // Unlock Title
-                const titleId = `sw_bot_${opponentData.botLevel}`;
+                const titleId = `sw_tut_bot_${opponentData.botLevel}`;
                 const titlesField = currentMode === 'starwars' ? 'unlocked_titles_starwars' : 'unlocked_titles_waifu';
                 let unlockedTitles = user[titlesField] || [];
                 
