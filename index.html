@@ -165,24 +165,26 @@
 
 
         <!-- DOCK UNTEN -->
-        <div class="game-dock" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; background: rgba(20, 24, 34, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); padding: 15px 25px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 100;">
-            <button class="dock-btn" onclick="openShop()" title="Shop" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px;">
+        <div class="game-dock" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; align-items: center; justify-content: center; background: rgba(20, 24, 34, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); padding: 15px 25px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 100;">
+            <button class="dock-btn" onclick="openShop()" title="Shop" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px; position: relative;">
                 <span style="font-size: 1.5rem; margin-bottom: 5px;">🛒</span>
                 <span style="font-size: 0.7rem; color: #aaa;">Shop</span>
+                <div id="shop-unlock-dot" class="notification-dot" style="display:none; position:absolute; top:0px; right:15px; width:10px; height:10px; background:#f1c40f; border-radius:50%; box-shadow:0 0 8px #f1c40f;"></div>
             </button>
-            <button class="dock-btn nav-link" data-target="lexikon-content" title="Lexikon" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px;">
+            <button class="dock-btn nav-link" data-target="lexikon-content" title="Lexikon" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px; position: relative;">
                 <span style="font-size: 1.5rem; margin-bottom: 5px;">📖</span>
                 <span style="font-size: 0.7rem; color: #aaa;">Lexikon</span>
             </button>
-            <button class="dock-btn nav-link" data-target="suggestions-content" title="Vorschläge" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px;">
+            <button class="dock-btn nav-link" data-target="suggestions-content" title="Vorschläge" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px; position: relative;">
                 <span style="font-size: 1.5rem; margin-bottom: 5px;">💡</span>
                 <span style="font-size: 0.7rem; color: #aaa;">Ideen</span>
             </button>
-            <button id="changelog-open-btn" class="dock-btn" title="Updates" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px;">
-                <span style="font-size: 1.5rem; margin-bottom: 5px;">📢</span>
+            <button id="changelog-open-btn" class="dock-btn" title="Updates" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px; position: relative;">
+                <span style="font-size: 1.5rem; margin-bottom: 5px;">🚀</span>
                 <span style="font-size: 0.7rem; color: #aaa;">Updates</span>
+                <div id="updates-unlock-dot" class="notification-dot" style="display:none; position:absolute; top:0px; right:15px; width:10px; height:10px; background:#f1c40f; border-radius:50%; box-shadow:0 0 8px #f1c40f;"></div>
             </button>
-            <button id="tutorial-open-btn-dock" class="dock-btn" title="Anleitung" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px;">
+            <button id="tutorial-open-btn-dock" class="dock-btn" title="Anleitung" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px; position: relative;">
                 <span style="font-size: 1.5rem; margin-bottom: 5px; color: #4cd137;">❓</span>
                 <span style="font-size: 0.7rem; color: #aaa;">Hilfe</span>
             </button>
@@ -235,7 +237,7 @@
             
             <div id="ranking-hub-content" class="tab-content app-container hidden">
                 <div class="section-header" style="display:flex; align-items:center; margin-bottom: 20px;">
-                    <button class="nav-link hub-back-btn" data-target="hub-content" style="padding: 10px 20px; font-size: 1.2rem; font-weight: bold; margin-right: 20px; background: rgba(0,0,0,0.5); border: 2px solid #3b82f6; border-radius: 6px; color: #3b82f6; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.backgroundColor='rgba(59, 130, 246, 0.2)'; this.style.boxShadow='0 0 10px rgba(59, 130, 246, 0.5)';" onmouseout="this.style.backgroundColor='rgba(0,0,0,0.5)'; this.style.boxShadow='none';">❮ Home</button>
+                    <button class="nav-link hub-back-btn rank-btn" data-target="hub-content" style="width: auto; height: auto; padding: 10px 20px; font-size: 1.2rem; font-weight: bold; margin-right: 20px; background: rgba(0,0,0,0.5); cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1;">❮ Home</button>
                     <h1 style="margin: 0; color: #fff; font-size: 1.5rem;">RANKING</h1>
                 </div>
                 
@@ -363,7 +365,7 @@
 
             <div id="scoreboard-hub-content" class="tab-content app-container hidden">
                 <div class="section-header" style="display:flex; align-items:center; margin-bottom: 20px;">
-                    <button class="nav-link hub-back-btn" data-target="hub-content" style="padding: 10px 20px; font-size: 1.2rem; font-weight: bold; margin-right: 20px; background: rgba(0,0,0,0.5); border: 2px solid #3b82f6; border-radius: 6px; color: #3b82f6; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.backgroundColor='rgba(59, 130, 246, 0.2)'; this.style.boxShadow='0 0 10px rgba(59, 130, 246, 0.5)';" onmouseout="this.style.backgroundColor='rgba(0,0,0,0.5)'; this.style.boxShadow='none';">❮ Home</button>
+                    <button class="nav-link hub-back-btn rank-btn" data-target="hub-content" style="width: auto; height: auto; padding: 10px 20px; font-size: 1.2rem; font-weight: bold; margin-right: 20px; background: rgba(0,0,0,0.5); cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1;">❮ Home</button>
                     <h1 style="margin: 0; color: #fff; font-size: 1.5rem;">SCOREBOARD & HISTORIE</h1>
                 </div>
 
@@ -408,7 +410,7 @@
             
             <div id="cardgame-content" class="tab-content app-container hidden" style="max-width:1600px; width:98%; padding: 20px;">
                 <div class="section-header" style="display:flex; align-items:center; margin-bottom: 20px;">
-                    <button class="nav-link hub-back-btn" data-target="hub-content" style="padding: 10px 20px; font-size: 1.2rem; font-weight: bold; margin-right: 20px; background: rgba(0,0,0,0.5); border: 2px solid #3b82f6; border-radius: 6px; color: #3b82f6; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.backgroundColor='rgba(59, 130, 246, 0.2)'; this.style.boxShadow='0 0 10px rgba(59, 130, 246, 0.5)';" onmouseout="this.style.backgroundColor='rgba(0,0,0,0.5)'; this.style.boxShadow='none';">❮ Home</button>
+                    <button class="nav-link hub-back-btn rank-btn" data-target="hub-content" style="width: auto; height: auto; padding: 10px 20px; font-size: 1.2rem; font-weight: bold; margin-right: 20px; background: rgba(0,0,0,0.5); cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1;">❮ Home</button>
                     <h1 style="margin: 0; color: #fff; font-size: 1.5rem;">CARDGAME</h1>
                 </div>
 
@@ -693,7 +695,7 @@
                     </div>
             </div></div></div><div id="starwarsdle-content" class="tab-content app-container hidden">
                 <div class="section-header" style="display:flex; align-items:center; margin-bottom: 20px;">
-                    <button class="nav-link hub-back-btn" data-target="hub-content" style="padding: 10px 20px; font-size: 1.2rem; font-weight: bold; margin-right: 20px; background: rgba(0,0,0,0.5); border: 2px solid #3b82f6; border-radius: 6px; color: #3b82f6; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.backgroundColor='rgba(59, 130, 246, 0.2)'; this.style.boxShadow='0 0 10px rgba(59, 130, 246, 0.5)';" onmouseout="this.style.backgroundColor='rgba(0,0,0,0.5)'; this.style.boxShadow='none';">❮ Home</button>
+                    <button class="nav-link hub-back-btn rank-btn" data-target="hub-content" style="width: auto; height: auto; padding: 10px 20px; font-size: 1.2rem; font-weight: bold; margin-right: 20px; background: rgba(0,0,0,0.5); cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1;">❮ Home</button>
                     <h1 style="margin: 0; color: #fff; font-size: 1.5rem;">STARWARSDLE</h1>
                 </div>
                 <p class="prompt-text" style="text-align: center;">Errate den täglichen Charakter!</p>
@@ -799,7 +801,7 @@
                     <button type="button" class="close-overlay-btn" onclick="document.getElementById('shop-modal').classList.add('hidden')">✕</button>
                     <h2 class="theme-heading">SHOP & KARTEN</h2>
                     <div class="section-header" style="display:flex; align-items:center; margin-bottom: 20px;">
-                        <button class="nav-link hub-back-btn" data-target="hub-content" style="padding: 10px 20px; font-size: 1.2rem; font-weight: bold; margin-right: 20px; background: rgba(0,0,0,0.5); border: 2px solid #3b82f6; border-radius: 6px; color: #3b82f6; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.backgroundColor='rgba(59, 130, 246, 0.2)'; this.style.boxShadow='0 0 10px rgba(59, 130, 246, 0.5)';" onmouseout="this.style.backgroundColor='rgba(0,0,0,0.5)'; this.style.boxShadow='none';">❮ Home</button>
+                        <button class="nav-link hub-back-btn rank-btn" data-target="hub-content" style="width: auto; height: auto; padding: 10px 20px; font-size: 1.2rem; font-weight: bold; margin-right: 20px; background: rgba(0,0,0,0.5); cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1;">❮ Home</button>
                         <h1 style="margin: 0; color: #fff; font-size: 1.5rem;">SHOP & KARTEN</h1>
                     </div>
                     <p class="prompt-text">Öffne Booster-Packs und sammle exklusive Karten!</p>
@@ -811,7 +813,7 @@
                         </div>
                         <div style="text-align:center;">
                             <div style="font-size:0.8rem; color:#94a3b8; margin-bottom:10px;">Kristalle durch doppelte epische Karten.</div>
-                            <button id="shop-crafting-btn" class="rank-btn" style="padding:10px 20px; font-size:1rem; border-color:#9b59b6; color:#9b59b6;">🛠️ Epische Karte herstellen</button>
+                            <button id="shop-crafting-btn" class="rank-btn" style="width: auto; height: auto; padding:10px 20px; font-size:1rem; border-color:#9b59b6; color:#9b59b6;">🛠️ Epische Karte herstellen</button>
                         </div>
                     </div>
 
@@ -1050,6 +1052,7 @@
     <script type="module" src="main.js?v=8.3.0"></script>
 </body>
 </html>
+
 
 
 

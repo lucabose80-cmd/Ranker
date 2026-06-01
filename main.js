@@ -33,7 +33,7 @@ import { initSuggestions, renderSuggestions, stopSuggestions } from './suggestio
 import { initInactivityWatcher } from './inactivity.js';
 import { initPrivateChat } from './private-chat.js';
 import { initShop } from './shop.js';
-window.openShop = function() { document.getElementById('shop-modal').classList.remove('hidden'); initShop(); };
+window.openShop = function() { document.getElementById('shop-modal').classList.remove('hidden'); initShop(); localStorage.setItem('last_seen_shop_version', 'v1.0'); window.checkGlobalNotifications(); };
 import { initCardgame } from './cardgame.js';
 
 const eyeOpenSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
@@ -755,4 +755,54 @@ document.addEventListener("keydown", (e) => {
 
 
 
+
+
+
+window.checkGlobalNotifications = function() {
+    // 1. Starwarsdle
+    const starwarsdleDot = document.getElementById('starwarsdle-glow');
+    if (starwarsdleDot) {
+        const starwarsdleState = JSON.parse(localStorage.getItem('starwarsdle_state') || '{}');
+        const today = new Date().toLocaleDateString();
+        if (starwarsdleState.date === today && starwarsdleState.solved === true) {
+            starwarsdleDot.style.display = 'none';
+        } else {
+            starwarsdleDot.style.display = 'block';
+        }
+    }
+
+    // 2. Shop
+    const shopDot = document.getElementById('shop-unlock-dot');
+    if (shopDot) {
+        const CURRENT_SHOP_VERSION = 'v1.0'; // Erhhen, wenn es Shop-Updates gibt
+        const lastSeen = localStorage.getItem('last_seen_shop_version') || '';
+        if (lastSeen !== CURRENT_SHOP_VERSION) {
+            shopDot.style.display = 'block';
+        } else {
+            shopDot.style.display = 'none';
+        }
+    }
+
+    // 3. Updates (Changelog)
+    // Wird bereits in updateChangelogContent fr den Button gelst,
+    // wir aktualisieren hier zustzlich den neuen roten/gelben Punkt im Dock
+    const updateDot = document.getElementById('updates-unlock-dot');
+    if (updateDot) {
+        const user = typeof getCurrentUser !== 'undefined' ? getCurrentUser() : null;
+        if (user && user.role !== 'admin') {
+            const field = currentMode === 'starwars' ? 'lastReadVersionStarWars' : 'lastReadVersionWaifu';
+            const lastRead = user[field] || '';
+            // Da wir aus main.js keinen direkten Zugriff auf latestVersionString aus changelog.js haben,
+            // prfen wir den Zustand des Buttons, den changelog.js setzt:
+            const openBtn = document.getElementById('changelog-open-btn');
+            if (openBtn && openBtn.classList.contains('text-gold-glow')) {
+                updateDot.style.display = 'block';
+            } else {
+                updateDot.style.display = 'none';
+            }
+        }
+    }
+};
+
+setInterval(window.checkGlobalNotifications, 5000);
 
