@@ -128,7 +128,16 @@ export function clearProfileUnlockDot(user) {
         ...(user.unlocked_titles_starwars || []),
         ...(user.unlocked_titles_waifu || [])
     ];
-    localStorage.setItem('seen_unlock_ids', JSON.stringify(currentIds));
+    const seenIds = getSeenIds();
+    currentIds.forEach(id => {
+        if (!seenIds.includes(id)) seenIds.push(id);
+    });
+    if (user.discovered) {
+        user.discovered.forEach(id => {
+            if (!seenIds.includes(id)) seenIds.push(id);
+        });
+    }
+    localStorage.setItem('seen_unlock_ids', JSON.stringify(seenIds));
     const dot = document.getElementById('profile-unlock-dot');
     if (dot) dot.style.display = 'none';
 }
