@@ -1,5 +1,18 @@
 export const patchNotesStarWars = [
     {
+        version: "v9.0",
+        title: "Update: Massive UI Overhaul & Quality of Life",
+        isHotfix: false,
+        changes: [
+            "UI-Update: Komplettes Redesign des Hauptmenüs! Das alte Seiten-Tab-System wurde durch ein modernes, dynamisches 'Dock'-System (unten am Bildschirmrand) und große zentrierte Spielmodus-Kacheln ersetzt.",
+            "Feature: Neues Benachrichtigungssystem! Wichtige Neuerungen (z.B. neue Updates, tägliches Starwarsdle ungelöst, Shop-Aktualisierungen) werden nun mit einem gelben Punkt direkt am Button hervorgehoben.",
+            "Feature: Die Home-Buttons passen sich ab sofort fließend an dein aktuell gewähltes Farb-Thema (z.B. Sith-Rot, Rebell-Grün) an.",
+            "Bugfix: Der nervige gelbe Punkt am Profilfenster, der nicht mehr verschwinden wollte, wurde behoben. (Neue Karten lösen nun keinen Profil-Dot mehr aus).",
+            "Bugfix: Das 'Multi-Fraktions'-Problem bei Karten wie Anakin Skywalker (Jedi + 501st) wurde behoben. Karten aktivieren nun alle passenden Synergien und Effekte gleichzeitig im Cardgame!",
+            "Bugfix: Fehler in der Bot-Generierung (Tutorial Fights) gefixt. Der Droiden-Bot und andere Fraktions-Bots bauen nun wieder zu 100% korrekte Themen-Decks."
+        ]
+    },
+    {
         version: "v8.6",
         title: "Update: 7 Neue Fraktionen & 22 Tutorial Fights",
         isHotfix: false,
@@ -1010,5 +1023,6 @@ export const patchNotesStarWars = [
     { version: "v1.1", title: "Star Wars Theme", changes: ["Theme-Wechsel: Das Spiel nutzt nun das Star Wars Universum."] },
     { version: "v1.0", title: "Initial Release", changes: ["GrundgerÃ¼st des Ranking-Spiels verÃ¶ffentlicht."] }
 ];
+
 
 

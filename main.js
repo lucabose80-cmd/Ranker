@@ -436,7 +436,7 @@ function setupGameUI(user) {
     // Profil Overlay öffnen
     document.getElementById('profile-trigger').addEventListener('click', () => {
         document.getElementById('profile-overlay').classList.remove('hidden');
-        refreshProfileContent(); // Baut alles passend zum aktuellen Modus neu auf
+        refreshProfileContent(); clearProfileUnlockDot(getCurrentUser());
     });
     
     document.getElementById('close-profile-btn').addEventListener('click', closeProfileOverlay);
@@ -805,4 +805,5 @@ window.checkGlobalNotifications = function() {
 };
 
 setInterval(window.checkGlobalNotifications, 5000);
+
 

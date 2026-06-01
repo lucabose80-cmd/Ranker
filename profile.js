@@ -112,8 +112,7 @@ export function checkProfileUnlockDot(user) {
         ...(user.unlocked_themes_starwars || []),
         ...(user.unlocked_themes_waifu || []),
         ...(user.unlocked_titles_starwars || []),
-        ...(user.unlocked_titles_waifu || []),
-        ...(user.discovered || [])
+        ...(user.unlocked_titles_waifu || [])
     ];
     const seenIds = getSeenIds();
     const hasNew = currentIds.some(id => !seenIds.includes(id));
@@ -127,8 +126,7 @@ export function clearProfileUnlockDot(user) {
         ...(user.unlocked_themes_starwars || []),
         ...(user.unlocked_themes_waifu || []),
         ...(user.unlocked_titles_starwars || []),
-        ...(user.unlocked_titles_waifu || []),
-        ...(user.discovered || [])
+        ...(user.unlocked_titles_waifu || [])
     ];
     localStorage.setItem('seen_unlock_ids', JSON.stringify(currentIds));
     const dot = document.getElementById('profile-unlock-dot');
@@ -1875,5 +1873,6 @@ window.processCardUpgrade = async function(charName, fromRarity, user) {
         alert("Ein Fehler ist aufgetreten.");
     }
 };
+
 
 
