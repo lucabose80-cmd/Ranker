@@ -60,6 +60,11 @@ export function initShop() {
         craftBtn.onclick = () => window.openCraftingModal(user);
     }
 
+    const rerollBtn = document.getElementById('shop-reroll-btn');
+    if (rerollBtn) {
+        rerollBtn.onclick = () => window.openLegendaryRerollModal(getCurrentUser());
+    }
+
     const container = document.getElementById('booster-packs-container');
     container.innerHTML = '';
 
@@ -680,9 +685,183 @@ window.processCrafting = async function(charName, user) {
 };
 
 
+window.openLegendaryRerollModal = function(user) {
+    if (!user) return;
+    const invField = `inventory_${currentMode}`;
+    const inventory = user[invField] || [];
 
+    // Collect all legendaries the user owns, grouped by boosterId
+    const ownedLegendaries = inventory.filter(c => c.rarity === 'legendary');
 
+    let modal = document.getElementById('reroll-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'reroll-modal';
+        modal.className = 'modal hidden';
+        document.body.appendChild(modal);
+    }
 
+    // Group legendaries by their pack (boosterId)
+    const byPack = {};
+    ownedLegendaries.forEach(item => {
+        const pid = item.boosterId || 'starwars_all';
+        if (!byPack[pid]) byPack[pid] = [];
+        byPack[pid].push(item);
+    });
 
+    // Only packs with >= 2 legendaries are eligible
+    const eligiblePacks = Object.entries(byPack).filter(([, items]) => items.length >= 2);
 
+    const packNames = {
+        'starwars_all': 'Galaktisches Standard-Pack',
+        'starwars_klon': 'Klonkrieger Elite-Pack',
+        'starwars_jedi_sith': 'Machtanwender Pack'
+    };
 
+    modal.innerHTML = `
+        <div class="modal-content" style="position:relative; max-width:700px; background:#1e293b; color:#fff; padding:24px; border-radius:12px; text-align:center; max-height:85vh; overflow-y:auto;">
+            <span id="close-reroll-modal" class="close-btn" style="position:absolute; right:15px; top:15px; font-size:1.5rem; cursor:pointer;">×</span>
+            <h2 style="color:#ffd700; margin-top:0;">🎲 Legendäre neu würfeln</h2>
+            <p style="color:#94a3b8; font-size:0.9rem;">Wähle <strong style="color:#fff;">2 Legendäre aus demselben Pack</strong> zum Opfern. Du erhältst dafür eine zufällige neue Legendäre aus diesem Pack (mit der vollen Pack-Opening-Animation!).</p>
+            <div id="reroll-pack-selector" style="display:flex; flex-direction:column; gap:20px; margin-top:15px;">
+                ${eligiblePacks.length === 0 ? `<div style="color:#ff4757; padding:20px; border:1px dashed #ff4757; border-radius:8px;">Du besitzt nicht genug Legendäre Karten aus demselben Pack (mindestens 2 benötigt).</div>` : ''}
+                ${eligiblePacks.map(([packId, items]) => {
+                    const packName = packNames[packId] || packId;
+                    const charNames = [...new Set(items.map(i => i.charName))];
+                    return `
+                    <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,215,0,0.3); border-radius:10px; padding:15px;">
+                        <div style="color:#ffd700; font-weight:bold; margin-bottom:12px;">📦 ${packName}</div>
+                        <div style="font-size:0.82rem; color:#94a3b8; margin-bottom:10px;">Wähle 2 zum Opfern (${items.length} Legendäre besessen):</div>
+                        <div style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center;" id="cards-${packId}">
+                            ${charNames.map(name => {
+                                const count = items.filter(i => i.charName === name).length;
+                                const legData = LEGENDARY_POOL[name];
+                                const imgSrc = legData ? legData.specialImg : '';
+                                return `<div class="reroll-card-choice" data-pack="${packId}" data-char="${name}" 
+                                    style="cursor:pointer; border:3px solid #ffd700; border-radius:8px; overflow:hidden; width:90px; position:relative; transition:all 0.2s; background:#0f172a;"
+                                    onclick="window.toggleRerollCard(this)">
+                                    ${imgSrc ? `<img src="${imgSrc}" style="width:100%; height:135px; object-fit:cover; display:block;">` : `<div style="width:100%; height:135px; background:#1e293b; display:flex; align-items:center; justify-content:center; font-size:2rem;">⭐</div>`}
+                                    <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.85); padding:4px; font-size:0.6rem; text-align:center;">${name}${count > 1 ? ` (×${count})` : ''}</div>
+                                    <div class="reroll-selected-overlay" style="display:none; position:absolute; inset:0; background:rgba(255,215,0,0.35); border:3px solid #ffd700; border-radius:5px; justify-content:center; align-items:center; font-size:2rem;">✓</div>
+                                </div>`;
+                            }).join('')}
+                        </div>
+                        <button class="rank-btn reroll-confirm-btn" data-pack="${packId}" 
+                            style="margin-top:15px; width:100%; padding:12px; border-color:#ffd700; color:#ffd700; display:none; height:auto;"
+                            onclick="window.processLegendaryReroll('${packId}')">
+                            🎲 Diese 2 Legendären opfern & neu würfeln!
+                        </button>
+                    </div>`;
+                }).join('')}
+            </div>
+        </div>
+    `;
+    modal.classList.remove('hidden');
+    document.getElementById('close-reroll-modal').onclick = () => modal.classList.add('hidden');
+    modal.addEventListener('click', e => { if (e.target === modal) modal.classList.add('hidden'); });
+
+    window._rerollSelections = {};
+};
+
+window.toggleRerollCard = function(el) {
+    const pack = el.dataset.pack;
+    const char = el.dataset.char;
+    if (!window._rerollSelections) window._rerollSelections = {};
+    if (!window._rerollSelections[pack]) window._rerollSelections[pack] = [];
+
+    const sel = window._rerollSelections[pack];
+    const idx = sel.indexOf(char);
+
+    if (idx !== -1) {
+        // Deselect
+        sel.splice(idx, 1);
+        el.style.opacity = '1';
+        el.style.transform = 'scale(1)';
+        el.querySelector('.reroll-selected-overlay').style.display = 'none';
+    } else if (sel.length < 2) {
+        // Select
+        sel.push(char);
+        el.style.opacity = '1';
+        el.style.transform = 'scale(1.08)';
+        const overlay = el.querySelector('.reroll-selected-overlay');
+        overlay.style.display = 'flex';
+    } else {
+        // Already 2 selected, flash warning
+        el.style.boxShadow = '0 0 12px #ff4757';
+        setTimeout(() => el.style.boxShadow = '', 600);
+        return;
+    }
+
+    // Show/hide confirm button
+    const confirmBtn = document.querySelector(`.reroll-confirm-btn[data-pack="${pack}"]`);
+    if (confirmBtn) confirmBtn.style.display = sel.length === 2 ? 'block' : 'none';
+};
+
+window.processLegendaryReroll = async function(packId) {
+    const user = getCurrentUser();
+    if (!user) return;
+
+    const sel = (window._rerollSelections || {})[packId];
+    if (!sel || sel.length !== 2) {
+        alert('Bitte genau 2 Legendäre Karten auswählen!');
+        return;
+    }
+
+    const invField = `inventory_${currentMode}`;
+    const inventory = [...(user[invField] || [])];
+
+    // Remove one copy of each selected legendary from this pack
+    const toRemove = [...sel];
+    const newInventory = inventory.filter(item => {
+        if (item.rarity !== 'legendary' || item.boosterId !== packId) return true;
+        const removeIdx = toRemove.indexOf(item.charName);
+        if (removeIdx !== -1) {
+            toRemove.splice(removeIdx, 1);
+            return false; // remove this one
+        }
+        return true;
+    });
+
+    // Find all legendaries in this pack pool
+    const booster = BOOSTERS.find(b => b.id === packId);
+    if (!booster) { alert('Pack nicht gefunden!'); return; }
+    const pool = activeCharacterDatabase.filter(booster.filter);
+    const legendaryPool = pool.filter(c => LEGENDARY_POOL[c.name]);
+
+    if (legendaryPool.length === 0) { alert('Keine Legendären in diesem Pack!'); return; }
+
+    // Pick a random legendary (exclude the two sacrificed ones for variety if possible)
+    const availablePool = legendaryPool.filter(c => !sel.includes(c.name));
+    const finalPool = availablePool.length > 0 ? availablePool : legendaryPool;
+    const chosenChar = finalPool[Math.floor(Math.random() * finalPool.length)];
+
+    // Add the new legendary
+    const isNew = !newInventory.some(c => c.charName === chosenChar.name && c.rarity === 'legendary');
+    newInventory.push({
+        charName: chosenChar.name,
+        rarity: 'legendary',
+        timestamp: Date.now(),
+        boosterId: packId
+    });
+
+    user[invField] = newInventory;
+    localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
+
+    try {
+        const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+        const { db } = await import('./firebase-config.js');
+        await updateDoc(doc(db, "users", user.uid), { [invField]: newInventory });
+
+        // Close reroll modal and show the legendary pull animation
+        document.getElementById('reroll-modal').classList.add('hidden');
+        const pulledCards = [{ char: chosenChar, rarity: RARITIES.LEGENDARY, isNew }];
+        showPullAnimation(pulledCards, false);
+        initShop();
+    } catch(e) {
+        console.error('Reroll Fehler:', e);
+        alert('Fehler beim Würfeln. Änderungen wurden rückgängig gemacht.');
+        // Restore user
+        user[invField] = inventory;
+        localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
+    }
+};
