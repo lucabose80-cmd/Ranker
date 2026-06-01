@@ -1876,3 +1876,4 @@ window.processCardUpgrade = async function(charName, fromRarity, user) {
     }
 };
 
+

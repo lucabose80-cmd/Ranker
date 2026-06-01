@@ -385,7 +385,7 @@ function setupGameUI(user) {
         'live-content': () => { initLiveSpectating(); window.isGameActive = false; }
     });
 
-    setupSubNav('.cardgame-sub-nav', ['cardgame-matchmaking', 'cardgame-deckbuilder', 'adventure-content', 'cardgame-bots']);
+    setupSubNav('.cardgame-sub-nav', ['cardgame-matchmaking', 'cardgame-deckbuilder', 'adventure-content', 'cardgame-bots'], { 'cardgame-deckbuilder': () => { document.getElementById('cardgame-btn-deck')?.click(); }, 'cardgame-bots': () => { document.getElementById('cardgame-btn-bot')?.click(); } });
     
     setupSubNav('.scoreboard-sub-nav', ['scoreboard-content', 'history-content'], {
         'history-content': () => { renderHistory(); }
@@ -751,3 +751,5 @@ document.addEventListener("keydown", (e) => {
         });
     }
 });
+
+

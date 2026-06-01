@@ -166,7 +166,7 @@
 
         <!-- DOCK UNTEN -->
         <div class="game-dock" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; background: rgba(20, 24, 34, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); padding: 15px 25px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 100;">
-            <button class="dock-btn nav-link" data-target="shop-content" title="Shop" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px;">
+            <button class="dock-btn" onclick="document.getElementById('shop-modal').classList.remove('hidden')" title="Shop" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px;">
                 <span style="font-size: 1.5rem; margin-bottom: 5px;">🛒</span>
                 <span style="font-size: 0.7rem; color: #aaa;">Shop</span>
             </button>
@@ -242,8 +242,8 @@
                 <div class="mode-selector ranking-sub-nav" style="margin-bottom: 20px;">
                     <button id="mode-classic-btn" class="mode-toggle-btn active" data-sub="classic">Klassisch</button>
                     <button id="mode-advanced-btn" class="mode-toggle-btn" data-sub="advanced">Advanced</button>
-                    <button id="subnav-versus-btn" class="mode-toggle-btn nav-link" data-target="versus-content">Versus</button>
-                    <button id="subnav-live-btn" class="mode-toggle-btn nav-link" data-target="live-content">Live</button>
+                    <button id="subnav-versus-btn" class="mode-toggle-btn" data-sub="versus-content">Versus</button>
+                    <button id="subnav-live-btn" class="mode-toggle-btn" data-sub="live-content">Live</button>
                 </div>
 
                 <div id="game-main-content" class="ranking-sub-view">
@@ -301,8 +301,6 @@
             </div>
             <!-- Ende game-main-content -->
             </div>
-            <!-- Ende ranking-hub-content -->
-
             <div id="live-content" class="ranking-sub-view hidden">
                 <div class="panel history-panel">
                     <h2 class="theme-heading">LIVE SPIELE</h2>
@@ -333,6 +331,35 @@
                     <div id="history-list" class="history-list"></div>
                 </div>
             </div>
+
+            <div id="versus-content" class="ranking-sub-view hidden">
+                <div class="panel history-panel" id="versus-lobby-list-view">
+                    <h2 class="theme-heading">VERSUS LOBBYS</h2>
+                    <p class="prompt-text">Spiele gegen andere. Wer rankt am besten?</p>
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <button id="create-versus-lobby-btn" class="rank-btn" style="margin: 0; width: auto; padding: 0 20px;">Neue Lobby erstellen</button>
+                        <select id="versus-category-select" style="background: rgba(0,0,0,0.3); color: white; border: 1px solid #333; padding: 10px; border-radius: 6px;">
+                            <option value="normal">Expanded Universe</option>
+                            <option value="klon">Nur Klone</option>
+                            <option value="peak">Peak Ranking</option>
+                            <option value="vehicle">Fahrzeuge</option>
+                        </select>
+                    </div>
+                    <div id="versus-lobbies-grid" class="live-grid"></div>
+                </div>
+                <div class="panel history-panel hidden" id="versus-waiting-room-view">
+                    <h2 id="versus-room-title" class="theme-heading">Lobby</h2>
+                    <p class="prompt-text" id="versus-room-status">Warte auf Spieler...</p>
+                    <div id="versus-players-grid" class="live-grid" style="margin-bottom: 20px;"></div>
+                    <div id="versus-betting-container" style="margin-bottom: 20px;"></div>
+                    <div style="display:flex; flex-direction:column; gap:10px; align-items:center;">
+                        <button id="start-versus-game-btn" class="rank-btn hidden" style="background:#2ed573; border-color:#2ed573; width: auto; padding: 0 20px;">Spiel starten</button>
+                        <button id="leave-versus-lobby-btn" class="text-btn">Verlassen</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ende ranking-hub-content -->
 
             <div id="scoreboard-hub-content" class="tab-content app-container hidden">
                 <div class="section-header" style="display:flex; align-items:center; margin-bottom: 20px;">
@@ -708,33 +735,6 @@
                 </div>
             </div>
             
-            <div id="versus-content" class="ranking-sub-view hidden">
-                <div class="panel history-panel" id="versus-lobby-list-view">
-                    <h2 class="theme-heading">VERSUS LOBBYS</h2>
-                    <p class="prompt-text">Spiele gegen andere. Wer rankt am besten?</p>
-                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                        <button id="create-versus-lobby-btn" class="rank-btn" style="margin: 0; width: auto; padding: 0 20px;">Neue Lobby erstellen</button>
-                        <select id="versus-category-select" style="background: rgba(0,0,0,0.3); color: white; border: 1px solid #333; padding: 10px; border-radius: 6px;">
-                            <option value="normal">Expanded Universe</option>
-                            <option value="klon">Nur Klone</option>
-                            <option value="peak">Peak Ranking</option>
-                            <option value="vehicle">Fahrzeuge</option>
-                        </select>
-                    </div>
-                    <div id="versus-lobbies-grid" class="live-grid"></div>
-                </div>
-                <div class="panel history-panel hidden" id="versus-waiting-room-view">
-                    <h2 id="versus-room-title" class="theme-heading">Lobby</h2>
-                    <p class="prompt-text" id="versus-room-status">Warte auf Spieler...</p>
-                    <div id="versus-players-grid" class="live-grid" style="margin-bottom: 20px;"></div>
-                    <div id="versus-betting-container" style="margin-bottom: 20px;"></div>
-                    <div style="display:flex; flex-direction:column; gap:10px; align-items:center;">
-                        <button id="start-versus-game-btn" class="rank-btn hidden" style="background:#2ed573; border-color:#2ed573; width: auto; padding: 0 20px;">Spiel starten</button>
-                        <button id="leave-versus-lobby-btn" class="text-btn">Verlassen</button>
-                    </div>
-                </div>
-            </div>
-
             <div id="lexikon-modal" class="profile-overlay hidden">
                 <div class="panel history-panel profile-panel">
                     <button type="button" class="close-overlay-btn" onclick="document.getElementById('lexikon-modal').classList.add('hidden')">✕</button>
@@ -838,13 +838,13 @@
                     </div>
                     <div class="profile-avatar-selection">
                         <div class="profile-tabs" style="display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 15px;">
-                            <button id="profile-tab-btn-avatar" class="profile-tab-btn active" data-tab="avatar">Avatare</button>
-                            <button id="profile-tab-btn-title" class="profile-tab-btn" data-tab="title">Titel</button>
-                            <button id="profile-tab-btn-theme" class="profile-tab-btn" data-tab="theme">Farbschemas</button>
-                            <button class="profile-tab-btn" data-tab="stats" id="profile-tab-btn-stats">Statistiken</button>
-                            <button class="profile-tab-btn" data-tab="album" id="profile-tab-btn-album">Album</button>
-                            <button class="profile-tab-btn" data-tab="custom" id="profile-tab-btn-custom">Anpassen</button>
-                            <button class="profile-tab-btn" data-tab="trades" id="profile-tab-btn-trades">Tauschen</button>
+                            <button id="profile-tab-btn-avatar" class="changelog-tab profile-tab-btn active" data-tab="avatar">Avatare</button>
+                            <button id="profile-tab-btn-title" class="changelog-tab profile-tab-btn" data-tab="title">Titel</button>
+                            <button id="profile-tab-btn-theme" class="changelog-tab profile-tab-btn" data-tab="theme">Farbschemas</button>
+                            <button class="changelog-tab profile-tab-btn" data-tab="stats" id="profile-tab-btn-stats">Statistiken</button>
+                            <button class="changelog-tab profile-tab-btn" data-tab="album" id="profile-tab-btn-album">Album</button>
+                            <button class="changelog-tab profile-tab-btn" data-tab="custom" id="profile-tab-btn-custom">Anpassen</button>
+                            <button class="changelog-tab profile-tab-btn" data-tab="trades" id="profile-tab-btn-trades">Tauschen</button>
                         </div>
                         
                         <div id="profile-avatar-panel" class="profile-panel-content">
@@ -1009,7 +1009,7 @@
     <!-- Onboarding / Tutorial Modal -->
     <div id="tutorial-modal" class="profile-overlay hidden">
         <div class="panel spectator-modal-panel" style="max-width: 650px;">
-            <button id="close-tutorial-btn" type="button" class="close-overlay-btn">✕</button>
+            <button id="close-tutorial-btn" type="button" class="close-overlay-btn" onclick="document.getElementById('tutorial-modal').classList.add('hidden')">✕</button>
             <h2 class="theme-heading" style="text-align: center; color: #4cd137;">WILLKOMMEN BEI RANKER</h2>
             
             <div style="max-height: 60vh; overflow-y: auto; padding-right: 10px; font-size: 0.95rem; line-height: 1.6; color: #e2e8f0; text-align: left;">
@@ -1048,6 +1048,8 @@
     <script type="module" src="main.js?v=8.3.0"></script>
 </body>
 </html>
+
+
 
 
 

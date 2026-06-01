@@ -130,7 +130,7 @@ export function initAdventureMode() {
     }
 
     // Refresh UI when entering tab
-    document.getElementById('nav-adventure').addEventListener('click', () => {
+    document.getElementById('subnav-cardgame-adventure').addEventListener('click', () => {
         verifyAdventureInit();
         renderAdventureMap();
         renderAdventureDeck();
@@ -485,4 +485,5 @@ function selectDraftCard(newDraftObj, newCardImage, newCardScore) {
         removeContainer.appendChild(cardEl);
     });
 }
+
 
