@@ -727,21 +727,20 @@ window.openLegendaryRerollModal = function(user) {
                 ${eligiblePacks.length === 0 ? `<div style="color:#ff4757; padding:20px; border:1px dashed #ff4757; border-radius:8px;">Du besitzt nicht genug Legendäre Karten aus demselben Pack (mindestens 2 benötigt).</div>` : ''}
                 ${eligiblePacks.map(([packId, items]) => {
                     const packName = packNames[packId] || packId;
-                    const charNames = [...new Set(items.map(i => i.charName))];
                     return `
                     <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,215,0,0.3); border-radius:10px; padding:15px;">
                         <div style="color:#ffd700; font-weight:bold; margin-bottom:12px;">📦 ${packName}</div>
                         <div style="font-size:0.82rem; color:#94a3b8; margin-bottom:10px;">Wähle 2 zum Opfern (${items.length} Legendäre besessen):</div>
                         <div style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center;" id="cards-${packId}">
-                            ${charNames.map(name => {
-                                const count = items.filter(i => i.charName === name).length;
-                                const legData = LEGENDARY_POOL[name];
+                            ${items.map((item, itemIdx) => {
+                                const legData = LEGENDARY_POOL[item.charName];
                                 const imgSrc = legData ? legData.specialImg : '';
-                                return `<div class="reroll-card-choice" data-pack="${packId}" data-char="${name}" 
+                                const globalIdx = packId + '__' + itemIdx;
+                                return `<div class="reroll-card-choice" data-pack="${packId}" data-char="${item.charName}" data-idx="${globalIdx}"
                                     style="cursor:pointer; border:3px solid #ffd700; border-radius:8px; overflow:hidden; width:90px; position:relative; transition:all 0.2s; background:#0f172a;"
                                     onclick="window.toggleRerollCard(this)">
                                     ${imgSrc ? `<img src="${imgSrc}" style="width:100%; height:135px; object-fit:cover; display:block;">` : `<div style="width:100%; height:135px; background:#1e293b; display:flex; align-items:center; justify-content:center; font-size:2rem;">⭐</div>`}
-                                    <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.85); padding:4px; font-size:0.6rem; text-align:center;">${name}${count > 1 ? ` (×${count})` : ''}</div>
+                                    <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.85); padding:4px; font-size:0.6rem; text-align:center;">${item.charName}<br><span style="color:#ffd700; font-size:0.55rem;">#${itemIdx + 1}</span></div>
                                     <div class="reroll-selected-overlay" style="display:none; position:absolute; inset:0; background:rgba(255,215,0,0.35); border:3px solid #ffd700; border-radius:5px; justify-content:center; align-items:center; font-size:2rem;">✓</div>
                                 </div>`;
                             }).join('')}
@@ -765,26 +764,23 @@ window.openLegendaryRerollModal = function(user) {
 
 window.toggleRerollCard = function(el) {
     const pack = el.dataset.pack;
-    const char = el.dataset.char;
+    const idx = el.dataset.idx; // unique per card instance
     if (!window._rerollSelections) window._rerollSelections = {};
     if (!window._rerollSelections[pack]) window._rerollSelections[pack] = [];
 
-    const sel = window._rerollSelections[pack];
-    const idx = sel.indexOf(char);
+    const sel = window._rerollSelections[pack]; // array of {idx, charName, el}
+    const existingPos = sel.findIndex(s => s.idx === idx);
 
-    if (idx !== -1) {
-        // Deselect
-        sel.splice(idx, 1);
-        el.style.opacity = '1';
+    if (existingPos !== -1) {
+        // Deselect this card
+        sel.splice(existingPos, 1);
         el.style.transform = 'scale(1)';
         el.querySelector('.reroll-selected-overlay').style.display = 'none';
     } else if (sel.length < 2) {
-        // Select
-        sel.push(char);
-        el.style.opacity = '1';
+        // Select this card
+        sel.push({ idx, charName: el.dataset.char, el });
         el.style.transform = 'scale(1.08)';
-        const overlay = el.querySelector('.reroll-selected-overlay');
-        overlay.style.display = 'flex';
+        el.querySelector('.reroll-selected-overlay').style.display = 'flex';
     } else {
         // Already 2 selected, flash warning
         el.style.boxShadow = '0 0 12px #ff4757';
@@ -801,7 +797,7 @@ window.processLegendaryReroll = async function(packId) {
     const user = getCurrentUser();
     if (!user) return;
 
-    const sel = (window._rerollSelections || {})[packId];
+    const sel = (window._rerollSelections || {})[packId]; // [{idx, charName, el}]
     if (!sel || sel.length !== 2) {
         alert('Bitte genau 2 Legendäre Karten auswählen!');
         return;
@@ -810,8 +806,8 @@ window.processLegendaryReroll = async function(packId) {
     const invField = `inventory_${currentMode}`;
     const inventory = [...(user[invField] || [])];
 
-    // Remove one copy of each selected legendary from this pack
-    const toRemove = [...sel];
+    // Remove one copy per selected charName from this pack
+    const toRemove = sel.map(s => s.charName);
     const newInventory = inventory.filter(item => {
         if (item.rarity !== 'legendary' || item.boosterId !== packId) return true;
         const removeIdx = toRemove.indexOf(item.charName);
