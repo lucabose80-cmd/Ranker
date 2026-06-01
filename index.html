@@ -691,7 +691,7 @@
                             <button id="adventure-tutorial-close" class="rank-btn" style="width:100%; margin-top:20px;">Verstanden</button>
                         </div>
                     </div>
-            <div id="starwarsdle-content" class="tab-content app-container hidden">
+            </div></div></div><div id="starwarsdle-content" class="tab-content app-container hidden">
                 <div class="section-header" style="display:flex; align-items:center; margin-bottom: 20px;">
                     <button class="nav-link rank-btn" data-target="hub-content" style="padding: 10px 20px; font-size: 1rem; margin-right: 20px; background: rgba(0,0,0,0.5);">❮ Home</button>
                     <h1 style="margin: 0; color: #fff; font-size: 1.5rem;">STARWARSDLE</h1>
@@ -794,8 +794,10 @@
                 </div>
             </div>
 
-            <div id="shop-content" class="tab-content app-container hidden">
-                <div class="panel history-panel">
+            <div id="shop-modal" class="profile-overlay hidden">
+                <div class="panel history-panel profile-panel" style="max-height: 90vh; overflow-y: auto;">
+                    <button type="button" class="close-overlay-btn" onclick="document.getElementById('shop-modal').classList.add('hidden')">✕</button>
+                    <h2 class="theme-heading">SHOP & KARTEN</h2>
                     <div class="section-header" style="display:flex; align-items:center; margin-bottom: 20px;">
                         <button class="nav-link rank-btn" data-target="hub-content" style="padding: 10px 20px; font-size: 1rem; margin-right: 20px; background: rgba(0,0,0,0.5);">❮ Home</button>
                         <h1 style="margin: 0; color: #fff; font-size: 1.5rem;">SHOP & KARTEN</h1>
@@ -1048,6 +1050,8 @@
     <script type="module" src="main.js?v=8.3.0"></script>
 </body>
 </html>
+
+
 
 
 
