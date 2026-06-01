@@ -491,7 +491,7 @@ function renderBots() {
     list.innerHTML = '';
     
     const user = getCurrentUser();
-    const defeatedField = currentMode === 'starwars' ? 'defeated_bots_starwars' : 'defeated_bots_waifu';
+    const defeatedField = currentMode === 'starwars' ? 'defeated_tut_bots_starwars' : 'defeated_bots_waifu';
     const defeatedBots = user ? (user[defeatedField] || []) : [];
     
     BOT_LEVELS.forEach((bot, idx) => {
@@ -507,8 +507,6 @@ function renderBots() {
             <div>
                 <h3 style="color:${bot.color}; margin-top:0;">${bot.name}</h3>
                 <p style="color:#888; font-size:0.9rem;">${bot.desc}</p>
-                <div style="font-size:0.8rem; color:#aaa; margin-top:5px;">Rarität: ${bot.rarities.join(', ')}</div>
-                <div style="font-size:0.8rem; color:#aaa;">Strategie: ${bot.synergy === 'max' ? 'Perfekt' : bot.synergy === 'high' ? 'Hoch' : bot.synergy === 'low' ? 'Gering' : 'Keine'}</div>
                 ${rewardHtml}
             </div>
             <button class="rank-btn bot-start-btn" style="margin-top:15px; padding: 10px 20px; font-size: 1rem; width: 100%; border-color:${bot.color}; color:${bot.color};">Kampf starten</button>
@@ -557,40 +555,46 @@ async function startBotMatch(bot) {
         deck = candidates.sort(() => 0.5 - Math.random()).slice(0, 10);
     }
     
-    // Fallback if not enough
+    // Ensure exactly 10 unique cards
     const usedNames = new Set();
-    const finalDeck = [];
+    const finalCards = [];
     
     for (let c of deck.slice(0, 10)) {
-        let assignedRarity = bot.rarities[Math.floor(Math.random() * bot.rarities.length)];
         let finalCharName = c.name;
-        
-        if (assignedRarity === 'legendary' && (typeof LEGENDARY_POOL === 'undefined' || !LEGENDARY_POOL[finalCharName])) {
-            if (typeof LEGENDARY_POOL !== 'undefined') {
-                const legChars = Object.keys(LEGENDARY_POOL).filter(name => activeCharacterDatabase.some(x => x.name === name) && !usedNames.has(name));
-                if (legChars.length > 0) {
-                    finalCharName = legChars[Math.floor(Math.random() * legChars.length)];
-                } else {
-                    assignedRarity = 'epic';
-                }
-            } else {
-                assignedRarity = 'epic';
-            }
-        }
-        
-        // Prevent duplicate fallback
         if (usedNames.has(finalCharName)) {
             const unused = activeCharacterDatabase.filter(x => !usedNames.has(x.name));
             if (unused.length > 0) {
                 finalCharName = unused[Math.floor(Math.random() * unused.length)].name;
-                if (assignedRarity === 'legendary' && (typeof LEGENDARY_POOL === 'undefined' || !LEGENDARY_POOL[finalCharName])) {
-                    assignedRarity = 'epic';
-                }
             }
         }
-        
         usedNames.add(finalCharName);
-        finalDeck.push({ charName: finalCharName, rarity: assignedRarity });
+        finalCards.push(finalCharName);
+    }
+    
+    // Find if any selected card has a legendary variant
+    let legIndex = -1;
+    if (typeof LEGENDARY_POOL !== 'undefined') {
+        legIndex = finalCards.findIndex(name => LEGENDARY_POOL[name]);
+    }
+    
+    const finalDeck = [];
+    for (let i = 0; i < finalCards.length; i++) {
+        // First 5 are Rare, remaining 5 are Epic
+        let assignedRarity = i < 5 ? 'rare' : 'epic';
+        finalDeck.push({ charName: finalCards[i], rarity: assignedRarity });
+    }
+    
+    // Upgrade one Epic to Legendary if possible
+    if (legIndex !== -1) {
+        if (legIndex < 5) {
+            // Swap char at legIndex (Rare) with char at index 5 (Epic) so the Legendary gets the Epic slot
+            const temp = finalDeck[5].charName;
+            finalDeck[5].charName = finalDeck[legIndex].charName;
+            finalDeck[legIndex].charName = temp;
+            finalDeck[5].rarity = 'legendary';
+        } else {
+            finalDeck[legIndex].rarity = 'legendary';
+        }
     }
     
     isBotMatch = true;
@@ -827,7 +831,43 @@ function playRound(playerCard, explicitOppCard = null) {
                 oEffects.forceRandom = false;
                 oLog.push("Befehlsverweigerung (Zufällige Karte gezogen)");
             } else {
-                oppCard = opponentHandRemaining[Math.floor(Math.random() * opponentHandRemaining.length)];
+                let bestCards = [];
+                let bestScore = -9999;
+                
+                opponentHandRemaining.forEach(card => {
+                    let db = activeCharacterDatabase.find(x => x.name === card.charName);
+                    let fac = db ? getMainFaction(db.tags) : 'neutral';
+                    let baseScore = getCardScore(card.charName) * (RARITY_MULT[card.rarity] || 1.0);
+                    
+                    let aiScore = baseScore;
+                    
+                    // Synergy priorities (don't break chains)
+                    if (oEffects.klon && fac === 'klon') aiScore += 100;
+                    if (oEffects.droid && fac === 'droid') aiScore += 100;
+                    
+                    // Setup priorities (play them early)
+                    if (fac === 'klon' && !oEffects.klon) aiScore += 10;
+                    if (fac === 'droid' && !oEffects.droid) aiScore += 10;
+                    
+                    // Utility cards (better saved for later if possible, give them slight penalty so they are kept)
+                    if (fac === 'senat' || fac === 'schurke' || fac === 'mandalorianer' || fac === 'hutte') aiScore -= 5;
+                    
+                    // Specific timing based on board state
+                    if (fac === '501st' && playerHandRemaining.length > 0) aiScore += 5;
+                    if (fac === 'nachtschwester' && playerGraveyard.length > 0) aiScore += 5;
+
+                    // Add small randomness to prevent total predictability
+                    aiScore += Math.random() * 3;
+                    
+                    if (aiScore > bestScore) {
+                        bestScore = aiScore;
+                        bestCards = [card];
+                    } else if (Math.abs(aiScore - bestScore) < 0.1) {
+                        bestCards.push(card);
+                    }
+                });
+                
+                oppCard = bestCards[Math.floor(Math.random() * bestCards.length)];
             }
         }
     }
@@ -1000,7 +1040,8 @@ function playRound(playerCard, explicitOppCard = null) {
             if (pHas('imperium') && pFac === 'imperium') { pEffects.oppression = true; pLog.push("Unterdrückung aktiviert"); }
             if (pHas('jedi') && pFac === 'jedi') { pEffects.forceWeakest = true; pLog.push("Gedankentrick initiiert"); }
             if (pHas('fahrzeug') && pFac === 'fahrzeug') { pEffects.vehicles = playerCard; playerCard.isGhost = false; pLog.push("Überrollen (Bleibt auf Feld)"); }
-            if (pHas('501st') && pFac === '501st' && opponentHandRemaining.length > 0) {
+            const pHas501stLeader = playerDeck.some(c => c.charName === 'Darth Vader' || c.charName === 'Anakin Skywalker');
+            if (pHas('501st') && pFac === '501st' && opponentHandRemaining.length > 0 && pHas501stLeader) {
                 let destroyed = opponentHandRemaining.pop();
                 if(destroyed) { opponentGraveyard.push(destroyed); pLog.push("Vaders Faust (Karte vernichtet)"); }
             }
@@ -1036,7 +1077,8 @@ function playRound(playerCard, explicitOppCard = null) {
             if (oHas('imperium') && oFac === 'imperium') { oEffects.oppression = true; oLog.push("Unterdrückung aktiviert"); }
             if (oHas('jedi') && oFac === 'jedi') { oEffects.forceWeakest = true; oLog.push("Gedankentrick initiiert"); }
             if (oHas('fahrzeug') && oFac === 'fahrzeug') { oEffects.vehicles = oppCard; oppCard.isGhost = false; oLog.push("Überrollen (Bleibt auf Feld)"); }
-            if (oHas('501st') && oFac === '501st' && playerHandRemaining.length > 0) {
+            const oHas501stLeader = opponentDeck.some(c => c.charName === 'Darth Vader' || c.charName === 'Anakin Skywalker');
+            if (oHas('501st') && oFac === '501st' && playerHandRemaining.length > 0 && oHas501stLeader) {
                 let destroyed = playerHandRemaining.pop();
                 if(destroyed) { playerGraveyard.push(destroyed); oLog.push("Vaders Faust (Karte vernichtet)"); }
             }
@@ -1188,7 +1230,7 @@ async function finishMatch() {
         finalRes = "Sieg";
         
         if(isBotMatch && user && opponentData.botLevel) {
-            const defeatedField = currentMode === 'starwars' ? 'defeated_bots_starwars' : 'defeated_bots_waifu';
+            const defeatedField = currentMode === 'starwars' ? 'defeated_tut_bots_starwars' : 'defeated_bots_waifu';
             const defeatedBots = user[defeatedField] || [];
             
             if (!defeatedBots.includes(opponentData.botLevel)) {
