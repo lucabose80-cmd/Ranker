@@ -233,8 +233,8 @@ export function initCommunity() {
             function getSectionBadge(section) {
                 if (!section || section === 'hub-content') return '';
                 if (section === 'ranking-hub-content') return '<span style="font-size:0.6rem; color:#ffd700; background:rgba(255,215,0,0.15); border:1px solid rgba(255,215,0,0.4); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">🏆 Ranking</span>';
-                if (section === 'cardgame-hub-content') return '<span style="font-size:0.6rem; color:#a78bfa; background:rgba(167,139,250,0.15); border:1px solid rgba(167,139,250,0.4); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">🃏 Cardgame</span>';
-                if (section === 'starwarsdle-hub-content') return '<span style="font-size:0.6rem; color:#60a5fa; background:rgba(96,165,250,0.15); border:1px solid rgba(96,165,250,0.4); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">🔤 Starwarsdle</span>';
+                if (section === 'cardgame-content') return '<span style="font-size:0.6rem; color:#a78bfa; background:rgba(167,139,250,0.15); border:1px solid rgba(167,139,250,0.4); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">🃏 Cardgame</span>';
+                if (section === 'starwarsdle-content') return '<span style="font-size:0.6rem; color:#60a5fa; background:rgba(96,165,250,0.15); border:1px solid rgba(96,165,250,0.4); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">🔤 Starwarsdle</span>';
                 if (section === 'scoreboard-hub-content') return '<span style="font-size:0.6rem; color:#34d399; background:rgba(52,211,153,0.15); border:1px solid rgba(52,211,153,0.4); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">📊 Scoreboard</span>';
                 return '';
             }
