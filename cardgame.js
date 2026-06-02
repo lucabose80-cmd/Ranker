@@ -1358,7 +1358,6 @@ async function finishMatch() {
     document.getElementById('match-result-overlay').classList.add('hidden');
     
     if (isAdventureMatch) {
-        document.getElementById('cardgame-content').classList.add('hidden');
         document.getElementById('adventure-content').classList.remove('hidden');
         
         if (playerScore > opponentScore) {
