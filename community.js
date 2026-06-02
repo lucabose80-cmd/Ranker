@@ -41,11 +41,12 @@ export function initCommunity() {
     let isFirstLoad = true;
 
     chatUnsubscribe = onSnapshot(qChat, (snapshot) => {
-        trackRead(snapshot.docChanges().filter(c => c.type !== 'removed').length);
-        const messages = snapshot.docs.map(d => ({ id: d.id, ...d.data() })).reverse();
-        
-        chatContainer.innerHTML = '';
-        let hasNewFromOthers = false;
+        try {
+            trackRead(snapshot.docChanges().filter(c => c.type !== 'removed').length);
+            const messages = snapshot.docs.map(d => ({ id: d.id, ...d.data() })).reverse();
+            
+            chatContainer.innerHTML = '';
+            let hasNewFromOthers = false;
 
         messages.forEach(msg => {
             const isSelf = msg.username === user.username;
@@ -130,6 +131,10 @@ export function initCommunity() {
         });
 
         chatContainer.scrollTop = chatContainer.scrollHeight;
+        } catch (error) {
+            console.error(error);
+            chatContainer.innerHTML = `<div style="color:red; padding:10px;">Chat Error: ${error.message}</div>`;
+        }
 
         if (hasNewFromOthers) {
             const chatWidget = document.getElementById('chat-widget');

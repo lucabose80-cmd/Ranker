@@ -43,16 +43,16 @@ const ADVENTURE_LEVELS = 20;
 
 // Base deck all players start with in Adventure Mode
 export const BASE_ADVENTURE_DECK = [
-    { charName: 'Mon Mothma', rarity: 'common' }, // Rebell
-    { charName: 'Commander Cody', rarity: 'common' }, // Klon
-    { charName: 'B1 Battle Droide', rarity: 'common' }, // Droid
-    { charName: 'Cad Bane', rarity: 'common' }, // Schurke / Unterwelt
-    { charName: 'Rose Tico', rarity: 'common' }, // Widerstand
-    { charName: 'FN-2199', rarity: 'common' }, // Erste Ordnung
-    { charName: 'Admiral Piett', rarity: 'common' }, // Imperium
-    { charName: 'Coleman Trebor', rarity: 'common' }, // Jedi
-    { charName: 'Zam Wesell', rarity: 'common' }, // Kopfgeldjäger
-    { charName: 'Nute Gunray', rarity: 'common' } // Separatist
+    { charName: 'Luke Skywalker', rarity: 'uncommon' }, // Rebell / Jedi
+    { charName: 'Captain Rex', rarity: 'uncommon' }, // Klon
+    { charName: 'B2 Super Battle Droide', rarity: 'common' }, // Droid
+    { charName: 'Boba Fett', rarity: 'uncommon' }, // Kopfgeldjäger
+    { charName: 'Finn', rarity: 'common' }, // Widerstand
+    { charName: 'Sith Trooper', rarity: 'common' }, // Erste Ordnung
+    { charName: 'Grand Moff Tarkin', rarity: 'common' }, // Imperium
+    { charName: 'Qui-Gon Jinn', rarity: 'uncommon' }, // Jedi
+    { charName: 'IG-88', rarity: 'common' }, // Kopfgeldjäger
+    { charName: 'Asajj Ventress', rarity: 'uncommon' } // Separatist / Nachtschwester
 ];
 
 // Adventure Campaign Configuration
