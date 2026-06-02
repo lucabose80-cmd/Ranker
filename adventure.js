@@ -1,4 +1,5 @@
 import { getCurrentUser, CURRENT_USER_KEY } from './auth.js';
+import { getResets } from './resets.js';
 import { db } from './firebase-config.js';
 import { doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { activeCharacterDatabase } from './theme.js';
@@ -196,7 +197,7 @@ async function verifyAdventureInit() {
     document.getElementById('adventure-next-level-btn-text').textContent = user.adventure_level;
 }
 
-export function renderAdventureMap() {
+export async function renderAdventureMap() {
     const user = getCurrentUser();
     if(!user) return;
     
@@ -204,6 +205,24 @@ export function renderAdventureMap() {
     const highestLvl = user.adventure_highest_level || currentLvl;
     const container = document.getElementById('adventure-map-container');
     container.innerHTML = '';
+    
+    // Fetch other players progress
+    let playersAtNodes = {};
+    try {
+        const { userResets } = await getResets(false);
+        Object.values(userResets).forEach(u => {
+            if (u.displayName !== user.displayName && u.adventure_highest_level) {
+                const lvl = u.adventure_highest_level;
+                if (!playersAtNodes[lvl]) playersAtNodes[lvl] = [];
+                playersAtNodes[lvl].push({
+                    name: u.displayName,
+                    avatar: u.avatarStarWars || u.avatarWaifu || 'https://i.imgur.com/kS5x87t.png'
+                });
+            }
+        });
+    } catch(e) {
+        console.warn("Could not fetch player positions", e);
+    }
     
     ADVENTURE_CAMPAIGN.forEach((level, index) => {
         const lvlNum = index + 1;
@@ -213,12 +232,12 @@ export function renderAdventureMap() {
         const isHighest = lvlNum === highestLvl;
         
         let color = isLocked ? '#333' : (isPast ? '#2ed573' : '#3498db');
-        let icon = isLocked ? '<i class="fas fa-lock"></i>' : (isPast ? '<i class="fas fa-check"></i>' : '<i class="fas fa-crosshairs"></i>');
+        let icon = isLocked ? '<i class="fas fa-lock"></i>' : (isPast ? '<span style="font-size: 1.2rem;">⭐</span>' : '<span style="font-size: 1.2rem;">⚔️</span>');
         let glow = '';
         
         if (isHighest) {
             color = '#ffd700';
-            icon = isCurrent ? '<i class="fas fa-crosshairs"></i>' : '<i class="fas fa-star"></i>';
+            icon = isCurrent ? '<span style="font-size: 1.2rem;">⚔️</span>' : '<span style="font-size: 1.2rem;">⭐</span>';
             glow = `box-shadow: 0 0 15px ${color};`;
         }
         
@@ -238,12 +257,32 @@ export function renderAdventureMap() {
         
         const bossTagHtml = `<div class="adv-deck-tag" style="margin-top: 4px; background: ${tagColor}; color: white; font-size: 0.55rem; padding: 2px 5px; border-radius: 3px; font-weight: bold; cursor: help; ${tagShadow}">${tagText}</div>`;
         
+        // Render Avatars HTML
+        let avatarsHtml = '';
+        if (playersAtNodes[lvlNum] && playersAtNodes[lvlNum].length > 0) {
+            const pList = playersAtNodes[lvlNum];
+            const toShow = pList.slice(0, 3);
+            const extra = pList.length - 3;
+            
+            let avImgs = toShow.map(p => `<img src="${p.avatar}" title="${p.name}" style="width:20px; height:20px; border-radius:50%; border:1px solid #111; margin-left:-5px; object-fit:cover;">`).join('');
+            if (extra > 0) {
+                avImgs += `<div style="width:20px; height:20px; border-radius:50%; background:#333; color:#fff; font-size:0.55rem; display:flex; justify-content:center; align-items:center; border:1px solid #111; margin-left:-5px;" title="${extra} weitere">+${extra}</div>`;
+            }
+            
+            avatarsHtml = `
+                <div style="display:flex; justify-content:center; margin-top:5px; padding-left:5px;">
+                    ${avImgs}
+                </div>
+            `;
+        }
+        
         node.innerHTML = `
             <div style="width: 50px; height: 50px; border-radius: 50%; background: ${color}; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; border: 2px solid #111; color: #111; font-weight: bold; margin-bottom: 5px; ${glow}">
                 ${isCurrent ? icon : (isHighest && !isPast ? icon : lvlNum)}
             </div>
             <div style="font-size: 0.7rem; color: ${color}; text-align: center; max-width: 60px; word-wrap: break-word;">${level.name}</div>
             ${bossTagHtml}
+            ${avatarsHtml}
         `;
         
         const tagEl = node.querySelector('.adv-deck-tag');

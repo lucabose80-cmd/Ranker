@@ -70,7 +70,8 @@ export async function getResets(force = false) {
                 versusWins_starwars: u.versusWins_starwars || 0,
                 versusWins_waifu: u.versusWins_waifu || 0,
                 avatarStarWars: u.avatarStarWars || '',
-                avatarWaifu: u.avatarWaifu || ''
+                avatarWaifu: u.avatarWaifu || '',
+                adventure_highest_level: u.adventure_highest_level || 1
             };
         });
 
