@@ -232,7 +232,7 @@ export function renderAdventureMap() {
         node.title = `${level.name}\n${level.ruleText}`;
         
         const isBoss = level.ruleText !== "Keine Sonderregeln.";
-        const bossTag = isBoss ? `<div title="${level.ruleText.replace(/"/g, '&quot;')}" style="margin-top: 4px; background: #ff4757; color: white; font-size: 0.55rem; padding: 2px 5px; border-radius: 3px; font-weight: bold; cursor: help; box-shadow: 0 0 5px rgba(255, 71, 87, 0.5);">BOSS</div>` : '';
+        const bossTag = isBoss ? `<div class="has-tooltip" data-tooltip="${level.ruleText.replace(/"/g, '&quot;')}" style="margin-top: 4px; background: #ff4757; color: white; font-size: 0.55rem; padding: 2px 5px; border-radius: 3px; font-weight: bold; cursor: help; box-shadow: 0 0 5px rgba(255, 71, 87, 0.5);">BOSS</div>` : '';
         
         node.innerHTML = `
             <div style="width: 50px; height: 50px; border-radius: 50%; background: ${color}; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; border: 2px solid #111; color: #111; font-weight: bold; margin-bottom: 5px; ${glow}">
