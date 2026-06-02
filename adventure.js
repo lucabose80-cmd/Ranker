@@ -42,16 +42,16 @@ const ADVENTURE_LEVELS = 20;
 
 // Base deck all players start with in Adventure Mode
 export const BASE_ADVENTURE_DECK = [
-    "Wedge Antilles", 
-    "Nien Nunb", 
-    "Poe Dameron", 
-    "Rose Tico", 
-    "B1 Battle Droide", 
-    "R2-D2", 
-    "Echo", 
-    "Fives", 
-    "Trace Martez", 
-    "Rafa Martez"
+    { charName: 'Baze Malbus', rarity: 'common' }, // Rebell
+    { charName: 'Klonkrieger', rarity: 'common' }, // Klon
+    { charName: 'B1-Kampfdroide', rarity: 'common' }, // Droid
+    { charName: 'Ponda Baba', rarity: 'common' }, // Schurke
+    { charName: 'Rose Tico', rarity: 'common' }, // Widerstand
+    { charName: 'FN-2199', rarity: 'common' }, // Erste Ordnung
+    { charName: 'Stormtrooper', rarity: 'common' }, // Imperium
+    { charName: 'Luminara Unduli', rarity: 'common' }, // Jedi
+    { charName: 'Zuckuss', rarity: 'common' }, // Kopfgeldjäger
+    { charName: 'Poggle der Geringere', rarity: 'common' } // Separatist
 ];
 
 // Adventure Campaign Configuration

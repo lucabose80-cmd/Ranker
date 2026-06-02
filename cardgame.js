@@ -1009,7 +1009,7 @@ function playRound(playerCard, explicitOppCard = null) {
     if (pEffects.oppression) { 
         let mult = 0.75;
         if (isAdventureMatch && adventureRule === 'adv_rule_11') mult = 0.70;
-        if (isAdventureMatch && adventureRule === 'adv_rule_20') mult = 0.50;
+        if (isAdventureMatch && adventureRule === 'adv_rule_20') mult = 0.65;
         pBase *= mult; pEffects.oppression = false; pLog.push(`Unterdrückt (-${Math.round((1-mult)*100)}% Score)`); 
     }
     if (oEffects.oppression) { oBase *= 0.75; oEffects.oppression = false; oLog.push("Unterdrückt (-25% Score)"); }

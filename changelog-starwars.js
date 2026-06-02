@@ -1,5 +1,15 @@
 export const patchNotesStarWars = [
     {
+        version: "v9.2.2",
+        title: "Hotfix: Balancing & Community Vorschläge",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Ein Bug wurde behoben, durch den neu eingereichte Community Vorschläge nicht direkt angezeigt wurden.",
+            "Balancing: Das Starter-Deck im Abenteuer-Modus wurde angepasst. Es besteht nun aus 10 völlig unterschiedlichen Karten aus 10 verschiedenen Fraktionen, sodass zum Start keinerlei automatische Synergien mehr aktiv sind.",
+            "Balancing: Der Unterdrückungs-Effekt (Imperium) des letzten Bosses in Level 20 wurde leicht abgeschwächt (zieht nun 35% statt 50% der Punkte ab)."
+        ]
+    },
+    {
         version: "v9.2.1",
         title: "Hotfix: Abenteuer-Modus Blackscreen",
         isHotfix: true,

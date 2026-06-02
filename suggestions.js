@@ -20,13 +20,14 @@ export function stopSuggestions() {
 export function initSuggestions() {
     if (suggestionsUnsubscribe) return; // Bereits aktiv
 
-    // Limit auf 100 setzen, damit nicht extrem viele Reads pro Page-Reload entstehen
-    const q = query(collection(db, "suggestions"), orderBy("votes", "desc"), limit(100));
+    // Sortiere nach Timestamp, um immer die neuesten zu bekommen, Limit 300
+    const q = query(collection(db, "suggestions"), orderBy("timestamp", "desc"), limit(300));
     
     suggestionsUnsubscribe = onSnapshot(q, (snapshot) => {
         trackRead(snapshot.docChanges().filter(c => c.type !== 'removed').length);
         
-        suggestionsCache = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        // Lokal nach Votes absteigend sortieren
+        suggestionsCache = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => b.votes - a.votes);
         isLoaded = true;
         
         renderSuggestions();
@@ -236,7 +237,7 @@ export function renderSuggestions() {
         isFilterListenerAttached = true;
     }
 
-    if (!container || document.getElementById('suggestions-content').classList.contains('hidden')) return;
+    if (!container || document.getElementById('suggestions-modal').classList.contains('hidden')) return;
 
     if (!isLoaded) {
         container.innerHTML = '<p class="prompt-text">Lade Vorschläge...</p>';
