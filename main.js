@@ -818,9 +818,123 @@ window.checkGlobalNotifications = function() {
             }
         }
     }
+
+    // 4. Mailbox
+    const mailboxDot = document.getElementById('mailbox-unread-dot');
+    if (mailboxDot) {
+        const user = typeof getCurrentUser !== 'undefined' ? getCurrentUser() : null;
+        if (user && user.role !== 'admin' && user.mailbox) {
+            const hasUnread = user.mailbox.length > 0;
+            mailboxDot.style.display = hasUnread ? 'block' : 'none';
+        } else {
+            mailboxDot.style.display = 'none';
+        }
+    }
 };
 
 setInterval(window.checkGlobalNotifications, 5000);
 
+// --- Mailbox UI Logic ---
+window.openMailbox = function() {
+    const modal = document.getElementById('mailbox-modal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    renderMailbox();
+};
 
+document.getElementById('mailbox-btn')?.addEventListener('click', window.openMailbox);
+document.getElementById('mailbox-close-btn')?.addEventListener('click', () => {
+    document.getElementById('mailbox-modal')?.classList.add('hidden');
+});
 
+async function claimMailboxReward(messageId) {
+    const { getCurrentUser, refreshCurrentUser } = await import('./auth.js');
+    const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+    
+    let user = getCurrentUser();
+    if (!user || !user.mailbox) return;
+    
+    const msgIndex = user.mailbox.findIndex(m => m.id === messageId);
+    if (msgIndex === -1) return;
+    
+    const msg = user.mailbox[msgIndex];
+    const creditsAwarded = msg.credits || 0;
+    
+    // Nachricht komplett löschen
+    user.mailbox.splice(msgIndex, 1);
+    
+    if (creditsAwarded > 0) {
+        user.credits = (user.credits || 0) + creditsAwarded;
+    }
+    
+    try {
+        await updateDoc(doc(db, "users", user.uid), {
+            mailbox: user.mailbox,
+            credits: user.credits || 0
+        });
+        
+        // Re-render
+        renderMailbox();
+        window.checkGlobalNotifications();
+        
+        // Update top UI if it exists
+        if (typeof window.updateCreditProgressBars === 'function') window.updateCreditProgressBars();
+        const freshUser = await refreshCurrentUser();
+        if (freshUser && typeof window.restoreUserStorage === 'function') window.restoreUserStorage(freshUser);
+        
+        if (msg.credits > 0) {
+            alert(`Du hast ${msg.credits} Credits erhalten!`);
+        }
+    } catch(e) {
+        console.error("Fehler beim Abholen der Credits:", e);
+        alert("Es gab einen Fehler beim Abholen. Bitte lade die Seite neu.");
+    }
+}
+window.claimMailboxReward = claimMailboxReward;
+
+function renderMailbox() {
+    const list = document.getElementById('mailbox-list');
+    if (!list) return;
+    list.innerHTML = '';
+    
+    const user = typeof getCurrentUser !== 'undefined' ? getCurrentUser() : null;
+    if (!user || !user.mailbox || user.mailbox.length === 0) {
+        list.innerHTML = '<div style="text-align:center; color:#888; padding:20px;">Keine Nachrichten vorhanden.</div>';
+        return;
+    }
+    
+    // Sort descending by timestamp
+    const sortedMail = [...user.mailbox].sort((a,b) => b.timestamp - a.timestamp);
+    
+    sortedMail.forEach(msg => {
+        const dateObj = new Date(msg.timestamp);
+        const dateStr = dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString();
+        
+        let footerHtml = '';
+        if (msg.credits && msg.credits > 0) {
+            footerHtml = `
+                <div class="mailbox-credits-badge">
+                    <span>💰</span> ${msg.credits} Credits
+                </div>
+                <button class="mailbox-claim-btn" onclick="claimMailboxReward('${msg.id}')">Einsammeln & Löschen</button>
+            `;
+        } else {
+            footerHtml = `
+                <div></div>
+                <button class="mailbox-claim-btn" style="background:#444; box-shadow:none;" onclick="claimMailboxReward('${msg.id}')">Löschen</button>
+            `;
+        }
+        
+        const html = `
+            <div class="mailbox-message">
+                <div class="mailbox-message-header">
+                    <h4 class="mailbox-message-title">${msg.title || 'Nachricht vom System'}</h4>
+                    <span class="mailbox-message-date">${dateStr}</span>
+                </div>
+                <div class="mailbox-message-body">${msg.text || ''}</div>
+                <div class="mailbox-message-footer">${footerHtml}</div>
+            </div>
+        `;
+        list.insertAdjacentHTML('beforeend', html);
+    });
+}

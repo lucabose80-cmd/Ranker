@@ -1739,3 +1739,106 @@ body.alt-theme #db-tracker-reads {
     top: 90px !important;
     max-height: calc(100vh - 200px) !important;
 }
+
+/* =========================================================================
+   MAILBOX (BRIEFKASTEN) STYLES
+   ========================================================================= */
+
+.mailbox-modal-content {
+    background: rgba(15, 18, 25, 0.95);
+    border: 1px solid rgba(52, 152, 219, 0.5);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(52, 152, 219, 0.1);
+}
+
+.mailbox-message {
+    background: rgba(30, 35, 45, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 15px;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.mailbox-message:hover {
+    background: rgba(40, 45, 55, 0.9);
+    border-color: rgba(52, 152, 219, 0.4);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.mailbox-message.claimed {
+    opacity: 0.6;
+    border-color: rgba(46, 213, 115, 0.3);
+}
+
+.mailbox-message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding-bottom: 5px;
+}
+
+.mailbox-message-title {
+    color: #3498db;
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.mailbox-message-date {
+    color: #888;
+    font-size: 0.75rem;
+}
+
+.mailbox-message-body {
+    color: #ddd;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-bottom: 15px;
+    white-space: pre-wrap;
+}
+
+.mailbox-message-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mailbox-credits-badge {
+    background: rgba(241, 196, 15, 0.1);
+    color: #f1c40f;
+    border: 1px solid rgba(241, 196, 15, 0.3);
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.mailbox-claim-btn {
+    background: linear-gradient(135deg, #2ed573, #27ae60);
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(46, 213, 115, 0.3);
+    transition: all 0.2s;
+}
+
+.mailbox-claim-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(46, 213, 115, 0.5);
+}
+
+.mailbox-claim-btn:disabled {
+    background: #555;
+    color: #888;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}

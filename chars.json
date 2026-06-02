@@ -1,0 +1,946 @@
+﻿[
+    {
+        "Name":  "Captain Rex",
+        "Tags":  "klon,501st,captain,peak"
+    },
+    {
+        "Name":  "Commander Cody",
+        "Tags":  "klon,212th,commander,peak"
+    },
+    {
+        "Name":  "Fives",
+        "Tags":  "klon,501st,arc,peak"
+    },
+    {
+        "Name":  "Echo",
+        "Tags":  "klon,501st,bad_batch,arc,peak"
+    },
+    {
+        "Name":  "Jesse",
+        "Tags":  "klon,501st,arc"
+    },
+    {
+        "Name":  "Wolffe",
+        "Tags":  "klon,104th,commander,peak"
+    },
+    {
+        "Name":  "Gregor",
+        "Tags":  "klon,212th,soldat,peak"
+    },
+    {
+        "Name":  "Commander Bly",
+        "Tags":  "klon,commander"
+    },
+    {
+        "Name":  "Waxer",
+        "Tags":  "klon,212th,soldat"
+    },
+    {
+        "Name":  "Boil",
+        "Tags":  "klon,212th,soldat"
+    },
+    {
+        "Name":  "Commander Thorn",
+        "Tags":  "klon,coruscant_guard,commander"
+    },
+    {
+        "Name":  "Commander Fox",
+        "Tags":  "klon,coruscant_guard,commander"
+    },
+    {
+        "Name":  "Kix",
+        "Tags":  "klon,501st,soldat"
+    },
+    {
+        "Name":  "Denal",
+        "Tags":  "klon,soldat"
+    },
+    {
+        "Name":  "Commander Gree",
+        "Tags":  "klon,commander"
+    },
+    {
+        "Name":  "Commander Doom",
+        "Tags":  "klon,commander"
+    },
+    {
+        "Name":  "Commander Bacara",
+        "Tags":  "klon,commander"
+    },
+    {
+        "Name":  "Hevy",
+        "Tags":  "klon,soldat"
+    },
+    {
+        "Name":  "Flash",
+        "Tags":  "klon,soldat"
+    },
+    {
+        "Name":  "Lucky",
+        "Tags":  "klon,soldat"
+    },
+    {
+        "Name":  "Scorch",
+        "Tags":  "klon,soldat"
+    },
+    {
+        "Name":  "Hunter",
+        "Tags":  "klon,bad_batch,commander,peak"
+    },
+    {
+        "Name":  "Wrecker",
+        "Tags":  "klon,bad_batch,soldat,peak"
+    },
+    {
+        "Name":  "Tech",
+        "Tags":  "klon,bad_batch,soldat,peak"
+    },
+    {
+        "Name":  "Crosshair",
+        "Tags":  "klon,bad_batch,imperium,soldat"
+    },
+    {
+        "Name":  "Omega",
+        "Tags":  "klon,bad_batch"
+    },
+    {
+        "Name":  "Appo",
+        "Tags":  "klon,501st,soldat"
+    },
+    {
+        "Name":  "Tup",
+        "Tags":  "klon,501st,soldat"
+    },
+    {
+        "Name":  "Hardcase",
+        "Tags":  "klon,501st,soldat"
+    },
+    {
+        "Name":  "Dogma",
+        "Tags":  "klon,501st,soldat"
+    },
+    {
+        "Name":  "Havoc",
+        "Tags":  "klon,arc"
+    },
+    {
+        "Name":  "Colt",
+        "Tags":  "klon,arc"
+    },
+    {
+        "Name":  "Jecki Lon",
+        "Tags":  "jedi,padawan"
+    },
+    {
+        "Name":  "Die Tochter",
+        "Tags":  "jedi"
+    },
+    {
+        "Name":  "Luke Skywalker",
+        "Tags":  "jedi,rebell,meister,peak"
+    },
+    {
+        "Name":  "Obi-Wan Kenobi",
+        "Tags":  "jedi,meister,212th,peak"
+    },
+    {
+        "Name":  "Yoda",
+        "Tags":  "jedi,meister,peak"
+    },
+    {
+        "Name":  "Anakin Skywalker",
+        "Tags":  "jedi,padawan,501st,peak"
+    },
+    {
+        "Name":  "Mace Windu",
+        "Tags":  "jedi,meister,peak"
+    },
+    {
+        "Name":  "Qui-Gon Jinn",
+        "Tags":  "jedi,meister,peak"
+    },
+    {
+        "Name":  "Ahsoka Tano",
+        "Tags":  "jedi,grau,padawan,501st,heiss,peak"
+    },
+    {
+        "Name":  "Kit Fisto",
+        "Tags":  "jedi,meister"
+    },
+    {
+        "Name":  "Plo Koon",
+        "Tags":  "jedi,meister,104th,peak"
+    },
+    {
+        "Name":  "Ki-Adi-Mundi",
+        "Tags":  "jedi,meister"
+    },
+    {
+        "Name":  "Aayla Secura",
+        "Tags":  "jedi,meister,heiss"
+    },
+    {
+        "Name":  "Coleman Trebor",
+        "Tags":  "jedi,meister"
+    },
+    {
+        "Name":  "Shaak Ti",
+        "Tags":  "jedi,meister"
+    },
+    {
+        "Name":  "Luminara Unduli",
+        "Tags":  "jedi,meister"
+    },
+    {
+        "Name":  "Ezra Bridger",
+        "Tags":  "jedi,rebell,padawan"
+    },
+    {
+        "Name":  "Kanan Jarrus",
+        "Tags":  "jedi,rebell"
+    },
+    {
+        "Name":  "Cal Kestis",
+        "Tags":  "jedi,padawan,videospiel"
+    },
+    {
+        "Name":  "Rey Skywalker",
+        "Tags":  "jedi,widerstand,heiss"
+    },
+    {
+        "Name":  "Cere Junda",
+        "Tags":  "jedi,meister,videospiel"
+    },
+    {
+        "Name":  "Barriss Offee",
+        "Tags":  "jedi,padawan"
+    },
+    {
+        "Name":  "Nahdar Vebb",
+        "Tags":  "jedi,padawan"
+    },
+    {
+        "Name":  "Zett Jukassa",
+        "Tags":  "jedi,padawan"
+    },
+    {
+        "Name":  "Gungi",
+        "Tags":  "jedi,padawan"
+    },
+    {
+        "Name":  "Katooni",
+        "Tags":  "jedi,padawan"
+    },
+    {
+        "Name":  "Petro",
+        "Tags":  "jedi,padawan"
+    },
+    {
+        "Name":  "Yaddle",
+        "Tags":  "jedi,meister"
+    },
+    {
+        "Name":  "Even Piell",
+        "Tags":  "jedi,meister"
+    },
+    {
+        "Name":  "Saesee Tiin",
+        "Tags":  "jedi,meister"
+    },
+    {
+        "Name":  "Darth Jar Jar",
+        "Tags":  "sith,meme"
+    },
+    {
+        "Name":  "Osha Aniseya",
+        "Tags":  "sith"
+    },
+    {
+        "Name":  "Mae Aniseya",
+        "Tags":  "sith"
+    },
+    {
+        "Name":  "Qimir (Der Fremde)",
+        "Tags":  "sith"
+    },
+    {
+        "Name":  "Der Sohn",
+        "Tags":  "sith"
+    },
+    {
+        "Name":  "Darth Malgus",
+        "Tags":  "sith,videospiel"
+    },
+    {
+        "Name":  "Darth Vader",
+        "Tags":  "sith,imperium,501st,peak"
+    },
+    {
+        "Name":  "Emperor Palpatine",
+        "Tags":  "sith,imperium,senat,peak"
+    },
+    {
+        "Name":  "Darth Maul",
+        "Tags":  "sith,dathomir,unterwelt,peak"
+    },
+    {
+        "Name":  "Count Dooku",
+        "Tags":  "sith,separatist,peak"
+    },
+    {
+        "Name":  "Darth Plagueis",
+        "Tags":  "sith"
+    },
+    {
+        "Name":  "Kylo Ren",
+        "Tags":  "erste_ordnung"
+    },
+    {
+        "Name":  "Captain Phasma",
+        "Tags":  "erste_ordnung"
+    },
+    {
+        "Name":  "Grand Admiral Thrawn",
+        "Tags":  "imperium,peak"
+    },
+    {
+        "Name":  "Grand Inquisitor",
+        "Tags":  "imperium,inquisitor"
+    },
+    {
+        "Name":  "General Hux",
+        "Tags":  "erste_ordnung"
+    },
+    {
+        "Name":  "Supreme Leader Snoke",
+        "Tags":  "erste_ordnung,grau"
+    },
+    {
+        "Name":  "FN-2199",
+        "Tags":  "erste_ordnung"
+    },
+    {
+        "Name":  "Sith Trooper",
+        "Tags":  "erste_ordnung"
+    },
+    {
+        "Name":  "Allegiant General Pryde",
+        "Tags":  "erste_ordnung"
+    },
+    {
+        "Name":  "Captain Peavey",
+        "Tags":  "erste_ordnung"
+    },
+    {
+        "Name":  "Executioner Trooper",
+        "Tags":  "erste_ordnung"
+    },
+    {
+        "Name":  "Moff Gideon",
+        "Tags":  "imperium"
+    },
+    {
+        "Name":  "Director Krennic",
+        "Tags":  "imperium"
+    },
+    {
+        "Name":  "Admiral Piett",
+        "Tags":  "imperium"
+    },
+    {
+        "Name":  "Grand Moff Tarkin",
+        "Tags":  "imperium"
+    },
+    {
+        "Name":  "Imperial Royal Guard",
+        "Tags":  "imperium"
+    },
+    {
+        "Name":  "Iden Versio",
+        "Tags":  "imperium,videospiel,rebell,heiss"
+    },
+    {
+        "Name":  "Second Sister",
+        "Tags":  "inquisitor,imperium,videospiel"
+    },
+    {
+        "Name":  "Third Sister",
+        "Tags":  "inquisitor,imperium"
+    },
+    {
+        "Name":  "Fifth Brother",
+        "Tags":  "inquisitor,imperium"
+    },
+    {
+        "Name":  "Seventh Sister",
+        "Tags":  "inquisitor,imperium"
+    },
+    {
+        "Name":  "Jod Na Nawood",
+        "Tags":  "grau,schmuggel"
+    },
+    {
+        "Name":  "Der Vater",
+        "Tags":  "grau"
+    },
+    {
+        "Name":  "Asajj Ventress",
+        "Tags":  "nachtschwester,dathomir,separatist,peak"
+    },
+    {
+        "Name":  "Savage Opress",
+        "Tags":  "dathomir,sith,peak"
+    },
+    {
+        "Name":  "Baylan Skoll",
+        "Tags":  "grau"
+    },
+    {
+        "Name":  "Shin Hati",
+        "Tags":  "grau,heiss"
+    },
+    {
+        "Name":  "Merrin",
+        "Tags":  "nachtschwester,dathomir,videospiel,heiss"
+    },
+    {
+        "Name":  "Morgan Elsbeth",
+        "Tags":  "nachtschwester,dathomir"
+    },
+    {
+        "Name":  "Mother Talzin",
+        "Tags":  "nachtschwester,dathomir"
+    },
+    {
+        "Name":  "Starkiller",
+        "Tags":  "grau,videospiel"
+    },
+    {
+        "Name":  "Din Djarin",
+        "Tags":  "mandalorian,kopfgeldjäger,peak"
+    },
+    {
+        "Name":  "Bo-Katan Kryze",
+        "Tags":  "mandalorian,heiss,peak"
+    },
+    {
+        "Name":  "Boba Fett",
+        "Tags":  "mandalorian,kopfgeldjäger,peak"
+    },
+    {
+        "Name":  "Jango Fett",
+        "Tags":  "mandalorian,kopfgeldjäger,peak"
+    },
+    {
+        "Name":  "Duchess Satine",
+        "Tags":  "mandalorian"
+    },
+    {
+        "Name":  "Paz Vizsla",
+        "Tags":  "mandalorian"
+    },
+    {
+        "Name":  "The Armorer",
+        "Tags":  "mandalorian"
+    },
+    {
+        "Name":  "Pre Vizsla",
+        "Tags":  "mandalorian,unterwelt,death_watch,peak"
+    },
+    {
+        "Name":  "Ursa Wren",
+        "Tags":  "mandalorian"
+    },
+    {
+        "Name":  "Koska Reeves",
+        "Tags":  "mandalorian"
+    },
+    {
+        "Name":  "Axe Woves",
+        "Tags":  "mandalorian"
+    },
+    {
+        "Name":  "Fenn Rau",
+        "Tags":  "mandalorian"
+    },
+    {
+        "Name":  "Gar Saxon",
+        "Tags":  "mandalorian,death_watch,imperium"
+    },
+    {
+        "Name":  "Tiber Saxon",
+        "Tags":  "mandalorian,death_watch,imperium"
+    },
+    {
+        "Name":  "Rook Kast",
+        "Tags":  "mandalorian,death_watch"
+    },
+    {
+        "Name":  "Death Watch Warrior",
+        "Tags":  "mandalorian,death_watch"
+    },
+    {
+        "Name":  "Suchdroide",
+        "Tags":  "imperium,droide"
+    },
+    {
+        "Name":  "Zwergspinnendroide",
+        "Tags":  "separatist,droide"
+    },
+    {
+        "Name":  "Droideka",
+        "Tags":  "separatist,droide"
+    },
+    {
+        "Name":  "Spybot",
+        "Tags":  "sith,droide"
+    },
+    {
+        "Name":  "R2-D2",
+        "Tags":  "droide,rebell,redet_nicht,peak"
+    },
+    {
+        "Name":  "C-3PO",
+        "Tags":  "droide,rebell,peak"
+    },
+    {
+        "Name":  "General Grievous",
+        "Tags":  "droide,separatist,peak"
+    },
+    {
+        "Name":  "BB-8",
+        "Tags":  "droide,widerstand,redet_nicht,peak"
+    },
+    {
+        "Name":  "K-2SO",
+        "Tags":  "droide,rebell,peak"
+    },
+    {
+        "Name":  "Chopper",
+        "Tags":  "droide,rebell,redet_nicht"
+    },
+    {
+        "Name":  "B1 Battle Droide",
+        "Tags":  "droide,separatist"
+    },
+    {
+        "Name":  "Kommando Droide",
+        "Tags":  "droide,separatist,peak"
+    },
+    {
+        "Name":  "HK-47",
+        "Tags":  "droide,videospiel,kopfgeldjäger"
+    },
+    {
+        "Name":  "L3-37",
+        "Tags":  "droide,schmuggel,rebell"
+    },
+    {
+        "Name":  "D-O",
+        "Tags":  "droide,widerstand,redet_nicht"
+    },
+    {
+        "Name":  "IG-88",
+        "Tags":  "droide,kopfgeldjäger"
+    },
+    {
+        "Name":  "AZI-3",
+        "Tags":  "droide,klon"
+    },
+    {
+        "Name":  "B2 Super Battle Droide",
+        "Tags":  "droide,separatist"
+    },
+    {
+        "Name":  "BB-9E",
+        "Tags":  "droide,erste_ordnung,redet_nicht"
+    },
+    {
+        "Name":  "Han Solo",
+        "Tags":  "rebell,schmuggel,unterwelt"
+    },
+    {
+        "Name":  "Leia Organa",
+        "Tags":  "rebell,widerstand,senat,heiss"
+    },
+    {
+        "Name":  "Chewbacca",
+        "Tags":  "rebell,widerstand,redet_nicht,peak"
+    },
+    {
+        "Name":  "Lando Calrissian",
+        "Tags":  "rebell,schmuggel,unterwelt"
+    },
+    {
+        "Name":  "Jyn Erso",
+        "Tags":  "rebell,heiss"
+    },
+    {
+        "Name":  "Cassian Andor",
+        "Tags":  "rebell,peak"
+    },
+    {
+        "Name":  "Saw Gerrera",
+        "Tags":  "rebell"
+    },
+    {
+        "Name":  "Mon Mothma",
+        "Tags":  "rebell,senat"
+    },
+    {
+        "Name":  "Admiral Ackbar",
+        "Tags":  "rebell,widerstand"
+    },
+    {
+        "Name":  "Wedge Antilles",
+        "Tags":  "rebell"
+    },
+    {
+        "Name":  "Hera Syndulla",
+        "Tags":  "rebell"
+    },
+    {
+        "Name":  "Sabine Wren",
+        "Tags":  "rebell,mandalorian"
+    },
+    {
+        "Name":  "Nien Nunb",
+        "Tags":  "rebell,redet_nicht"
+    },
+    {
+        "Name":  "Poe Dameron",
+        "Tags":  "widerstand"
+    },
+    {
+        "Name":  "Finn",
+        "Tags":  "widerstand"
+    },
+    {
+        "Name":  "Rose Tico",
+        "Tags":  "widerstand"
+    },
+    {
+        "Name":  "Vice Admiral Holdo",
+        "Tags":  "widerstand"
+    },
+    {
+        "Name":  "Maz Kanata",
+        "Tags":  "widerstand,unterwelt"
+    },
+    {
+        "Name":  "Wat Tambor",
+        "Tags":  "separatist"
+    },
+    {
+        "Name":  "Poggle the Lesser",
+        "Tags":  "separatist,redet_nicht"
+    },
+    {
+        "Name":  "Nute Gunray",
+        "Tags":  "separatist"
+    },
+    {
+        "Name":  "Admiral Trench",
+        "Tags":  "separatist"
+    },
+    {
+        "Name":  "San Hill",
+        "Tags":  "separatist"
+    },
+    {
+        "Name":  "Lux Bonteri",
+        "Tags":  "separatist,senat"
+    },
+    {
+        "Name":  "General Kalani",
+        "Tags":  "separatist,droide"
+    },
+    {
+        "Name":  "Trace Martez",
+        "Tags":  "schmuggel,unterwelt"
+    },
+    {
+        "Name":  "Rafa Martez",
+        "Tags":  "schmuggel,unterwelt"
+    },
+    {
+        "Name":  "Cad Bane",
+        "Tags":  "kopfgeldjäger,unterwelt,peak"
+    },
+    {
+        "Name":  "Jabba the Hutt",
+        "Tags":  "unterwelt,hutte"
+    },
+    {
+        "Name":  "Hondo Ohnaka",
+        "Tags":  "unterwelt,pirat"
+    },
+    {
+        "Name":  "DJ",
+        "Tags":  "unterwelt,schmuggel"
+    },
+    {
+        "Name":  "Enfys Nest",
+        "Tags":  "unterwelt,pirat"
+    },
+    {
+        "Name":  "Dryden Vos",
+        "Tags":  "unterwelt"
+    },
+    {
+        "Name":  "Qi\u0027ra",
+        "Tags":  "unterwelt,heiss,schmuggel"
+    },
+    {
+        "Name":  "IG-11",
+        "Tags":  "droide,kopfgeldjäger"
+    },
+    {
+        "Name":  "Gorian Shard",
+        "Tags":  "pirat,unterwelt"
+    },
+    {
+        "Name":  "Kragan Gorr",
+        "Tags":  "pirat,unterwelt"
+    },
+    {
+        "Name":  "Vane",
+        "Tags":  "pirat,unterwelt"
+    },
+    {
+        "Name":  "Rotta the Hutt",
+        "Tags":  "hutte,unterwelt"
+    },
+    {
+        "Name":  "Ziro the Hutt",
+        "Tags":  "hutte,unterwelt"
+    },
+    {
+        "Name":  "Gardulla the Hutt",
+        "Tags":  "hutte,unterwelt"
+    },
+    {
+        "Name":  "The Twins",
+        "Tags":  "hutte,unterwelt"
+    },
+    {
+        "Name":  "Gamorrean Guard",
+        "Tags":  "unterwelt,monster,redet_nicht"
+    },
+    {
+        "Name":  "Benthic Two Tubes",
+        "Tags":  "unterwelt,rebell"
+    },
+    {
+        "Name":  "Bib Fortuna",
+        "Tags":  "unterwelt"
+    },
+    {
+        "Name":  "Zam Wesell",
+        "Tags":  "unterwelt,kopfgeldjäger"
+    },
+    {
+        "Name":  "Embo",
+        "Tags":  "kopfgeldjäger,unterwelt,peak"
+    },
+    {
+        "Name":  "Aurra Sing",
+        "Tags":  "kopfgeldjäger,unterwelt"
+    },
+    {
+        "Name":  "Bossk",
+        "Tags":  "kopfgeldjäger,unterwelt"
+    },
+    {
+        "Name":  "Fennec Shand",
+        "Tags":  "kopfgeldjäger,unterwelt,heiss"
+    },
+    {
+        "Name":  "Rush Clovis",
+        "Tags":  "republik,separatist,senat"
+    },
+    {
+        "Name":  "Jar Jar Binks",
+        "Tags":  "republik,senat"
+    },
+    {
+        "Name":  "Neel",
+        "Tags":  "republik"
+    },
+    {
+        "Name":  "Padme Amidala",
+        "Tags":  "senat,heiss,peak"
+    },
+    {
+        "Name":  "Bail Organa",
+        "Tags":  "rebell,senat"
+    },
+    {
+        "Name":  "Grogu",
+        "Tags":  "mandalorian,redet_nicht,peak"
+    },
+    {
+        "Name":  "Mas Amedda",
+        "Tags":  "senat"
+    },
+    {
+        "Name":  "Valorum",
+        "Tags":  "senat"
+    },
+    {
+        "Name":  "Orn Free Taa",
+        "Tags":  "senat"
+    },
+    {
+        "Name":  "Riyo Chuchi",
+        "Tags":  "senat,heiss"
+    },
+    {
+        "Name":  "Rancor",
+        "Tags":  "monster,redet_nicht"
+    },
+    {
+        "Name":  "Wampa",
+        "Tags":  "monster,redet_nicht"
+    },
+    {
+        "Name":  "Sarlacc",
+        "Tags":  "monster,redet_nicht"
+    },
+    {
+        "Name":  "Nexu",
+        "Tags":  "monster,redet_nicht"
+    },
+    {
+        "Name":  "Acklay",
+        "Tags":  "monster,redet_nicht"
+    },
+    {
+        "Name":  "Reek",
+        "Tags":  "monster,redet_nicht"
+    },
+    {
+        "Name":  "Rathtar",
+        "Tags":  "monster,redet_nicht"
+    },
+    {
+        "Name":  "Zillo Beast",
+        "Tags":  "monster,redet_nicht"
+    },
+    {
+        "Name":  "Mudhorn",
+        "Tags":  "monster,redet_nicht"
+    },
+    {
+        "Name":  "Jonas",
+        "Tags":  "meme"
+    },
+    {
+        "Name":  "Fino Bloodstone",
+        "Tags":  "anime"
+    },
+    {
+        "Name":  "Monkey D. Ruffy",
+        "Tags":  "anime"
+    },
+    {
+        "Name":  "Millennium Falcon",
+        "Tags":  "vehicle,fahrzeug,rebell,schmuggel"
+    },
+    {
+        "Name":  "X-Wing Starfighter",
+        "Tags":  "vehicle,fahrzeug,rebell"
+    },
+    {
+        "Name":  "TIE Fighter",
+        "Tags":  "vehicle,fahrzeug,imperium"
+    },
+    {
+        "Name":  "Slave I",
+        "Tags":  "vehicle,fahrzeug,kopfgeldjäger,mandalorian"
+    },
+    {
+        "Name":  "AT-AT Walker",
+        "Tags":  "vehicle,fahrzeug,imperium"
+    },
+    {
+        "Name":  "AT-ST",
+        "Tags":  "vehicle,fahrzeug,imperium"
+    },
+    {
+        "Name":  "Imperial Star Destroyer",
+        "Tags":  "vehicle,fahrzeug,imperium"
+    },
+    {
+        "Name":  "Death Star",
+        "Tags":  "vehicle,fahrzeug,imperium"
+    },
+    {
+        "Name":  "Y-Wing Starfighter",
+        "Tags":  "vehicle,fahrzeug,rebell,republik"
+    },
+    {
+        "Name":  "A-Wing Starfighter",
+        "Tags":  "vehicle,fahrzeug,rebell"
+    },
+    {
+        "Name":  "B-Wing Starfighter",
+        "Tags":  "vehicle,fahrzeug,rebell"
+    },
+    {
+        "Name":  "TIE Interceptor",
+        "Tags":  "vehicle,fahrzeug,imperium"
+    },
+    {
+        "Name":  "TIE Advanced x1",
+        "Tags":  "vehicle,fahrzeug,imperium,sith"
+    },
+    {
+        "Name":  "Snowspeeder",
+        "Tags":  "vehicle,fahrzeug,rebell"
+    },
+    {
+        "Name":  "Razor Crest",
+        "Tags":  "vehicle,fahrzeug,mandalorian"
+    },
+    {
+        "Name":  "Jedi Starfighter (Delta-7)",
+        "Tags":  "vehicle,fahrzeug,jedi,republik"
+    },
+    {
+        "Name":  "Jedi Interceptor (Eta-2)",
+        "Tags":  "vehicle,fahrzeug,jedi,republik"
+    },
+    {
+        "Name":  "Republic Gunship (LAAT)",
+        "Tags":  "vehicle,fahrzeug,republik"
+    },
+    {
+        "Name":  "AT-TE",
+        "Tags":  "vehicle,fahrzeug,republik"
+    },
+    {
+        "Name":  "Venator-class Star Destroyer",
+        "Tags":  "vehicle,fahrzeug,republik"
+    },
+    {
+        "Name":  "Naboo N-1 Starfighter",
+        "Tags":  "vehicle,fahrzeug,republik"
+    },
+    {
+        "Name":  "U-Wing",
+        "Tags":  "vehicle,fahrzeug,rebell"
+    },
+    {
+        "Name":  "Ghost",
+        "Tags":  "vehicle,fahrzeug,rebell"
+    },
+    {
+        "Name":  "Speeder Bike",
+        "Tags":  "vehicle,fahrzeug,imperium,rebell"
+    },
+    {
+        "Name":  "Imperial Shuttle",
+        "Tags":  "vehicle,fahrzeug,imperium"
+    }
+]

@@ -245,6 +245,76 @@ export async function initAdminPanel() {
                 alert("Sound-Funktion noch nicht geladen.");
             }
         });
+        
+        // --- Mailbox / Systemnachricht senden ---
+        const sendMailBtn = document.getElementById('admin-send-mail-btn');
+        if (sendMailBtn) {
+            sendMailBtn.addEventListener('click', async () => {
+                const playerUid = document.getElementById('admin-mail-player-select').value;
+                const title = document.getElementById('admin-mail-title').value.trim();
+                const text = document.getElementById('admin-mail-text').value.trim();
+                const credits = parseInt(document.getElementById('admin-mail-credits').value) || 0;
+                
+                if (!playerUid) { alert("Bitte einen Spieler auswählen."); return; }
+                if (!title) { alert("Bitte einen Titel eingeben."); return; }
+                if (!text && credits <= 0) { alert("Bitte eine Nachricht oder Credits eingeben."); return; }
+                
+                if (confirm(`Möchtest du diese Nachricht an ${playerUid === 'all' ? 'ALLE SPIELER' : 'den ausgewählten Spieler'} senden?`)) {
+                    sendMailBtn.disabled = true;
+                    sendMailBtn.textContent = "Wird gesendet...";
+                    try {
+                        const { doc, getDoc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+                        
+                        const newMsg = {
+                            id: 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                            title: title,
+                            text: text,
+                            credits: credits,
+                            timestamp: Date.now(),
+                            claimed: false
+                        };
+                        
+                        if (playerUid === 'all') {
+                            // Sende an alle (im Cache)
+                            let promises = [];
+                            allUsersCache.filter(u => u.username !== 'admin').forEach(u => {
+                                const userRef = doc(db, "users", u.id);
+                                const currentMailbox = u.mailbox || [];
+                                currentMailbox.push(newMsg);
+                                promises.push(updateDoc(userRef, { mailbox: currentMailbox }));
+                            });
+                            await Promise.all(promises);
+                            alert(`Nachricht erfolgreich an ${promises.length} Spieler gesendet!`);
+                        } else {
+                            const userRef = doc(db, "users", playerUid);
+                            const userSnap = await getDoc(userRef);
+                            
+                            if (!userSnap.exists()) {
+                                alert("Spieler nicht gefunden.");
+                                sendMailBtn.disabled = false;
+                                sendMailBtn.textContent = "Nachricht senden";
+                                return;
+                            }
+                            
+                            const userData = userSnap.data();
+                            const currentMailbox = userData.mailbox || [];
+                            currentMailbox.push(newMsg);
+                            
+                            await updateDoc(userRef, { mailbox: currentMailbox });
+                            alert("Nachricht erfolgreich gesendet!");
+                        }
+                        
+                        document.getElementById('admin-mail-title').value = '';
+                        document.getElementById('admin-mail-text').value = '';
+                        document.getElementById('admin-mail-credits').value = '0';
+                    } catch(e) {
+                        alert("Fehler beim Senden der Nachricht: " + e.message);
+                    }
+                    sendMailBtn.disabled = false;
+                    sendMailBtn.textContent = "Nachricht senden";
+                }
+            });
+        }
 
         listenersBound = true;
     }
@@ -282,6 +352,7 @@ async function renderUserList() {
 
     const playerSelect = document.getElementById('admin-reset-player-select');
     const pwPlayerSelect = document.getElementById('admin-player-password-select');
+    const mailPlayerSelect = document.getElementById('admin-mail-player-select');
     
     if (playerSelect) {
         playerSelect.innerHTML = '<option value="">Wähle Spieler...</option>';
@@ -293,6 +364,13 @@ async function renderUserList() {
         pwPlayerSelect.innerHTML = '<option value="">Wähle Spieler...</option>';
         normalUsers.forEach(u => {
             pwPlayerSelect.innerHTML += `<option value="${u.uid}">${u.displayName || u.username}</option>`;
+        });
+    }
+    if (mailPlayerSelect) {
+        mailPlayerSelect.innerHTML = '<option value="">Wähle Spieler...</option>';
+        mailPlayerSelect.innerHTML += '<option value="all" style="color:#ff4757; font-weight:bold;">** ALLEN SPIELERN **</option>';
+        normalUsers.forEach(u => {
+            mailPlayerSelect.innerHTML += `<option value="${u.uid}">${u.displayName || u.username} (${u.username})</option>`;
         });
     }
 

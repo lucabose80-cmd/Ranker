@@ -1,5 +1,15 @@
 export const patchNotesWaifu = [
     {
+        version: "v9.2.3",
+        title: "Briefkasten & Community System Update",
+        isHotfix: false,
+        changes: [
+            "Feature: Neues Briefkasten-System! Unten im Menü-Dock gibt es nun einen Post-Button. Über diesen könnt ihr direkt Nachrichten und Credits vom System oder den Admins erhalten.",
+            "Feature: Der Admin kann nun Ankündigungen und Belohnungen bequem an die gesamte Spielerschaft senden.",
+            "QoL: Eingesammelte oder gelesene Nachrichten werden nun direkt aus dem Briefkasten gelöscht, um alles übersichtlich zu halten."
+        ]
+    },
+    {
         version: "v8.3.1",
         title: "Hotfix: Online-Scoreboard Anzeige",
         isHotfix: true,
