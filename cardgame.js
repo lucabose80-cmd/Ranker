@@ -621,7 +621,7 @@ async function startBotMatch(bot) {
     }
     
     isBotMatch = true;
-    startMatch({ username: `BOT: ${bot.name}`, displayName: `BOT: ${bot.name}`, botLevel: BOT_LEVELS.indexOf(bot) + 1 }, finalDeck);
+    startMatch({ username: `BOT: ${bot.name}`, displayName: `BOT: ${bot.name}`, botLevel: BOT_LEVELS.indexOf(bot) + 1, reward: bot.reward || 150 }, finalDeck);
 }
 
 async function startMatch(oppData, oppDeckArr) {

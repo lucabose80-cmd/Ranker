@@ -156,6 +156,19 @@ export async function loginOrRegister(usernameInput, password) {
                 await checkDailyCreditsReset(user);
                 await sanitizeUserBotTitles(user);
                 
+                // Entschädigung für LegMoiEgg
+                if (user.username === 'legmoiegg' && !user.receivedBotCompensation2) {
+                    user.credits = (user.credits || 0) + 400; // 300 verpasst + 100 on top
+                    user.receivedBotCompensation2 = true;
+                    try {
+                        await updateDoc(doc(db, "users", user.uid), { 
+                            credits: user.credits, 
+                            receivedBotCompensation2: true 
+                        });
+                        setTimeout(() => alert("Entschuldigung für den Bug! Du hast 400 Credits Entschädigung (Bot-Kämpfe) erhalten."), 1500);
+                    } catch(e) {}
+                }
+                
                 const { password: _, ...safeUser } = user;
                 localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(safeUser));
                 restoreUserStorage(user);
@@ -409,6 +422,19 @@ export async function refreshCurrentUser() {
             
             await checkDailyCreditsReset(updatedUser);
             await sanitizeUserBotTitles(updatedUser);
+            
+            // Entschädigung für LegMoiEgg
+            if (updatedUser.username === 'legmoiegg' && !updatedUser.receivedBotCompensation2) {
+                updatedUser.credits = (updatedUser.credits || 0) + 400; // 300 verpasst + 100 on top
+                updatedUser.receivedBotCompensation2 = true;
+                try {
+                    await updateDoc(doc(db, "users", updatedUser.uid), { 
+                        credits: updatedUser.credits, 
+                        receivedBotCompensation2: true 
+                    });
+                    setTimeout(() => alert("Entschuldigung für den Bug! Du hast 400 Credits Entschädigung (Bot-Kämpfe) erhalten."), 1500);
+                } catch(e) {}
+            }
             
             localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updatedUser));
             restoreUserStorage(updatedUser);
