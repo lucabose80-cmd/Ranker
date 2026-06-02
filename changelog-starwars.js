@@ -1,5 +1,13 @@
 export const patchNotesStarWars = [
     {
+        version: "v9.2.1",
+        title: "Hotfix: Abenteuer-Modus Blackscreen",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Ein Bug wurde behoben, durch den nach einer abgeschlossenen Abenteuer-Runde fälschlicherweise ein schwarzer Bildschirm (Blackscreen) angezeigt wurde, anstatt zurück in die Kampagnen-Übersicht zu wechseln."
+        ]
+    },
+    {
         version: "v9.2",
         title: "Update: Abenteuer-Modus Rework (15 Fraktionen)",
         isHotfix: false,
