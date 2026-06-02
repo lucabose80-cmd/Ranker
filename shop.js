@@ -1,4 +1,4 @@
-import { getCurrentUser } from './auth.js';
+﻿import { getCurrentUser } from './auth.js';
 import { activeCharacterDatabase } from './theme.js';
 import { currentMode } from './mode-state.js';
 
@@ -504,7 +504,7 @@ function showPullAnimation(pulledCards, isGodPack) {
                                 📦
                             </div>
                             <div class="pull-card-back" style="background-image: url('${info.char.img}'); border: ${info.rarity.border}; ${customStyle}">
-                                ${showHolo ? `<div style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; mix-blend-mode: color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear;"></div>` : ''}
+                                ${showHolo ? `<div style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; mix-blend-mode: overlay; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear;"></div>` : ''}
                                 ${info.isNew ? `<div style="position:absolute; top:10px; right:10px; background:#ff4757; color:#fff; font-size:0.7rem; font-weight:bold; padding:3px 8px; border-radius:12px; transform:rotate(15deg); border:2px solid #fff; box-shadow:0 2px 5px rgba(0,0,0,0.5); z-index: 20;">NEU!</div>` : ''}
                                 ${info.isDissolved ? `<div style="position:absolute; inset:0; background:rgba(0,0,0,0.7); z-index:15; display:flex; flex-direction:column; justify-content:center; align-items:center; backdrop-filter: grayscale(1);"><div style="color:#ffd700; font-size:2.5rem; font-weight:bold; text-shadow:0 0 10px #ffd700; animation: pulse 1s infinite;">+20</div><div style="color:#fff; font-size:0.9rem; font-weight:bold; text-transform:uppercase; letter-spacing:1px; margin-bottom: 20px;">Kyber Kristalle</div><div style="background:#ff4757; color:#fff; padding:2px 8px; border-radius:10px; font-size:0.7rem; font-weight:bold;">DUPLIKAT AUFGELÖST</div></div>` : ''}
                                 <div style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.7), transparent); padding:20px 10px 10px 10px; color:#fff; text-align:center;">

@@ -259,8 +259,8 @@ async function saveScoreToFirebase(attempts) {
             
             if (user.role !== 'admin' && !user.isTestUser) {
                 await updateDoc(doc(db, "users", userId), { credits: increment(creditsWon) });
-                if (window.showUnlockNotification) {
-                    window.showUnlockNotification('credits', `StarWarsdle gelöst: +${creditsWon} Credits!`);
+                if (typeof window.showToast === 'function') {
+                    window.showToast(`StarWarsdle gelöst: Du erhältst ${creditsWon} Credits!`, 'success');
                 } else {
                     alert(`StarWarsdle gelöst: Du erhältst ${creditsWon} Credits!`);
                 }

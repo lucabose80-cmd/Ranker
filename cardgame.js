@@ -1441,9 +1441,9 @@ async function finishMatch() {
                 const cb = document.getElementById('topbar-credits');
                 if(cb) cb.innerHTML = `<span style="color:#ffd700;">💳</span> ${user.credits}`;
                 
-                alert(`Du hast das Match ${playerScore}:${opponentScore} gewonnen!\n\nERSTER SIEG GEGEN STUFE ${opponentData.botLevel}!\nDu erhältst ${reward} Credits${unlockedNewTitle ? ' und einen neuen Titel!' : '!'}`);
+                showBotResultOverlay(true, true, reward, unlockedNewTitle, `${playerScore}:${opponentScore}`, opponentData.botLevel);
             } else {
-                alert(`Du hast das Match ${playerScore}:${opponentScore} gewonnen!`);
+                showBotResultOverlay(true, false, 0, false, `${playerScore}:${opponentScore}`, opponentData.botLevel);
             }
         } else if(!isBotMatch && user) {
             alert(`Du bekommst 5 Credits fuer den Sieg!`);
@@ -1457,9 +1457,17 @@ async function finishMatch() {
         }
     } else if(opponentScore > playerScore) {
         finalRes = "Niederlage";
-        alert(`Du hast das Match ${playerScore}:${opponentScore} verloren!`);
+        if(isBotMatch && user && opponentData.botLevel) {
+            showBotResultOverlay(false, false, 0, false, `${playerScore}:${opponentScore}`, opponentData.botLevel);
+        } else {
+            alert(`Du hast das Match ${playerScore}:${opponentScore} verloren!`);
+        }
     } else {
-        alert(`Das Match endete unentschieden ${playerScore}:${opponentScore}!`);
+        if(isBotMatch && user && opponentData.botLevel) {
+            showBotResultOverlay(false, false, 0, false, `${playerScore}:${opponentScore}`, opponentData.botLevel, true);
+        } else {
+            alert(`Das Match endete unentschieden ${playerScore}:${opponentScore}!`);
+        }
     }
 
     if(user) {
@@ -1737,10 +1745,37 @@ function handleCardgameLiveState(lobby) {
     }
 }
 
-
-
-
-
-
-
-
+function showBotResultOverlay(isWin, isFirstWin, reward, unlockedNewTitle, scoreStr, botLevel, isDraw = false) {
+    document.getElementById('cardgame-main-menu').classList.remove('hidden');
+    document.getElementById('cardgame-bots').classList.remove('hidden');
+    document.getElementById('hub-content').classList.add('hidden');
+    
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:99999; backdrop-filter:blur(5px); text-align:center; padding: 20px; box-sizing: border-box;';
+    
+    let titleText, color, descText;
+    
+    if (isWin) {
+        titleText = 'SIEG';
+        color = '#2ed573';
+        descText = `Du hast das Match ${scoreStr} gewonnen!`;
+        if (isFirstWin) {
+            descText += `<br><br><span style="color:#ffd700; font-weight:bold;">ERSTER SIEG GEGEN STUFE ${botLevel}!</span><br>Du erhältst ${reward} Credits${unlockedNewTitle ? ' und einen neuen Titel!' : '!'}`;
+        }
+    } else if (isDraw) {
+        titleText = 'UNENTSCHIEDEN';
+        color = '#f1c40f';
+        descText = `Das Match endete ${scoreStr}.`;
+    } else {
+        titleText = 'NIEDERLAGE';
+        color = '#ff4757';
+        descText = `Du hast das Match ${scoreStr} verloren.`;
+    }
+    
+    overlay.innerHTML = `
+        <h1 style="color:${color}; font-size:2.5rem; text-shadow:0 0 15px ${color}88; margin-bottom:10px; font-weight:900; letter-spacing:2px;">${titleText}</h1>
+        <p style="color:#ccc; font-size:1rem; margin-bottom:20px; line-height: 1.4;">${descText}</p>
+        <button class="rank-btn auth-btn" style="padding:10px 25px; font-size:1rem; background:linear-gradient(135deg, ${color}, ${color}aa); border-color:${color};" onclick="this.parentElement.remove(); if(typeof renderBots !== 'undefined') renderBots();">Zurück zu Tutorial Bots</button>
+    `;
+    document.body.appendChild(overlay);
+}

@@ -1,4 +1,4 @@
-import { LEGENDARY_POOL } from './data-starwars.js';
+﻿import { LEGENDARY_POOL } from './data-starwars.js';
 function getSeenIds() {
     const raw = localStorage.getItem('seen_unlock_ids') || '';
     if (raw.startsWith('[')) {
@@ -991,7 +991,7 @@ window.renderCommunityAlbum = async function(user, containerId, filterPack = 'al
             
             if (c.rarity === 'epic' && idx === 0) {
                 const holo = document.createElement('div');
-                holo.style.cssText = 'position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; mix-blend-mode:color-dodge; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear;';
+                holo.style.cssText = 'position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; mix-blend-mode:overlay; background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%); background-size: 200% 200%; animation: holo-gleam 2.5s infinite linear;';
                 card.appendChild(holo);
             }
             

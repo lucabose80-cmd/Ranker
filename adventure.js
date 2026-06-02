@@ -60,7 +60,7 @@ export const ADVENTURE_CAMPAIGN = [
     // Phase 1: Die Gesetzlosen (Level 1-5)
     { name: "Separatisten-Patrouille", avatar: "", ruleId: "adv_rule_3", deck: ["B1 Battle Droide", "B2 Super Battle Droide", "Droideka", "Kommando Droide", "Wat Tambor", "Zwergspinnendroide", "Spybot", "Scorch", "AZI-3", "General Kalani"], ruleText: "Keine Sonderregeln." },
     { name: "Schmuggel-Ring", avatar: "", ruleId: "adv_rule_2", deck: ["Hondo Ohnaka", "Han Solo", "Chewbacca", "Bossk", "Zam Wesell", "IG-88", "Fennec Shand", "Jabba the Hutt", "Dryden Vos", "Gorian Shard"], ruleText: "Keine Sonderregeln." },
-    { name: "Plünderer", avatar: "", ruleId: "adv_rule_1", deck: ["Trace Martez", "Rafa Martez", "Gamorrean Guard", "B1 Battle Droide", "A-Wing Starfighter", "Kragan Gorr", "DJ", "Gorian Shard", "Vane", "Nien Nunb"], ruleText: "Keine Sonderregeln." },
+    { name: "Plünderer", avatar: "", ruleId: "adv_rule_1", deck: ["Trace Martez", "Rafa Martez", "Gamorrean Guard", "B1 Battle Droide", "Jawa", "Kragan Gorr", "DJ", "Gorian Shard", "Vane", "Nien Nunb"], ruleText: "Keine Sonderregeln." },
     { name: "Piraten-Flotte", avatar: "", ruleId: "adv_rule_4", deck: ["Millennium Falcon", "Slave I", "Razor Crest", "Hondo Ohnaka", "Boba Fett", "Bossk", "Fennec Shand", "Vane", "Gorian Shard", "Kragan Gorr"], ruleText: "Keine Sonderregeln." },
     { name: "Mandalorianische Söldner", avatar: "", ruleId: "adv_rule_5", deck: ["Din Djarin", "Bo-Katan Kryze", "The Armorer", "Bossk", "IG-88", "Fennec Shand", "Aurra Sing", "Jabba the Hutt", "Cad Bane", "Zam Wesell"], ruleText: "BOSS: Gegnerische Mandalorianer verhindern deine Buffs auch bei nur 1 gespielten Mando (Silence)." },
     
