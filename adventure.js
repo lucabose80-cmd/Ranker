@@ -43,9 +43,9 @@ const ADVENTURE_LEVELS = 20;
 // Base deck all players start with in Adventure Mode
 export const BASE_ADVENTURE_DECK = [
     { charName: 'Mon Mothma', rarity: 'common' }, // Rebell
-    { charName: 'Appo', rarity: 'common' }, // Klon
+    { charName: 'Commander Cody', rarity: 'common' }, // Klon
     { charName: 'B1 Battle Droide', rarity: 'common' }, // Droid
-    { charName: 'Trace Martez', rarity: 'common' }, // Schurke / Unterwelt
+    { charName: 'Cad Bane', rarity: 'common' }, // Schurke / Unterwelt
     { charName: 'Rose Tico', rarity: 'common' }, // Widerstand
     { charName: 'FN-2199', rarity: 'common' }, // Erste Ordnung
     { charName: 'Admiral Piett', rarity: 'common' }, // Imperium
@@ -213,12 +213,12 @@ export function renderAdventureMap() {
         const isHighest = lvlNum === highestLvl;
         
         let color = isLocked ? '#333' : (isPast ? '#2ed573' : '#3498db');
-        let icon = isLocked ? '🔒' : (isPast ? '✓' : '⚔️');
+        let icon = isLocked ? '<i class="fas fa-lock"></i>' : (isPast ? '<i class="fas fa-check"></i>' : '<i class="fas fa-crosshairs"></i>');
         let glow = '';
         
         if (isHighest) {
             color = '#ffd700';
-            icon = isCurrent ? '⚔️' : '⭐';
+            icon = isCurrent ? '<i class="fas fa-crosshairs"></i>' : '<i class="fas fa-star"></i>';
             glow = `box-shadow: 0 0 15px ${color};`;
         }
         
@@ -496,6 +496,10 @@ function selectDraftCard(newDraftObj, newCardImage, newCardScore) {
         removeContainer.appendChild(cardEl);
     });
 }
+
+
+
+
 
 
 
