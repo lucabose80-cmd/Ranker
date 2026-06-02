@@ -264,9 +264,9 @@ export async function renderAdventureMap() {
             const toShow = pList.slice(0, 3);
             const extra = pList.length - 3;
             
-            let avImgs = toShow.map(p => `<img src="${p.avatar}" title="${p.name}" style="width:20px; height:20px; border-radius:50%; border:1px solid #111; margin-left:-5px; object-fit:cover;">`).join('');
+            let avImgs = toShow.map(p => `<img src="${p.avatar}" data-pname="${p.name}" class="adv-avatar-img" style="width:20px; height:20px; border-radius:50%; border:1px solid #111; margin-left:-5px; object-fit:cover; cursor:help;">`).join('');
             if (extra > 0) {
-                avImgs += `<div style="width:20px; height:20px; border-radius:50%; background:#333; color:#fff; font-size:0.55rem; display:flex; justify-content:center; align-items:center; border:1px solid #111; margin-left:-5px;" title="${extra} weitere">+${extra}</div>`;
+                avImgs += `<div class="adv-avatar-img" data-pname="${extra} weitere Spieler" style="width:20px; height:20px; border-radius:50%; background:#333; color:#fff; font-size:0.55rem; display:flex; justify-content:center; align-items:center; border:1px solid #111; margin-left:-5px; cursor:help;">+${extra}</div>`;
             }
             
             avatarsHtml = `
@@ -293,7 +293,7 @@ export async function renderAdventureMap() {
                 level.deck.forEach(cName => {
                     const cDb = activeCharacterDatabase.find(x => x.name === cName);
                     if(cDb) {
-                        hoverHtml += `<img src="${cDb.img}" style="width:38px; height:55px; object-fit:cover; border-radius:4px; border:1px solid #555;" title="${cName}">`;
+                        hoverHtml += `<img src="${cDb.img}" style="width:38px; height:55px; object-fit:cover; border-radius:4px; border:1px solid #555;">`;
                     }
                 });
                 hoverHtml += `</div>`;
@@ -308,6 +308,7 @@ export async function renderAdventureMap() {
                 
                 if (isBoss) tooltipDiv.style.borderColor = '#ff4757';
                 else tooltipDiv.style.borderColor = '#3498db';
+                tooltipDiv.style.width = '250px';
                 
                 tooltipDiv.innerHTML = hoverHtml;
                 tooltipDiv.style.display = 'flex';
@@ -329,6 +330,44 @@ export async function renderAdventureMap() {
                 if(tooltipDiv) tooltipDiv.style.display = 'none';
             });
         }
+
+        const avatarEls = node.querySelectorAll('.adv-avatar-img');
+        avatarEls.forEach(el => {
+            el.addEventListener('mouseenter', (e) => {
+                let pName = el.getAttribute('data-pname');
+                let hoverHtml = `<div style="color:#fff; font-size:0.8rem; font-weight:bold; text-align:center;">${pName}</div>`;
+                
+                let tooltipDiv = document.getElementById('adv-custom-tooltip');
+                if(!tooltipDiv) {
+                    tooltipDiv = document.createElement('div');
+                    tooltipDiv.id = 'adv-custom-tooltip';
+                    tooltipDiv.style.cssText = 'position: fixed; z-index: 10000; background: rgba(15, 18, 25, 0.98); border: 2px solid #3498db; padding: 10px; border-radius: 8px; pointer-events: none; display: flex; flex-direction: column; width: max-content; box-shadow: 0 5px 15px rgba(0,0,0,0.8);';
+                    document.body.appendChild(tooltipDiv);
+                }
+                
+                tooltipDiv.style.borderColor = '#2ed573';
+                tooltipDiv.style.width = 'max-content';
+                
+                tooltipDiv.innerHTML = hoverHtml;
+                tooltipDiv.style.display = 'flex';
+                tooltipDiv.style.left = (e.clientX + 15) + 'px';
+                tooltipDiv.style.top = (e.clientY + 15) + 'px';
+            });
+            el.addEventListener('mousemove', (e) => {
+                const tooltipDiv = document.getElementById('adv-custom-tooltip');
+                if(tooltipDiv) {
+                    let newLeft = e.clientX + 15;
+                    let newTop = e.clientY + 15;
+                    if(newLeft + 200 > window.innerWidth) newLeft = e.clientX - 200; 
+                    tooltipDiv.style.left = newLeft + 'px';
+                    tooltipDiv.style.top = newTop + 'px';
+                }
+            });
+            el.addEventListener('mouseleave', () => {
+                const tooltipDiv = document.getElementById('adv-custom-tooltip');
+                if(tooltipDiv) tooltipDiv.style.display = 'none';
+            });
+        });
         container.appendChild(node);
         
         if (lvlNum < ADVENTURE_LEVELS) {
