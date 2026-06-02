@@ -1,4 +1,4 @@
-﻿
+
 window.getSharedAudioContext = function() {
     if (!window.sharedAudioContext) {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -397,7 +397,7 @@ function setupGameUI(user) {
         'live-content': () => { initLiveSpectating(); window.isGameActive = false; }
     });
 
-    setupSubNav('.cardgame-sub-nav', ['cardgame-matchmaking', 'cardgame-deckbuilder', 'adventure-content', 'cardgame-bots'], { 'cardgame-deckbuilder': () => { document.getElementById('cardgame-btn-deck')?.click(); }, 'cardgame-bots': () => { document.getElementById('cardgame-btn-bot')?.click(); } });
+    setupSubNav('.cardgame-sub-nav', ['cardgame-matchmaking', 'cardgame-deckbuilder', 'adventure-content', 'cardgame-bots', 'cardgame-match'], { 'cardgame-deckbuilder': () => { document.getElementById('cardgame-btn-deck')?.click(); }, 'cardgame-bots': () => { document.getElementById('cardgame-btn-bot')?.click(); } });
     
     setupSubNav('.scoreboard-sub-nav', ['scoreboard-content', 'history-content'], {
         'history-content': () => { renderHistory(); }
@@ -667,16 +667,39 @@ window.playStarWars8BitTheme = function() {
 window.showUnlockNotification = function(type, desc) {
     const notif = document.getElementById('unlock-notification');
     let titleText = 'Titel freigeschaltet!';
-    if (type === 'theme') titleText = 'Farbschema freigeschaltet!';
-    else if (type === 'credits') titleText = 'Belohnung erhalten!';
-    else if (type === 'error') titleText = 'Achtung!';
+    let mainText = '🎉 NEUE FREISCHALTUNG! 🎉';
+    
+    if (type === 'theme') {
+        titleText = 'Farbschema freigeschaltet!';
+    } else if (type === 'credits') {
+        titleText = 'Belohnung erhalten!';
+        mainText = '💰 GEWINN! 💰';
+    } else if (type === 'error') {
+        titleText = 'Achtung!';
+        mainText = '❌ FEHLER ❌';
+    }
     
     document.getElementById('unlock-title').textContent = titleText;
     document.getElementById('unlock-desc').textContent = desc;
     
+    const mainTitleEl = document.getElementById('unlock-main-title');
+    if(mainTitleEl) {
+        mainTitleEl.textContent = mainText;
+        if (type === 'error') {
+            mainTitleEl.style.color = '#ff4757';
+        } else if (type === 'credits') {
+            mainTitleEl.style.color = '#2ed573';
+        } else {
+            mainTitleEl.style.color = '#ffd700';
+        }
+    }
+    
     if (type === 'error') {
         notif.style.background = 'linear-gradient(135deg, rgba(150,0,0,0.95), rgba(80,0,0,0.95))';
         notif.style.border = '2px solid #ff4757';
+    } else if (type === 'credits') {
+        notif.style.background = 'linear-gradient(135deg, rgba(0,100,0,0.95), rgba(0,50,0,0.95))';
+        notif.style.border = '2px solid #2ed573';
     } else {
         notif.style.background = 'rgba(20, 24, 34, 0.95)';
         notif.style.border = '2px solid #ffd700';

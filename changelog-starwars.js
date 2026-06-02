@@ -1,5 +1,19 @@
 export const patchNotesStarWars = [
     {
+        version: "v9.2.4",
+        title: "Hotfix & UI Polishing",
+        isHotfix: true,
+        changes: [
+            "Hotfix: Der globale Chat war durch das neue Dock-Menü teilweise verdeckt und wird nun wieder korrekt im Vordergrund angezeigt.",
+            "Hotfix: Ein Fehler wurde behoben, durch den sich beim Scrollen im Cardgame (z.B. Deckbuilder) die Menüs überlappen konnten.",
+            "Hotfix: Legendäre und Epische Karten mit Holo-Effekt werfen nun keine Grafikfragmente mehr über den Kartenrand hinaus.",
+            "Hotfix: Das Advanced Ranking zeigt das Board nun wieder im korrekten Layout an.",
+            "Design: Das Spiel nutzt nun anstelle der Standard-Browser-Scrollbars dezentere und passendere Custom-Scrollbars.",
+            "Design: Das Starwarsdle Minigame wurde layouttechnisch optimiert und zentriert.",
+            "QoL: Fehlermeldungen (z.B. fehlende Credits beim Booster-Kauf) und Belohnungen erscheinen nun als moderne Toast-Benachrichtigungen in Rot bzw. Grün anstatt den ganzen Bildschirm zu blockieren."
+        ]
+    },
+    {
         version: "v9.2.3",
         title: "Briefkasten & Community System Update",
         isHotfix: false,

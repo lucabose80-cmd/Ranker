@@ -58,9 +58,9 @@ export const BASE_ADVENTURE_DECK = [
 // Adventure Campaign Configuration
 export const ADVENTURE_CAMPAIGN = [
     // Phase 1: Die Gesetzlosen (Level 1-5)
-    { name: "Plünderer", avatar: "", ruleId: "adv_rule_1", deck: ["Trace Martez", "Rafa Martez", "Gamorrean Guard", "B1 Battle Droide", "A-Wing Starfighter", "Kragan Gorr", "DJ", "Gorian Shard", "Vane", "Nien Nunb"], ruleText: "Keine Sonderregeln." },
-    { name: "Schmuggel-Ring", avatar: "", ruleId: "adv_rule_2", deck: ["Hondo Ohnaka", "Han Solo", "Chewbacca", "Bossk", "Zam Wesell", "IG-88", "Fennec Shand", "Jabba the Hutt", "Dryden Vos", "Gorian Shard"], ruleText: "Keine Sonderregeln." },
     { name: "Separatisten-Patrouille", avatar: "", ruleId: "adv_rule_3", deck: ["B1 Battle Droide", "B2 Super Battle Droide", "Droideka", "Kommando Droide", "Wat Tambor", "Zwergspinnendroide", "Spybot", "Scorch", "AZI-3", "General Kalani"], ruleText: "Keine Sonderregeln." },
+    { name: "Schmuggel-Ring", avatar: "", ruleId: "adv_rule_2", deck: ["Hondo Ohnaka", "Han Solo", "Chewbacca", "Bossk", "Zam Wesell", "IG-88", "Fennec Shand", "Jabba the Hutt", "Dryden Vos", "Gorian Shard"], ruleText: "Keine Sonderregeln." },
+    { name: "Plünderer", avatar: "", ruleId: "adv_rule_1", deck: ["Trace Martez", "Rafa Martez", "Gamorrean Guard", "B1 Battle Droide", "A-Wing Starfighter", "Kragan Gorr", "DJ", "Gorian Shard", "Vane", "Nien Nunb"], ruleText: "Keine Sonderregeln." },
     { name: "Piraten-Flotte", avatar: "", ruleId: "adv_rule_4", deck: ["Millennium Falcon", "Slave I", "Razor Crest", "Hondo Ohnaka", "Boba Fett", "Bossk", "Fennec Shand", "Vane", "Gorian Shard", "Kragan Gorr"], ruleText: "Keine Sonderregeln." },
     { name: "Mandalorianische Söldner", avatar: "", ruleId: "adv_rule_5", deck: ["Din Djarin", "Bo-Katan Kryze", "The Armorer", "Bossk", "IG-88", "Fennec Shand", "Aurra Sing", "Jabba the Hutt", "Cad Bane", "Zam Wesell"], ruleText: "BOSS: Gegnerische Mandalorianer verhindern deine Buffs auch bei nur 1 gespielten Mando (Silence)." },
     
@@ -473,12 +473,6 @@ export function handleAdventureLoss(isAbort = false) {
     const user = getCurrentUser();
     if(!user) return;
     
-    if (isAbort) {
-        alert("Lauf abgebrochen. Du startest wieder bei Level 1 mit dem Standard-Deck.");
-    } else {
-        alert("NIEDERLAGE! Dein Abenteuer-Lauf ist beendet. Du startest wieder bei Level 1 mit dem Standard-Deck.");
-    }
-    
     user.adventure_level = 1;
     user.adventure_deck = migrateDeck(BASE_ADVENTURE_DECK);
     
@@ -494,6 +488,18 @@ export function handleAdventureLoss(isAbort = false) {
     verifyAdventureInit();
     renderAdventureMap();
     renderAdventureDeck();
+
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:99999; backdrop-filter:blur(10px); text-align:center;';
+    const titleText = isAbort ? 'LAUF ABGEBROCHEN' : 'NIEDERLAGE';
+    const descText = isAbort ? 'Du startest wieder bei Level 1 mit dem Standard-Deck.' : 'Dein Abenteuer-Lauf ist beendet. Du startest wieder bei Level 1.';
+    
+    overlay.innerHTML = `
+        <h1 style="color:#ff4757; font-size:4rem; text-shadow:0 0 20px rgba(255,71,87,0.5); margin-bottom:20px; font-weight:900; letter-spacing:5px;">${titleText}</h1>
+        <p style="color:#ccc; font-size:1.2rem; margin-bottom:40px;">${descText}</p>
+        <button class="rank-btn auth-btn" style="padding:15px 40px; font-size:1.2rem; background:linear-gradient(135deg, #ff4757, #ff6b81); border-color:#ff4757;" onclick="this.parentElement.remove();">Zurück zum Abenteuer-Menü</button>
+    `;
+    document.body.appendChild(overlay);
 }
 
 async function showDraftScreen(levelIndex, creditsWon) {
