@@ -1116,7 +1116,6 @@ function playRound(playerCard, explicitOppCard = null) {
             if (pHas('widerstand') && pFac === 'widerstand') { pEffects.martyrBuff = true; pLog.push("Widerstand geopfert"); }
             if (pHas('jedi') && (pFac === 'jedi' || pTags.includes('jedi'))) { pEffects.forceWeakest = true; pLog.push("Gedankentrick initiiert"); }
             if (pFac === 'klon') { pEffects.lastCloneDead = pBase; }
-            if (pFac === 'droid') { pEffects.nextDroidDouble = true; }
             
             if (pHas('schmuggel') && pFac === 'schmuggel') {
                 playerHandRemaining.push(playerCard);
@@ -1160,7 +1159,6 @@ function playRound(playerCard, explicitOppCard = null) {
             if (oHas('widerstand') && oFac === 'widerstand') { oEffects.martyrBuff = true; oLog.push("Widerstand geopfert"); }
             if ((oHas('jedi') || (isAdventureMatch && adventureRule === 'adv_rule_17')) && (oFac === 'jedi' || oTags.includes('jedi'))) { oEffects.forceWeakest = true; oLog.push("Gedankentrick initiiert"); }
             if (oFac === 'klon') { oEffects.lastCloneDead = oBase; }
-            if (oFac === 'droid') { oEffects.nextDroidDouble = true; }
             
             if (oHas('schmuggel') && oFac === 'schmuggel') {
                 opponentHandRemaining.push(oppCard);
@@ -1197,6 +1195,13 @@ function playRound(playerCard, explicitOppCard = null) {
         if (isDraw && !pSilence) {
             if ((oHas('jedi') || (isAdventureMatch && adventureRule === 'adv_rule_17')) && (oFac === 'jedi' || oTags.includes('jedi'))) { oEffects.forceWeakest = true; oLog.push("Gedankentrick initiiert"); }
         }
+    }
+    
+    if (playerCard && !oSilence && pHas('droid') && pFac === 'droid') {
+        pEffects.nextDroidDouble = true;
+    }
+    if (oppCard && !pSilence && oHas('droid') && oFac === 'droid') {
+        oEffects.nextDroidDouble = true;
     }
     
     if (playerCard && pFac === 'sith' && !oSilence) {
