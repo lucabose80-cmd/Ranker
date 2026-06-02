@@ -1,4 +1,4 @@
-
+﻿
 window.getSharedAudioContext = function() {
     if (!window.sharedAudioContext) {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -225,6 +225,7 @@ function setupGameUI(user) {
     window.top5GlobalChars = [];
     window.fetchTop5Global = async function() {
         try {
+            const { db } = await import('./firebase-config.js');
             const { getDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
             const docRef = doc(db, "scores", `${currentMode}_classic_global`);
             const snap = await getDoc(docRef);
@@ -849,6 +850,7 @@ document.getElementById('mailbox-close-btn')?.addEventListener('click', () => {
 
 async function claimMailboxReward(messageId) {
     const { getCurrentUser, refreshCurrentUser } = await import('./auth.js');
+    const { db } = await import('./firebase-config.js');
     const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
     
     let user = getCurrentUser();

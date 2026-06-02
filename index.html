@@ -1071,11 +1071,11 @@
     <!-- BRIEFKASTEN (MAILBOX) MODAL -->
     <div id="mailbox-modal" class="modal hidden" style="z-index: 10000;">
         <div class="modal-content mailbox-modal-content glass-panel" style="max-width: 600px; width: 90%;">
-            <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+            <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; position: relative;">
                 <h2 style="margin: 0; color: #fff; font-size: 1.5rem; display: flex; align-items: center; gap: 10px;">
                     <span>✉️</span> Briefkasten
                 </h2>
-                <button class="close-btn" id="mailbox-close-btn" style="background: none; border: none; color: #aaa; font-size: 1.5rem; cursor: pointer;">&times;</button>
+                <button id="mailbox-close-btn" type="button" class="close-overlay-btn">✕</button>
             </div>
             
             <div id="mailbox-list" style="display: flex; flex-direction: column; gap: 15px; max-height: 60vh; overflow-y: auto; padding-right: 10px;">
