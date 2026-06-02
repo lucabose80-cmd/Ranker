@@ -231,8 +231,17 @@ export function renderAdventureMap() {
         node.style.opacity = opacity;
         node.title = `${level.name}\n${level.ruleText}`;
         
+        let tooltipText = level.ruleText !== "Keine Sonderregeln." ? `${level.ruleText}<br><br>` : '';
+        tooltipText += `Gegner-Deck:<br>${level.deck.join(', ')}`;
+        const safeTooltip = tooltipText.replace(/"/g, '&quot;');
+        const safeAlert = tooltipText.replace(/'/g, "\\'").replace(/<br>/g, '\\n');
+        
         const isBoss = level.ruleText !== "Keine Sonderregeln.";
-        const bossTag = isBoss ? `<div class="has-tooltip" data-tooltip="${level.ruleText.replace(/"/g, '&quot;')}" onclick="alert('${level.ruleText.replace(/'/g, "\\'")}')" style="margin-top: 4px; background: #ff4757; color: white; font-size: 0.55rem; padding: 2px 5px; border-radius: 3px; font-weight: bold; cursor: help; box-shadow: 0 0 5px rgba(255, 71, 87, 0.5);">BOSS</div>` : '';
+        const tagColor = isBoss ? '#ff4757' : '#3498db';
+        const tagText = isBoss ? 'BOSS' : 'DECK';
+        const tagShadow = isBoss ? `box-shadow: 0 0 5px rgba(255, 71, 87, 0.5);` : '';
+        
+        const bossTag = `<div class="has-tooltip" data-tooltip="${safeTooltip}" onclick="alert('${safeAlert}')" style="margin-top: 4px; background: ${tagColor}; color: white; font-size: 0.55rem; padding: 2px 5px; border-radius: 3px; font-weight: bold; cursor: help; ${tagShadow}">${tagText}</div>`;
         
         node.innerHTML = `
             <div style="width: 50px; height: 50px; border-radius: 50%; background: ${color}; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; border: 2px solid #111; color: #111; font-weight: bold; margin-bottom: 5px; ${glow}">

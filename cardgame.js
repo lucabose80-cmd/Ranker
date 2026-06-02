@@ -471,28 +471,28 @@ async function renderMatchmaking() {
 }
 
 const BOT_LEVELS = [
-    { name: "Droiden (Lvl 1)", factionFocus: 'droid', rarities: ['common', 'rare'], popFilter: 'any', synergy: 'high', color: '#95a5a6', desc: "Nutzt viele Droiden für Verschmelzungs-Boni.", reward: 150 },
-    { name: "Klone (Lvl 2)", factionFocus: 'klon', rarities: ['common', 'rare'], popFilter: 'any', synergy: 'high', color: '#f1c40f', desc: "Spielt Klone in Folge, um Ketten-Boni zu maximieren.", reward: 150 },
-    { name: "Rebellen (Lvl 3)", factionFocus: 'rebell', rarities: ['common', 'rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#e74c3c', desc: "Hofft auf Comebacks bei Rückstand.", reward: 150 },
-    { name: "Erste Ordnung (Lvl 4)", factionFocus: 'erste ordnung', rarities: ['common', 'rare'], popFilter: 'any', synergy: 'high', color: '#e74c3c', desc: "Rekrutiert besiegte Karten.", reward: 150 },
-    { name: "Imperium (Lvl 5)", factionFocus: 'imperium', rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#888', desc: "Unterdrückt Gegner nach einem Sieg.", reward: 150 },
-    { name: "Nachtschwestern (Lvl 6)", factionFocus: 'nachtschwester', rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#9b59b6', desc: "Nutzt dunkle Magie für Nekromantie.", reward: 150 },
-    { name: "Schurken (Lvl 7)", factionFocus: 'schurke', rarities: ['rare'], popFilter: 'any', synergy: 'high', color: '#e67e22', desc: "Klaut hinterlistig deine Score-Werte.", reward: 150 },
-    { name: "Kopfgeldjäger (Lvl 8)", factionFocus: 'Kopfgeldjäger', rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#34495e', desc: "Macht Jagd auf deine häufigste Fraktion.", reward: 150 },
-    { name: "Mandalorianer (Lvl 9)", factionFocus: 'mandalorian', rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#ff9f43', desc: "Nutzt Beskar für Silence-Effekte.", reward: 150 },
-    { name: "Senat (Lvl 10)", factionFocus: 'senat', rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#4da6ff', desc: "Friert Runden bei Niederlagen ein.", reward: 150 },
-    { name: "Fahrzeuge (Lvl 11)", factionFocus: 'fahrzeug', rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#aaa', desc: "Gefährliche Überrollen-Taktik.", reward: 150 },
-    { name: "Graue Machtnutzer (Lvl 12)", factionFocus: 'graue machtnutzer', rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#ccc', desc: "Dreht die Siegesbedingung um.", reward: 150 },
-    { name: "Sith (Lvl 13)", factionFocus: 'sith', rarities: ['epic', 'legendary'], popFilter: 'any', synergy: 'high', color: '#cc4444', desc: "Zerstört passiv Karten auf deiner Hand.", reward: 150 },
-    { name: "Jedi (Lvl 14)", factionFocus: 'jedi', rarities: ['epic', 'legendary'], popFilter: 'any', synergy: 'high', color: '#5dade2', desc: "Zwingt dich durch Gedankentricks zu Fehlern.", reward: 150 },
-    { name: "Widerstand (Lvl 15)", factionFocus: 'widerstand', rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#f39c12', desc: "Opfert Einheiten für brachiale Folge-Buffs.", reward: 150 },
-    { name: "Separatisten (Lvl 16)", factionFocus: 'separatist', rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#e67e22', desc: "Übermacht: Stark gegen Decks mit hohen Base-Stats.", reward: 150 },
-    { name: "Monster (Lvl 17)", factionFocus: 'monster', rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#8b4513', desc: "Unberechenbare Raserei-Schwankungen.", reward: 150 },
-    { name: "Schmuggel (Lvl 18)", factionFocus: 'schmuggel', rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#a0522d', desc: "Unverwüstlich: Kehren ins Deck zurück.", reward: 150 },
-    { name: "212th (Lvl 19)", factionFocus: '212th', rarities: ['common', 'rare'], popFilter: 'any', synergy: 'high', color: '#d2691e', desc: "High Ground: Kopiert gegnerische Multiplikatoren.", reward: 150 },
-    { name: "501st (Lvl 20)", factionFocus: '501st', rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#00008b', desc: "Vaders Faust: Vernichtet zusätzliche Karten.", reward: 150 },
-    { name: "Bad Batch (Lvl 21)", factionFocus: 'bad_batch', rarities: ['epic', 'legendary'], popFilter: 'any', synergy: 'high', color: '#696969', desc: "Kloneinheit 99: Hoher Buff, aber zufällige Folgezüge.", reward: 150 },
-    { name: "Hutten (Lvl 22)", factionFocus: 'hutte', rarities: ['legendary'], popFilter: 'any', synergy: 'high', color: '#2e8b57', desc: "Erpressung: Zwingt dich, deine stärkste Karte zu spielen.", reward: 150 }
+    { name: "Droiden (Lvl 1)", factionFocus: 'droid', fixedDeck: ["General Grievous", "B1 Battle Droide", "B2 Super Battle Droide", "Droideka", "MagnaGuard", "Kommando Droide", "OOM-9", "Wat Tambor", "Poggle the Lesser", "Nute Gunray"], rarities: ['common', 'rare'], popFilter: 'any', synergy: 'high', color: '#95a5a6', desc: "Nutzt viele Droiden für Verschmelzungs-Boni.", reward: 150 },
+    { name: "Klone (Lvl 2)", factionFocus: 'klon', fixedDeck: ["Captain Rex", "Commander Cody", "Fives", "Echo", "Jesse", "Wolffe", "Gregor", "Kix", "Hardcase", "Appo"], rarities: ['common', 'rare'], popFilter: 'any', synergy: 'high', color: '#f1c40f', desc: "Spielt Klone in Folge, um Ketten-Boni zu maximieren.", reward: 150 },
+    { name: "Rebellen (Lvl 3)", factionFocus: 'rebell', fixedDeck: ["Luke Skywalker", "Princess Leia", "Han Solo", "Chewbacca", "Lando Calrissian", "Admiral Ackbar", "Mon Mothma", "Wedge Antilles", "Hera Syndulla", "Jyn Erso"], rarities: ['common', 'rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#e74c3c', desc: "Hofft auf Comebacks bei Rückstand.", reward: 150 },
+    { name: "Erste Ordnung (Lvl 4)", factionFocus: 'erste ordnung', fixedDeck: ["Kylo Ren", "General Hux", "Captain Phasma", "Supreme Leader Snoke", "Sith Trooper", "FN-2199", "Flame Trooper", "Riot Control Trooper", "First Order Officer", "TIE Fighter Pilot"], rarities: ['common', 'rare'], popFilter: 'any', synergy: 'high', color: '#e74c3c', desc: "Rekrutiert besiegte Karten.", reward: 150 },
+    { name: "Imperium (Lvl 5)", factionFocus: 'imperium', fixedDeck: ["Darth Vader", "Emperor Palpatine", "Grand Admiral Thrawn", "Grand Moff Tarkin", "Admiral Piett", "General Veers", "Stormtrooper", "Death Trooper", "Scout Trooper", "Shoretrooper"], rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#888', desc: "Unterdrückt Gegner nach einem Sieg.", reward: 150 },
+    { name: "Nachtschwestern (Lvl 6)", factionFocus: 'nachtschwester', fixedDeck: ["Mother Talzin", "Asajj Ventress", "Merrin", "Morgan Elsbeth", "Old Daka", "Talia", "Savage Opress", "Darth Maul", "Rancor", "Osha Aniseya"], rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#9b59b6', desc: "Nutzt dunkle Magie für Nekromantie.", reward: 150 },
+    { name: "Schurken (Lvl 7)", factionFocus: 'schurke', fixedDeck: ["Cad Bane", "Boba Fett", "Jango Fett", "Bossk", "Dengar", "IG-88", "Hondo Ohnaka", "Qi'ra", "Dryden Vos", "Jabba the Hutt"], rarities: ['rare'], popFilter: 'any', synergy: 'high', color: '#e67e22', desc: "Klaut hinterlistig deine Score-Werte.", reward: 150 },
+    { name: "Kopfgeldjäger (Lvl 8)", factionFocus: 'Kopfgeldjäger', fixedDeck: ["Boba Fett", "Jango Fett", "Cad Bane", "Bossk", "Dengar", "IG-88", "Zam Wesell", "Aurra Sing", "Embo", "Fennec Shand"], rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#34495e', desc: "Macht Jagd auf deine häufigste Fraktion.", reward: 150 },
+    { name: "Mandalorianer (Lvl 9)", factionFocus: 'mandalorian', fixedDeck: ["Din Djarin", "Bo-Katan Kryze", "Paz Vizsla", "The Armorer", "Pre Vizsla", "Gar Saxon", "Sabine Wren", "Jango Fett", "Boba Fett", "Koska Reeves"], rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#ff9f43', desc: "Nutzt Beskar für Silence-Effekte.", reward: 150 },
+    { name: "Senat (Lvl 10)", factionFocus: 'senat', fixedDeck: ["Emperor Palpatine", "Padme Amidala", "Bail Organa", "Mon Mothma", "Finis Valorum", "Mas Amedda", "Nute Gunray", "Orn Free Taa", "Lott Dod", "Rush Clovis"], rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#4da6ff', desc: "Friert Runden bei Niederlagen ein.", reward: 150 },
+    { name: "Fahrzeuge (Lvl 11)", factionFocus: 'fahrzeug', fixedDeck: ["AT-AT Walker", "AT-ST", "Republic Gunship (LAAT)", "Venator-class Star Destroyer", "Imperial Star Destroyer", "TIE Interceptor", "X-Wing", "Y-Wing", "A-Wing", "Millennium Falcon"], rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#aaa', desc: "Gefährliche Überrollen-Taktik.", reward: 150 },
+    { name: "Graue Machtnutzer (Lvl 12)", factionFocus: 'graue machtnutzer', fixedDeck: ["Ahsoka Tano", "Asajj Ventress", "Bendu", "Der Vater", "Die Tochter", "Der Sohn", "Baylan Skoll", "Shin Hati", "Starkiller", "The Force Priestesses"], rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#ccc', desc: "Dreht die Siegesbedingung um.", reward: 150 },
+    { name: "Sith (Lvl 13)", factionFocus: 'sith', fixedDeck: ["Darth Vader", "Emperor Palpatine", "Darth Maul", "Count Dooku", "Savage Opress", "Asajj Ventress", "Kylo Ren", "Supreme Leader Snoke", "Grand Inquisitor", "Darth Bane"], rarities: ['epic', 'legendary'], popFilter: 'any', synergy: 'high', color: '#cc4444', desc: "Zerstört passiv Karten auf deiner Hand.", reward: 150 },
+    { name: "Jedi (Lvl 14)", factionFocus: 'jedi', fixedDeck: ["Yoda", "Obi-Wan Kenobi", "Anakin Skywalker", "Mace Windu", "Luke Skywalker", "Qui-Gon Jinn", "Plo Koon", "Kit Fisto", "Ahsoka Tano", "Kanan Jarrus"], rarities: ['epic', 'legendary'], popFilter: 'any', synergy: 'high', color: '#5dade2', desc: "Zwingt dich durch Gedankentricks zu Fehlern.", reward: 150 },
+    { name: "Widerstand (Lvl 15)", factionFocus: 'widerstand', fixedDeck: ["Rey", "Finn", "Poe Dameron", "BB-8", "Rose Tico", "Amilyn Holdo", "Leia Organa", "Han Solo", "Chewbacca", "Maz Kanata"], rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#f39c12', desc: "Opfert Einheiten für brachiale Folge-Buffs.", reward: 150 },
+    { name: "Separatisten (Lvl 16)", factionFocus: 'separatist', fixedDeck: ["Count Dooku", "General Grievous", "Nute Gunray", "Poggle the Lesser", "Wat Tambor", "B1 Battle Droide", "B2 Super Battle Droide", "Droideka", "MagnaGuard", "Asajj Ventress"], rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#e67e22', desc: "Übermacht: Stark gegen Decks mit hohen Base-Stats.", reward: 150 },
+    { name: "Monster (Lvl 17)", factionFocus: 'monster', fixedDeck: ["Rancor", "Wampa", "Sarlacc", "Krayt Dragon", "Zillo Beast", "Acklay", "Nexu", "Reek", "Rathtar", "Mudhorn"], rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#8b4513', desc: "Unberechenbare Raserei-Schwankungen.", reward: 150 },
+    { name: "Schmuggel (Lvl 18)", factionFocus: 'schmuggel', fixedDeck: ["Han Solo", "Chewbacca", "Lando Calrissian", "Qi'ra", "Hondo Ohnaka", "Dash Rendar", "Nien Nunb", "Maz Kanata", "Tobias Beckett", "Rio Durant"], rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#a0522d', desc: "Unverwüstlich: Kehren ins Deck zurück.", reward: 150 },
+    { name: "212th (Lvl 19)", factionFocus: '212th', fixedDeck: ["Commander Cody", "Obi-Wan Kenobi", "Waxer", "Boil", "Clone Paratrooper", "Clone Pilot", "Clone Medic", "ARC Trooper", "ARF Trooper", "Clone Sniper"], rarities: ['common', 'rare'], popFilter: 'any', synergy: 'high', color: '#d2691e', desc: "High Ground: Kopiert gegnerische Multiplikatoren.", reward: 150 },
+    { name: "501st (Lvl 20)", factionFocus: '501st', fixedDeck: ["Captain Rex", "Anakin Skywalker", "Ahsoka Tano", "Fives", "Echo", "Jesse", "Tup", "Hardcase", "Kix", "Appo"], rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#00008b', desc: "Vaders Faust: Vernichtet zusätzliche Karten.", reward: 150 },
+    { name: "Bad Batch (Lvl 21)", factionFocus: 'bad_batch', fixedDeck: ["Hunter", "Wrecker", "Tech", "Crosshair", "Echo", "Omega", "AZI-3", "Clone Commando", "Captain Rex", "Gregor"], rarities: ['epic', 'legendary'], popFilter: 'any', synergy: 'high', color: '#696969', desc: "Kloneinheit 99: Hoher Buff, aber zufällige Folgezüge.", reward: 150 },
+    { name: "Hutten (Lvl 22)", factionFocus: 'hutte', fixedDeck: ["Jabba the Hutt", "Ziro the Hutt", "Rotta the Huttlet", "Gorga the Hutt", "Gardulla the Hutt", "Borvo the Hutt", "Grakkus the Hutt", "Marlo the Hutt", "Oruba the Hutt", "Arok the Hutt"], rarities: ['legendary'], popFilter: 'any', synergy: 'high', color: '#2e8b57', desc: "Erpressung: Zwingt dich, deine stärkste Karte zu spielen.", reward: 150 }
 ];
 
 function renderBots() {
@@ -548,7 +548,14 @@ async function startBotMatch(bot) {
     }
 
     let deck = [];
-    if (bot.factionFocus) {
+    if (bot.fixedDeck && bot.fixedDeck.length > 0) {
+        deck = bot.fixedDeck.map(name => {
+            let c = candidates.find(x => x.name === name);
+            if (c) return c;
+            // Fallback for missing/renamed hardcoded chars
+            return candidates[Math.floor(Math.random() * candidates.length)];
+        });
+    } else if (bot.factionFocus) {
         let synChars = candidates.filter(c => {
             if(!c.tags) return false;
             let tags = c.tags.map(t => t.toLowerCase());
@@ -1718,6 +1725,8 @@ function handleCardgameLiveState(lobby) {
         }
     }
 }
+
+
 
 
 
