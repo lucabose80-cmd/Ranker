@@ -43,16 +43,16 @@ const ADVENTURE_LEVELS = 20;
 
 // Base deck all players start with in Adventure Mode
 export const BASE_ADVENTURE_DECK = [
-    { charName: 'Luke Skywalker', rarity: 'uncommon' }, // Rebell / Jedi
-    { charName: 'Captain Rex', rarity: 'uncommon' }, // Klon
-    { charName: 'B2 Super Battle Droide', rarity: 'common' }, // Droid
-    { charName: 'Boba Fett', rarity: 'uncommon' }, // Kopfgeldjäger
-    { charName: 'Finn', rarity: 'common' }, // Widerstand
-    { charName: 'Sith Trooper', rarity: 'common' }, // Erste Ordnung
-    { charName: 'Grand Moff Tarkin', rarity: 'common' }, // Imperium
-    { charName: 'Qui-Gon Jinn', rarity: 'uncommon' }, // Jedi
-    { charName: 'IG-88', rarity: 'common' }, // Kopfgeldjäger
-    { charName: 'Asajj Ventress', rarity: 'uncommon' } // Separatist / Nachtschwester
+    { charName: 'Luke Skywalker', rarity: 'rare' },
+    { charName: 'Captain Rex', rarity: 'rare' },
+    { charName: 'B2 Super Battle Droide', rarity: 'common' },
+    { charName: 'Boba Fett', rarity: 'rare' },
+    { charName: 'Finn', rarity: 'common' },
+    { charName: 'Sith Trooper', rarity: 'common' },
+    { charName: 'Grand Moff Tarkin', rarity: 'common' },
+    { charName: 'Qui-Gon Jinn', rarity: 'rare' },
+    { charName: 'IG-88', rarity: 'common' },
+    { charName: 'Asajj Ventress', rarity: 'rare' }
 ];
 
 // Adventure Campaign Configuration

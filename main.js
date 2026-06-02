@@ -23,7 +23,7 @@ import { renderHistory, initHistoryListener, stopHistoryListener } from './histo
 import { renderScoreboard } from './scoreboard.js';
 import { renderLexikon, initLexikonTabs } from './lexikon.js';
 import { initProfile, renderAvatarSelection, updateTopbarAvatarElement, applyColorTheme, refreshProfileContent, clearProfileUnlockDot } from './profile.js';
-import { initCommunity, stopCommunity } from './community.js?v=8.0.9';
+import { initCommunity, stopCommunity } from './community.js?v=8.1.0';
 import { initVersus, stopVersus } from './versus.js';
 import { initStarWarsdle } from './starwarsdle.js';
 import { initLiveSpectating, closeSpectatorModal, stopLiveSpectating } from './live.js';

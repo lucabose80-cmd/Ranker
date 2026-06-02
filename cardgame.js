@@ -204,7 +204,10 @@ export async function loadGlobalScores() {
 
 export function getCardScore(charName) {
     const scores = globalScoresCache[currentMode] || {};
-    return scores[charName] || 9.0;
+    const score = scores[charName];
+    if (score !== undefined) return score;
+    // In adventure mode, fall back to a higher score so unknown cards stay competitive
+    return isAdventureMatch ? 10.5 : 9.0;
 }
 
 export function initCardgame() {
@@ -855,67 +858,70 @@ function playRound(playerCard, explicitOppCard = null) {
                 oEffects.forceRandom = false;
                 oLog.push("Befehlsverweigerung (Zufällige Karte gezogen)");
             } else {
-                let pDbCheat = playerCard ? activeCharacterDatabase.find(x => x.name === playerCard.charName) : null;
-                let pFacCheat = pDbCheat ? getMainFaction(pDbCheat.tags) : 'neutral';
-                let pScoreBase = playerCard ? (getCardScore(playerCard.charName) * (RARITY_MULT[playerCard.rarity] || 1.0)) : 0;
-                
-                let pSimScore = pScoreBase;
-                if (pEffects.klon && pFacCheat === 'klon') pSimScore += pEffects.lastCloneDead;
-                if (pEffects.droid && pFacCheat === 'droid') pSimScore *= 2;
-                if (pFacCheat === 'bad_batch') pSimScore += 4.0;
-                
-                let bestCards = [];
-                let bestScore = -99999;
-                
-                opponentHandRemaining.forEach(card => {
-                    let db = activeCharacterDatabase.find(x => x.name === card.charName);
-                    let fac = db ? getMainFaction(db.tags) : 'neutral';
-                    let baseScore = getCardScore(card.charName) * (RARITY_MULT[card.rarity] || 1.0);
-                    
-                    let simulatedScore = baseScore;
-                    if (oEffects.klon && fac === 'klon') simulatedScore += oEffects.lastCloneDead;
-                    if (oEffects.droid && fac === 'droid') simulatedScore *= 2;
-                    if (fac === 'bad_batch') simulatedScore += 4.0;
-                    
-                    let pSimScoreLocal = pSimScore;
-                    if (fac === 'mandalorianer' || fac === 'mandalorian') pSimScoreLocal = pScoreBase; // Silence
-                    
-                    let diff = simulatedScore - pSimScoreLocal;
-                    if (fac === 'graue machtnutzer') diff = pSimScoreLocal - simulatedScore; // Ausgleich
-                    
-                    let aiScore = 0;
-                    
-                    if (diff > 0) {
-                        // Winning! Optimize to win with the smallest margin.
-                        aiScore = 1000 - diff;
-                    } else {
-                        // Losing!
-                        if (fac === 'senat') {
-                            aiScore = 800; // Veto saves the round, great move!
-                        } else if (fac === 'schmuggel') {
-                            aiScore = 700; // Schmuggler returns to deck, good sacrifice!
-                        } else {
-                            // Sacrifice worst card (lowest score)
-                            aiScore = -simulatedScore; 
-                        }
-                    }
-                    
-                    // Specific timing based on board state
-                    if (fac === '501st' && diff > 0 && playerHandRemaining.length > 0) aiScore += 5;
-                    if (fac === 'nachtschwester' && diff > 0 && playerGraveyard.length > 0) aiScore += 5;
+                // --- ADVENTURE AI DIFFICULTY SCALING ---
+                // For early levels, the AI plays randomly to give beginners a fair chance
+                const aiRandomChance = isAdventureMatch
+                    ? (adventureLevelIndex <= 2 ? 0.45   // Level 1-3: 45% random
+                    : adventureLevelIndex <= 4 ? 0.25    // Level 4-5: 25% random
+                    : 0)                                  // Level 6+: fully optimal
+                    : 0;
 
-                    // Add small randomness to prevent total predictability
-                    aiScore += Math.random() * 0.5;
+                if (aiRandomChance > 0 && Math.random() < aiRandomChance) {
+                    oppCard = opponentHandRemaining[Math.floor(Math.random() * opponentHandRemaining.length)];
+                } else {
+                    let pDbCheat = playerCard ? activeCharacterDatabase.find(x => x.name === playerCard.charName) : null;
+                    let pFacCheat = pDbCheat ? getMainFaction(pDbCheat.tags) : 'neutral';
+                    let pScoreBase = playerCard ? (getCardScore(playerCard.charName) * (RARITY_MULT[playerCard.rarity] || 1.0)) : 0;
                     
-                    if (aiScore > bestScore) {
-                        bestScore = aiScore;
-                        bestCards = [card];
-                    } else if (Math.abs(aiScore - bestScore) < 0.1) {
-                        bestCards.push(card);
-                    }
-                });
-                
-                oppCard = bestCards[Math.floor(Math.random() * bestCards.length)];
+                    let pSimScore = pScoreBase;
+                    if (pEffects.klon && pFacCheat === 'klon') pSimScore += pEffects.lastCloneDead;
+                    if (pEffects.droid && pFacCheat === 'droid') pSimScore *= 2;
+                    if (pFacCheat === 'bad_batch') pSimScore += 4.0;
+                    
+                    let bestCards = [];
+                    let bestScore = -99999;
+                    
+                    opponentHandRemaining.forEach(card => {
+                        let db = activeCharacterDatabase.find(x => x.name === card.charName);
+                        let fac = db ? getMainFaction(db.tags) : 'neutral';
+                        let baseScore = getCardScore(card.charName) * (RARITY_MULT[card.rarity] || 1.0);
+                        
+                        let simulatedScore = baseScore;
+                        if (oEffects.klon && fac === 'klon') simulatedScore += oEffects.lastCloneDead;
+                        if (oEffects.droid && fac === 'droid') simulatedScore *= 2;
+                        if (fac === 'bad_batch') simulatedScore += 4.0;
+                        
+                        let pSimScoreLocal = pSimScore;
+                        if (fac === 'mandalorianer' || fac === 'mandalorian') pSimScoreLocal = pScoreBase;
+                        
+                        let diff = simulatedScore - pSimScoreLocal;
+                        if (fac === 'graue machtnutzer') diff = pSimScoreLocal - simulatedScore;
+                        
+                        let aiScore = 0;
+                        if (diff > 0) {
+                            aiScore = 1000 - diff;
+                        } else {
+                            if (fac === 'senat') {
+                                aiScore = 800;
+                            } else if (fac === 'schmuggel') {
+                                aiScore = 700;
+                            } else {
+                                aiScore = -simulatedScore;
+                            }
+                        }
+                        if (fac === '501st' && diff > 0 && playerHandRemaining.length > 0) aiScore += 5;
+                        if (fac === 'nachtschwester' && diff > 0 && playerGraveyard.length > 0) aiScore += 5;
+                        aiScore += Math.random() * 0.5;
+                        
+                        if (aiScore > bestScore) {
+                            bestScore = aiScore;
+                            bestCards = [card];
+                        } else if (Math.abs(aiScore - bestScore) < 0.1) {
+                            bestCards.push(card);
+                        }
+                    });
+                    oppCard = bestCards[Math.floor(Math.random() * bestCards.length)];
+                }
             }
         }
     }

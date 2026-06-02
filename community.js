@@ -34,106 +34,107 @@ export function initCommunity() {
     const chatContainer = document.getElementById('chat-messages');
     const input = document.getElementById('chat-input');
     const sendBtn = document.getElementById('chat-send-btn');
-
+    
     if(chatUnsubscribe) chatUnsubscribe();
+    if (!chatContainer) { console.error("chat-messages element not found"); return; }
     const qChat = query(collection(db, "chat"), orderBy("timestamp", "desc"), limit(25));
     
     let isFirstLoad = true;
 
     chatUnsubscribe = onSnapshot(qChat, (snapshot) => {
+        let hasNewFromOthers = false;
         try {
             trackRead(snapshot.docChanges().filter(c => c.type !== 'removed').length);
             const messages = snapshot.docs.map(d => ({ id: d.id, ...d.data() })).reverse();
             
             chatContainer.innerHTML = '';
-            let hasNewFromOthers = false;
 
-        messages.forEach(msg => {
-            const isSelf = msg.username === user.username;
-            if (!isSelf && !isFirstLoad) hasNewFromOthers = true;
-            
-            const modeText = msg.userMode === 'starwars' ? 'SW' : 'Anime';
-            const modeClass = msg.userMode === 'starwars' ? 'tag-sw' : 'tag-anime';
-            const avatarHtml = msg.avatar ? `<img src="${msg.avatar}">` : `<div class="mini-avatar" style="background:#444"></div>`;
-            const titleHtml = msg.title && msg.title !== 'Kein Titel' ? `<span style="font-size:0.6rem; color:#ffd700; font-weight:bold; margin-left:5px; text-transform:uppercase;">${msg.title}</span>` : '';
-            
-            let themeStyle = '';
-            if (msg.theme) {
-                const themeData = THEMES[msg.userMode || 'starwars']?.find(t => t.id === msg.theme);
-                if (themeData && themeData.preview) {
-                    if (themeData.preview.includes('gradient')) {
-                        themeStyle = `border-image: ${themeData.preview} 1; border-width: 2px; border-style: solid; background: #1c2331;`;
-                    } else {
-                        themeStyle = `border: 2px solid ${themeData.preview}; box-shadow: 0 0 5px ${themeData.preview}40; background: #1c2331;`;
+            messages.forEach(msg => {
+                const isSelf = msg.username === user.username;
+                if (!isSelf && !isFirstLoad) hasNewFromOthers = true;
+                
+                const modeText = msg.userMode === 'starwars' ? 'SW' : 'Anime';
+                const modeClass = msg.userMode === 'starwars' ? 'tag-sw' : 'tag-anime';
+                const avatarHtml = msg.avatar ? `<img src="${msg.avatar}">` : `<div class="mini-avatar" style="background:#444"></div>`;
+                const titleHtml = msg.title && msg.title !== 'Kein Titel' ? `<span style="font-size:0.6rem; color:#ffd700; font-weight:bold; margin-left:5px; text-transform:uppercase;">${msg.title}</span>` : '';
+                
+                let themeStyle = '';
+                if (msg.theme) {
+                    const themeData = THEMES[msg.userMode || 'starwars']?.find(t => t.id === msg.theme);
+                    if (themeData && themeData.preview) {
+                        if (themeData.preview.includes('gradient')) {
+                            themeStyle = `border-image: ${themeData.preview} 1; border-width: 2px; border-style: solid; background: #1c2331;`;
+                        } else {
+                            themeStyle = `border: 2px solid ${themeData.preview}; box-shadow: 0 0 5px ${themeData.preview}40; background: #1c2331;`;
+                        }
                     }
                 }
-            }
-            
-            // Render reactions
-            const reactions = msg.reactions || {};
-            const reactionHtml = REACTION_EMOJIS.map(emoji => {
-                const list = reactions[emoji] || [];
-                const count = list.length;
-                const userReacted = list.includes(user.username);
-                return `
-                    <button class="chat-reaction-btn${userReacted ? ' active' : ''}" data-emoji="${emoji}" data-msgid="${msg.id}" style="background: rgba(255,255,255,0.05); border: 1px solid ${userReacted ? 'var(--t-color, #ffd700)' : 'rgba(255,255,255,0.1)'}; border-radius: 4px; color: #fff; cursor: pointer; padding: 2px 6px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s;">
-                        <span>${emoji}</span>
-                        ${count > 0 ? `<span style="font-size: 0.75rem; font-weight: bold; color: ${userReacted ? 'var(--t-color, #ffd700)' : '#aaa'}">${count}</span>` : ''}
-                    </button>
-                `;
-            }).join('');
+                
+                // Render reactions
+                const reactions = msg.reactions || {};
+                const reactionHtml = REACTION_EMOJIS.map(emoji => {
+                    const list = reactions[emoji] || [];
+                    const count = list.length;
+                    const userReacted = list.includes(user.username);
+                    return `
+                        <button class="chat-reaction-btn${userReacted ? ' active' : ''}" data-emoji="${emoji}" data-msgid="${msg.id}" style="background: rgba(255,255,255,0.05); border: 1px solid ${userReacted ? 'var(--t-color, #ffd700)' : 'rgba(255,255,255,0.1)'}; border-radius: 4px; color: #fff; cursor: pointer; padding: 2px 6px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s;">
+                            <span>${emoji}</span>
+                            ${count > 0 ? `<span style="font-size: 0.75rem; font-weight: bold; color: ${userReacted ? 'var(--t-color, #ffd700)' : '#aaa'}">${count}</span>` : ''}
+                        </button>
+                    `;
+                }).join('');
 
-            chatContainer.innerHTML += `
-                <div class="chat-msg ${isSelf ? 'self' : ''}">
-                    ${avatarHtml}
-                    <div class="chat-msg-body">
-                        <span class="chat-username">
-                            <span class="chat-mode-tag ${modeClass}">${modeText}</span> ${msg.displayName} ${titleHtml}
-                        </span>
-                        <div class="chat-msg-content" style="${themeStyle}">${msg.text}</div>
-                        <div class="chat-reactions" style="display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap;">
-                            ${reactionHtml}
+                chatContainer.innerHTML += `
+                    <div class="chat-msg ${isSelf ? 'self' : ''}">
+                        ${avatarHtml}
+                        <div class="chat-msg-body">
+                            <span class="chat-username">
+                                <span class="chat-mode-tag ${modeClass}">${modeText}</span> ${msg.displayName} ${titleHtml}
+                            </span>
+                            <div class="chat-msg-content" style="${themeStyle}">${msg.text}</div>
+                            <div class="chat-reactions" style="display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap;">
+                                ${reactionHtml}
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
-        });
-
-        // Add reaction listeners
-        chatContainer.querySelectorAll('.chat-reaction-btn').forEach(btn => {
-            btn.addEventListener('click', async () => {
-                const msgId = btn.dataset.msgid;
-                const emoji = btn.dataset.emoji;
-                
-                const targetMsg = messages.find(m => m.id === msgId);
-                if (!targetMsg) return;
-                
-                const currentReactions = targetMsg.reactions || {};
-                const list = currentReactions[emoji] || [];
-                
-                let newList;
-                if (list.includes(user.username)) {
-                    newList = list.filter(u => u !== user.username);
-                } else {
-                    newList = [...list, user.username];
-                }
-                
-                const msgRef = doc(db, "chat", msgId);
-                try {
-                    const updateObj = {};
-                    updateObj[`reactions.${emoji}`] = newList;
-                    await updateDoc(msgRef, updateObj);
-                    trackWrite(1);
-                } catch(e) {
-                    console.error("Fehler beim Speichern der Reaktion:", e);
-                }
+                `;
             });
-        });
 
-        chatContainer.scrollTop = chatContainer.scrollHeight;
+            // Add reaction listeners
+            chatContainer.querySelectorAll('.chat-reaction-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const msgId = btn.dataset.msgid;
+                    const emoji = btn.dataset.emoji;
+                    
+                    const targetMsg = messages.find(m => m.id === msgId);
+                    if (!targetMsg) return;
+                    
+                    const currentReactions = targetMsg.reactions || {};
+                    const list = currentReactions[emoji] || [];
+                    
+                    let newList;
+                    if (list.includes(user.username)) {
+                        newList = list.filter(u => u !== user.username);
+                    } else {
+                        newList = [...list, user.username];
+                    }
+                    
+                    const msgRef = doc(db, "chat", msgId);
+                    try {
+                        const updateObj = {};
+                        updateObj[`reactions.${emoji}`] = newList;
+                        await updateDoc(msgRef, updateObj);
+                        trackWrite(1);
+                    } catch(e) {
+                        console.error("Fehler beim Speichern der Reaktion:", e);
+                    }
+                });
+            });
+
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         } catch (error) {
-            console.error(error);
-            chatContainer.innerHTML = `<div style="color:red; padding:10px;">Chat Error: ${error.message}</div>`;
+            console.error("Chat render error:", error);
+            chatContainer.innerHTML = `<div style="color:red; padding:10px;">Chat Fehler: ${error.message}</div>`;
         }
 
         if (hasNewFromOthers) {
@@ -145,6 +146,9 @@ export function initCommunity() {
         }
         
         isFirstLoad = false;
+    }, (error) => {
+        console.error("Firestore chat listener error:", error);
+        chatContainer.innerHTML = `<div style="color:red; padding:10px;">Chat Verbindungsfehler: ${error.message}</div>`;
     });
 
     const sendMessage = async () => {
