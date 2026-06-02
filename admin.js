@@ -155,9 +155,12 @@ export async function initAdminPanel() {
                     });
                     await Promise.all(updates);
 
+                    // Invalidate the resets cache so the map reflects the change immediately
+                    invalidateAllCaches();
+
                     btn.textContent = "⚔️ Abenteuer-Fortschritt ALLER zurücksetzen";
                     btn.disabled = false;
-                    alert(`✅ Erledigt! Anzeige von ${count} Spielern zurückgesetzt.`);
+                    alert(`✅ Erledigt! Anzeige von ${count} Spielern zurückgesetzt.\n\nAlle Spieler müssen die Seite neu laden um die Änderung zu sehen.`);
                     await refreshAdminPanel();
                 } catch(e) {
                     console.error(e);
