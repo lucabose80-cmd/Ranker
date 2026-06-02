@@ -1054,6 +1054,7 @@ function playRound(playerCard, explicitOppCard = null) {
             oEffects.cloneChain++;
             if (oEffects.lastCloneDead) {
                 let bonus = (isAdventureMatch && adventureRule === 'adv_rule_7') ? oEffects.lastCloneDead * 1.5 : oEffects.lastCloneDead;
+                if (isAdventureMatch && adventureLevelIndex <= 4) bonus *= 0.5;
                 oBase += bonus;
                 oLog.push(`Klon-Kette (+${bonus.toFixed(1)} Score)`);
             }
@@ -1064,7 +1065,10 @@ function playRound(playerCard, explicitOppCard = null) {
         }
         
         if (!pSilence && oEffects.nextDroidDouble && (oFac === 'droid' || oTags.includes('droid'))) { 
-            let mult = (isAdventureMatch && adventureRule === 'adv_rule_6') ? 3 : 2;
+            let mult;
+            if (isAdventureMatch && adventureRule === 'adv_rule_6') mult = 3;
+            else if (isAdventureMatch && adventureLevelIndex <= 4) mult = 1.4;
+            else mult = 2;
             oBase *= mult; 
             oEffects.nextDroidDouble = false; 
             oLog.push(`Verschmelzung (Score x${mult})`); 

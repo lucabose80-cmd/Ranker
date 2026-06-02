@@ -18,12 +18,12 @@ import { initChangelog, updateChangelogContent } from './changelog.js';
 import { patchNotesStarWars } from './changelog-starwars.js';
 import { initAuth, loginOrRegister, logout, getCurrentUser, startPresenceHeartbeat, markCurrentUserOffline } from './auth.js';
 import { initAdminPanel, stopAdminPanel } from './admin.js';
-import { initAdventureMode } from './adventure.js?v=8.3.0';
+import { initAdventureMode } from './adventure.js?v=8.1.1';
 import { renderHistory, initHistoryListener, stopHistoryListener } from './history.js';
 import { renderScoreboard } from './scoreboard.js';
 import { renderLexikon, initLexikonTabs } from './lexikon.js';
 import { initProfile, renderAvatarSelection, updateTopbarAvatarElement, applyColorTheme, refreshProfileContent, clearProfileUnlockDot } from './profile.js';
-import { initCommunity, stopCommunity } from './community.js?v=8.1.0';
+import { initCommunity, stopCommunity } from './community.js?v=8.1.1';
 import { initVersus, stopVersus } from './versus.js';
 import { initStarWarsdle } from './starwarsdle.js';
 import { initLiveSpectating, closeSpectatorModal, stopLiveSpectating } from './live.js';
@@ -44,7 +44,9 @@ function cleanupAllListeners() {
     stopHistoryListener();
     stopLiveSpectating();
     stopSuggestions();
-    stopCommunity();
+    // NOTE: stopCommunity is intentionally NOT here.
+    // The chat is a persistent global widget, not a tab-specific listener.
+    // It should stay alive across all navigation.
     stopVersus();
     stopAdminPanel();
 }
