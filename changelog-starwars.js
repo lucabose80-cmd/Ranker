@@ -1,4 +1,4 @@
-export const patchNotesStarWars = [
+﻿export const patchNotesStarWars = [
     {
         version: "v9.2.2",
         title: "Hotfix: Balancing & Community Vorschläge",
@@ -34,7 +34,7 @@ export const patchNotesStarWars = [
         title: "Update: Legendäre Karte neu würfeln",
         isHotfix: false,
         changes: [
-            "Feature: Neues System im Shop: 'Legendäre neu würfeln'! Opfere 2 Legendäre Karten aus demselben Pack und erhalte eine zufällige neue Legendäre aus diesem Pack – inklusive der vollen Pack-Opening-Animation und Sound!",
+            "Feature: Neues System im Shop: 'Legendäre neu würfeln'! Opfere 2 Legendäre Karten aus demselben Pack und erhälte eine zufällige neue Legendäre aus diesem Pack – inklusive der vollen Pack-Opening-Animation und Sound!",
             "Feature: Im Neu-Würfeln-Menü wird jede Kopie einer Legendären einzeln angezeigt. Wenn du z.B. 3x Anakin hast, kannst du 2 davon auswählen und opfern.",
             "Feature: Das Ergebnis ist (wenn möglich) immer eine andere Legendäre als die geopferten Karten.",
             "Bugfix: Credits und Kyber Kristalle wurden im Shop manchmal als 0 angezeigt, obwohl man welche besaß. Behoben durch direkten Zugriff auf den frischen Spielstand."
@@ -237,7 +237,7 @@ export const patchNotesStarWars = [
         isHotfix: true,
         changes: [
             "Hotfix: Es wurde ein Fehler behoben, bei dem die 10 geheimen Cardgame-Titel fÃ¤lschlicherweise durch das Spielen im 'Expanded Universe' freigeschaltet wurden.",
-            "Sanitization: FÃ¤lschlicherweise erhaltene Bot-Titel wurden aus den Profilen der betroffenen Spieler entfernt."
+            "Sanitization: FÃ¤lschlicherweise erhältene Bot-Titel wurden aus den Profilen der betroffenen Spieler entfernt."
         ]
     },
     {
@@ -262,7 +262,7 @@ export const patchNotesStarWars = [
         title: "Update: Gacha Quality of Life & Admin Tools",
         isHotfix: false,
         changes: [
-            "Hotfix: Das Filter-Verhalten im Album wurde verbessert. Gecraftete oder geupgradete Karten sind nun auch in den spezifischen Pack-Filtern korrekt sichtbar.",
+            "Hotfix: Das Filter-Verhälten im Album wurde verbessert. Gecraftete oder geupgradete Karten sind nun auch in den spezifischen Pack-Filtern korrekt sichtbar.",
             "Feature: Admin-Tool fÃ¼r den Test-Account 'test1' hinzugefÃ¼gt (Zieht ab sofort garantiert 4 epische und 1 legendÃ¤re Karte aus Boosterpacks).",
             "Hotfix: Die Ingame-Anleitung wurde aktualisiert und beinhaltet nun alle neuen Gacha-Mechaniken.",
             "Feature: Das Beanspruchen einer legendÃ¤ren Karte fÃ¼r ein abgeschlossenes Booster-Pack lÃ¶st nun eine spannende Pack-Ã–ffnungs-Animation aus!"
@@ -277,7 +277,7 @@ export const patchNotesStarWars = [
             "Feature: Kyber Kristalle hinzugefÃ¼gt! Werden Duplikate von epischen Karten gezogen oder gecraftet, werden diese automatisch in 20 Kyber Kristalle umgewandelt.",
             "Feature: Crafting-Shop integriert! Im Shop kÃ¶nnen nun fÃ¼r 100 Kyber Kristalle gezielt Wunsch-Karten auf epischer Stufe hergestellt werden.",
             "Feature: Im Sammelalbum werden fehlende Karten aus spezifischen Booster-Packs nun transparent als ausgegraute 'Fehlt'-Karten angezeigt.",
-            "Hotfix: Filter-Verhalten im Album optimiert, um leere Slots und Duplikate sauberer zu trennen."
+            "Hotfix: Filter-Verhälten im Album optimiert, um leere Slots und Duplikate sauberer zu trennen."
         ]
     },
     {
@@ -519,7 +519,7 @@ export const patchNotesStarWars = [
             "Feature: Profil-Sammelalbum! Betrachte deine gesamte Kollektion, sortiere sie nach Seltenheit, Menge oder Pack und zeige sie anderen Spielern.",
             "Feature: Karten-Showcase! Stelle deine drei wertvollsten Lieblingskarten im Profil (Online-Tab) fÃ¼r die Community zur Schau.",
             "Feature: Atemberaubende Effekte! Epische Karten besitzen glÃ¤nzende Holo-Effekte. LegendÃ¤re Karten flackern golden und spielen beim Auspacken exklusive Sound-Effekte ab (inklusive Artwork-Transformation).",
-            "Anpassung: Admin Test-Accounts kÃ¶nnen nun beliebig viele Packs kostenlos ziehen und erhalten im passenden Pack garantierte LegendÃ¤re Karten zum Testen."
+            "Anpassung: Admin Test-Accounts kÃ¶nnen nun beliebig viele Packs kostenlos ziehen und erhälten im passenden Pack garantierte LegendÃ¤re Karten zum Testen."
         ]
     },
     {
@@ -753,7 +753,7 @@ export const patchNotesStarWars = [
             "Neuer Spielmodus: 'Nur Klone' hinzugefÃ¼gt! Teste dein Ranking-Wissen ausschlieÃŸlich mit Klonsoldaten. Du findest die Auswahl im klassischen Modus.",
             "Isolierter Fortschritt: Der Klon-Modus verfÃ¼gt Ã¼ber ein komplett eigenes, unabhÃ¤ngiges globales Scoreboard sowie eine eigene Historie, damit er nicht mit den normalen Rankings gemischt wird.",
             "Versus Klon-Lobby: Du kannst nun Lobbys im Versus-Modus erstellen, die nur Klon-Charaktere beinhalten. (Voraussetzung: Du hast mindestens 10 Runden im normalen Klon-Modus absolviert!)",
-            "Fortschrittsspeicherung: Auch beim Wechsel zwischen dem normalen Modus und dem Klon-Modus bleibt dein jeweils letzter Fortschritt erhalten."
+            "Fortschrittsspeicherung: Auch beim Wechsel zwischen dem normalen Modus und dem Klon-Modus bleibt dein jeweils letzter Fortschritt erhälten."
         ]
     },
     {
@@ -765,7 +765,7 @@ export const patchNotesStarWars = [
             "Visualisierung: Alle Fenster-Ãœberschriften passen sich nun farblich absolut synchron deinem gewÃ¤hlten Theme an.",
             "Statistik: Bei Farbschemas und geheimen Titeln wird nun dauerhaft die mathematisch exakte, prozentuale Chance angezeigt, diese in einer Ranking-Runde zu ziehen.",
             "Geheimnisse: StÃ¤ndig auf der Suche nach Herausforderungen? Eine Reihe streng geheimer Titel wurde implementiert, die besondere Charakter-Kombinationen in einer Runde erfordern.",
-            "UI-Update: Sobald du neue Updates verpasst hast, leuchtet der Update-Button nun durchgehend golden. Alle neuen Versionen erhalten im Fenster ein stark sichtbares 'NEU' Abzeichen."
+            "UI-Update: Sobald du neue Updates verpasst hast, leuchtet der Update-Button nun durchgehend golden. Alle neuen Versionen erhälten im Fenster ein stark sichtbares 'NEU' Abzeichen."
         ]
     },
     {
@@ -1077,6 +1077,7 @@ export const patchNotesStarWars = [
     { version: "v1.1", title: "Star Wars Theme", changes: ["Theme-Wechsel: Das Spiel nutzt nun das Star Wars Universum."] },
     { version: "v1.0", title: "Initial Release", changes: ["GrundgerÃ¼st des Ranking-Spiels verÃ¶ffentlicht."] }
 ];
+
 
 
 

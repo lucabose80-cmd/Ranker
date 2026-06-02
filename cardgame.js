@@ -1,4 +1,4 @@
-import { getCurrentUser } from './auth.js';
+﻿import { getCurrentUser } from './auth.js';
 import { activeCharacterDatabase } from './theme.js';
 import { handleAdventureWin, handleAdventureLoss } from './adventure.js';
 import { db } from './firebase-config.js';
@@ -40,8 +40,8 @@ const FACTION_ADVANTAGE = {
     'imperium': 'mandalorianer',
     'mandalorianer': 'klon',
     'klon': 'jedi',
-    'kopfgeldj?ger': 'jedi',
-    'droid': 'kopfgeldj?ger'
+    'Kopfgeldjäger': 'jedi',
+    'droid': 'Kopfgeldjäger'
 };
 
 function getMainFaction(tags) {
@@ -59,7 +59,7 @@ function getMainFaction(tags) {
     if(tg.includes('imperium')) return 'imperium';
     if(tg.includes('klon') || tg.includes('clone')) return 'klon';
     if(tg.includes('mandalorianer') || tg.includes('mandalorian')) return 'mandalorianer';
-    if(tg.includes('kopfgeldjäger') || tg.includes('kopfgeldjaeger') || tg.includes('kopfgeldjger')) return 'kopfgeldjäger';
+    if(tg.includes('Kopfgeldjäger') || tg.includes('kopfgeldjaeger') || tg.includes('kopfgeldjger')) return 'Kopfgeldjäger';
     if(tg.includes('droid') || tg.includes('droide')) return 'droid';
     if(tg.includes('schurke') || tg.includes('unterwelt') || tg.includes('pirat')) return 'schurke';
     if(tg.includes('nachtschwester') || tg.includes('dathomir')) return 'nachtschwester';
@@ -87,7 +87,7 @@ function getFactionDescription(faction) {
         'klon': 'Klon-Kette',
         'nachtschwester': 'Nekromantie',
         'droid': 'Verschmelzung',
-        'kopfgeldjäger': 'Kopfgeld',
+        'Kopfgeldjäger': 'Kopfgeld',
         'erste ordnung': 'Zwangsrekrutierung',
         'widerstand': 'Opfermut',
         'separatist': 'Übermacht',
@@ -110,12 +110,12 @@ function getFactionTooltip(faction) {
         'sith': 'Ausdünnung: Jede zweite (2.) gespielte Sith-Karte vernichtet sofort und dauerhaft eine zufällige Karte direkt von der feindlichen Hand.\n\n• Ende: Der Zähler ist während des gesamten Matches permanent aktiv.\n• Limit: Exklusiv (Maximal 4 erlaubt)',
         'jedi': 'Gedankentrick: Spielst du einen Jedi, zwingt dieser den Bot dazu, in seiner NÄCHSTEN Runde garantiert eine seiner 2 schwächsten Karten auszuspielen.\n\n• Ende: Der Effekt verbraucht sich automatisch beim Ausspielen der gegnerischen Karte.\n• Limit: Exklusiv (Maximal 3 erlaubt)',
         'schurke': 'Falsches Spiel: Vor der Gewinn-Ermittlung stiehlt der Schurke heimlich den aktuellen Score des Gegners und tauscht ihn gegen seinen eigenen.\n\n• Ende: Die geklauten Werte gelten ausschließlich in dieser Runde.\n• Limit: Formation (Mindestens 3 benötigt)',
-        'imperium': 'Unterdrückung: Gewinnt das Imperium, baut es starken Druck auf. Die gegnerische Karte in der NÄCHSTEN Runde verliert pauschal 25% Basis-Score.\n\n• Ende: Verliert das Imperium, triggert der Effekt nicht. Der 25% Abzug verfällt nach 1 Runde.\n• Limit: Formation (Mindestens 4 benötigt)',
-        'rebell': 'Hoffnung: Rebellen kämpfen aus Verzweiflung stärker. Liegst du im aktuellen Gesamt-Match hinten (weniger Siege), verdoppelt der Rebell seinen Score.\n\n• Ende: Sobald du Gleichstand erreichst oder führst, entfällt die Verdopplung.\n• Limit: Formation (Mindestens 4 benötigt)',
+        'imperium': 'Unterdrückung: Gewinnt das Imperium, baut es Stärken Druck auf. Die gegnerische Karte in der NÄCHSTEN Runde verliert pauschal 25% Basis-Score.\n\n• Ende: Verliert das Imperium, triggert der Effekt nicht. Der 25% Abzug verfällt nach 1 Runde.\n• Limit: Formation (Mindestens 4 benötigt)',
+        'rebell': 'Hoffnung: Rebellen kämpfen aus Verzweiflung Stärker. Liegst du im aktuellen Gesamt-Match hinten (weniger Siege), verdoppelt der Rebell seinen Score.\n\n• Ende: Sobald du Gleichstand erreichst oder führst, entfällt die Verdopplung.\n• Limit: Formation (Mindestens 4 benötigt)',
         'klon': 'Klon-Kette: Stirbt ein Klon, wird sein Score global gespeichert. Der nächste gespielte Klon erhält diesen Score als permanenten Boost oben drauf.\n\n• Ende: Die Kette reißt sofort ab (Bonus = 0), wenn zwischen zwei Klonen eine andere Fraktion gespielt wird.\n• Limit: Formation (Mindestens 4 benötigt)',
         'nachtschwester': 'Nekromantie: Gewinnt die Nachtschwester, holt sie mit dunkler Magie die vom Gegner ZULETZT besiegte Karte aus dem feindlichen Friedhof in deine Hand.\n\n• Ende: Funktioniert nur bei einem aktiven Rundensieg.\n• Limit: Formation (Mindestens 3 benötigt)',
         'droid': 'Verschmelzung: Spielst du diesen Droiden, verdoppelt sich durch Schwarm-Intelligenz automatisch der Score deines NÄCHSTEN Droiden.\n\n• Ende: Der Verdopplungs-Bonus wird direkt beim Einsatz des nächsten Droiden verbraucht.\n• Limit: Formation (Mindestens 5 benötigt)',
-        'kopfgeldjäger': 'Kopfgeld: Zu Beginn des Matches wird die häufigste feindliche Fraktion als Ziel markiert. Besiegst du dieses Ziel im Duell, erhältst du 2 Match-Punkte (statt 1).\n\n• Ende: Das Hauptziel bleibt das ganze Match über dauerhaft markiert.\n• Limit: Formation (Mindestens 3 benötigt)',
+        'Kopfgeldjäger': 'Kopfgeld: Zu Beginn des Matches wird die häufigste feindliche Fraktion als Ziel markiert. Besiegst du dieses Ziel im Duell, erhältst du 2 Match-Punkte (statt 1).\n\n• Ende: Das Hauptziel bleibt das ganze Match über dauerhaft markiert.\n• Limit: Formation (Mindestens 3 benötigt)',
         'erste ordnung': 'Zwangsrekrutierung: Gewinnt die Erste Ordnung, wird die gerade besiegte feindliche Karte nicht zerstört, sondern sofort in deine eigene Hand rekrutiert.\n\n• Ende: Der Effekt ist nur während der exakten Runde des Sieges aktiv.\n• Limit: Formation (Mindestens 4 benötigt)',
         'widerstand': 'Opfermut: Verliert ein Widerstandskämpfer, inspiriert sein Opfer das Team. Deine NÄCHSTE ausgespielte Karte erhält einen massiven Bonus von +4.0 Punkten.\n\n• Ende: Der Bonus verbraucht sich direkt in der Folgerunde.\n• Limit: Formation (Mindestens 4 benötigt)',
         'separatist': 'Übermacht: Hat die gegnerische Karte einen HÖHEREN Basis-Score als der Separatist, ruft dieser sofort Verstärkung und erhält pauschal +2.5 Score dazu.\n\n• Limit: Formation (Mindestens 4 benötigt)',
@@ -165,7 +165,7 @@ function calculateSynergy(deck) {
     checkMin('klon', 4);
     checkMin('nachtschwester', 3);
     checkMin('droid', 5);
-    checkMin('kopfgeldjäger', 3);
+    checkMin('Kopfgeldjäger', 3);
     checkMin('erste ordnung', 4);
     checkMin('widerstand', 4);
     checkMin('separatist', 4);
@@ -478,7 +478,7 @@ const BOT_LEVELS = [
     { name: "Imperium (Lvl 5)", factionFocus: 'imperium', rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#888', desc: "Unterdrückt Gegner nach einem Sieg.", reward: 150 },
     { name: "Nachtschwestern (Lvl 6)", factionFocus: 'nachtschwester', rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#9b59b6', desc: "Nutzt dunkle Magie für Nekromantie.", reward: 150 },
     { name: "Schurken (Lvl 7)", factionFocus: 'schurke', rarities: ['rare'], popFilter: 'any', synergy: 'high', color: '#e67e22', desc: "Klaut hinterlistig deine Score-Werte.", reward: 150 },
-    { name: "Kopfgeldjäger (Lvl 8)", factionFocus: 'kopfgeldjäger', rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#34495e', desc: "Macht Jagd auf deine häufigste Fraktion.", reward: 150 },
+    { name: "Kopfgeldjäger (Lvl 8)", factionFocus: 'Kopfgeldjäger', rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#34495e', desc: "Macht Jagd auf deine häufigste Fraktion.", reward: 150 },
     { name: "Mandalorianer (Lvl 9)", factionFocus: 'mandalorian', rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#ff9f43', desc: "Nutzt Beskar für Silence-Effekte.", reward: 150 },
     { name: "Senat (Lvl 10)", factionFocus: 'senat', rarities: ['rare', 'epic'], popFilter: 'any', synergy: 'high', color: '#4da6ff', desc: "Friert Runden bei Niederlagen ein.", reward: 150 },
     { name: "Fahrzeuge (Lvl 11)", factionFocus: 'fahrzeug', rarities: ['epic'], popFilter: 'any', synergy: 'high', color: '#aaa', desc: "Gefährliche Überrollen-Taktik.", reward: 150 },
@@ -643,8 +643,8 @@ async function startMatch(oppData, oppDeckArr) {
     const pSyn = calculateSynergy(playerDeck);
     const oSyn = calculateSynergy(opponentDeck);
     
-    if (pSyn.some(s => s.faction === 'kopfgeldjäger')) pEffects.bountyTarget = oSyn.length > 0 ? oSyn[0].faction : 'neutral';
-    if (oSyn.some(s => s.faction === 'kopfgeldjäger')) oEffects.bountyTarget = pSyn.length > 0 ? pSyn[0].faction : 'neutral';
+    if (pSyn.some(s => s.faction === 'Kopfgeldjäger')) pEffects.bountyTarget = oSyn.length > 0 ? oSyn[0].faction : 'neutral';
+    if (oSyn.some(s => s.faction === 'Kopfgeldjäger')) oEffects.bountyTarget = pSyn.length > 0 ? pSyn[0].faction : 'neutral';
     
     document.getElementById('match-player-synergy').innerHTML = pSyn.map(s => `<span class="has-tooltip" data-tooltip="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ffd700; border-bottom:1px dotted #ffd700;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
     document.getElementById('match-opponent-synergy').innerHTML = oSyn.map(s => `<span class="has-tooltip" data-tooltip="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ff4757; border-bottom:1px dotted #ff4757;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
@@ -693,8 +693,8 @@ export async function startAdventureMatch(levelIndex, oppData, oppDeckArr, playe
     const pSyn = calculateSynergy(playerDeck);
     const oSyn = calculateSynergy(opponentDeck);
     
-    if (pSyn.some(s => s.faction === 'kopfgeldjäger')) pEffects.bountyTarget = oSyn.length > 0 ? oSyn[0].faction : 'neutral';
-    if (oSyn.some(s => s.faction === 'kopfgeldjäger')) oEffects.bountyTarget = pSyn.length > 0 ? pSyn[0].faction : 'neutral';
+    if (pSyn.some(s => s.faction === 'Kopfgeldjäger')) pEffects.bountyTarget = oSyn.length > 0 ? oSyn[0].faction : 'neutral';
+    if (oSyn.some(s => s.faction === 'Kopfgeldjäger')) oEffects.bountyTarget = pSyn.length > 0 ? pSyn[0].faction : 'neutral';
     
     document.getElementById('match-player-synergy').innerHTML = pSyn.map(s => `<span class="has-tooltip" data-tooltip="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ffd700; border-bottom:1px dotted #ffd700;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
     document.getElementById('match-opponent-synergy').innerHTML = oSyn.map(s => `<span class="has-tooltip" data-tooltip="${getFactionTooltip(s.faction)}" style="cursor:help; color:#ff4757; border-bottom:1px dotted #ff4757;">${s.faction.toUpperCase()}</span>: <span style="color:#aaa;">${getFactionDescription(s.faction)}</span>`).join('<br>') || 'Keine Effekte';
@@ -987,8 +987,8 @@ function playRound(playerCard, explicitOppCard = null) {
         oLog.push("Übermacht (+2.5 Score)");
     }
     
-    if (pForcedJedi) pLog.push("Gedankentrick (Schwächere Karte erzwungen)");
-    if (oForcedJedi) oLog.push("Gedankentrick (Schwächere Karte erzwungen)");
+    if (pForcedJedi) pLog.push("Gedankentrick (schwächere Karte erzwungen)");
+    if (oForcedJedi) oLog.push("Gedankentrick (schwächere Karte erzwungen)");
     
     if (!pSilence && !oSilence) {
         let pSwap = pHas('schurke') && pFac === 'schurke';
@@ -1098,10 +1098,10 @@ function playRound(playerCard, explicitOppCard = null) {
     
     if (isWin && !isDraw) {
         playerScore++;
-        if (!oSilence && pHas('kopfgeldjäger') && pFac === 'kopfgeldjäger' && oFac === pEffects.bountyTarget) { playerScore++; pLog.push("Kopfgeldjäger (+1 Extra-Punkt)"); }
+        if (!oSilence && pHas('Kopfgeldjäger') && pFac === 'Kopfgeldjäger' && oFac === pEffects.bountyTarget) { playerScore++; pLog.push("Kopfgeldjäger (+1 Extra-Punkt)"); }
     } else if (!isWin && !isDraw) {
         opponentScore++;
-        if (!pSilence && oHas('kopfgeldjäger') && oFac === 'kopfgeldjäger' && pFac === oEffects.bountyTarget) { opponentScore++; oLog.push("Kopfgeldjäger (+1 Extra-Punkt)"); }
+        if (!pSilence && oHas('Kopfgeldjäger') && oFac === 'Kopfgeldjäger' && pFac === oEffects.bountyTarget) { opponentScore++; oLog.push("Kopfgeldjäger (+1 Extra-Punkt)"); }
     }
     
     if (playerCard) {
@@ -1242,7 +1242,7 @@ function playRound(playerCard, explicitOppCard = null) {
         if(m.includes('übermacht')) return 'Separatisten: Bonus-Score gegen Decks mit höheren Basis-Stats.';
         if(m.includes('falsches spiel')) return 'Schurken: Tauscht die gespielten Karten beider Spieler.';
         if(m.includes('orbitalschlag')) return 'Eine Karte wurde durch einen zerstörerischen Effekt vernichtet.';
-        if(m.includes('unterdrückt') || m.includes('unterdrückung')) return 'Imperium: Reduziert den Score des Gegners in der nächsten Runde um 25%.';
+        if(m.includes('Unterdrückt') || m.includes('unterdrückung')) return 'Imperium: Reduziert den Score des Gegners in der nächsten Runde um 25%.';
         if(m.includes('opfermut')) return 'Widerstand: Gibt in der nächsten Runde einen massiven +4.0 Score Bonus.';
         if(m.includes('klon-kette')) return 'Klone: Bonuspunkte basierend auf vorherigen Klone-Scores in Folge.';
         if(m.includes('hoffnung')) return 'Rebellen: Verdoppelt den Score, wenn du insgesamt im Rückstand bist.';
@@ -1718,4 +1718,6 @@ function handleCardgameLiveState(lobby) {
         }
     }
 }
+
+
 

@@ -1,4 +1,4 @@
-// suggestions.js
+﻿// suggestions.js
 import { db } from './firebase-config.js';
 import { collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, query, orderBy, limit, Timestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { getCurrentUser } from './auth.js';
@@ -480,3 +480,4 @@ export function renderAdminSuggestions() {
     });
     });
 }
+
