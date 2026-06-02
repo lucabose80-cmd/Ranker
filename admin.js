@@ -136,7 +136,7 @@ export async function initAdminPanel() {
         });
 
         document.getElementById('admin-reset-adventure-btn')?.addEventListener('click', async () => {
-            if(confirm("⚔️ ABENTEUER-RESET\n\nDen Abenteuer-Fortschritt (Level & Deck) ALLER Spieler auf Level 1 zurücksetzen?\n\nDies ist nötig wenn sich die Level-Reihenfolge geändert hat.\nDie Spieler behalten ihre normalen Credits und Karten.")) {
+            if(confirm("⚔️ ABENTEUER-ANZEIGE RESET\n\nDie angezeigte 'Höchstes Level je erreicht'-Statistik aller Spieler zurücksetzen?\n\nDer aktuelle Fortschritt (Level + Deck) bleibt erhalten.\nNur die Anzeige wo Spieler auf der Karte anderer stehen wird zurückgesetzt.")) {
                 try {
                     const btn = document.getElementById('admin-reset-adventure-btn');
                     btn.textContent = "Wird zurückgesetzt...";
@@ -149,8 +149,7 @@ export async function initAdminPanel() {
                         const u = d.data();
                         if (u.username === 'admin') return;
                         updates.push(updateDoc(doc(db, "users", d.id), {
-                            adventure_level: 1,
-                            adventure_deck: null
+                            adventure_highest_level: 1
                         }));
                         count++;
                     });
@@ -158,7 +157,7 @@ export async function initAdminPanel() {
 
                     btn.textContent = "⚔️ Abenteuer-Fortschritt ALLER zurücksetzen";
                     btn.disabled = false;
-                    alert(`✅ Erledigt! ${count} Spieler wurden auf Level 1 zurückgesetzt.`);
+                    alert(`✅ Erledigt! Anzeige von ${count} Spielern zurückgesetzt.`);
                     await refreshAdminPanel();
                 } catch(e) {
                     console.error(e);
