@@ -231,25 +231,65 @@ export function renderAdventureMap() {
         node.style.opacity = opacity;
         node.title = `${level.name}\n${level.ruleText}`;
         
-        let tooltipText = level.ruleText !== "Keine Sonderregeln." ? `${level.ruleText}<br><br>` : '';
-        tooltipText += `Gegner-Deck:<br>${level.deck.join(', ')}`;
-        const safeTooltip = tooltipText.replace(/"/g, '&quot;');
-        const safeAlert = tooltipText.replace(/'/g, "\\'").replace(/<br>/g, '\\n');
-        
         const isBoss = level.ruleText !== "Keine Sonderregeln.";
         const tagColor = isBoss ? '#ff4757' : '#3498db';
         const tagText = isBoss ? 'BOSS' : 'DECK';
         const tagShadow = isBoss ? `box-shadow: 0 0 5px rgba(255, 71, 87, 0.5);` : '';
         
-        const bossTag = `<div class="has-tooltip" data-tooltip="${safeTooltip}" onclick="alert('${safeAlert}')" style="margin-top: 4px; background: ${tagColor}; color: white; font-size: 0.55rem; padding: 2px 5px; border-radius: 3px; font-weight: bold; cursor: help; ${tagShadow}">${tagText}</div>`;
+        const bossTagHtml = `<div class="adv-deck-tag" style="margin-top: 4px; background: ${tagColor}; color: white; font-size: 0.55rem; padding: 2px 5px; border-radius: 3px; font-weight: bold; cursor: help; ${tagShadow}">${tagText}</div>`;
         
         node.innerHTML = `
             <div style="width: 50px; height: 50px; border-radius: 50%; background: ${color}; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; border: 2px solid #111; color: #111; font-weight: bold; margin-bottom: 5px; ${glow}">
                 ${isCurrent ? icon : (isHighest && !isPast ? icon : lvlNum)}
             </div>
             <div style="font-size: 0.7rem; color: ${color}; text-align: center; max-width: 60px; word-wrap: break-word;">${level.name}</div>
-            ${bossTag}
+            ${bossTagHtml}
         `;
+        
+        const tagEl = node.querySelector('.adv-deck-tag');
+        if (tagEl) {
+            tagEl.addEventListener('mouseenter', (e) => {
+                let hoverHtml = level.ruleText !== "Keine Sonderregeln." ? `<div style="color:#ff4757; font-weight:bold; margin-bottom:5px; width:100%;">${level.ruleText}</div>` : '';
+                hoverHtml += `<div style="width:100%; color:#aaa; font-size:0.75rem; margin-bottom:5px;">Gegner-Deck:</div><div style="display:flex; flex-wrap:wrap; gap:4px;">`;
+                level.deck.forEach(cName => {
+                    const cDb = activeCharacterDatabase.find(x => x.name === cName);
+                    if(cDb) {
+                        hoverHtml += `<img src="${cDb.img}" style="width:38px; height:55px; object-fit:cover; border-radius:4px; border:1px solid #555;" title="${cName}">`;
+                    }
+                });
+                hoverHtml += `</div>`;
+                
+                let tooltipDiv = document.getElementById('adv-custom-tooltip');
+                if(!tooltipDiv) {
+                    tooltipDiv = document.createElement('div');
+                    tooltipDiv.id = 'adv-custom-tooltip';
+                    tooltipDiv.style.cssText = 'position: fixed; z-index: 10000; background: rgba(15, 18, 25, 0.98); border: 2px solid #3498db; padding: 10px; border-radius: 8px; pointer-events: none; display: flex; flex-direction: column; width: 250px; box-shadow: 0 5px 15px rgba(0,0,0,0.8);';
+                    document.body.appendChild(tooltipDiv);
+                }
+                
+                if (isBoss) tooltipDiv.style.borderColor = '#ff4757';
+                else tooltipDiv.style.borderColor = '#3498db';
+                
+                tooltipDiv.innerHTML = hoverHtml;
+                tooltipDiv.style.display = 'flex';
+                tooltipDiv.style.left = (e.clientX + 15) + 'px';
+                tooltipDiv.style.top = (e.clientY + 15) + 'px';
+            });
+            tagEl.addEventListener('mousemove', (e) => {
+                const tooltipDiv = document.getElementById('adv-custom-tooltip');
+                if(tooltipDiv) {
+                    let newLeft = e.clientX + 15;
+                    let newTop = e.clientY + 15;
+                    if(newLeft + 260 > window.innerWidth) newLeft = e.clientX - 260; // Prevent overflow
+                    tooltipDiv.style.left = newLeft + 'px';
+                    tooltipDiv.style.top = newTop + 'px';
+                }
+            });
+            tagEl.addEventListener('mouseleave', () => {
+                const tooltipDiv = document.getElementById('adv-custom-tooltip');
+                if(tooltipDiv) tooltipDiv.style.display = 'none';
+            });
+        }
         container.appendChild(node);
         
         if (lvlNum < ADVENTURE_LEVELS) {
