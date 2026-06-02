@@ -134,6 +134,40 @@ export async function initAdminPanel() {
                 } catch(e) { console.error(e); alert(`Fehler: ${e.message}`); }
             }
         });
+
+        document.getElementById('admin-reset-adventure-btn')?.addEventListener('click', async () => {
+            if(confirm("⚔️ ABENTEUER-RESET\n\nDen Abenteuer-Fortschritt (Level & Deck) ALLER Spieler auf Level 1 zurücksetzen?\n\nDies ist nötig wenn sich die Level-Reihenfolge geändert hat.\nDie Spieler behalten ihre normalen Credits und Karten.")) {
+                try {
+                    const btn = document.getElementById('admin-reset-adventure-btn');
+                    btn.textContent = "Wird zurückgesetzt...";
+                    btn.disabled = true;
+
+                    const snap = await getDocs(query(collection(db, "users"), limit(100)));
+                    const updates = [];
+                    let count = 0;
+                    snap.forEach(d => {
+                        const u = d.data();
+                        if (u.username === 'admin') return;
+                        updates.push(updateDoc(doc(db, "users", d.id), {
+                            adventure_level: 1,
+                            adventure_deck: null
+                        }));
+                        count++;
+                    });
+                    await Promise.all(updates);
+
+                    btn.textContent = "⚔️ Abenteuer-Fortschritt ALLER zurücksetzen";
+                    btn.disabled = false;
+                    alert(`✅ Erledigt! ${count} Spieler wurden auf Level 1 zurückgesetzt.`);
+                    await refreshAdminPanel();
+                } catch(e) {
+                    console.error(e);
+                    document.getElementById('admin-reset-adventure-btn').disabled = false;
+                    document.getElementById('admin-reset-adventure-btn').textContent = "⚔️ Abenteuer-Fortschritt ALLER zurücksetzen";
+                    alert(`Fehler: ${e.message}`);
+                }
+            }
+        });
         
         const maintBtn = document.getElementById('admin-maintenance-toggle');
         const maintBtns = document.querySelectorAll('.maint-btn');
