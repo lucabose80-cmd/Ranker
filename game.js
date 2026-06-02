@@ -120,9 +120,17 @@ export async function initGame() {
 
     resetRatingUI();
     
-    // Live Game Dokument aufräumen beim Neustart
-    if (user) {
-        deleteDoc(doc(db, "live_games", user.username)).catch(()=>{});
+    // Live Game sofort beim Start registrieren (nicht erst nach erstem Zug)
+    if (user && user.role !== 'admin' && !user.isTestUser) {
+        setDoc(doc(db, "live_games", user.username), {
+            displayName: user.displayName || user.username,
+            avatar: user.avatarStarWars || user.avatar || '',
+            placedCharacters: [],
+            pool: [],
+            currentIndex: 0,
+            updatedAt: Timestamp.now(),
+            gameType: 'classic'
+        }).catch(() => {});
     }
     
     const punishPoolStr = localStorage.getItem('punish_pool_' + currentMode + '_' + currentGameCategory + '_classic');

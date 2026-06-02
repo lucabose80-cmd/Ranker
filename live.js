@@ -43,8 +43,8 @@ async function fetchLiveGames(grid) {
     grid.innerHTML = '<div class="loader"></div><p style="text-align:center;">Lade aktive Spiele...</p>';
     
     try {
-        const twoMinutesAgo = new Date(Date.now() - 120000);
-        const qLive = query(collection(db, "live_games"), where("updatedAt", ">", Timestamp.fromDate(twoMinutesAgo)));
+        const fiveMinutesAgo = new Date(Date.now() - 300000);
+        const qLive = query(collection(db, "live_games"), where("updatedAt", ">", Timestamp.fromDate(fiveMinutesAgo)));
         
         const snapshot = await getDocs(qLive);
         trackRead(snapshot.size);
