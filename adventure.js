@@ -498,3 +498,4 @@ function selectDraftCard(newDraftObj, newCardImage, newCardScore) {
 }
 
 
+
