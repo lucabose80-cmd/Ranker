@@ -42,16 +42,16 @@ const ADVENTURE_LEVELS = 20;
 
 // Base deck all players start with in Adventure Mode
 export const BASE_ADVENTURE_DECK = [
-    { charName: 'Baze Malbus', rarity: 'common' }, // Rebell
+    { charName: 'Mon Mothma', rarity: 'common' }, // Rebell
     { charName: 'Klonkrieger', rarity: 'common' }, // Klon
-    { charName: 'B1-Kampfdroide', rarity: 'common' }, // Droid
-    { charName: 'Ponda Baba', rarity: 'common' }, // Schurke
-    { charName: 'Rose Tico', rarity: 'common' }, // Widerstand
+    { charName: 'Pit Droide', rarity: 'common' }, // Droid
+    { charName: 'Watto', rarity: 'common' }, // Schurke
+    { charName: 'Klaud', rarity: 'common' }, // Widerstand
     { charName: 'FN-2199', rarity: 'common' }, // Erste Ordnung
-    { charName: 'Stormtrooper', rarity: 'common' }, // Imperium
-    { charName: 'Luminara Unduli', rarity: 'common' }, // Jedi
-    { charName: 'Zuckuss', rarity: 'common' }, // Kopfgeldjäger
-    { charName: 'Poggle der Geringere', rarity: 'common' } // Separatist
+    { charName: 'Scout Trooper', rarity: 'common' }, // Imperium
+    { charName: 'Coleman Trebor', rarity: 'common' }, // Jedi
+    { charName: 'Zam Wesell', rarity: 'common' }, // Kopfgeldjäger
+    { charName: 'Nute Gunray', rarity: 'common' } // Separatist
 ];
 
 // Adventure Campaign Configuration
@@ -231,11 +231,15 @@ export function renderAdventureMap() {
         node.style.opacity = opacity;
         node.title = `${level.name}\n${level.ruleText}`;
         
+        const isBoss = level.ruleText !== "Keine Sonderregeln.";
+        const bossTag = isBoss ? `<div title="${level.ruleText.replace(/"/g, '&quot;')}" style="margin-top: 4px; background: #ff4757; color: white; font-size: 0.55rem; padding: 2px 5px; border-radius: 3px; font-weight: bold; cursor: help; box-shadow: 0 0 5px rgba(255, 71, 87, 0.5);">BOSS</div>` : '';
+        
         node.innerHTML = `
             <div style="width: 50px; height: 50px; border-radius: 50%; background: ${color}; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; border: 2px solid #111; color: #111; font-weight: bold; margin-bottom: 5px; ${glow}">
                 ${isCurrent ? icon : (isHighest && !isPast ? icon : lvlNum)}
             </div>
             <div style="font-size: 0.7rem; color: ${color}; text-align: center; max-width: 60px; word-wrap: break-word;">${level.name}</div>
+            ${bossTag}
         `;
         container.appendChild(node);
         

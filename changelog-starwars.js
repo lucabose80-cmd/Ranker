@@ -5,7 +5,8 @@ export const patchNotesStarWars = [
         isHotfix: true,
         changes: [
             "Hotfix: Ein Bug wurde behoben, durch den neu eingereichte Community Vorschläge nicht direkt angezeigt wurden.",
-            "Balancing: Das Starter-Deck im Abenteuer-Modus wurde angepasst. Es besteht nun aus 10 völlig unterschiedlichen Karten aus 10 verschiedenen Fraktionen, sodass zum Start keinerlei automatische Synergien mehr aktiv sind.",
+            "Balancing: Das Starter-Deck im Abenteuer-Modus wurde nochmal angepasst und besteht nun aus extrem schwachen Charakteren ohne Synergie (z.B. Pit Droide, Klaud, Watto). Es muss nun zwingend klug gedraftet werden, um zu gewinnen!",
+            "Feature: In der Kampagnen-Übersicht haben Level mit aktiven Boss-Regeln nun einen roten [BOSS] Tag. Wenn du mit der Maus darüber gehst, siehst du genau, was der Boss-Effekt macht.",
             "Balancing: Der Unterdrückungs-Effekt (Imperium) des letzten Bosses in Level 20 wurde leicht abgeschwächt (zieht nun 35% statt 50% der Punkte ab)."
         ]
     },
