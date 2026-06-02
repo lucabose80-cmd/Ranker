@@ -1,4 +1,4 @@
-import { getCurrentUser, CURRENT_USER_KEY } from './auth.js';
+﻿import { getCurrentUser, CURRENT_USER_KEY } from './auth.js';
 import { getResets } from './resets.js';
 import { db } from './firebase-config.js';
 import { doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
@@ -57,33 +57,125 @@ export const BASE_ADVENTURE_DECK = [
 
 // Adventure Campaign Configuration
 export const ADVENTURE_CAMPAIGN = [
-    // Phase 1: Die Gesetzlosen (Level 1-5)
-    { name: "Separatisten-Patrouille", avatar: "", ruleId: null, deck: ["B1 Battle Droide", "B2 Super Battle Droide", "Droideka", "Kommando Droide", "Wat Tambor", "Zwergspinnendroide", "Spybot", "Scorch", "AZI-3", "General Kalani"], ruleText: "Keine Sonderregeln." },
-    { name: "Schmuggel-Ring", avatar: "", ruleId: null, deck: ["Hondo Ohnaka", "Han Solo", "Chewbacca", "Bossk", "Zam Wesell", "IG-88", "Fennec Shand", "Jabba the Hutt", "Dryden Vos", "Gorian Shard"], ruleText: "Keine Sonderregeln." },
-    { name: "Plünderer", avatar: "", ruleId: "adv_rule_1", deck: ["Trace Martez", "Rafa Martez", "Gamorrean Guard", "B1 Battle Droide", "Jawa", "Kragan Gorr", "DJ", "Gorian Shard", "Vane", "Nien Nunb"], ruleText: "Keine Sonderregeln." },
-    { name: "Piraten-Flotte", avatar: "", ruleId: "adv_rule_4", deck: ["Millennium Falcon", "Slave I", "Razor Crest", "Hondo Ohnaka", "Boba Fett", "Bossk", "Fennec Shand", "Vane", "Gorian Shard", "Kragan Gorr"], ruleText: "Keine Sonderregeln." },
-    { name: "Mandalorianische Söldner", avatar: "", ruleId: "adv_rule_5", deck: ["Din Djarin", "Bo-Katan Kryze", "The Armorer", "Bossk", "IG-88", "Fennec Shand", "Aurra Sing", "Jabba the Hutt", "Cad Bane", "Zam Wesell"], ruleText: "BOSS: Gegnerische Mandalorianer verhindern deine Buffs auch bei nur 1 gespielten Mando (Silence)." },
-    
-    // Phase 2: Der Klonkrieg (Level 6-10)
-    { name: "Droiden-Bataillon", avatar: "", ruleId: "adv_rule_6", deck: ["General Grievous", "B1 Battle Droide", "B2 Super Battle Droide", "Droideka", "Kommando Droide", "Rancor", "Commander Bly", "Wat Tambor", "Poggle the Lesser", "Nute Gunray"], ruleText: "Keine Sonderregeln." },
-    { name: "Die 501. Legion", avatar: "", ruleId: "adv_rule_7", deck: ["Captain Rex", "Fives", "Echo", "Commander Cody", "Waxer", "Boil", "Hunter", "Wrecker", "Wolffe", "Gregor"], ruleText: "Keine Sonderregeln." },
-    { name: "Fahrzeug-Depot", avatar: "", ruleId: "adv_rule_8", deck: ["AT-AT Walker", "AT-ST", "TIE Interceptor", "Darth Vader", "Grand Moff Tarkin", "Admiral Piett", "Director Krennic", "Emperor Palpatine", "Count Dooku", "Asajj Ventress"], ruleText: "BOSS: Gegnerische Fahrzeuge haben +10% Basis-Stärke." },
-    { name: "Die Nachtschwestern", avatar: "", ruleId: "adv_rule_9", deck: ["Mother Talzin", "Asajj Ventress", "Merrin", "Morgan Elsbeth", "Der Sohn", "Barriss Offee", "Savage Opress", "Darth Maul", "Rancor", "Osha Aniseya"], ruleText: "Keine Sonderregeln." },
-    { name: "General Grievous", avatar: "", ruleId: "adv_rule_10", deck: ["General Grievous", "Gardulla the Hutt", "B1 Battle Droide", "Droideka", "B2 Super Battle Droide", "Kommando Droide", "Count Dooku", "Asajj Ventress", "Scorch", "Sabine Wren"], ruleText: "BOSS: Gegnerischer Grievous und alle Droiden sind immun gegen 'Graue Machtnutzer' (Ausgleich)!" },
+    // ============================================================
+    // PHASE 1: Die Gesetzlosen (Level 1-5) - LEICHT
+    // Gemischte Decks, kaum Synergie. Boss: Mando Silence
+    // ============================================================
 
-    // Phase 3: Die Rebellion (Level 11-15)
-    { name: "Imperiale Patrouille", avatar: "", ruleId: "adv_rule_11", deck: ["TIE Advanced x1", "X-Wing Starfighter", "Lux Bonteri", "Qui-Gon Jinn", "Nien Nunb", "Kragan Gorr", "HK-47", "Wedge Antilles", "Admiral Piett", "Grand Moff Tarkin"], ruleText: "Keine Sonderregeln." },
-    { name: "Rebellen-Zelle", avatar: "", ruleId: "adv_rule_12", deck: ["Jyn Erso", "Cassian Andor", "Saw Gerrera", "Mon Mothma", "Admiral Ackbar", "Wedge Antilles", "Hera Syndulla", "Sabine Wren", "Kanan Jarrus", "Ezra Bridger"], ruleText: "Keine Sonderregeln." },
-    { name: "Schatten-Kollektiv", avatar: "", ruleId: "adv_rule_13", deck: ["Darth Maul", "Savage Opress", "Pre Vizsla", "Bo-Katan Kryze", "Gar Saxon", "Dryden Vos", "Qi'ra", "Mae Aniseya", "Ziro the Hutt", "Cad Bane"], ruleText: "BOSS: Deine Klone und Droiden sind durch Jamming 10% schwächer." },
-    { name: "Inquisitoren", avatar: "", ruleId: "adv_rule_14", deck: ["Grand Inquisitor", "Second Sister", "Third Sister", "Darth Vader", "Grand Moff Tarkin", "Admiral Piett", "Moff Gideon", "Director Krennic", "Boba Fett", "Bossk"], ruleText: "Keine Sonderregeln." },
-    { name: "Großadmiral Thrawn", avatar: "", ruleId: "adv_rule_15", deck: ["Grand Admiral Thrawn", "Imperial Star Destroyer", "Razor Crest", "Admiral Ackbar", "Saesee Tiin", "San Hill", "Grand Moff Tarkin", "Jabba the Hutt", "Admiral Piett", "Darth Vader"], ruleText: "BOSS: Thrawns Taktik: Wenn der Gegner führt, verlieren alle deine Karten -10% Stats." },
+    // Level 1: Gemischt, kaum Synergie - idealer Einstieg
+    { name: "Plunderer", avatar: "", ruleId: null,
+      deck: ["Trace Martez", "Rafa Martez", "Gamorrean Guard", "B1 Battle Droide", "Jawa", "Kragan Gorr", "DJ", "Gorian Shard", "Vane", "Nien Nunb"],
+      ruleText: "Keine Sonderregeln." },
 
-    // Phase 4: Das Erwachen (Level 16-20)
-    { name: "Graue Wanderer", avatar: "", ruleId: "adv_rule_16", deck: ["Baylan Skoll", "Darth Plagueis", "Darth Maul", "Asajj Ventress", "Count Dooku", "Wampa", "Rancor", "Cad Bane", "Bossk", "IG-88"], ruleText: "Keine Sonderregeln." },
-    { name: "Erwachen der Macht", avatar: "", ruleId: "adv_rule_17", deck: ["Luke Skywalker", "Rey Skywalker", "Obi-Wan Kenobi", "Leia Organa", "Han Solo", "Chewbacca", "Lando Calrissian", "Poe Dameron", "Finn", "Rose Tico"], ruleText: "Keine Sonderregeln." },
-    { name: "Die Erste Ordnung", avatar: "", ruleId: "adv_rule_18", deck: ["Kylo Ren", "Supreme Leader Snoke", "Captain Phasma", "General Hux", "Sith Trooper", "Executioner Trooper", "Allegiant General Pryde", "FN-2199", "Bo-Katan Kryze", "Vane"], ruleText: "BOSS: Besiegte Erste Ordnung-Karten kehren 1x mit 50% Stärke ins Deck des Gegners zurück!" },
-    { name: "Jedi-Rat", avatar: "", ruleId: "adv_rule_19", deck: ["Yoda", "Mace Windu", "Plo Koon", "Captain Rex", "Commander Cody", "Fives", "Echo", "Jesse", "Wolffe", "Gregor"], ruleText: "Keine Sonderregeln." },
-    { name: "Imperator Palpatine", avatar: "", ruleId: "adv_rule_20", deck: ["Emperor Palpatine", "Darth Vader", "Darth Maul", "Count Dooku", "Grand Moff Tarkin", "Admiral Piett", "Imperial Royal Guard", "Moff Gideon", "Director Krennic", "Imperial Star Destroyer"], ruleText: "FINAL BOSS: Alle gegnerischen Effekte (Imperium-Unterdrückung 50%, Sith-Milling x2) sind massiv verstärkt!" }
+    // Level 2: Fahrzeuge + Kopfgeldjager, erste leichte Synergie
+    { name: "Piraten-Flotte", avatar: "", ruleId: null,
+      deck: ["Hondo Ohnaka", "Boba Fett", "Bossk", "Fennec Shand", "Vane", "Gorian Shard", "Kragan Gorr", "Aurra Sing", "Zam Wesell", "Cad Bane"],
+      ruleText: "Keine Sonderregeln." },
+
+    // Level 3: Schmuggler-Synergie - Karten koennen zurueckkehren
+    { name: "Schmuggel-Ring", avatar: "", ruleId: null,
+      deck: ["Hondo Ohnaka", "Han Solo", "Chewbacca", "Bossk", "Zam Wesell", "IG-88", "Fennec Shand", "Jabba the Hutt", "Dryden Vos", "Gorian Shard"],
+      ruleText: "Keine Sonderregeln." },
+
+    // Level 4: Gemischt imperial, erste Starfighter
+    { name: "Imperiale Patrouille", avatar: "", ruleId: null,
+      deck: ["TIE Advanced x1", "X-Wing Starfighter", "Nien Nunb", "Kragan Gorr", "HK-47", "Wedge Antilles", "Admiral Piett", "Grand Moff Tarkin", "Lux Bonteri", "Qui-Gon Jinn"],
+      ruleText: "Keine Sonderregeln." },
+
+    // Level 5 (BOSS): Mando Silence - Buffs werden deaktiviert
+    { name: "Mandalorianische Soldner", avatar: "", ruleId: "adv_rule_5",
+      deck: ["Din Djarin", "Bo-Katan Kryze", "The Armorer", "Bossk", "IG-88", "Fennec Shand", "Aurra Sing", "Jabba the Hutt", "Cad Bane", "Zam Wesell"],
+      ruleText: "BOSS: Gegnerische Mandalorianer verhindern deine Buffs auch bei nur 1 gespielten Mando (Silence)." },
+
+    // ============================================================
+    // PHASE 2: Der Klonkrieg (Level 6-10) - MITTEL
+    // Erste Fraktionssynergien. Boss: General Grievous
+    // ============================================================
+
+    // Level 6: Rebell-Synergie - Score x2 wenn hinten liegend
+    { name: "Rebellen-Zelle", avatar: "", ruleId: null,
+      deck: ["Jyn Erso", "Cassian Andor", "Saw Gerrera", "Mon Mothma", "Admiral Ackbar", "Wedge Antilles", "Hera Syndulla", "Sabine Wren", "Kanan Jarrus", "Ezra Bridger"],
+      ruleText: "Keine Sonderregeln." },
+
+    // Level 7: Separatisten - erste Droid-Synergie (jetzt mit Gegenkarten moeglich)
+    { name: "Separatisten-Patrouille", avatar: "", ruleId: null,
+      deck: ["B1 Battle Droide", "B2 Super Battle Droide", "Droideka", "Kommando Droide", "Wat Tambor", "Zwergspinnendroide", "Spybot", "Scorch", "AZI-3", "General Kalani"],
+      ruleText: "Keine Sonderregeln." },
+
+    // Level 8: Klon-Kette - Klon-Synergie mit Bonus auf tote Klone
+    { name: "Die 501. Legion", avatar: "", ruleId: "adv_rule_7",
+      deck: ["Captain Rex", "Fives", "Echo", "Commander Cody", "Waxer", "Boil", "Hunter", "Wrecker", "Wolffe", "Gregor"],
+      ruleText: "Keine Sonderregeln." },
+
+    // Level 9: Dark-Side-Mix, starke Einzelkarten
+    { name: "Die Nachtschwestern", avatar: "", ruleId: "adv_rule_9",
+      deck: ["Mother Talzin", "Asajj Ventress", "Merrin", "Morgan Elsbeth", "Der Sohn", "Barriss Offee", "Savage Opress", "Darth Maul", "Rancor", "Osha Aniseya"],
+      ruleText: "Keine Sonderregeln." },
+
+    // Level 10 (BOSS): General Grievous - Droiden immun gegen Ausgleich
+    { name: "General Grievous", avatar: "", ruleId: "adv_rule_10",
+      deck: ["General Grievous", "B1 Battle Droide", "Droideka", "B2 Super Battle Droide", "Kommando Droide", "Count Dooku", "Asajj Ventress", "Scorch", "Gardulla the Hutt", "Nute Gunray"],
+      ruleText: "BOSS: Gegnerischer Grievous und alle Droiden sind immun gegen 'Graue Machtnutzer' (Ausgleich)!" },
+
+    // ============================================================
+    // PHASE 3: Die Rebellion (Level 11-15) - SCHWER
+    // Starke Synergiekombos + Debuffs. Boss: Thrawn
+    // ============================================================
+
+    // Level 11: Starke Einzelkarten, kaum kontert ohne gutes Deck
+    { name: "Graue Wanderer", avatar: "", ruleId: "adv_rule_16",
+      deck: ["Baylan Skoll", "Darth Plagueis", "Darth Maul", "Asajj Ventress", "Count Dooku", "Wampa", "Rancor", "Cad Bane", "Bossk", "IG-88"],
+      ruleText: "Keine Sonderregeln." },
+
+    // Level 12: Droid x3 Boss-Synergieeffekt
+    { name: "Droiden-Bataillon", avatar: "", ruleId: "adv_rule_6",
+      deck: ["General Grievous", "B1 Battle Droide", "B2 Super Battle Droide", "Droideka", "Kommando Droide", "Rancor", "Commander Bly", "Wat Tambor", "Poggle the Lesser", "Nute Gunray"],
+      ruleText: "Keine Sonderregeln." },
+
+    // Level 13: Schatten-Kollektiv - debufft deine Klone und Droiden -10%
+    { name: "Schatten-Kollektiv", avatar: "", ruleId: "adv_rule_13",
+      deck: ["Darth Maul", "Savage Opress", "Pre Vizsla", "Bo-Katan Kryze", "Gar Saxon", "Dryden Vos", "Qi'ra", "Mae Aniseya", "Ziro the Hutt", "Cad Bane"],
+      ruleText: "Keine Sonderregeln." },
+
+    // Level 14: Inquisitoren - Sith Milling x2, starkes Imperium-Deck
+    { name: "Inquisitoren", avatar: "", ruleId: "adv_rule_14",
+      deck: ["Grand Inquisitor", "Second Sister", "Third Sister", "Darth Vader", "Grand Moff Tarkin", "Admiral Piett", "Moff Gideon", "Director Krennic", "Boba Fett", "Bossk"],
+      ruleText: "Keine Sonderregeln." },
+
+    // Level 15 (BOSS): Thrawn - -10% wenn Spieler in Fuehrung
+    { name: "Grossadmiral Thrawn", avatar: "", ruleId: "adv_rule_15",
+      deck: ["Grand Admiral Thrawn", "Imperial Star Destroyer", "Darth Vader", "Grand Moff Tarkin", "Jabba the Hutt", "Admiral Piett", "Moff Gideon", "Director Krennic", "Admiral Ackbar", "Saesee Tiin"],
+      ruleText: "BOSS: Thrawns Taktik: Wenn der Gegner fuehrt, verlieren alle deine Karten -10% Stats." },
+
+    // ============================================================
+    // PHASE 4: Das Erwachen (Level 16-20) - EXTREM
+    // Legendary-Decks, Boss-Effekte gestapelt. Finales Ziel
+    // ============================================================
+
+    // Level 16: Jedi-Gedankentrick zwingt schwachste Karte
+    { name: "Erwachen der Macht", avatar: "", ruleId: "adv_rule_17",
+      deck: ["Luke Skywalker", "Rey Skywalker", "Obi-Wan Kenobi", "Leia Organa", "Han Solo", "Chewbacca", "Lando Calrissian", "Poe Dameron", "Finn", "Maz Kanata"],
+      ruleText: "Keine Sonderregeln." },
+
+    // Level 17: Fahrzeuge +10% - jetzt mit Legendary-Chars
+    { name: "Fahrzeug-Depot", avatar: "", ruleId: "adv_rule_8",
+      deck: ["AT-AT Walker", "AT-ST", "TIE Interceptor", "Razor Crest", "Millennium Falcon", "Slave I", "Darth Vader", "Grand Moff Tarkin", "Admiral Piett", "Director Krennic"],
+      ruleText: "BOSS: Gegnerische Fahrzeuge haben +10% Basis-Staerke." },
+
+    // Level 18: Jedi-Rat + Klon-Combo - volle Synergie
+    { name: "Jedi-Rat", avatar: "", ruleId: "adv_rule_19",
+      deck: ["Yoda", "Mace Windu", "Plo Koon", "Captain Rex", "Commander Cody", "Fives", "Echo", "Jesse", "Wolffe", "Gregor"],
+      ruleText: "Keine Sonderregeln." },
+
+    // Level 19: Erste Ordnung - besiegte Karten kehren zurueck
+    { name: "Die Erste Ordnung", avatar: "", ruleId: "adv_rule_18",
+      deck: ["Kylo Ren", "Supreme Leader Snoke", "Captain Phasma", "General Hux", "Sith Trooper", "Executioner Trooper", "Allegiant General Pryde", "FN-2199", "Bo-Katan Kryze", "Vane"],
+      ruleText: "BOSS: Besiegte Erste Ordnung-Karten kehren 1x mit 50% Staerke ins Deck des Gegners zurueck!" },
+
+    // Level 20 (FINAL BOSS): Palpatine - alle Effekte massiv verstaerkt
+    { name: "Imperator Palpatine", avatar: "", ruleId: "adv_rule_20",
+      deck: ["Emperor Palpatine", "Darth Vader", "Darth Maul", "Count Dooku", "Grand Moff Tarkin", "Admiral Piett", "Imperial Royal Guard", "Moff Gideon", "Director Krennic", "Imperial Star Destroyer"],
+      ruleText: "FINAL BOSS: Alle gegnerischen Effekte (Imperium-Unterdrueckung 50%, Sith-Milling x2) sind massiv verstaerkt!" }
 ];
 
 let draftOptions = [];
