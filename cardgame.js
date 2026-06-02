@@ -1026,7 +1026,7 @@ function playRound(playerCard, explicitOppCard = null) {
     if (oEffects.martyrBuff) { oBase += 4.0; oEffects.martyrBuff = false; oLog.push("Opfermut (+4.0 Score)"); }
 
     if (playerCard) {
-        if (!oSilence && pHas('klon') && pFac === 'klon') {
+        if (!oSilence && pHas('klon') && (pFac === 'klon' || pTags.includes('klon'))) {
             pEffects.cloneChain++;
             if (pEffects.lastCloneDead) {
                 pBase += pEffects.lastCloneDead;
@@ -1037,14 +1037,14 @@ function playRound(playerCard, explicitOppCard = null) {
             pEffects.lastCloneDead = null;
         }
         
-        if (!oSilence && pEffects.nextDroidDouble && pFac === 'droid') { pBase *= 2; pEffects.nextDroidDouble = false; pLog.push("Verschmelzung (Score x2)"); }
+        if (!oSilence && pEffects.nextDroidDouble && (pFac === 'droid' || pTags.includes('droid'))) { pBase *= 2; pEffects.nextDroidDouble = false; pLog.push("Verschmelzung (Score x2)"); }
         if (!oSilence && pHas('rebell') && pFac === 'rebell' && playerScore < opponentScore) { pBase *= 2; pLog.push("Hoffnung (Score x2)"); }
         if (!oSilence && pHas('bad_batch') && pFac === 'bad_batch') { pBase += 4.0; pEffects.forceRandom = true; pLog.push("Kloneinheit 99 (+4.0 Score, Random Next)"); }
         if (!oSilence && pHas('hutte') && pFac === 'hutte') { pEffects.forceStrongest = true; pLog.push("Erpressung initiiert"); }
         if (pSilence) pLog.push("Beskar (Silence)");
     }
     if (oppCard) {
-        if (!pSilence && oHas('klon') && oFac === 'klon') {
+        if (!pSilence && oHas('klon') && (oFac === 'klon' || oTags.includes('klon'))) {
             oEffects.cloneChain++;
             if (oEffects.lastCloneDead) {
                 let bonus = (isAdventureMatch && adventureRule === 'adv_rule_7') ? oEffects.lastCloneDead * 1.5 : oEffects.lastCloneDead;
@@ -1057,7 +1057,7 @@ function playRound(playerCard, explicitOppCard = null) {
             oEffects.lastCloneDead = null;
         }
         
-        if (!pSilence && oEffects.nextDroidDouble && oFac === 'droid') { 
+        if (!pSilence && oEffects.nextDroidDouble && (oFac === 'droid' || oTags.includes('droid'))) { 
             let mult = (isAdventureMatch && adventureRule === 'adv_rule_6') ? 3 : 2;
             oBase *= mult; 
             oEffects.nextDroidDouble = false; 
@@ -1115,7 +1115,7 @@ function playRound(playerCard, explicitOppCard = null) {
         if (!isWin && !isDraw && !oSilence) {
             if (pHas('widerstand') && pFac === 'widerstand') { pEffects.martyrBuff = true; pLog.push("Widerstand geopfert"); }
             if (pHas('jedi') && (pFac === 'jedi' || pTags.includes('jedi'))) { pEffects.forceWeakest = true; pLog.push("Gedankentrick initiiert"); }
-            if (pHas('klon') && pFac === 'klon') { 
+            if (pHas('klon') && (pFac === 'klon' || pTags.includes('klon'))) { 
                 pEffects.lastCloneDead = pBase; 
                 pLog.push(`Klon-Kette (Score ${pBase.toFixed(1)} gespeichert)`); 
             }
@@ -1161,7 +1161,7 @@ function playRound(playerCard, explicitOppCard = null) {
         if (isWin && !isDraw && !pSilence) {
             if (oHas('widerstand') && oFac === 'widerstand') { oEffects.martyrBuff = true; oLog.push("Widerstand geopfert"); }
             if ((oHas('jedi') || (isAdventureMatch && adventureRule === 'adv_rule_17')) && (oFac === 'jedi' || oTags.includes('jedi'))) { oEffects.forceWeakest = true; oLog.push("Gedankentrick initiiert"); }
-            if (oHas('klon') && oFac === 'klon') { 
+            if (oHas('klon') && (oFac === 'klon' || oTags.includes('klon'))) { 
                 oEffects.lastCloneDead = oBase; 
                 oLog.push(`Klon-Kette (Score ${oBase.toFixed(1)} gespeichert)`); 
             }
@@ -1203,10 +1203,10 @@ function playRound(playerCard, explicitOppCard = null) {
         }
     }
     
-    if (playerCard && !oSilence && pHas('droid') && pFac === 'droid') {
+    if (playerCard && !oSilence && pHas('droid') && (pFac === 'droid' || pTags.includes('droid'))) {
         pEffects.nextDroidDouble = true;
     }
-    if (oppCard && !pSilence && oHas('droid') && oFac === 'droid') {
+    if (oppCard && !pSilence && oHas('droid') && (oFac === 'droid' || oTags.includes('droid'))) {
         oEffects.nextDroidDouble = true;
     }
     
