@@ -1,5 +1,16 @@
 export const patchNotesStarWars = [
     {
+        version: "v9.2",
+        title: "Update: Abenteuer-Modus Rework (15 Fraktionen)",
+        isHotfix: false,
+        changes: [
+            "Feature: Der Abenteuer-Modus wurde komplett überarbeitet! Alle 20 Level nutzen nun die neuen 15 Fraktionen und bieten eine echte Herausforderung.",
+            "Feature: Aktive Boss-Regeln! Die Modifikatoren der Gegner (z.B. Thrawn zieht dir 10% Stats ab, Palpatines Sith zerstören 2 Karten) greifen nun aktiv und fühlbar ins Spielgeschehen ein.",
+            "Feature: Das Starter-Deck wurde durch ein neues, schwächeres Set ersetzt, das anfangs keine großen Fraktions-Fähigkeiten triggert. Strategisches Draften ist nun Pflicht!",
+            "Feature: Das Rarity Scaling (die Seltenheit der Karten) für die späteren Abenteuer-Level wurde so balanciert, dass Gegner harte Decks spielen, du aber auch extrem starke Karten draften kannst."
+        ]
+    },
+    {
         version: "v9.1",
         title: "Update: Legendäre Karte neu würfeln",
         isHotfix: false,

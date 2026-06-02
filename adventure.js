@@ -42,40 +42,47 @@ const ADVENTURE_LEVELS = 20;
 
 // Base deck all players start with in Adventure Mode
 export const BASE_ADVENTURE_DECK = [
-    "Trace Martez", 
-    "Rafa Martez", 
-    "B1 Battle Droide", 
-    "Gamorrean Guard", 
-    "Benthic Two Tubes", 
-    "Nien Nunb", 
     "Wedge Antilles", 
-    "Bail Organa", 
-    "C-3PO", 
-    "R2-D2"
+    "Nien Nunb", 
+    "Poe Dameron", 
+    "Rose Tico", 
+    "B1 Battle Droide", 
+    "R2-D2", 
+    "Echo", 
+    "Fives", 
+    "Trace Martez", 
+    "Rafa Martez"
 ];
 
 // Adventure Campaign Configuration
 export const ADVENTURE_CAMPAIGN = [
-    { name: "Die Unterwelt", avatar: "", deck: ["Trace Martez", "Rafa Martez", "Gamorrean Guard", "Bib Fortuna", "Rotta the Hutt", "Ziro the Hutt", "Gardulla the Hutt", "The Twins", "Jabba the Hutt", "Boba Fett"], ruleText: "Keine Sonderregeln." },
-    { name: "Piraten & Schmuggler", avatar: "", deck: ["Hondo Ohnaka", "DJ", "Enfys Nest", "Dryden Vos", "Qi'ra", "Gorian Shard", "Kragan Gorr", "Vane", "Han Solo", "Lando Calrissian"], ruleText: "Keine Sonderregeln." },
-    { name: "Erste Ordnung", avatar: "", deck: ["Kylo Ren", "Captain Phasma", "General Hux", "Supreme Leader Snoke", "FN-2199", "Sith Trooper", "Allegiant General Pryde", "Captain Peavey", "Executioner Trooper", "BB-9E"], ruleText: "Keine Sonderregeln." },
-    { name: "Widerstand", avatar: "", deck: ["Rey Skywalker", "Poe Dameron", "Finn", "Rose Tico", "Vice Admiral Holdo", "Maz Kanata", "BB-8", "D-O", "Leia Organa", "Han Solo"], ruleText: "Gespieltes Imperium hat +10% Stärke gegen den Widerstand." },
-    { name: "Bestien", avatar: "", deck: ["Rancor", "Wampa", "Sarlacc", "Nexu", "Acklay", "Reek", "Rathtar", "Zillo Beast", "Mudhorn", "Gamorrean Guard"], ruleText: "Gegner haben einen zufälligen Buff (10% bis 30%)." },
-    { name: "Jedi-Padawane", avatar: "", deck: ["Jecki Lon", "Ahsoka Tano", "Ezra Bridger", "Cal Kestis", "Barriss Offee", "Zett Jukassa", "Gungi", "Katooni", "Petro", "Nahdar Vebb"], ruleText: "Gespielte Kopfgeldjäger haben +15% Stärke." },
-    { name: "Separatisten-Führung", avatar: "", deck: ["Count Dooku", "General Grievous", "Wat Tambor", "Poggle the Lesser", "Nute Gunray", "Admiral Trench", "San Hill", "Lux Bonteri", "General Kalani", "Asajj Ventress"], ruleText: "Gegnerische Sith haben +15% Stärke." },
-    { name: "Droiden-Armee", avatar: "", deck: ["B1 Battle Droide", "B2 Super Battle Droide", "Droideka", "Kommando Droide", "Suchdroide", "Zwergspinnendroide", "Spybot", "General Grievous", "AZI-3", "IG-88"], ruleText: "Gegnerische Droiden haben +10% Stärke." },
-    { name: "Rebellen-Allianz", avatar: "", deck: ["Jyn Erso", "Cassian Andor", "Saw Gerrera", "Mon Mothma", "Admiral Ackbar", "Wedge Antilles", "Hera Syndulla", "Sabine Wren", "Nien Nunb", "Bail Organa"], ruleText: "Gegnerische Rebellen haben +10% Stärke." },
-    { name: "Inquisitoren", avatar: "", deck: ["Grand Inquisitor", "Second Sister", "Third Sister", "Fifth Brother", "Seventh Sister", "Darth Vader", "Suchdroide", "Imperial Royal Guard", "Iden Versio", "Director Krennic"], ruleText: "Gegnerisches Imperium hat +15% Stärke." },
-    { name: "Nachtschwestern", avatar: "", deck: ["Mother Talzin", "Asajj Ventress", "Merrin", "Morgan Elsbeth", "Savage Opress", "Darth Maul", "General Grievous", "Count Dooku", "Rancor", "Osha Aniseya"], ruleText: "Magie: Alle gegnerischen Karten sind 10% stärker." },
-    { name: "Kopfgeldjäger", avatar: "", deck: ["Cad Bane", "Jango Fett", "Boba Fett", "Zam Wesell", "Embo", "Aurra Sing", "Bossk", "Fennec Shand", "IG-88", "IG-11"], ruleText: "Gegnerische Kopfgeldjäger sind 15% stärker." },
-    { name: "Imperiale Flotte", avatar: "", deck: ["Imperial Star Destroyer", "Death Star", "TIE Fighter", "TIE Interceptor", "TIE Advanced x1", "Imperial Shuttle", "AT-AT Walker", "AT-ST", "Grand Admiral Thrawn", "Admiral Piett"], ruleText: "Gegnerische Fahrzeuge sind 20% stärker." },
-    { name: "Graue Machtnutzer", avatar: "", deck: ["Baylan Skoll", "Shin Hati", "Morgan Elsbeth", "Starkiller", "Jod Na Nawood", "Ahsoka Tano", "Asajj Ventress", "Qimir (Der Fremde)", "Der Vater", "Die Tochter"], ruleText: "Deine Jedi sind 10% schwächer." },
-    { name: "Fahrzeuge der Republik", avatar: "", deck: ["Republic Gunship (LAAT)", "AT-TE", "Venator-class Star Destroyer", "Jedi Starfighter (Delta-7)", "Jedi Interceptor (Eta-2)", "Naboo N-1 Starfighter", "Captain Rex", "Commander Cody", "Plo Koon", "Anakin Skywalker"], ruleText: "Gegnerische Fahrzeuge sind 25% stärker." },
-    { name: "Mandalorianer", avatar: "", deck: ["Din Djarin", "Bo-Katan Kryze", "Pre Vizsla", "Paz Vizsla", "The Armorer", "Ursa Wren", "Koska Reeves", "Axe Woves", "Fenn Rau", "Gar Saxon"], ruleText: "Gegnerische Mandalorianer sind 20% stärker." },
-    { name: "Klon-Truppler", avatar: "", deck: ["Captain Rex", "Commander Cody", "Fives", "Echo", "Jesse", "Wolffe", "Gregor", "Kix", "Hardcase", "Appo"], ruleText: "Gegnerische Klon-Truppler haben +25% Stärke." },
-    { name: "Jedi-Meister", avatar: "", deck: ["Yoda", "Mace Windu", "Qui-Gon Jinn", "Kit Fisto", "Plo Koon", "Ki-Adi-Mundi", "Aayla Secura", "Shaak Ti", "Luminara Unduli", "Obi-Wan Kenobi"], ruleText: "Gegnerische Jedi haben +20% Stärke. Deine Sith +15%." },
-    { name: "Das Imperium", avatar: "", deck: ["Emperor Palpatine", "Darth Vader", "Grand Moff Tarkin", "Grand Admiral Thrawn", "Director Krennic", "Moff Gideon", "Admiral Piett", "Imperial Royal Guard", "Death Star", "Iden Versio"], ruleText: "Gegnerisches Imperium hat +25% Stärke." },
-    { name: "Die Sith", avatar: "", deck: ["Emperor Palpatine", "Darth Vader", "Darth Maul", "Count Dooku", "Darth Plagueis", "Darth Malgus", "Darth Jar Jar", "Kylo Ren", "Supreme Leader Snoke", "Savage Opress"], ruleText: "FINALER BOSS: Gegnerische Sith haben +30%, Imperium +20%." }
+    // Phase 1: Die Gesetzlosen (Level 1-5)
+    { name: "Plünderer", avatar: "", ruleId: "adv_rule_1", deck: ["Trace Martez", "Rafa Martez", "Gamorrean Guard", "B1 Battle Droide", "Ponda Baba", "Cornelius Evazan", "Salacious B. Crumb", "Gorian Shard", "Vane", "Nien Nunb"], ruleText: "Keine Sonderregeln." },
+    { name: "Schmuggel-Ring", avatar: "", ruleId: "adv_rule_2", deck: ["Hondo Ohnaka", "DJ", "Enfys Nest", "Dryden Vos", "Qi'ra", "Han Solo", "Lando Calrissian", "Chewbacca", "Zam Wesell", "Greedo"], ruleText: "Keine Sonderregeln." },
+    { name: "Separatisten-Patrouille", avatar: "", ruleId: "adv_rule_3", deck: ["B1 Battle Droide", "B2 Super Battle Droide", "Droideka", "Kommando Droide", "OOM-9", "Zwergspinnendroide", "Spybot", "Pit Droid", "AZI-3", "General Kalani"], ruleText: "Alle Droiden des Gegners haben +5% Basis-Stärke." },
+    { name: "Piraten-Flotte", avatar: "", ruleId: "adv_rule_4", deck: ["Hondo Ohnaka", "Vane", "Gorian Shard", "Millennium Falcon", "Slave I", "Razor Crest", "TIE Fighter", "X-Wing", "Kragan Gorr", "Boba Fett"], ruleText: "Keine Sonderregeln." },
+    { name: "Mandalorianische Söldner", avatar: "", ruleId: "adv_rule_5", deck: ["Din Djarin", "Bo-Katan Kryze", "Paz Vizsla", "The Armorer", "Koska Reeves", "Axe Woves", "Jango Fett", "Boba Fett", "Fenn Rau", "Pre Vizsla"], ruleText: "Gegnerische Mandalorianer verhindern deine Buffs auch bei nur 1 gespielten Mando (Silence)." },
+    
+    // Phase 2: Der Klonkrieg (Level 6-10)
+    { name: "Droiden-Bataillon", avatar: "", ruleId: "adv_rule_6", deck: ["General Grievous", "B1 Battle Droide", "B2 Super Battle Droide", "Droideka", "Kommando Droide", "MagnaGuard", "OOM-9", "Wat Tambor", "Poggle the Lesser", "Nute Gunray"], ruleText: "Gegnerische Droiden-Verschmelzung gibt +2 statt +1 Boost." },
+    { name: "Die 501. Legion", avatar: "", ruleId: "adv_rule_7", deck: ["Captain Rex", "Commander Cody", "Fives", "Echo", "Jesse", "Wolffe", "Gregor", "Kix", "Hardcase", "Appo"], ruleText: "Jeder besiegte Klon gibt +3 statt +2 Stats an die Überlebenden." },
+    { name: "Fahrzeug-Depot", avatar: "", ruleId: "adv_rule_8", deck: ["AT-AT Walker", "AT-ST", "Republic Gunship (LAAT)", "Venator-class Star Destroyer", "Imperial Star Destroyer", "TIE Interceptor", "X-Wing", "Y-Wing", "A-Wing", "Millennium Falcon"], ruleText: "Gegnerische Fahrzeuge haben +10% Basis-Stärke." },
+    { name: "Die Nachtschwestern", avatar: "", ruleId: "adv_rule_9", deck: ["Mother Talzin", "Asajj Ventress", "Merrin", "Morgan Elsbeth", "Old Daka", "Talia", "Savage Opress", "Darth Maul", "Rancor", "Osha Aniseya"], ruleText: "Der Gegner klaut deine ERSTE besiegte Karte in dieser Runde automatisch." },
+    { name: "General Grievous [BOSS]", avatar: "", ruleId: "adv_rule_10", deck: ["General Grievous", "MagnaGuard", "B1 Battle Droide", "Droideka", "B2 Super Battle Droide", "Kommando Droide", "Count Dooku", "Asajj Ventress", "Soulless One", "Trade Federation Battleship"], ruleText: "BOSS: Gegnerischer Grievous und alle Droiden sind immun gegen 'Graue Machtnutzer' (Ausgleich)!" },
+
+    // Phase 3: Die Rebellion (Level 11-15)
+    { name: "Imperiale Patrouille", avatar: "", ruleId: "adv_rule_11", deck: ["Stormtrooper", "Scout Trooper", "Death Trooper", "Shoretrooper", "Snowtrooper", "TIE Fighter Pilot", "AT-AT Driver", "General Veers", "Admiral Piett", "Grand Moff Tarkin"], ruleText: "Gegnerisches Imperium zieht dir 30% (statt 25%) ab, wenn es gewinnt." },
+    { name: "Rebellen-Zelle", avatar: "", ruleId: "adv_rule_12", deck: ["Jyn Erso", "Cassian Andor", "Saw Gerrera", "Mon Mothma", "Admiral Ackbar", "Wedge Antilles", "Hera Syndulla", "Sabine Wren", "Kanan Jarrus", "Ezra Bridger"], ruleText: "Gegnerische Rebellen bekommen x2.5 Punkte bei Comebacks (statt x2)." },
+    { name: "Schatten-Kollektiv", avatar: "", ruleId: "adv_rule_13", deck: ["Darth Maul", "Savage Opress", "Pre Vizsla", "Bo-Katan Kryze", "Gar Saxon", "Dryden Vos", "Qi'ra", "Lom Pyke", "Ziro the Hutt", "Cad Bane"], ruleText: "Deine Klone und Droiden sind durch Jamming 10% schwächer." },
+    { name: "Inquisitoren", avatar: "", ruleId: "adv_rule_14", deck: ["Grand Inquisitor", "Second Sister", "Third Sister", "Fifth Brother", "Seventh Sister", "Eighth Brother", "Ninth Sister", "Darth Vader", "Purge Trooper", "Suchdroide"], ruleText: "Gegnerische Sith millen (zerstören) 2 Karten auf deiner Hand statt 1." },
+    { name: "Großadmiral Thrawn [BOSS]", avatar: "", ruleId: "adv_rule_15", deck: ["Grand Admiral Thrawn", "Imperial Star Destroyer", "Chimaera", "Rukh", "Governor Pryce", "Captain Pellaeon", "Death Trooper", "TIE Defender", "Admiral Piett", "Darth Vader"], ruleText: "BOSS: Thrawns Taktik: Wenn der Gegner führt, verlieren alle deine Karten -10% Stats." },
+
+    // Phase 4: Das Erwachen (Level 16-20)
+    { name: "Graue Wanderer", avatar: "", ruleId: "adv_rule_16", deck: ["Baylan Skoll", "Shin Hati", "Starkiller", "Ahsoka Tano (Weiß)", "Bendu", "Der Vater", "Die Tochter", "Der Sohn", "Qimir (Der Fremde)", "Asajj Ventress"], ruleText: "Die Regel 'Schwächste Karte gewinnt' gilt in 50% der Runden automatisch für den Gegner!" },
+    { name: "Erwachen der Macht", avatar: "", ruleId: "adv_rule_17", deck: ["Rey Skywalker", "Luke Skywalker", "Leia Organa", "Ben Solo", "Yoda", "Obi-Wan Kenobi", "Qui-Gon Jinn", "Mace Windu", "Plo Koon", "Ahsoka Tano"], ruleText: "Gegnerische Jedi wenden IMMER den Gedankentrick an, auch ohne 3er-Bonus." },
+    { name: "Die Erste Ordnung", avatar: "", ruleId: "adv_rule_18", deck: ["Kylo Ren", "Supreme Leader Snoke", "Captain Phasma", "General Hux", "Sith Trooper", "Executioner Trooper", "Allegiant General Pryde", "FN-2199", "Praetorian Guard", "Knights of Ren"], ruleText: "Besiegte Erste Ordnung-Karten kehren 1x mit 50% Stärke ins Deck des Gegners zurück!" },
+    { name: "Jedi-Rat", avatar: "", ruleId: "adv_rule_19", deck: ["Yoda", "Mace Windu", "Plo Koon", "Ki-Adi-Mundi", "Saesee Tiin", "Kit Fisto", "Shaak Ti", "Luminara Unduli", "Oppo Rancisis", "Yaddle"], ruleText: "Die Macht ist stark: Gegnerische Karten haben pauschal +20% Basis-Stats." },
+    { name: "Imperator Palpatine [FINAL BOSS]", avatar: "", ruleId: "adv_rule_20", deck: ["Emperor Palpatine", "Darth Vader", "Darth Maul", "Count Dooku", "Darth Plagueis", "Darth Malgus", "Darth Jar Jar", "Kylo Ren", "Supreme Leader Snoke", "Death Star"], ruleText: "FINAL BOSS: Alle gegnerischen Effekte (Imperium-Unterdrückung 50%, Sith-Milling x2) sind massiv verstärkt!" }
 ];
 
 let draftOptions = [];

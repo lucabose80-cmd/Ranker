@@ -22,12 +22,13 @@ let opponentHandRemaining = [];
 let playerGraveyard = [];
 let opponentGraveyard = [];
 let pEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
-let oEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
+let oEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false, rule9Done: false, rule18Done: false };
 let globalScoresCache = {};
 let isBotMatch = false;
 let liveMatchActive = false;
 let isAdventureMatch = false;
 let adventureLevelIndex = 0;
+let adventureRule = null;
 
 const RARITY_MULT = { 'common': 1.0, 'rare': 1.1, 'epic': 1.3, 'legendary': 1.5 };
 const RARITY_ORDER = { 'legendary': 4, 'epic': 3, 'rare': 2, 'common': 1 };
@@ -630,7 +631,7 @@ async function startMatch(oppData, oppDeckArr) {
     playerGraveyard = [];
     opponentGraveyard = [];
     pEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
-    oEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
+    oEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false, rule9Done: false, rule18Done: false };
     
     document.getElementById('cardgame-matchmaking').classList.add('hidden');
     document.getElementById('cardgame-bots').classList.add('hidden');
@@ -674,11 +675,12 @@ export async function startAdventureMatch(levelIndex, oppData, oppDeckArr, playe
     playerGraveyard = [];
     opponentGraveyard = [];
     pEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
-    oEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
+    oEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false, rule9Done: false, rule18Done: false };
     
     isBotMatch = true;
     isAdventureMatch = true;
     adventureLevelIndex = levelIndex;
+    adventureRule = oppData.ruleId || null;
     
     document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
     document.getElementById('cardgame-content').classList.remove('hidden');
@@ -932,6 +934,9 @@ function playRound(playerCard, explicitOppCard = null) {
     
     let pSilence = pHas('mandalorianer') && pFac === 'mandalorianer';
     let oSilence = oHas('mandalorianer') && oFac === 'mandalorianer';
+    
+    if (isAdventureMatch && adventureRule === 'adv_rule_5' && oTags.includes('mandalorian')) oSilence = true;
+
 
     let pRarMult = playerCard ? (RARITY_MULT[playerCard.rarity] || 1.0) : 1.0;
     let oRarMult = oppCard ? (RARITY_MULT[oppCard.rarity] || 1.0) : 1.0;
@@ -947,9 +952,20 @@ function playRound(playerCard, explicitOppCard = null) {
 
     let pBaseRaw = playerCard ? (playerCard.isGhost ? 0 : getCardScore(playerCard.charName)) : 0;
     let oBaseRaw = oppCard ? (oppCard.isGhost ? 0 : getCardScore(oppCard.charName)) : 0;
+    if (oppCard && oppCard.rule18Revived) oBaseRaw *= 0.5;
+
     
     let pBase = pBaseRaw * pRarMult;
     let oBase = oBaseRaw * oRarMult;
+
+    if (isAdventureMatch) {
+        if (adventureRule === 'adv_rule_3' && oFac === 'droid') { oBase *= 1.05; oLog.push("Boss-Regel (+5%)"); }
+        if (adventureRule === 'adv_rule_8' && oFac === 'fahrzeug') { oBase *= 1.10; oLog.push("Boss-Regel (+10%)"); }
+        if (adventureRule === 'adv_rule_19') { oBase *= 1.20; oLog.push("Boss-Regel (+20%)"); }
+        if (adventureRule === 'adv_rule_13' && (pFac === 'klon' || pFac === 'droid')) { pBase *= 0.90; pLog.push("Boss-Regel (-10%)"); }
+        if (adventureRule === 'adv_rule_15' && opponentScore > playerScore) { pBase *= 0.90; pLog.push("Boss-Regel (Thrawn -10%)"); }
+    }
+
 
     if (!oSilence && pHas('monster') && pFac === 'monster') {
         const factor = 1.0 + ((Math.random() * 40 - 20) / 100);
@@ -990,8 +1006,14 @@ function playRound(playerCard, explicitOppCard = null) {
     if (pEffects.orbitalStrike) { pBase = 0; oBase = 0; pEffects.orbitalStrike = false; pLog.push("Orbitalschlag (Zerstört)"); oLog.push("Orbitalschlag (Zerstört)"); }
     if (oEffects.orbitalStrike) { pBase = 0; oBase = 0; oEffects.orbitalStrike = false; oLog.push("Orbitalschlag (Zerstört)"); pLog.push("Orbitalschlag (Zerstört)"); }
     
-    if (pEffects.oppression) { pBase *= 0.75; pEffects.oppression = false; pLog.push("Unterdrückt (-25% Score)"); }
+    if (pEffects.oppression) { 
+        let mult = 0.75;
+        if (isAdventureMatch && adventureRule === 'adv_rule_11') mult = 0.70;
+        if (isAdventureMatch && adventureRule === 'adv_rule_20') mult = 0.50;
+        pBase *= mult; pEffects.oppression = false; pLog.push(`Unterdrückt (-${Math.round((1-mult)*100)}% Score)`); 
+    }
     if (oEffects.oppression) { oBase *= 0.75; oEffects.oppression = false; oLog.push("Unterdrückt (-25% Score)"); }
+
 
     if (pEffects.martyrBuff) { pBase += 4.0; pEffects.martyrBuff = false; pLog.push("Opfermut (+4.0 Score)"); }
     if (oEffects.martyrBuff) { oBase += 4.0; oEffects.martyrBuff = false; oLog.push("Opfermut (+4.0 Score)"); }
@@ -1018,16 +1040,29 @@ function playRound(playerCard, explicitOppCard = null) {
         if (!pSilence && oHas('klon') && oFac === 'klon') {
             oEffects.cloneChain++;
             if (oEffects.lastCloneDead) {
-                oBase += oEffects.lastCloneDead;
-                oLog.push(`Klon-Kette (+${oEffects.lastCloneDead.toFixed(1)} Score)`);
+                let bonus = (isAdventureMatch && adventureRule === 'adv_rule_7') ? oEffects.lastCloneDead * 1.5 : oEffects.lastCloneDead;
+                oBase += bonus;
+                oLog.push(`Klon-Kette (+${bonus.toFixed(1)} Score)`);
             }
         } else {
+
             oEffects.cloneChain = 0;
             oEffects.lastCloneDead = null;
         }
         
-        if (!pSilence && oEffects.nextDroidDouble && oFac === 'droid') { oBase *= 2; oEffects.nextDroidDouble = false; oLog.push("Verschmelzung (Score x2)"); }
-        if (!pSilence && oHas('rebell') && oFac === 'rebell' && opponentScore < playerScore) { oBase *= 2; oLog.push("Hoffnung (Score x2)"); }
+        if (!pSilence && oEffects.nextDroidDouble && oFac === 'droid') { 
+            let mult = (isAdventureMatch && adventureRule === 'adv_rule_6') ? 3 : 2;
+            oBase *= mult; 
+            oEffects.nextDroidDouble = false; 
+            oLog.push(`Verschmelzung (Score x${mult})`); 
+        }
+
+        if (!pSilence && oHas('rebell') && oFac === 'rebell' && opponentScore < playerScore) { 
+            let mult = (isAdventureMatch && adventureRule === 'adv_rule_12') ? 2.5 : 2;
+            oBase *= mult; 
+            oLog.push(`Hoffnung (Score x${mult})`); 
+        }
+
         if (!pSilence && oHas('bad_batch') && oFac === 'bad_batch') { oBase += 4.0; oEffects.forceRandom = true; oLog.push("Kloneinheit 99 (+4.0 Score, Random Next)"); }
         if (!pSilence && oHas('hutte') && oFac === 'hutte') { oEffects.forceStrongest = true; oLog.push("Erpressung initiiert"); }
         if (oSilence) oLog.push("Beskar (Silence)");
@@ -1039,6 +1074,12 @@ function playRound(playerCard, explicitOppCard = null) {
     let lowestWins = false;
     if (!oSilence && pHas('graue machtnutzer') && pFac === 'graue machtnutzer') { lowestWins = true; pLog.push("Ausgleich (Niedriger gewinnt)"); }
     if (!pSilence && oHas('graue machtnutzer') && oFac === 'graue machtnutzer') { lowestWins = true; oLog.push("Ausgleich (Niedriger gewinnt)"); }
+    
+    if (isAdventureMatch) {
+        if (adventureRule === 'adv_rule_16' && Math.random() < 0.5) { lowestWins = true; oLog.push("Boss-Regel (Ausgleich erzwungen)"); }
+        if (adventureRule === 'adv_rule_10' && oFac === 'droid' && lowestWins) { lowestWins = false; oLog.push("Boss-Regel (Immun gegen Ausgleich)"); }
+    }
+
     
     if (pBase === oBase) {
         isDraw = true;
@@ -1074,7 +1115,13 @@ function playRound(playerCard, explicitOppCard = null) {
                 playerHandRemaining.push(playerCard);
                 pLog.push("Hyperraum-Flucht");
             } else {
-                playerGraveyard.push(playerCard);
+                if (isAdventureMatch && adventureRule === 'adv_rule_9' && !oEffects.rule9Done) {
+                    opponentHandRemaining.push(playerCard);
+                    oEffects.rule9Done = true;
+                    oLog.push("Boss-Regel (Erste Karte geklaut)");
+                } else {
+                    playerGraveyard.push(playerCard);
+                }
             }
         }
         if (isWin && !isDraw && !oSilence) {
@@ -1104,7 +1151,7 @@ function playRound(playerCard, explicitOppCard = null) {
     if (oppCard) {
         if (isWin && !isDraw && !pSilence) {
             if (oHas('widerstand') && oFac === 'widerstand') { oEffects.martyrBuff = true; oLog.push("Widerstand geopfert"); }
-            if (oHas('jedi') && (oFac === 'jedi' || oTags.includes('jedi'))) { oEffects.forceWeakest = true; oLog.push("Gedankentrick initiiert"); }
+            if ((oHas('jedi') || (isAdventureMatch && adventureRule === 'adv_rule_17')) && (oFac === 'jedi' || oTags.includes('jedi'))) { oEffects.forceWeakest = true; oLog.push("Gedankentrick initiiert"); }
             if (oFac === 'klon') { oEffects.lastCloneDead = oBase; }
             if (oFac === 'droid') { oEffects.nextDroidDouble = true; }
             
@@ -1112,11 +1159,18 @@ function playRound(playerCard, explicitOppCard = null) {
                 opponentHandRemaining.push(oppCard);
                 oLog.push("Hyperraum-Flucht");
             } else {
-                opponentGraveyard.push(oppCard);
+                if (isAdventureMatch && adventureRule === 'adv_rule_18' && !oEffects.rule18Done && oFac === 'erste ordnung') {
+                    oppCard.rule18Revived = true;
+                    opponentHandRemaining.push(oppCard);
+                    oEffects.rule18Done = true;
+                    oLog.push("Boss-Regel (Karte wiederbelebt)");
+                } else {
+                    opponentGraveyard.push(oppCard);
+                }
             }
         } else if (!isWin && !isDraw && !pSilence) {
             if (oHas('imperium') && oFac === 'imperium') { oEffects.oppression = true; oLog.push("Unterdrückung aktiviert"); }
-            if (oHas('jedi') && (oFac === 'jedi' || oTags.includes('jedi'))) { oEffects.forceWeakest = true; oLog.push("Gedankentrick initiiert"); }
+            if ((oHas('jedi') || (isAdventureMatch && adventureRule === 'adv_rule_17')) && (oFac === 'jedi' || oTags.includes('jedi'))) { oEffects.forceWeakest = true; oLog.push("Gedankentrick initiiert"); }
             if (oHas('fahrzeug') && oFac === 'fahrzeug') { oEffects.vehicles = oppCard; oppCard.isGhost = false; oLog.push("Überrollen (Bleibt auf Feld)"); }
             const oHas501stLeader = opponentDeck.some(c => c.charName === 'Darth Vader' || c.charName === 'Anakin Skywalker');
             if (oHas('501st') && oFac === '501st' && playerHandRemaining.length > 0 && oHas501stLeader) {
@@ -1134,7 +1188,7 @@ function playRound(playerCard, explicitOppCard = null) {
             }
         }
         if (isDraw && !pSilence) {
-            if (oHas('jedi') && (oFac === 'jedi' || oTags.includes('jedi'))) { oEffects.forceWeakest = true; oLog.push("Gedankentrick initiiert"); }
+            if ((oHas('jedi') || (isAdventureMatch && adventureRule === 'adv_rule_17')) && (oFac === 'jedi' || oTags.includes('jedi'))) { oEffects.forceWeakest = true; oLog.push("Gedankentrick initiiert"); }
         }
     }
     
@@ -1148,8 +1202,15 @@ function playRound(playerCard, explicitOppCard = null) {
     if (oppCard && oFac === 'sith' && !pSilence) {
         oEffects.sithPlayed++;
         if (oEffects.sithPlayed === 2 && playerHandRemaining.length > 0) {
-            playerGraveyard.push(playerHandRemaining.pop());
-            oLog.push("Ausdünnung (Karte vernichtet)");
+            let millCount = 1;
+            if (isAdventureMatch && (adventureRule === 'adv_rule_14' || adventureRule === 'adv_rule_20')) millCount = 2;
+            for(let i=0; i<millCount; i++) {
+                if (playerHandRemaining.length > 0) {
+                    playerGraveyard.push(playerHandRemaining.pop());
+                }
+            }
+            oLog.push(`Ausdünnung (${millCount} Karte(n) vernichtet)`);
+            oEffects.sithPlayed = 0;
         }
     }
 
