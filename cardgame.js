@@ -1115,7 +1115,10 @@ function playRound(playerCard, explicitOppCard = null) {
         if (!isWin && !isDraw && !oSilence) {
             if (pHas('widerstand') && pFac === 'widerstand') { pEffects.martyrBuff = true; pLog.push("Widerstand geopfert"); }
             if (pHas('jedi') && (pFac === 'jedi' || pTags.includes('jedi'))) { pEffects.forceWeakest = true; pLog.push("Gedankentrick initiiert"); }
-            if (pFac === 'klon') { pEffects.lastCloneDead = pBase; }
+            if (pHas('klon') && pFac === 'klon') { 
+                pEffects.lastCloneDead = pBase; 
+                pLog.push(`Klon-Kette (Score ${pBase.toFixed(1)} gespeichert)`); 
+            }
             
             if (pHas('schmuggel') && pFac === 'schmuggel') {
                 playerHandRemaining.push(playerCard);
@@ -1158,7 +1161,10 @@ function playRound(playerCard, explicitOppCard = null) {
         if (isWin && !isDraw && !pSilence) {
             if (oHas('widerstand') && oFac === 'widerstand') { oEffects.martyrBuff = true; oLog.push("Widerstand geopfert"); }
             if ((oHas('jedi') || (isAdventureMatch && adventureRule === 'adv_rule_17')) && (oFac === 'jedi' || oTags.includes('jedi'))) { oEffects.forceWeakest = true; oLog.push("Gedankentrick initiiert"); }
-            if (oFac === 'klon') { oEffects.lastCloneDead = oBase; }
+            if (oHas('klon') && oFac === 'klon') { 
+                oEffects.lastCloneDead = oBase; 
+                oLog.push(`Klon-Kette (Score ${oBase.toFixed(1)} gespeichert)`); 
+            }
             
             if (oHas('schmuggel') && oFac === 'schmuggel') {
                 opponentHandRemaining.push(oppCard);
