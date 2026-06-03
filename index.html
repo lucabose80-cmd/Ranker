@@ -162,7 +162,7 @@
 
     <div id="game-view" class="view-container hidden">
         <div id="profile-header-container" class="glass-panel" style="margin: 20px auto; max-width: 900px; padding: 20px; display: flex; flex-direction: column; gap: 15px; position: relative;">
-            <button id="profile-header-toggle" class="icon-btn" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 2px 8px; color: #fff; font-size: 1rem; cursor: pointer; z-index: 10; font-family: monospace;">[ - ]</button>
+            <button id="profile-header-toggle" class="sidebar-toggle-btn" style="position: absolute; top: 15px; right: 15px; z-index: 10;">▲</button>
             <div id="profile-header-content" style="display: flex; flex-direction: column; gap: 15px;">
                 <div style="background: rgba(255, 71, 87, 0.1); border: 1px dashed #ff4757; color: #ff4757; padding: 10px 20px; text-align: center; font-size: 0.9rem; border-radius: 8px;">
                     <strong>Bug Bounty:</strong> Gefundene Bugs und umgesetzte Vorschläge im "Ideen"-Reiter werden vom Admin mit Credits entlohnt!
@@ -243,7 +243,7 @@
         <!-- HAUPT HUB BEREICH -->
         <div id="hub-content" class="tab-content app-container">
             <div style="text-align: center; margin-bottom: 40px; margin-top: 40px;">
-                <h1 id="hub-title" style="font-size: 2.5rem; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); margin: 0; letter-spacing: 2px;">WÄHLE DEINEN MODUS</h1>
+                <!-- Title removed -->
             </div>
             
             <div class="hub-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; max-width: 900px; margin: 0 auto; padding: 20px;">
@@ -299,7 +299,9 @@
                     <button id="cat-vehicle-btn" class="mode-toggle-btn" style="font-size: 0.8rem; padding: 5px 15px;">Fahrzeuge</button>
                     <button id="cat-hardcore-btn" class="mode-toggle-btn" style="font-size: 0.8rem; padding: 5px 15px;">Hardcore Peak</button>
                 </div>
-                <div id="credit-progress-bars-container" style="display:flex; flex-direction:column; gap:5px; margin-bottom: 20px; margin-top: 10px; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto;"></div>
+                <div class="glass-panel" style="padding: 15px; max-width: 600px; margin: 10px auto 20px auto;">
+                    <div id="credit-progress-bars-container" style="display:flex; flex-direction:column; gap:5px; width: 100%;"></div>
+                </div>
 
                 <div class="panel ranking-panel">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">

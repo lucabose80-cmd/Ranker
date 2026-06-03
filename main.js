@@ -1066,12 +1066,13 @@ document.addEventListener('DOMContentLoaded', () => {
         profileToggle.addEventListener('click', () => {
             if (profileContent.style.display === 'none') {
                 profileContent.style.display = 'flex';
-                profileToggle.textContent = '[ - ]';
+                profileToggle.textContent = '?';
             } else {
                 profileContent.style.display = 'none';
-                profileToggle.textContent = '[ + ]';
+                profileToggle.textContent = '?';
             }
         });
     }
 });
+
 
