@@ -1,6 +1,6 @@
-﻿export const patchNotesStarWars = [
+export const patchNotesStarWars = [
     {
-        version: "v8.6",
+        version: "v8.7",
         title: "Major Update: Abenteuer Boss Buffs & Schwarzmarkt",
         isHotfix: false,
         changes: [
@@ -172,7 +172,7 @@
         changes: [
             "Feature: 7 brandneue Unter-Fraktionen mit einzigartigen Mechaniken hinzugefügt: Separatisten, Monster, Schmuggler, Hutten, 501st, 212th und Bad Batch.",
             "Feature: Der alte 'Bot Kampf' wurde komplett durch 22 'Tutorial Fights' ersetzt. Spiele gegen thematische Decks jeder einzelnen Fraktion (von Lvl 1 bis Lvl 22).",
-            "Feature: 22 brandneue Titel (z.B. 'Sith Besieger') für den Abschluss der Tutorial Fights hinzugefügt (Belohnung: 150 Credits).",
+            "Feature: Titel 'Tutorial-Meister' für den Abschluss aller 22 Tutorial Fights hinzugefügt (Belohnung: 150 Credits).",
             "UI-Update: Z-Index Bug gefixt, bei dem Card-Ränge durch die Lexikon-Tooltips durchgeschimmert haben. Tooltips werden am Bildschirmrand nun sauber umgebrochen.",
             "QoL: 'Republik' wurde zur Vermeidung von Verwirrung in der UI und in den Tooltips wieder zu 'Senat' umbenannt."
         ]

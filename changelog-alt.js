@@ -1,6 +1,6 @@
-﻿export const patchNotesWaifu = [
+export const patchNotesWaifu = [
     {
-        version: "v9.4",
+        version: "v9.5",
         title: "Major Update: Abenteuer Boss Buffs & Schwarzmarkt",
         isHotfix: false,
         changes: [
