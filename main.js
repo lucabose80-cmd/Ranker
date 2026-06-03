@@ -18,12 +18,12 @@ import { initChangelog, updateChangelogContent } from './changelog.js';
 import { patchNotesStarWars } from './changelog-starwars.js';
 import { initAuth, loginOrRegister, logout, getCurrentUser, startPresenceHeartbeat, markCurrentUserOffline } from './auth.js';
 import { initAdminPanel, stopAdminPanel } from './admin.js';
-import { initAdventureMode } from './adventure.js?v=8.2.0';
+import { initAdventureMode } from './adventure.js?v=8.2.1';
 import { renderHistory, initHistoryListener, stopHistoryListener } from './history.js';
 import { renderScoreboard } from './scoreboard.js';
 import { renderLexikon, initLexikonTabs } from './lexikon.js';
 import { initProfile, renderAvatarSelection, updateTopbarAvatarElement, applyColorTheme, refreshProfileContent, clearProfileUnlockDot } from './profile.js';
-import { initCommunity, stopCommunity } from './community.js?v=8.2.0';
+import { initCommunity, stopCommunity } from './community.js?v=8.2.1';
 import { initVersus, stopVersus } from './versus.js';
 import { initStarWarsdle } from './starwarsdle.js';
 import { initLiveSpectating, closeSpectatorModal, stopLiveSpectating } from './live.js';
@@ -683,6 +683,9 @@ window.showUnlockNotification = function(type, desc) {
     } else if (type === 'error') {
         titleText = 'Achtung!';
         mainText = '❌ FEHLER ❌';
+    } else if (type === 'success') {
+        titleText = 'Erfolgreich!';
+        mainText = '✅ AKTION ERFOLGREICH ✅';
     }
     
     document.getElementById('unlock-title').textContent = titleText;
@@ -693,7 +696,7 @@ window.showUnlockNotification = function(type, desc) {
         mainTitleEl.textContent = mainText;
         if (type === 'error') {
             mainTitleEl.style.color = '#ff4757';
-        } else if (type === 'credits') {
+        } else if (type === 'credits' || type === 'success') {
             mainTitleEl.style.color = '#2ed573';
         } else {
             mainTitleEl.style.color = '#ffd700';
@@ -703,7 +706,7 @@ window.showUnlockNotification = function(type, desc) {
     if (type === 'error') {
         notif.style.background = 'linear-gradient(135deg, rgba(150,0,0,0.95), rgba(80,0,0,0.95))';
         notif.style.border = '2px solid #ff4757';
-    } else if (type === 'credits') {
+    } else if (type === 'credits' || type === 'success') {
         notif.style.background = 'linear-gradient(135deg, rgba(0,100,0,0.95), rgba(0,50,0,0.95))';
         notif.style.border = '2px solid #2ed573';
     } else {
