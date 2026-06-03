@@ -411,9 +411,12 @@
             <!-- Ende ranking-hub-content -->
 
             <div id="marathon-content" class="tab-content app-container hidden" style="padding-bottom: 150px; min-height: 100vh; justify-content: flex-start; align-items: center; padding-top: 40px; display: flex; flex-direction: column;">
-                <div class="section-header glass-panel" style="display:flex; align-items:center; justify-content: center; width: 100%; max-width: 800px; margin-bottom: 20px; padding: 15px; position: relative;">
-                    <button class="nav-link hub-back-btn rank-btn" data-target="hub-content" style="position: absolute; left: 20px; width: auto; height: auto; padding: 10px 20px; font-size: 1.2rem; font-weight: bold; background: rgba(0,0,0,0.5); cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1;">&#10094; Home</button>
-                    <h1 style="margin: 0; color: #fff; font-size: 2rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">ENDLESS SURVIVAL</h1>
+                <div class="section-header glass-panel" style="display:grid; grid-template-columns: 1fr auto 1fr; align-items:center; width: 100%; max-width: 800px; margin-bottom: 20px; padding: 15px;">
+                    <div style="display:flex; justify-content:flex-start;">
+                        <button class="nav-link hub-back-btn rank-btn" data-target="hub-content" style="width: auto; height: auto; padding: 10px 20px; font-size: 1.2rem; font-weight: bold; background: rgba(0,0,0,0.5); cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1;">&#10094; Home</button>
+                    </div>
+                    <h1 style="margin: 0; color: #fff; font-size: 1.8rem; text-align: center; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); white-space: nowrap;">ENDLESS SURVIVAL</h1>
+                    <div></div>
                 </div>
                 <div class="glass-panel" style="padding: 10px 20px; margin-bottom: 20px; display: flex; justify-content: space-between; width: 100%; max-width: 800px; box-sizing: border-box;">
                     <div style="font-size: 1.2rem; font-weight: bold; color: #fff;">Score: <span id="marathon-score" style="color: #ffd700;">0</span></div>
