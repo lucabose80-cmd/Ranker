@@ -6,6 +6,7 @@ import { activeCharacterDatabase } from './theme.js';
 import { currentMode } from './mode-state.js';
 import { invalidateResetsCache } from './resets.js';
 import { initAdminSuggestions } from './suggestions.js';
+import { openBalanceDashboard, closeBalanceDashboard } from './balance.js';
 
 let chatAdminUnsubscribe = null;
 let listenersBound = false;
@@ -23,6 +24,8 @@ export function stopAdminPanel() {
 export async function initAdminPanel() {
     if(!listenersBound) {
         document.getElementById('admin-logout-btn').addEventListener('click', logout);
+        document.getElementById('admin-open-balance-btn').addEventListener('click', openBalanceDashboard);
+        document.getElementById('admin-close-balance-btn').addEventListener('click', closeBalanceDashboard);
         
         document.getElementById('admin-reset-global-history').addEventListener('click', async () => {
             if(confirm(`Bist du sicher? Alle bisherigen Historien im Modus ${currentMode} werden für das Frontend unsichtbar.`)) {

@@ -157,6 +157,29 @@
                 
             </div>
             <button id="admin-logout-btn" class="rank-btn auth-btn" style="margin-top: 30px;">Admin Logout</button>
+            <button id="admin-open-balance-btn" class="rank-btn" style="margin-top: 10px; background: #9b59b6; border-color: #9b59b6; color: white;">📊 Balance Dashboard öffnen</button>
+        </div>
+        
+        <div id="admin-balance-container" class="panel admin-panel hidden" style="max-width: 1200px; width: 95%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 class="theme-heading">⚖️ Balance Dashboard</h2>
+                <button id="admin-close-balance-btn" class="rank-btn" style="background: #e74c3c; border-color: #e74c3c; color: white;">Zurück zum Admin Panel</button>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div style="background: #1a1e29; padding: 15px; border-radius: 8px; border: 1px solid #333;">
+                    <h3 style="color: #fff; text-align: center; margin-bottom: 10px;">Fraktionen Winrate (Cardgame)</h3>
+                    <canvas id="balanceChartFactions" style="width: 100%; height: 300px;"></canvas>
+                </div>
+                <div style="background: #1a1e29; padding: 15px; border-radius: 8px; border: 1px solid #333;">
+                    <h3 style="color: #fff; text-align: center; margin-bottom: 10px;">Top/Flop Karten (Cardgame)</h3>
+                    <canvas id="balanceChartCards" style="width: 100%; height: 300px;"></canvas>
+                </div>
+                <div style="background: #1a1e29; padding: 15px; border-radius: 8px; border: 1px solid #333; grid-column: span 2;">
+                    <h3 style="color: #fff; text-align: center; margin-bottom: 10px;">Abenteuer Modus Winrate (nach Level)</h3>
+                    <canvas id="balanceChartAdventure" style="width: 100%; height: 300px;"></canvas>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1294,6 +1317,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="main.js?v=8.4.0"></script>
 </body>
 </html>
