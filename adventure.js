@@ -83,10 +83,10 @@ export const ADVENTURE_CAMPAIGN = [
       deck: ["TIE Advanced x1", "X-Wing Starfighter", "Nien Nunb", "Kragan Gorr", "HK-47", "Wedge Antilles", "Admiral Piett", "Grand Moff Tarkin", "Lux Bonteri", "Qui-Gon Jinn"],
       ruleText: "Keine Sonderregeln." },
 
-    // Level 5 (BOSS): Mando Silence - Buffs werden deaktiviert
+    // Level 5 (BOSS): Das ist der Weg
     { name: "Mandalorianische Soldner", avatar: "", ruleId: "adv_rule_5",
       deck: ["Din Djarin", "Bo-Katan Kryze", "The Armorer", "Bossk", "IG-88", "Fennec Shand", "Aurra Sing", "Jabba the Hutt", "Cad Bane", "Zam Wesell"],
-      ruleText: "BOSS: Gegnerische Mandalorianer verhindern deine Buffs auch bei nur 1 gespielten Mando (Silence)." },
+      ruleText: "BOSS: Das ist der Weg. Alle deine eigenen Fraktionseffekte und Synergien sind für dieses komplette Match deaktiviert!" },
 
     // ============================================================
     // PHASE 2: Der Klonkrieg (Level 6-10) - MITTEL

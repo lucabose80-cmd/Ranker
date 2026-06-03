@@ -949,7 +949,7 @@ function playRound(playerCard, explicitOppCard = null) {
     let pSilence = pHas('mandalorianer') && pFac === 'mandalorianer';
     let oSilence = oHas('mandalorianer') && oFac === 'mandalorianer';
     
-    if (isAdventureMatch && adventureRule === 'adv_rule_5' && oTags.includes('mandalorian')) oSilence = true;
+    if (isAdventureMatch && adventureRule === 'adv_rule_5') oSilence = true;
 
 
     let pRarMult = playerCard ? (RARITY_MULT[playerCard.rarity] || 1.0) : 1.0;
