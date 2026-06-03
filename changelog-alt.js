@@ -1,5 +1,18 @@
 export const patchNotesWaifu = [
     {
+        version: "v9.1",
+        title: "Major Update: Endless Survival",
+        isHotfix: false,
+        changes: [
+            "Neuer Spielmodus: 'Endless Survival' (Marathon) wurde hinzugefügt! Teste dein Wissen über die globale Community-Rangliste.",
+            "Gameplay: Anstatt nur 5 Charaktere zu sortieren, baust du eine endlose Liste auf. Jeder neue Charakter muss korrekt zwischen die bereits platzierten geschoben werden.",
+            "Strikte Regeln: Die richtige Position basiert 1-zu-1 auf den aktuellen globalen Durchschnittsscores. Du hast 3 Leben – bei 3 Fehlern ist das Spiel vorbei!",
+            "UI & Feedback: Auf dem Game Over Screen wird dir visuell genau angezeigt, wo du geklickt hast (Rot) und wo der Charakter eigentlich hingehört hätte (Grün).",
+            "Belohnungssystem: Nach einer Runde Marathon erhältst du exakt so viele Credits gutgeschrieben, wie du Charaktere erfolgreich einsortiert hast.",
+            "Wettbewerb: Es gibt nun ein exklusives 'Marathon' Scoreboard und deine Marathon-Performance fließt direkt als neue Kategorie in die Galaktische Liga ein!"
+        ]
+    },
+    {
         version: "v9.0",
         title: "Major Update: Glassmorphism UI Overhaul",
         isHotfix: false,
