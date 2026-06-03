@@ -11,6 +11,7 @@ let placedCharacters = [];
 let currentDraw = null;
 let remainingPool = [];
 let globalAveragesMap = null; // Speichert die echten globalen Durchschnittswerte
+let isProcessing = false;
 
 // Hilfsfunktion: Gibt den echten Score aus Firebase zurück, oder Heuristik als Fallback
 function getGlobalAverageScore(char) {
@@ -138,6 +139,7 @@ function drawNextCharacter() {
     `;
     
     renderPlacedList();
+    isProcessing = false;
 }
 
 function updateHeaderUI() {
@@ -209,7 +211,8 @@ function createInsertButton(insertIndex) {
 }
 
 function handleInsert(index) {
-    if (!currentDraw || marathonLives <= 0) return;
+    if (!currentDraw || marathonLives <= 0 || isProcessing) return;
+    isProcessing = true;
     
     const newScore = getGlobalAverageScore(currentDraw);
     
@@ -250,6 +253,7 @@ function handleInsert(index) {
                 gameOver();
             } else {
                 container.innerHTML = oldHtml;
+                isProcessing = false;
                 // Wir rufen NICHT drawNextCharacter() auf, damit der Spieler denselben Charakter erneut einordnen muss!
             }
         }, 2000);
@@ -266,9 +270,31 @@ function handleInsert(index) {
 
 async function gameOver() {
     const container = document.getElementById('marathon-current-card');
+    
+    let positionText = "";
+    if (placedCharacters.length > 0 && currentDraw) {
+        let correctIndex = placedCharacters.length;
+        const failScore = getGlobalAverageScore(currentDraw);
+        for (let i = 0; i < placedCharacters.length; i++) {
+            if (getGlobalAverageScore(placedCharacters[i]) < failScore) {
+                correctIndex = i;
+                break;
+            }
+        }
+        
+        if (correctIndex === 0) {
+            positionText = `<p style="font-size: 0.9rem; color: #aaa; margin-bottom: 20px;">Hinweis: <strong>${currentDraw.name}</strong> hätte ganz oben (über ${placedCharacters[0].name}) platziert werden müssen.</p>`;
+        } else if (correctIndex === placedCharacters.length) {
+            positionText = `<p style="font-size: 0.9rem; color: #aaa; margin-bottom: 20px;">Hinweis: <strong>${currentDraw.name}</strong> hätte ganz unten (unter ${placedCharacters[placedCharacters.length - 1].name}) platziert werden müssen.</p>`;
+        } else {
+            positionText = `<p style="font-size: 0.9rem; color: #aaa; margin-bottom: 20px;">Hinweis: <strong>${currentDraw.name}</strong> hätte zwischen <em>${placedCharacters[correctIndex - 1].name}</em> und <em>${placedCharacters[correctIndex].name}</em> platziert werden müssen.</p>`;
+        }
+    }
+
     container.innerHTML = `
         <h2 style="color: #ff4757; font-size: 2.5rem; margin-bottom: 10px; margin-top: 0;">GAME OVER</h2>
-        <p style="font-size: 1.2rem; color: #fff; margin-bottom: 20px;">Score: <strong style="color:#ffd700;">${marathonScore}</strong> Charaktere</p>
+        <p style="font-size: 1.2rem; color: #fff; margin-bottom: 5px;">Score: <strong style="color:#ffd700;">${marathonScore}</strong> Charaktere</p>
+        ${positionText}
         <button id="marathon-restart-btn" class="rank-btn" style="width: 100%; height: auto; padding: 15px; font-size: 1.2rem; background: linear-gradient(135deg, rgba(231,76,60,0.7), rgba(192,57,43,0.7)); color: white !important;">Erneut Spielen</button>
     `;
     
