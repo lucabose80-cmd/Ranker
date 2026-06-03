@@ -1,4 +1,4 @@
-﻿// changelog.js
+// changelog.js
 import { getCurrentUser, markUpdatesAsRead } from './auth.js';
 import { currentMode } from './mode-state.js';
 import { roadmapStarWars, roadmapWaifu } from './roadmap.js';
@@ -58,7 +58,7 @@ export function initChangelog() {
             <div class="cl-modal-box">
                 <div class="cl-header">
                     <div class="cl-header-left">
-                        <span class="cl-logo">📦</span>
+                        <span class="cl-logo" style="cursor: pointer; user-select: none;" title="Geheimnis?">🚀</span>
                         <div>
                             <div class="cl-title">Patch Notes</div>
                             <div class="cl-subtitle">Star Wars Ranking</div>
@@ -83,6 +83,11 @@ export function initChangelog() {
 
         modal.querySelectorAll('.cl-tab').forEach(tab => {
             tab.addEventListener('click', () => {
+                if (tab.dataset.tab === 'patchnotes') {
+                    if (typeof window.devFavClicks === 'undefined') window.devFavClicks = 0;
+                    window.devFavClicks++;
+                    if (window.devFavClicks >= 10) import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_30'));
+                }
                 modal.querySelectorAll('.cl-tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
                 const target = tab.dataset.tab;
@@ -90,10 +95,24 @@ export function initChangelog() {
                 document.getElementById('changelog-roadmap-panel').classList.toggle('hidden', target !== 'roadmap');
             });
         });
+        
+        const logoEl = modal.querySelector('.cl-logo');
+        if (logoEl) {
+            logoEl.addEventListener('click', () => {
+                if (typeof window.devFavClicks === 'undefined') window.devFavClicks = 0;
+                window.devFavClicks++;
+                if (window.devFavClicks >= 10) import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_30'));
+            });
+        }
     }
 
     if (!isModalInitialized) {
         btn.addEventListener('click', () => {
+            if (typeof window.devFavClicks === 'undefined') window.devFavClicks = 0;
+            window.devFavClicks++;
+            if (window.devFavClicks >= 10) {
+                import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_30'));
+            }
             document.getElementById('changelog-modal').classList.remove('hidden');
             btn.classList.remove('text-gold-glow');
             if (latestVersionString) markUpdatesAsRead(currentMode, latestVersionString);
