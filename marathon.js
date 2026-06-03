@@ -250,7 +250,7 @@ function handleInsert(index) {
                 gameOver();
             } else {
                 container.innerHTML = oldHtml;
-                drawNextCharacter();
+                // Wir rufen NICHT drawNextCharacter() auf, damit der Spieler denselben Charakter erneut einordnen muss!
             }
         }, 2000);
     } else {
@@ -267,9 +267,9 @@ function handleInsert(index) {
 async function gameOver() {
     const container = document.getElementById('marathon-current-card');
     container.innerHTML = `
-        <h2 style="color: #ff4757; font-size: 2.5rem; margin-bottom: 10px;">GAME OVER</h2>
-        <p style="font-size: 1.2rem; color: #fff;">Du hast <strong style="color:#ffd700;">${marathonScore}</strong> Charaktere erfolgreich eingeordnet!</p>
-        <button id="marathon-restart-btn" class="rank-btn" style="margin-top:20px; padding: 10px 20px; font-size: 1.2rem; background: #3498db; color: white;">Erneut Spielen</button>
+        <h2 style="color: #ff4757; font-size: 2.5rem; margin-bottom: 10px; margin-top: 0;">GAME OVER</h2>
+        <p style="font-size: 1.2rem; color: #fff; margin-bottom: 20px;">Score: <strong style="color:#ffd700;">${marathonScore}</strong> Charaktere</p>
+        <button id="marathon-restart-btn" class="rank-btn" style="width: 100%; height: auto; padding: 15px; font-size: 1.2rem; background: linear-gradient(135deg, rgba(231,76,60,0.7), rgba(192,57,43,0.7)); color: white !important;">Erneut Spielen</button>
     `;
     
     document.getElementById('marathon-restart-btn').addEventListener('click', startMarathon);
