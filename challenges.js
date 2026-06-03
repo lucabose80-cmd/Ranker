@@ -87,16 +87,16 @@ async function processRewards(oldWeekId) {
 
         // Category 1: Ranking Games
         players.sort((a, b) => (b.rankingGames || 0) - (a.rankingGames || 0));
-        await payoutCategory(players.slice(0, 3), 'Fleißigster Ranker', [200, 100, 50]);
+        await payoutCategory(players.slice(0, 3), 'Fleißigster Ranker', [800, 400, 200]);
 
         // Category 2: Adventure Max Level
         players.sort((a, b) => (b.adventureMaxLevel || 0) - (a.adventureMaxLevel || 0));
-        await payoutCategory(players.slice(0, 3), 'Abenteuer-Pionier', [300, 150, 75]);
+        await payoutCategory(players.slice(0, 3), 'Abenteuer-Pionier', [800, 400, 200]);
 
-        // Category 3: Starwarsdle Min Tries
-        const dlePlayers = players.filter(p => p.starwarsdleMinTries && p.starwarsdleMinTries > 0);
-        dlePlayers.sort((a, b) => a.starwarsdleMinTries - b.starwarsdleMinTries);
-        await payoutCategory(dlePlayers.slice(0, 3), 'Starwarsdle-Meister', [150, 75, 30]);
+        // Category 3: Starwarsdle Avg Tries
+        const dlePlayers = players.filter(p => p.starwarsdleAvgTries && p.starwarsdleAvgTries > 0);
+        dlePlayers.sort((a, b) => a.starwarsdleAvgTries - b.starwarsdleAvgTries);
+        await payoutCategory(dlePlayers.slice(0, 3), 'Starwarsdle-Meister', [600, 300, 150]);
 
     } catch (e) {
         console.error("Error processing weekly rewards:", e);
@@ -147,10 +147,10 @@ export async function updateWeeklyStat(category, value) {
                 changed = true;
             }
         } else if (category === 'starwarsdleTries') {
-            if (!data.starwarsdleMinTries || value < data.starwarsdleMinTries) {
-                data.starwarsdleMinTries = value;
-                changed = true;
-            }
+            data.starwarsdleWins = (data.starwarsdleWins || 0) + 1;
+            data.starwarsdleTotalTries = (data.starwarsdleTotalTries || 0) + value;
+            data.starwarsdleAvgTries = data.starwarsdleTotalTries / data.starwarsdleWins;
+            changed = true;
         }
 
         if (changed) {
@@ -218,7 +218,7 @@ export async function renderChallenges() {
 
         renderCat(html1, players, p => p.rankingGames, v => `${v} Spiele`);
         renderCat(html2, players, p => p.adventureMaxLevel, v => `Level ${v}`);
-        renderCat(html3, players, p => p.starwarsdleMinTries, v => `${v} Versuch${v !== 1 ? 'e' : ''}`, true);
+        renderCat(html3, players, p => p.starwarsdleAvgTries, v => `Ø ${v.toFixed(2)} Versuche`, true);
 
         // Update Reset Countdown
         const countdownEl = document.getElementById('challenges-countdown');
