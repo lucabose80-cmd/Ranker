@@ -924,7 +924,7 @@ body.alt-theme .chat-msg.self .chat-msg-content { background: #ff2a9d; }
 .chat-username { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: #888; margin-bottom: 4px; font-weight: bold; }
 .chat-msg.self .chat-username { justify-content: flex-start; flex-direction: row-reverse; }
 .online-list { display: flex; flex-direction: column; gap: 10px; max-height: calc(100vh - 200px); overflow-y: auto; padding-right: 5px; }
-.online-user-card { display: flex; align-items: center; gap: 8px; background: #11151f; padding: 8px 10px; border-radius: 8px; border: 1px solid #2a3142; width: 100%; box-sizing: border-box; overflow: hidden; }
+.online-user-card { display: flex; align-items: center; gap: 8px; background: #11151f; padding: 10px; border-radius: 8px; border: 1px solid #2a3142; width: 100%; box-sizing: border-box; }
 .online-user-card strong { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.85rem; }
 .online-indicator { width: 10px; height: 10px; min-width: 10px; min-height: 10px; background-color: #2ed573; border-radius: 50%; box-shadow: 0 0 8px #2ed573; flex-shrink: 0; }
 .online-indicator.offline { background-color: #444; box-shadow: none; }
