@@ -12,6 +12,27 @@ export const patchNotesStarWars = [
         ]
     },
     {
+        version: "v8.4.1",
+        title: "Hotfix: UI-Update & Tooltips",
+        isHotfix: true,
+        changes: [
+            "UI-Update: Die Texte für 'Tech-Limits' und 'Synergie-Limits' wurden im Cardgame-Deckbuilder und im Match-Modus durch thematisch passendere Begriffe ('Spezial-Einsatzkräfte' und 'Truppen-Formationen') ersetzt.",
+            "QoL: Die Tooltips der Fraktionsboni erklären nun die spielerische Bedeutung der Limits deutlich anschaulicher."
+        ]
+    },
+    {
+        version: "v8.4",
+        title: "MAJOR UPDATE: Cardgame 15-Fraktionen Rework",
+        isHotfix: false,
+        changes: [
+            "Cardgame: Das komplette Cardgame-System wurde grundlegend überarbeitet! Statt simplen +20% Fraktionsboni gibt es nun für jede der 15 Fraktionen einzigartige Synergie-Effekte und Thresholds.",
+            "Cardgame: Dynamische Match-Länge. Ein Spiel endet nun nicht mehr exakt nach 10 Runden, sondern erst dann, wenn beide Spieler keine Karten (und keine Fahrzeuge) mehr spielen können.",
+            "Feature: 'Max-Limit' Mechaniken. Bestimmte Fraktionen erfordern exakte Anzahlen im Deck, wie Mandalorianer (Silence), Graue Machtnutzer (Lowest Wins) oder Sith (Karten-Zerstörung).",
+            "Feature: 'Min-Limit' Mechaniken. Andere Fraktionen benötigen eine Mindestanzahl im Deck, wie Schurken (Wertetausch), Imperium (Orbitalschlag) oder Jedi (Machtgeister).",
+            "Balancing: Der Cardgame-Bot wurde an die neuen Regeln angepasst. Zudem wurden die Score-Anzeigen für Spieler deutlich nachvollziehbarer gestaltet."
+        ]
+    },
+    {
         version: "v8.3",
         title: "Feature Update: Galaktische Bank",
         isHotfix: false,
@@ -148,27 +169,6 @@ export const patchNotesStarWars = [
             "Feature: Widerstand-Opfermut eingeführt. Verliert ein Widerstandskämpfer, motiviert er das Team und deine nächste Karte erhält sofort +4.0 Punkte Bonus.",
             "Feature: Kopfgeldjäger angepasst. Besiegst du ein Fraktions-Ziel direkt, erhältst du für diese Runde 2 Match-Punkte anstatt nur 1.",
             "Balancing: Fahrzeuge (Überrollen) triggern ihre Extra-Runde ab sofort nur noch, wenn sie die vorherige Runde aktiv gewonnen haben."
-        ]
-    },
-    {
-        version: "v8.4.1",
-        title: "Hotfix: UI-Update & Tooltips",
-        isHotfix: true,
-        changes: [
-            "UI-Update: Die Texte für 'Tech-Limits' und 'Synergie-Limits' wurden im Cardgame-Deckbuilder und im Match-Modus durch thematisch passendere Begriffe ('Spezial-Einsatzkräfte' und 'Truppen-Formationen') ersetzt.",
-            "QoL: Die Tooltips der Fraktionsboni erklären nun die spielerische Bedeutung der Limits deutlich anschaulicher."
-        ]
-    },
-    {
-        version: "v8.4",
-        title: "MAJOR UPDATE: Cardgame 15-Fraktionen Rework",
-        isHotfix: false,
-        changes: [
-            "Cardgame: Das komplette Cardgame-System wurde grundlegend überarbeitet! Statt simplen +20% Fraktionsboni gibt es nun für jede der 15 Fraktionen einzigartige Synergie-Effekte und Thresholds.",
-            "Cardgame: Dynamische Match-Länge. Ein Spiel endet nun nicht mehr exakt nach 10 Runden, sondern erst dann, wenn beide Spieler keine Karten (und keine Fahrzeuge) mehr spielen können.",
-            "Feature: 'Max-Limit' Mechaniken. Bestimmte Fraktionen erfordern exakte Anzahlen im Deck, wie Mandalorianer (Silence), Graue Machtnutzer (Lowest Wins) oder Sith (Karten-Zerstörung).",
-            "Feature: 'Min-Limit' Mechaniken. Andere Fraktionen benötigen eine Mindestanzahl im Deck, wie Schurken (Wertetausch), Imperium (Orbitalschlag) oder Jedi (Machtgeister).",
-            "Balancing: Der Cardgame-Bot wurde an die neuen Regeln angepasst. Zudem wurden die Score-Anzeigen für Spieler deutlich nachvollziehbarer gestaltet."
         ]
     },
     {
