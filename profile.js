@@ -872,8 +872,8 @@ function renderStatsSelection(user) {
             <div id="inline-machtverirrung-area"></div>
 
             <div style="text-align:center; margin-top:10px;">
-                <button id="btn-jedi-archiv" class="btn primary-btn" style="width:100%; max-width:300px; background: linear-gradient(135deg, #10ac84, #1dd1a1); color: #fff; border: 2px solid #1dd1a1; box-shadow: 0 0 10px rgba(29,209,161,0.5);">
-                    🌌 Öffne dein Jedi-Archiv
+                <button id="btn-generate-tierlist" class="btn primary-btn" style="width:100%; max-width:300px;">
+                    📊 Tier-List Grafik generieren
                 </button>
             </div>
             <div id="analytics-result-area" style="margin-top:20px;"></div>
@@ -884,10 +884,7 @@ function renderStatsSelection(user) {
         slot.addEventListener('click', () => { window.openShowcaseModal(user, slot.dataset.slot); });
     });
 
-    document.getElementById('btn-jedi-archiv').addEventListener('click', async () => { 
-        const { startJediArchive } = await import('./jedi-archiv.js');
-        startJediArchive();
-    });
+    document.getElementById('btn-generate-tierlist').addEventListener('click', () => { window.generateDeepAnalytics(user); });
 
     // Load Machtverirrung asynchronously
     setTimeout(() => { window.loadMachtverirrung(user, 'inline-machtverirrung-area'); }, 100);
