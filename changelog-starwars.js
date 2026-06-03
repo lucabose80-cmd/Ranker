@@ -1,5 +1,18 @@
 export const patchNotesStarWars = [
     {
+        version: "v8.3",
+        title: "Feature Update: Galaktische Bank",
+        isHotfix: false,
+        changes: [
+            "Feature: Die 'Galaktische Bank' ist da! Ein neues Anlage-System ermöglicht es dir, Credits auf der Bank anzulegen.",
+            "Feature: Du erhältst auf deine angelegten Credits täglich 1% Zinsen (bis zu einem Limit von 200 Credits).",
+            "Visualisierung: Die ausstehenden Zinsen werden in Echtzeit berechnet und sekündlich auf vier Nachkommastellen genau angezeigt.",
+            "QoL: Die Bank ist nun als praktisches Modal-Overlay (wie der Shop) implementiert, welches du ganz einfach mit dem 'X' oben rechts oder per ESC-Taste schließen kannst.",
+            "UI-Update: Verbesserte, flüssig anpassbare Buttons im Bank-System für Einzahlungen und Abhebungen.",
+            "UI-Update: Erfolgreiche Aktionen im Bank-System (Einzahlung, Abhebung, Zinsauszahlung) lösen nun eine passende, grüne 'Erfolgreich'-Benachrichtigung anstelle der alten gelben Freischaltungsbox aus."
+        ]
+    },
+    {
         version: "v9.2.4",
         title: "Hotfix & UI Polishing",
         isHotfix: true,

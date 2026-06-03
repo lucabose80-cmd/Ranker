@@ -13,10 +13,37 @@ export function initBank() {
     const bankBtn = document.getElementById('nav-bank-btn');
     if (bankBtn) {
         bankBtn.addEventListener('click', () => {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            const bankContent = document.getElementById('bank-content');
-            if (bankContent) bankContent.classList.remove('hidden');
+            const bankModal = document.getElementById('bank-modal');
+            if (bankModal) bankModal.classList.remove('hidden');
             openBank();
+        });
+    }
+
+    const closeBtn = document.getElementById('close-bank-btn');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            document.getElementById('bank-modal').classList.add('hidden');
+            closeBank();
+        });
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const bankModal = document.getElementById('bank-modal');
+            if (bankModal && !bankModal.classList.contains('hidden')) {
+                bankModal.classList.add('hidden');
+                closeBank();
+            }
+        }
+    });
+
+    const bankModal = document.getElementById('bank-modal');
+    if (bankModal) {
+        bankModal.addEventListener('click', (e) => {
+            if (e.target === bankModal) {
+                bankModal.classList.add('hidden');
+                closeBank();
+            }
         });
     }
 
