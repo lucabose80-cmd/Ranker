@@ -67,6 +67,38 @@ export function initMarathon() {
     loadGlobalAverages();
 }
 
+function playSuccessSound() {
+    try {
+        if(window.isAudioMuted) return;
+        const actx = window.getSharedAudioContext();
+        const osc = actx.createOscillator();
+        const gain = actx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, actx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1200, actx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.05, actx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.3);
+        osc.connect(gain); gain.connect(actx.destination);
+        osc.start(); osc.stop(actx.currentTime + 0.3);
+    } catch(e) {}
+}
+
+function playErrorSound() {
+    try {
+        if(window.isAudioMuted) return;
+        const actx = window.getSharedAudioContext();
+        const osc = actx.createOscillator();
+        const gain = actx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, actx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(80, actx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.1, actx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.3);
+        osc.connect(gain); gain.connect(actx.destination);
+        osc.start(); osc.stop(actx.currentTime + 0.3);
+    } catch(e) {}
+}
+
 function startMarathon() {
     marathonLives = 3;
     marathonScore = 0;
@@ -101,8 +133,8 @@ function drawNextCharacter() {
     }
     
     container.innerHTML = `
-        <img src="${currentDraw.img}" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%; border: 3px solid #e74c3c; margin-bottom: 10px; box-shadow: 0 0 15px rgba(231,76,60,0.5);">
-        <h2 style="margin: 0; color: #fff;">${currentDraw.name}</h2>
+        <img src="${currentDraw.img}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%; border: 2px solid #e74c3c; margin-bottom: 5px; box-shadow: 0 0 10px rgba(231,76,60,0.5);">
+        <h3 style="margin: 0; color: #fff; font-size: 1.2rem;">${currentDraw.name}</h3>
     `;
     
     renderPlacedList();
@@ -128,14 +160,14 @@ function renderPlacedList() {
         charEl.className = 'glass-panel';
         charEl.style.display = 'flex';
         charEl.style.alignItems = 'center';
-        charEl.style.padding = '10px 20px';
+        charEl.style.padding = '5px 15px'; // Kompakter
         charEl.style.justifyContent = 'space-between';
         
         charEl.innerHTML = `
-            <div style="display:flex; align-items:center; gap: 15px;">
-                <div style="font-weight:bold; font-size:1.5rem; color:#aaa; width: 40px;">#${index + 1}</div>
-                <img src="${char.img}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
-                <div style="font-size: 1.2rem; font-weight: bold; color: #fff;">${char.name}</div>
+            <div style="display:flex; align-items:center; gap: 10px;">
+                <div style="font-weight:bold; font-size:1.1rem; color:#aaa; width: 30px;">#${index + 1}</div>
+                <img src="${char.img}" style="width: 35px; height: 35px; object-fit: cover; border-radius: 50%;">
+                <div style="font-size: 1rem; font-weight: bold; color: #fff;">${char.name}</div>
             </div>
         `;
         listContainer.appendChild(charEl);
@@ -149,9 +181,9 @@ function createInsertButton(insertIndex) {
     const btn = document.createElement('button');
     btn.className = 'rank-btn';
     btn.style.width = '100%';
-    btn.style.padding = '5px';
-    btn.style.margin = '2px 0';
-    btn.style.fontSize = '0.9rem';
+    btn.style.padding = '3px'; // Kompakter
+    btn.style.margin = '1px 0'; // Kompakter
+    btn.style.fontSize = '0.8rem';
     btn.style.background = 'rgba(255,255,255,0.05)';
     btn.style.border = '1px dashed rgba(255,255,255,0.2)';
     btn.style.color = '#aaa';
@@ -201,13 +233,14 @@ function handleInsert(index) {
     }
     
     if (isMistake) {
+        playErrorSound();
         marathonLives--;
         updateHeaderUI();
         
         // Visuelles Feedback
         const container = document.getElementById('marathon-current-card');
         const oldHtml = container.innerHTML;
-        container.innerHTML = `<h3 style="color:#ff4757; font-size:2rem;">FALSCH!</h3><p>Das weicht zu stark vom globalen Durchschnitt ab!</p>`;
+        container.innerHTML = `<h3 style="color:#ff4757; font-size:1.5rem;">FALSCH!</h3><p style="font-size: 0.9rem;">Zu weit vom globalen Schnitt entfernt!</p>`;
         
         setTimeout(() => {
             if (marathonLives <= 0) {
@@ -219,6 +252,7 @@ function handleInsert(index) {
         }, 2000);
     } else {
         // Korrekt eingefügt!
+        playSuccessSound();
         placedCharacters.splice(index, 0, currentDraw);
         marathonScore++;
         updateHeaderUI();
