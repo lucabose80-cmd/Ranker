@@ -162,7 +162,7 @@
 
     <div id="game-view" class="view-container hidden">
         <div id="profile-header-container" class="glass-panel" style="margin: 20px auto; max-width: 900px; padding: 20px; display: flex; flex-direction: column; gap: 15px; position: relative;">
-            <button id="profile-header-toggle" class="icon-btn" style="position: absolute; top: 10px; right: 10px; background: none; border: none; color: #888; font-size: 1rem; cursor: pointer; z-index: 10;">➖</button>
+            <button id="profile-header-toggle" class="icon-btn" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 2px 8px; color: #fff; font-size: 1rem; cursor: pointer; z-index: 10; font-family: monospace;">[ - ]</button>
             <div id="profile-header-content" style="display: flex; flex-direction: column; gap: 15px;">
                 <div style="background: rgba(255, 71, 87, 0.1); border: 1px dashed #ff4757; color: #ff4757; padding: 10px 20px; text-align: center; font-size: 0.9rem; border-radius: 8px;">
                     <strong>Bug Bounty:</strong> Gefundene Bugs und umgesetzte Vorschläge im "Ideen"-Reiter werden vom Admin mit Credits entlohnt!
@@ -288,9 +288,9 @@
                 </div>
 
                 <div id="game-main-content" class="ranking-sub-view">
-                    <header>
-                        <h1 id="main-title">STAR WARS RANKING</h1>
-                        <p id="game-subtitle">Ordne 5 Charaktere blind ein. Wo landen sie?</p>
+                    <header class="glass-panel" style="padding: 15px; margin-bottom: 10px; text-align: center;">
+                        <h1 id="main-title" style="margin: 0 0 10px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5); color: #fff;">STAR WARS RANKING</h1>
+                        <p id="game-subtitle" style="margin: 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); color: #fff; font-weight: bold;">Ordne 5 Charaktere blind ein. Wo landen sie?</p>
                     </header>
                 <div id="category-selector-container" class="mode-selector" style="margin-top: 10px;">
                     <button id="cat-normal-btn" class="mode-toggle-btn active" style="font-size: 0.8rem; padding: 5px 15px;">Expanded Universe</button>
@@ -741,11 +741,13 @@
                         </div>
                     </div>
             </div></div></div><div id="starwarsdle-content" class="tab-content app-container hidden" style="padding-bottom: 150px; min-height: 100vh; justify-content: flex-start; align-items: center; padding-top: 40px; display: flex; flex-direction: column;">
-                <div class="section-header" style="display:flex; align-items:center; justify-content: center; width: 100%; margin-bottom: 20px;">
-                    <button class="nav-link hub-back-btn rank-btn" data-target="hub-content" style="position: absolute; left: 20px; width: auto; height: auto; padding: 10px 20px; font-size: 1.2rem; font-weight: bold; background: rgba(0,0,0,0.5); cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1;">❮ Home</button>
-                    <h1 style="margin: 0; color: #fff; font-size: 2rem;">STARWARSDLE</h1>
+                <div class="section-header glass-panel" style="display:flex; align-items:center; justify-content: center; width: 100%; max-width: 800px; margin-bottom: 20px; padding: 15px; position: relative;">
+                    <button class="nav-link hub-back-btn rank-btn" data-target="hub-content" style="position: absolute; left: 20px; width: auto; height: auto; padding: 10px 20px; font-size: 1rem; font-weight: bold; background: rgba(0,0,0,0.5); cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1;">⬅️ Home</button>
+                    <h1 style="margin: 0; color: #fff; font-size: 2rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">STARWARSDLE</h1>
                 </div>
-                <p class="prompt-text" style="text-align: center; margin-bottom: 30px;">Errate den täglichen Charakter!</p>
+                <div class="glass-panel" style="padding: 10px 20px; margin-bottom: 20px;">
+                    <p class="prompt-text" style="text-align: center; margin: 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); color: #fff; font-weight: bold;">Errate den täglichen Charakter!</p>
+                </div>
                 
                 <div style="width: 100%; max-width: 800px;">
                     
