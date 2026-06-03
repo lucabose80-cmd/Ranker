@@ -71,6 +71,9 @@ export async function loadNextImposter() {
     
     document.getElementById('imposter-submit-btn').classList.remove('hidden');
     document.getElementById('imposter-next-btn').classList.add('hidden');
+    const rewardText = document.getElementById('imposter-reward-text');
+    if (rewardText) rewardText.classList.add('hidden');
+    
     resetSubmitButton();
     selectedIndices = [];
     
@@ -251,6 +254,15 @@ function handleImposterSubmit() {
             // Firebase Update
             const userRef = doc(db, 'users', user.uid);
             updateDoc(userRef, { credits: user.credits }).catch(e => console.error("Error updating credits: ", e));
+            
+            const rewardText = document.getElementById('imposter-reward-text');
+            if (rewardText) {
+                rewardText.classList.remove('hidden');
+                // Force animation trigger
+                rewardText.style.animation = 'none';
+                rewardText.offsetHeight; /* trigger reflow */
+                rewardText.style.animation = null; 
+            }
         }
         
         // Highlight correct
