@@ -41,16 +41,16 @@ async function fetchImposterMatches() {
     isLoading = true;
     try {
         const historyRef = collection(db, "history");
-        // We only want normal rankings (not duels or marathons) that have a ranking array
-        // We fetch the latest 50 for the current mode
-        const q = query(historyRef, where("mode", "==", currentMode), orderBy("timestamp", "desc"), limit(50));
+        // Remove 'where' to avoid Firestore composite index requirements.
+        // We just fetch the latest 100 matches and filter locally.
+        const q = query(historyRef, orderBy("timestamp", "desc"), limit(100));
         const querySnapshot = await getDocs(q);
         
         cachedHistory = [];
         querySnapshot.forEach((doc) => {
             const data = doc.data();
-            // We need a list of exactly 5 elements that were actually ranked
-            if (data.ranking && data.ranking.length === 5) {
+            // We need a list of exactly 5 elements that were actually ranked AND it must match the current mode
+            if (data.mode === currentMode && data.ranking && data.ranking.length === 5) {
                 cachedHistory.push(data);
             }
         });
