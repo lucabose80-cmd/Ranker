@@ -179,6 +179,21 @@ export function initProfile() {
                 stSelect.appendChild(opt);
             }
         });
+        
+        stSelect.addEventListener('change', async () => {
+            const activeSt = stSelect.value;
+            user.active_soundtrack = activeSt;
+            localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
+            if (window.applyActiveSoundtrack) window.applyActiveSoundtrack(user);
+            
+            try {
+                const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+                const { db } = await import('./firebase-config.js');
+                await updateDoc(doc(db, "users", user.uid), { active_soundtrack: activeSt });
+            } catch(e) {
+                console.error("Fehler beim Speichern des Soundtracks", e);
+            }
+        });
     }
     if (bgSelect) {
         bgSelect.innerHTML = '';
@@ -192,8 +207,25 @@ export function initProfile() {
                 bgSelect.appendChild(opt);
             }
         });
+        
+        bgSelect.addEventListener('change', async () => {
+            const activeBg = bgSelect.value;
+            user.active_background = activeBg;
+            localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
+            if (window.applyActiveBackground) window.applyActiveBackground(user);
+            
+            try {
+                const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+                const { db } = await import('./firebase-config.js');
+                await updateDoc(doc(db, "users", user.uid), { active_background: activeBg });
+            } catch(e) {
+                console.error("Fehler beim Speichern des Hintergrunds", e);
+            }
+        });
     }
 
+    const saveBtn = document.getElementById('profile-save-btn');
+    
     // Setup Tabs (nur einmal binden)
     document.querySelectorAll('.profile-tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
