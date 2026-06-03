@@ -375,8 +375,8 @@ function renderInventory() {
         if(!dbC) return;
         const score = getCardScore(c.charName).toFixed(1);
         const div = document.createElement('div');
-        div.style.cssText = `cursor:pointer; border:2px solid ${getRarityColor(c.rarity)}; border-radius:5px; padding:5px; background:#222; text-align:center; position:relative;`;
-        div.innerHTML = `<div style="position:absolute; top:-5px; right:-5px; background:#1a1e29; color:#ffd700; border:1px solid #ffd700; border-radius:50%; width:24px; height:24px; font-size:0.6rem; font-weight:bold; display:flex; justify-content:center; align-items:center; z-index:10;">${score}</div>
+        div.style.cssText = `cursor:pointer; border:2px solid ${getRarityColor(c.rarity)}; border-radius:5px; padding:5px; background:rgba(20, 24, 34, 0.4); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); text-align:center; position:relative;`;
+        div.innerHTML = `<div style="position:absolute; top:-5px; right:-5px; background:rgba(20, 24, 34, 0.65); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); color:#ffd700; border:1px solid #ffd700; border-radius:50%; width:24px; height:24px; font-size:0.6rem; font-weight:bold; display:flex; justify-content:center; align-items:center; z-index:10;">${score}</div>
                          <img loading="lazy" src="${dbC.img}" style="width:100%; height:100px; object-fit:cover; border-radius:3px;">
                          <div style="font-size:0.65rem; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-top:3px;">${c.charName}</div>`;
         div.addEventListener('click', () => {
@@ -403,8 +403,8 @@ function updateDeckUI() {
         if(!dbC) return;
         const score = getCardScore(c.charName).toFixed(1);
         const div = document.createElement('div');
-        div.style.cssText = `cursor:pointer; border:2px solid ${getRarityColor(c.rarity)}; border-radius:5px; padding:5px; background:#222; text-align:center; position:relative;`;
-        div.innerHTML = `<div style="position:absolute; top:-5px; right:-5px; background:#1a1e29; color:#ffd700; border:1px solid #ffd700; border-radius:50%; width:24px; height:24px; font-size:0.6rem; font-weight:bold; display:flex; justify-content:center; align-items:center; z-index:10;">${score}</div>
+        div.style.cssText = `cursor:pointer; border:2px solid ${getRarityColor(c.rarity)}; border-radius:5px; padding:5px; background:rgba(20, 24, 34, 0.4); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); text-align:center; position:relative;`;
+        div.innerHTML = `<div style="position:absolute; top:-5px; right:-5px; background:rgba(20, 24, 34, 0.65); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); color:#ffd700; border:1px solid #ffd700; border-radius:50%; width:24px; height:24px; font-size:0.6rem; font-weight:bold; display:flex; justify-content:center; align-items:center; z-index:10;">${score}</div>
                          <img loading="lazy" src="${dbC.img}" style="width:100%; height:100px; object-fit:cover; border-radius:3px;">
                          <div style="font-size:0.6rem; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${c.charName}</div>`;
         div.addEventListener('click', () => {
@@ -461,7 +461,7 @@ async function renderMatchmaking() {
         opponents.forEach(opp => {
             const div = document.createElement('div');
             div.className = 'history-item';
-            div.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:15px; background:#1a1e29; border:1px solid #333; border-radius:8px;';
+            div.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:15px; background:rgba(20, 24, 34, 0.65); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid #333; border-radius:8px;';
             div.innerHTML = `<div style="font-weight:bold; color:#fff; font-size:1.1rem;">${opp.displayName || opp.username}</div>
                              <button class="rank-btn" style="padding:10px 20px; font-size:1rem;">Herausfordern</button>`;
             div.querySelector('button').addEventListener('click', () => {
@@ -515,7 +515,7 @@ function renderBots() {
             : `<div style="font-size:0.85rem; color:#ffd700; margin-top:10px; font-weight:bold;">🏆 Erstsieg: ${bot.reward} Credits</div>`;
             
         const div = document.createElement('div');
-        div.style.cssText = `background:#1a1e29; padding:20px; border:2px solid ${bot.color}; border-radius:10px; text-align:center; flex:1 1 250px; max-width:300px; display:flex; flex-direction:column; justify-content:space-between;`;
+        div.style.cssText = `background:rgba(20, 24, 34, 0.65); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); padding:20px; border:2px solid ${bot.color}; border-radius:10px; text-align:center; flex:1 1 250px; max-width:300px; display:flex; flex-direction:column; justify-content:space-between;`;
         div.innerHTML = `
             <div>
                 <h3 style="color:${bot.color}; margin-top:0;">${bot.name}</h3>
@@ -826,7 +826,7 @@ function renderHand() {
         const dbC = activeCharacterDatabase.find(x => x.name === c.charName);
         if(!dbC) return;
         const div = document.createElement('div');
-        div.style.cssText = `cursor:${disabled ? 'not-allowed' : 'pointer'}; border-radius:5px; padding:5px; background:#222; text-align:center; width:80px; transition:transform 0.2s; ${disabled ? 'filter:grayscale(100%) opacity(0.4);' : ''}`;
+        div.style.cssText = `cursor:${disabled ? 'not-allowed' : 'pointer'}; border-radius:5px; padding:5px; background:rgba(20, 24, 34, 0.4); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); text-align:center; width:80px; transition:transform 0.2s; ${disabled ? 'filter:grayscale(100%) opacity(0.4);' : ''}`;
         if (isForcedOut) div.style.border = '1px solid #ff4757';
         
         if (!disabled) {
@@ -1396,11 +1396,11 @@ function playRound(playerCard, explicitOppCard = null) {
 
     document.getElementById('match-round-calc').innerHTML = `
         <div style="display:flex; gap:12px; text-align:left;">
-            <div style="flex:1; background:#111; border-radius:8px; padding:12px; border:1px solid #2ed57355; box-shadow: 0 4px 10px rgba(46,213,115,0.1);">
+            <div style="flex:1; background:rgba(0,0,0,0.5); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-radius:8px; padding:12px; border:1px solid #2ed57355; box-shadow: 0 4px 10px rgba(46,213,115,0.1);">
                 <div style="font-size:0.9rem; color:#2ed573; font-weight:bold; margin-bottom:8px; text-align:center; border-bottom:1px solid #2ed57355; padding-bottom:4px;">Du (${pName})</div>
                 ${formatDetailedCalc(pBaseRaw, pRarMult, pRarityName, pBase, pLog)}
             </div>
-            <div style="flex:1; background:#111; border-radius:8px; padding:12px; border:1px solid #ff475755; box-shadow: 0 4px 10px rgba(255,71,87,0.1);">
+            <div style="flex:1; background:rgba(0,0,0,0.5); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-radius:8px; padding:12px; border:1px solid #ff475755; box-shadow: 0 4px 10px rgba(255,71,87,0.1);">
                 <div style="font-size:0.9rem; color:#ff4757; font-weight:bold; margin-bottom:8px; text-align:center; border-bottom:1px solid #ff475755; padding-bottom:4px;">Gegner (${oName})</div>
                 ${formatDetailedCalc(oBaseRaw, oRarMult, oRarityName, oBase, oLog)}
             </div>
@@ -1412,6 +1412,9 @@ function playRound(playerCard, explicitOppCard = null) {
     document.getElementById('match-player-hand').innerHTML = '';
     
     if (playerCard && pDb) {
+        if (playerCard.rule18Revived || !playerDeck.some(c => c.charName === playerCard.charName)) {
+            window.usedRevivedCardThisMatch = true;
+        }
         document.getElementById("match-player-active").innerHTML = `<div style="text-align:center; position:relative; width:150px; height:210px;"><img src="${pDb.img}" style="width:150px; height:200px; object-fit:cover; border-radius:5px; border:2px solid #fff;"><div style="color:#fff; font-size:0.8rem; margin-top:5px;">${pName}</div></div>`;
     } else {
         document.getElementById("match-player-active").innerHTML = ``;
@@ -1486,6 +1489,77 @@ async function finishMatch() {
     if (typeof isLivePvP !== 'undefined' && isLivePvP) {
         isLivePvP = false;
         setTimeout(() => leaveCardgameLobby(), 500);
+    }
+
+    if (user) {
+        if (!user.stats) user.stats = {};
+        
+        const isDraw = (playerScore === opponentScore);
+        const isWin = (playerScore > opponentScore);
+        const isLoss = (playerScore < opponentScore);
+        
+        if (isLoss) {
+            user.stats.cardgameLossStreak = (user.stats.cardgameLossStreak || 0) + 1;
+            if (user.stats.cardgameLossStreak >= 5) {
+                import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_21'));
+            }
+        } else if (isWin) {
+            user.stats.cardgameLossStreak = 0;
+            user.stats.cardgameWins = (user.stats.cardgameWins || 0) + 1;
+            
+            if (user.stats.cardgameWins >= 100) import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_4'));
+            if (playerScore - opponentScore === 1) import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_20'));
+            if (opponentScore === 0) import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_24'));
+            
+            if (isBotMatch && opponentDeck.some(c => c.tags && c.tags.includes('jedi'))) {
+                user.stats.jediBotsDefeated = (user.stats.jediBotsDefeated || 0) + 1;
+                if (user.stats.jediBotsDefeated >= 10) import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_17'));
+            }
+            
+            const pRebels = playerDeck.filter(c => c.tags && c.tags.includes('rebell')).length;
+            const oEmpire = opponentDeck.filter(c => c.tags && c.tags.includes('imperium')).length;
+            if (pRebels >= 5 && oEmpire >= 5) import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_29'));
+            
+            if (window.usedRevivedCardThisMatch) import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_19'));
+            
+            if (window.bountyBuffActiveThisMatch) import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_10'));
+        }
+        
+        if (isDraw) {
+            import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_28'));
+            user.stats.cardgameLossStreak = 0;
+        }
+
+        const pSith = playerDeck.filter(c => c.tags && c.tags.includes('sith')).length;
+        const pJedi = playerDeck.filter(c => c.tags && c.tags.includes('jedi')).length;
+        if (pSith === 4 && pJedi === 3) import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_23'));
+        
+        const isAllDroids = playerDeck.every(c => c.tags && c.tags.includes('droid'));
+        if (isAllDroids) import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_15'));
+        
+        const factions = new Set();
+        playerDeck.forEach(c => {
+            if (c.tags) {
+                ['jedi', 'sith', 'rebell', 'imperium', 'klon', 'droid', 'kopfgeldjäger', 'schmuggel', 'senat', 'nachtschwester'].forEach(f => {
+                    if (c.tags.includes(f)) factions.add(f);
+                });
+            }
+        });
+        if (factions.size >= 5) import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_14'));
+        
+        import('./theme.js').then(({ activeCharacterDatabase }) => {
+            const allKlones = activeCharacterDatabase.filter(c => c.tags && c.tags.includes('klon') && !c.tags.includes('vehicle')).map(c => c.name);
+            const myInv = user[`inventory_${currentMode}`] || [];
+            const myInvNames = new Set(myInv.map(i => i.charName));
+            if (allKlones.every(k => myInvNames.has(k))) {
+                import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_9'));
+            }
+        });
+        
+        localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
+        import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js").then(({ doc, updateDoc }) => {
+            updateDoc(doc(db, "users", user.uid), { stats: user.stats }).catch(e => console.error("Error saving stats:", e));
+        });
     }
 
     let finalRes = "Unentschieden";
@@ -1603,7 +1677,7 @@ function listenToCardgameLobbies() {
             hasLobbies = true;
             const div = document.createElement('div');
             div.className = 'history-item';
-            div.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:15px; background:#1a1e29; border:1px solid #333; border-radius:8px;';
+            div.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:15px; background:rgba(20, 24, 34, 0.65); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid #333; border-radius:8px;';
             div.innerHTML = `<div style="font-weight:bold; color:#fff; font-size:1.1rem;">Lobby von ${lobby.hostName}</div>
                              <button class="rank-btn" style="padding:10px 20px; font-size:1rem;">Beitreten</button>`;
             div.querySelector('button').addEventListener('click', () => joinCardgameLobby(lobby.id));
@@ -1868,3 +1942,4 @@ function showBotResultOverlay(isWin, isFirstWin, reward, unlockedNewTitle, score
     `;
     document.body.appendChild(overlay);
 }
+

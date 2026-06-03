@@ -1066,10 +1066,10 @@ document.addEventListener('DOMContentLoaded', () => {
         profileToggle.addEventListener('click', () => {
             if (profileContent.style.display === 'none') {
                 profileContent.style.display = 'flex';
-                profileToggle.textContent = '?';
+                profileToggle.innerHTML = '&#9650;';
             } else {
                 profileContent.style.display = 'none';
-                profileToggle.textContent = '?';
+                profileToggle.innerHTML = '&#9660;';
             }
         });
     }
