@@ -229,10 +229,21 @@ export function initCommunity() {
                 return { ...u, _isOnline: isOnline };
             });
 
-            // Online zuerst, dann alphabetisch
+            // Online zuerst, dann nach letzter Aktivität (neueste zuerst)
             allUsers.sort((a, b) => {
                 if (a._isOnline && !b._isOnline) return -1;
                 if (!a._isOnline && b._isOnline) return 1;
+                
+                let timeA = 0;
+                if (a.lastActive) {
+                    timeA = typeof a.lastActive.toMillis === 'function' ? a.lastActive.toMillis() : (a.lastActive.seconds ? a.lastActive.seconds * 1000 : Number(a.lastActive));
+                }
+                let timeB = 0;
+                if (b.lastActive) {
+                    timeB = typeof b.lastActive.toMillis === 'function' ? b.lastActive.toMillis() : (b.lastActive.seconds ? b.lastActive.seconds * 1000 : Number(b.lastActive));
+                }
+                
+                if (timeB !== timeA) return timeB - timeA;
                 return (a.displayName || a.username).localeCompare(b.displayName || b.username);
             });
 
