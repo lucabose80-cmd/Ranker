@@ -150,7 +150,8 @@ export async function renderScoreboard() {
                     const d = doc.data();
                     const u = userResetsVals.find(ur => ur.displayName === d.username);
                     return { name: d.username, score: d.attempts, img: u?.[avatarField] || 'https://i.imgur.com/kS5x87t.png', suffix: 'VERSUCHE' };
-                }).sort((a, b) => a.score - b.score);
+                }).filter(p => p.name.toLowerCase() !== 'test1' && p.name.toLowerCase() !== 'test2' && p.name.toLowerCase() !== 'admin')
+                .sort((a, b) => a.score - b.score);
             } else {
                 const winsMap = snap.docs.reduce((acc, doc) => {
                     const uname = doc.data().username;
@@ -161,7 +162,8 @@ export async function renderScoreboard() {
                 results = Object.entries(winsMap).map(([uname, score]) => {
                     const u = userResetsVals.find(ur => ur.displayName === uname);
                     return { name: uname, score, img: u?.[avatarField] || 'https://i.imgur.com/kS5x87t.png', suffix: 'WINS' };
-                }).sort((a, b) => b.score - a.score);
+                }).filter(p => p.name.toLowerCase() !== 'test1' && p.name.toLowerCase() !== 'test2' && p.name.toLowerCase() !== 'admin')
+                .sort((a, b) => b.score - a.score);
             }
 
             if (selectedUser !== 'global') {
@@ -186,7 +188,8 @@ export async function renderScoreboard() {
                 const d = doc.data();
                 const u = userResetsVals.find(ur => ur.displayName === d.username) || userResetsVals.find(ur => ur.username === d.username);
                 return { name: d.username, score: d.score || 0, img: u?.[avatarField] || 'https://i.imgur.com/kS5x87t.png', suffix: 'CHARS' };
-            }).sort((a, b) => b.score - a.score);
+            }).filter(p => p.name.toLowerCase() !== 'test1' && p.name.toLowerCase() !== 'test2' && p.name.toLowerCase() !== 'admin')
+            .sort((a, b) => b.score - a.score);
 
             if (selectedUser !== 'global') {
                 const filtered = results.filter(p => p.name === (userResets[selectedUser]?.displayName || selectedUser));
@@ -211,7 +214,7 @@ export async function renderScoreboard() {
                     img: userResets[uname][avatarField] || 'https://i.imgur.com/kS5x87t.png',
                     suffix: 'WINS'
                 }))
-                .filter(p => p.score > 0)
+                .filter(p => p.score > 0 && p.name.toLowerCase() !== 'test1' && p.name.toLowerCase() !== 'test2' && p.name.toLowerCase() !== 'admin')
                 .sort((a, b) => b.score - a.score);
 
             if (selectedUser !== 'global') {

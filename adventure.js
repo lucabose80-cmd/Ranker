@@ -304,6 +304,7 @@ export async function renderAdventureMap() {
     try {
         const { userResets } = await getResets(false);
         Object.values(userResets).forEach(u => {
+            if (u.username === 'admin' || u.username === 'test1' || u.username === 'test2') return;
             if (u.displayName !== user.displayName && u.adventure_highest_level) {
                 const lvl = u.adventure_highest_level;
                 if (!playersAtNodes[lvl]) playersAtNodes[lvl] = [];
