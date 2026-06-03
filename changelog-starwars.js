@@ -1,5 +1,17 @@
 export const patchNotesStarWars = [
     {
+        version: "v8.4",
+        title: "Feature Update: Galaktische Liga & Abenteuer Boss",
+        isHotfix: false,
+        changes: [
+            "Feature: 'Galaktische Liga' (Wöchentliche Challenges) hinzugefügt! Messe dich jede Woche in 3 Kategorien mit anderen Spielern.",
+            "Belohnungen: Verdiene Credits durch wöchentliche Spitzenplätze (bis zu 800c für den 1. Platz).",
+            "Starwarsdle: Die Liga trackt nun den Durchschnitt aller gewonnenen Starwarsdles der Woche für ein gerechteres Ranking.",
+            "Boss-Update: Der Level 5 Mandalorianer-Boss im Abenteuer-Modus hat nun den extrem starken Effekt 'Das ist der Weg', welcher deine Synergien komplett deaktiviert.",
+            "Bugfix: Die Abenteuer-Sternenkarte wird nun während eines Matches korrekt ausgeblendet."
+        ]
+    },
+    {
         version: "v8.3",
         title: "Feature Update: Galaktische Bank",
         isHotfix: false,
