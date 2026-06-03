@@ -1,5 +1,25 @@
 export const patchNotesWaifu = [
     {
+        version: "v9.2.6",
+        title: "Hotfix: Glassmorphism UI Overhaul",
+        isHotfix: true,
+        changes: [
+            "UI-Update: Das komplette Menü- und Interface-Design wurde auf ein modernes 'Glassmorphism'-Design umgestellt (transparente Milchglas-Optik).",
+            "UI-Update: Alle Auswahlknöpfe, Panel und Container im Deckbuilder, Cardgame und Scoreboard haben nun den neuen transparenten Look.",
+            "QoL: Überschriften und Fortschrittsbalken wurden mit starken Schatten versehen, um auf jedem Hintergrund perfekt lesbar zu sein.",
+            "QoL: Das Profil-Menü lässt sich nun platzsparend einklappen und heftet sich elegant oben rechts an den Bildschirmrand an."
+        ]
+    },
+    {
+        version: "v9.2.5",
+        title: "Hotfix: Achievements & Stats",
+        isHotfix: true,
+        changes: [
+            "Neues Feature: 30 brandneue Titel zum Freischalten hinzugefügt! Von 'Shopaholic' über 'Kopfgeldjäger' bis hin zu 'Entwickler-Liebling' ist alles dabei.",
+            "QoL: Umfangreiches neues Stats-Tracking im Hintergrund, um Shop-Käufe, Cardgame-Wins, Abenteuer-Level und StarWarsdle-Performance für die neuen Titel aufzuzeichnen."
+        ]
+    },
+    {
         version: "v9.6",
         title: "Major Update: Audio System & Ducking",
         isHotfix: false,
