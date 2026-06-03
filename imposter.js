@@ -220,6 +220,38 @@ function resetSubmitButton() {
     btn.style.background = 'rgba(155,89,182,0.5)';
 }
 
+function playImposterSuccessSound() {
+    try {
+        if(window.isAudioMuted) return;
+        const actx = window.getSharedAudioContext();
+        const osc = actx.createOscillator();
+        const gain = actx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(800, actx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1600, actx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.05, actx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.3);
+        osc.connect(gain); gain.connect(actx.destination);
+        osc.start(); osc.stop(actx.currentTime + 0.3);
+    } catch(e) {}
+}
+
+function playImposterErrorSound() {
+    try {
+        if(window.isAudioMuted) return;
+        const actx = window.getSharedAudioContext();
+        const osc = actx.createOscillator();
+        const gain = actx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(200, actx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(100, actx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0.1, actx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.3);
+        osc.connect(gain); gain.connect(actx.destination);
+        osc.start(); osc.stop(actx.currentTime + 0.3);
+    } catch(e) {}
+}
+
 function handleImposterSubmit() {
     if (selectedIndices.length !== 2) return;
     
@@ -238,7 +270,7 @@ function handleImposterSubmit() {
     const isCorrect = (selectedIndices.includes(swappedIndices[0]) && selectedIndices.includes(swappedIndices[1]));
     
     if (isCorrect) {
-        if (window.playSuccessSound) window.playSuccessSound();
+        playImposterSuccessSound();
         imposterScore++;
         updateScoreDisplay();
         updateWeeklyStat('imposterScore', 1);
@@ -275,7 +307,7 @@ function handleImposterSubmit() {
             }
         });
     } else {
-        if (window.playErrorSound) window.playErrorSound();
+        playImposterErrorSound();
         
         // Show what was wrong and what was right
         cards.forEach((card, idx) => {
