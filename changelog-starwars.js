@@ -1,5 +1,19 @@
 export const patchNotesStarWars = [
     {
+        version: "v9.2",
+        title: "Major Update: Imposter-Modus & Jedi-Archiv",
+        isHotfix: false,
+        changes: [
+            "Neuer Spielmodus 'Imposter': Schlüpfe in die Rolle eines Detektivs! Das System lädt ein echtes, kürzlich gespieltes Match eines anderen Spielers und vertauscht heimlich 2 Charaktere.",
+            "Imposter-Gameplay: Anhand des Spielernames, der Kategorie und der erspielten Wertung musst du deduzieren, welche 2 Charaktere die Plätze getauscht haben.",
+            "Imposter-Belohnungen: Jeder korrekt gelöste Fall bringt dir +20 Credits. Außerdem gibt es ein eigenes Scoreboard und die neue Disziplin in der Galaktischen Liga (bis zu 600 Credits Preisgeld!).",
+            "Jedi-Archiv: Der alte 'Tier-List' Button im Profil wurde durch das interaktive 'Jedi-Archiv' (Spotify-Wrapped Style) ersetzt.",
+            "Jedi-Archiv Stats: Das Archiv durchsucht deine gesamte Historie und präsentiert dir animierte Slides zu deinem 'Liebling', deinem 'Erzfeind', deinem 'Hot-Take' und deiner Macht-Ausrichtung.",
+            "QoL: Profileinstellungen (Hintergründe & Soundtracks) werden jetzt sofort beim Auswählen angewendet, ohne dass extra 'Speichern' gedrückt werden muss.",
+            "QoL: Das Online-Tab zeigt nun korrekt alle neuen Modi (Marathon, Imposter, Abenteuer) mit bunten Tags an und das CSS-Clipping wurde behoben."
+        ]
+    },
+    {
         version: "v9.1",
         title: "Major Update: Endless Survival",
         isHotfix: false,
