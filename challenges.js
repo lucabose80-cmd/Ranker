@@ -116,7 +116,7 @@ async function processRewards(oldWeekId) {
 async function payoutCategory(topPlayers, categoryName, rewards) {
     for (let i = 0; i < topPlayers.length; i++) {
         const p = topPlayers[i];
-        if (!p) continue;
+        if (!p || p.isTestUser) continue;
         const reward = rewards[i];
         if (reward > 0) {
             try {
@@ -138,7 +138,7 @@ async function payoutCategory(topPlayers, categoryName, rewards) {
 
 export async function updateWeeklyStat(category, value) {
     const user = getCurrentUser();
-    if (!user || user.role === 'admin' || user.isTestUser) return;
+    if (!user || user.isTestUser) return;
 
     const currentWeek = getWeekId();
     const statRef = doc(db, "weekly_stats", currentWeek, "players", user.uid);
@@ -165,6 +165,9 @@ export async function updateWeeklyStat(category, value) {
             data.starwarsdleWins = (data.starwarsdleWins || 0) + 1;
             data.starwarsdleTotalTries = (data.starwarsdleTotalTries || 0) + value;
             data.starwarsdleAvgTries = data.starwarsdleTotalTries / data.starwarsdleWins;
+            changed = true;
+        } else if (category === 'imposterScore') {
+            data.imposterScore = (data.imposterScore || 0) + value;
             changed = true;
         }
 

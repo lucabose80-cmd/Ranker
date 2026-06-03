@@ -351,7 +351,7 @@ async function gameOver(failedIndex) {
     document.getElementById('marathon-restart-btn').addEventListener('click', startMarathon);
     
     const user = getCurrentUser();
-    if (!user || user.isTestUser || user.role === 'admin') return;
+    if (!user || user.isTestUser) return;
     
     try {
         // 1. Speichere im persönlichen Profil (All-time highscore und Credits Belohnung)
