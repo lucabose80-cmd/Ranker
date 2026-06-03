@@ -12,6 +12,15 @@ export const patchNotesStarWars = [
         ]
     },
     {
+        version: "v8.4.2",
+        title: "Hotfix: Klone & Ausstellung",
+        isHotfix: true,
+        changes: [
+            "Hotfix: In der Profil-Ausstellung können nun nicht mehr versehentlich mehr Kopien einer bestimmten Karte ausgestellt werden, als man tatsächlich besitzt.",
+            "QoL: Um die Klone im Starwarsdle besser unterscheiden zu können, wurden ihre jeweiligen Bataillone (z.B. 501st Legion, 212th Angriffs-Bataillon) als Fraktions-Tipp hinzugefügt."
+        ]
+    },
+    {
         version: "v8.4.1",
         title: "Hotfix: UI-Update & Tooltips",
         isHotfix: true,
