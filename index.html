@@ -162,7 +162,7 @@
 
     <div id="game-view" class="view-container hidden">
         <div id="profile-header-container" class="glass-panel" style="margin: 20px auto; max-width: 900px; padding: 20px; display: flex; flex-direction: column; gap: 15px; position: relative;">
-            <button id="profile-header-toggle" class="sidebar-toggle-btn" style="position: absolute; top: 15px; right: 15px; z-index: 10;">▲</button>
+            <button id="profile-header-toggle" class="sidebar-toggle-btn" style="position: absolute; top: 15px; right: 15px; z-index: 10;; color:#888;">&#9650;</button>
             <div id="profile-header-content" style="display: flex; flex-direction: column; gap: 15px;">
                 <div style="background: rgba(255, 71, 87, 0.1); border: 1px dashed #ff4757; color: #ff4757; padding: 10px 20px; text-align: center; font-size: 0.9rem; border-radius: 8px;">
                     <strong>Bug Bounty:</strong> Gefundene Bugs und umgesetzte Vorschläge im "Ideen"-Reiter werden vom Admin mit Credits entlohnt!
@@ -501,7 +501,7 @@
                         <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:15px;">
                             <div>
                                 <h3 style="color:#ffd700; margin-bottom:10px;">Dein Deck (<span id="cardgame-deck-count">0</span>/10)</h3>
-                                <div id="cardgame-deck-slots" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(100px, 1fr)); gap:12px; min-height:130px; padding:12px; border:2px dashed #444; border-radius:8px;"></div>
+                                <div id="cardgame-deck-slots" class="glass-panel" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(100px, 1fr)); gap:12px; min-height:130px; padding:12px; border:2px dashed rgba(255,255,255,0.2); border-radius:8px;"></div>
                             </div>
                             
                             <div style="flex:1;">
@@ -1212,6 +1212,8 @@
     <script type="module" src="main.js?v=8.4.0"></script>
 </body>
 </html>
+
+
 
 
 

@@ -1064,15 +1064,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const profileContent = document.getElementById('profile-header-content');
     if (profileToggle && profileContent) {
         profileToggle.addEventListener('click', () => {
+            const container = document.getElementById('profile-header-container');
             if (profileContent.style.display === 'none') {
                 profileContent.style.display = 'flex';
+                container.classList.remove('collapsed');
                 profileToggle.innerHTML = '&#9650;';
             } else {
                 profileContent.style.display = 'none';
+                container.classList.add('collapsed');
                 profileToggle.innerHTML = '&#9660;';
             }
         });
     }
 });
+
 
 
