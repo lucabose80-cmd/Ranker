@@ -103,6 +103,11 @@ async function processRewards(oldWeekId) {
         marathonPlayers.sort((a, b) => b.marathonHighScore - a.marathonHighScore);
         await payoutCategory(marathonPlayers.slice(0, 3), 'Marathon-Läufer', [600, 300, 150]);
 
+        // Category 5: Imposter Score
+        const imposterPlayers = players.filter(p => p.imposterScore && p.imposterScore > 0);
+        imposterPlayers.sort((a, b) => b.imposterScore - a.imposterScore);
+        await payoutCategory(imposterPlayers.slice(0, 3), 'Meister-Detektiv', [600, 300, 150]);
+
     } catch (e) {
         console.error("Error processing weekly rewards:", e);
     }
@@ -180,11 +185,13 @@ export async function renderChallenges() {
     const html2 = document.getElementById('challenges-cat2-list');
     const html3 = document.getElementById('challenges-cat3-list');
     const html4 = document.getElementById('challenges-cat4-list');
+    const html5 = document.getElementById('challenges-cat5-list');
     
     if (html1) html1.innerHTML = '<div style="text-align:center; padding: 20px;">Lade Daten...</div>';
     if (html2) html2.innerHTML = '<div style="text-align:center; padding: 20px;">Lade Daten...</div>';
     if (html3) html3.innerHTML = '<div style="text-align:center; padding: 20px;">Lade Daten...</div>';
     if (html4) html4.innerHTML = '<div style="text-align:center; padding: 20px;">Lade Daten...</div>';
+    if (html5) html5.innerHTML = '<div style="text-align:center; padding: 20px;">Lade Daten...</div>';
 
     try {
         const snap = await getDocs(statsRef);
@@ -232,6 +239,7 @@ export async function renderChallenges() {
         renderCat(html2, players, p => p.adventureMaxLevel, v => `Level ${v}`);
         renderCat(html3, players, p => p.starwarsdleAvgTries, v => `Ø ${v.toFixed(2)} Versuche`, true);
         renderCat(html4, players, p => p.marathonHighScore, v => `${v} Charaktere`);
+        renderCat(html5, players, p => p.imposterScore, v => `${v} Richtige`);
 
         // Update Reset Countdown
         const countdownEl = document.getElementById('challenges-countdown');
