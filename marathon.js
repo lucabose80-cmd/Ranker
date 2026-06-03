@@ -2,6 +2,7 @@ import { starWarsCharacters } from './data-starwars.js';
 import { getCurrentUser } from './auth.js';
 import { db } from './firebase-config.js';
 import { doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { currentMode } from './mode-state.js';
 import { checkWeeklyReset } from './challenges.js';
 
 let marathonLives = 3;
@@ -9,35 +10,53 @@ let marathonScore = 0;
 let placedCharacters = [];
 let currentDraw = null;
 let remainingPool = [];
+let globalAveragesMap = null; // Speichert die echten globalen Durchschnittswerte
 
-// Hilfsfunktion: Berechnet einen festen "Heuristik-Score", der den globalen Durchschnitt simuliert
+// Hilfsfunktion: Gibt den echten Score aus Firebase zurück, oder Heuristik als Fallback
 function getGlobalAverageScore(char) {
-    let power = 50;
+    if (globalAveragesMap && globalAveragesMap[char.name]) {
+        return globalAveragesMap[char.name];
+    }
+    // Fallback Heuristik, falls ein Charakter (noch) nicht gerankt wurde
+    let power = 25;
     const tags = char.tags || [];
     
     // Tiers
-    if (tags.includes('peak') && (tags.includes('sith') || tags.includes('jedi'))) power += 40;
-    else if (tags.includes('peak')) power += 25;
+    if (tags.includes('peak') && (tags.includes('sith') || tags.includes('jedi'))) power += 15;
+    else if (tags.includes('peak')) power += 10;
     
-    if (tags.includes('jedi_meister') || tags.includes('sith_lord')) power += 20;
-    else if (tags.includes('jedi') || tags.includes('sith')) power += 10;
+    if (tags.includes('jedi_meister') || tags.includes('sith_lord')) power += 8;
+    else if (tags.includes('jedi') || tags.includes('sith')) power += 4;
     
-    if (tags.includes('commander') || tags.includes('captain')) power += 15;
-    else if (tags.includes('soldat')) power += 5;
+    if (tags.includes('commander') || tags.includes('captain')) power += 6;
+    else if (tags.includes('soldat')) power += 2;
     
-    if (tags.includes('zivilist') || tags.includes('politiker')) power -= 10;
-    if (tags.includes('droide')) power -= 5;
-    if (tags.includes('padawan')) power += 5;
-
-    // Ein leichter deterministischer Offset, damit nicht alle Klone exakt gleich sind
-    let hash = 0;
-    for (let i = 0; i < char.name.length; i++) {
-        hash = (hash << 5) - hash + char.name.charCodeAt(i);
-        hash |= 0; 
-    }
-    power += (Math.abs(hash) % 15); // + 0 bis 14
+    if (tags.includes('zivilist') || tags.includes('politiker')) power -= 4;
+    if (tags.includes('droide')) power -= 2;
+    if (tags.includes('padawan')) power += 2;
 
     return power;
+}
+
+export async function loadGlobalAverages() {
+    try {
+        const docRef = doc(db, "scores", `${currentMode}_classic_global`);
+        const docSnap = await getDoc(docRef);
+        
+        if (docSnap.exists() && docSnap.data().characters) {
+            const charactersData = docSnap.data().characters;
+            globalAveragesMap = {};
+            
+            Object.values(charactersData).forEach(charData => {
+                const count = charData.count || 1;
+                // Average score calculation, usually ranges from ~5 to ~45
+                globalAveragesMap[charData.name] = charData.score / count; 
+            });
+            console.log("Marathon: Real global averages loaded!");
+        }
+    } catch(e) {
+        console.error("Marathon: Failed to load global averages, using fallback.", e);
+    }
 }
 
 export function initMarathon() {
@@ -45,6 +64,7 @@ export function initMarathon() {
     if (startBtn) {
         startBtn.addEventListener('click', startMarathon);
     }
+    loadGlobalAverages();
 }
 
 function startMarathon() {
@@ -160,21 +180,22 @@ function handleInsert(index) {
     let isMistake = false;
     
     // Check upper boundary (Lower index = higher rank = should have HIGHER score)
-    // Wenn wir den Charakter einfügen, sollte der Charakter DARÜBER (index - 1) eigentlich BESSER sein.
-    // Falls der Charakter darüber WESENTLICH schlechter ist (Score < newScore - 20), ist es ein Fehler.
+    // Wenn wir den Charakter einfügen, sollte der Charakter DARÜBER (index - 1) eigentlich BESSER sein (höherer Score).
+    // Falls der Charakter darüber WESENTLICH schlechter ist (Score < newScore - 8), ist es ein Fehler.
+    // Die Scores liegen normalerweise zwischen ~10 und ~45, daher ist eine Varianz von 8 realistisch.
     if (index > 0) {
         const charAbove = placedCharacters[index - 1];
-        if (getGlobalAverageScore(charAbove) < newScore - 15) {
+        if (getGlobalAverageScore(charAbove) < newScore - 6) {
             isMistake = true;
         }
     }
     
     // Check lower boundary (Higher index = lower rank = should have LOWER score)
-    // Der Charakter DARUNTER (index) sollte eigentlich SCHLECHTER sein.
-    // Falls der Charakter darunter WESENTLICH besser ist (Score > newScore + 20), ist es ein Fehler.
+    // Der Charakter DARUNTER (index) sollte eigentlich SCHLECHTER sein (niedrigerer Score).
+    // Falls der Charakter darunter WESENTLICH besser ist (Score > newScore + 8), ist es ein Fehler.
     if (index < placedCharacters.length) {
         const charBelow = placedCharacters[index];
-        if (getGlobalAverageScore(charBelow) > newScore + 15) {
+        if (getGlobalAverageScore(charBelow) > newScore + 6) {
             isMistake = true;
         }
     }
