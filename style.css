@@ -1916,3 +1916,23 @@ body.alt-theme .glass-panel {
     transform: rotate(180deg);
 }
 
+/* JEDI ARCHIV STYLES */
+.jedi-loading { color: #fff; font-size: 1.5rem; animation: pulse 1.5s infinite; }
+.jedi-slide { width: 100%; color: #fff; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.jedi-slide h2 { font-size: 2.5rem; margin-bottom: 20px; color: #ffd700; text-transform: uppercase; letter-spacing: 2px; }
+.jedi-slide h3 { font-size: 1.8rem; margin: 15px 0; }
+.jedi-slide p { font-size: 1.1rem; color: #ccc; max-width: 80%; line-height: 1.5; }
+.jedi-card { width: 200px; height: 280px; border-radius: 10px; overflow: hidden; border: 3px solid #333; margin: 0 auto; background: #222; }
+.jedi-card img { width: 100%; height: 100%; object-fit: cover; }
+.jedi-mini-card { width: 60px; height: 85px; border-radius: 5px; overflow: hidden; border: 2px solid #555; background: #222; margin: 0 auto; }
+.jedi-mini-card img { width: 100%; height: 100%; object-fit: cover; }
+.jedi-placeholder { width: 100%; height: 100%; background: repeating-linear-gradient(45deg, #111, #111 10px, #222 10px, #222 20px); }
+.jedi-nav { margin-top: 40px; display: flex; justify-content: space-between; align-items: center; width: 100%; }
+.jedi-close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #fff; font-size: 2rem; cursor: pointer; opacity: 0.5; transition: 0.2s; }
+.jedi-close-btn:hover { opacity: 1; transform: scale(1.1); }
+.gold-glow { box-shadow: 0 0 30px rgba(255, 215, 0, 0.6); border-color: #ffd700; }
+.red-glow { box-shadow: 0 0 30px rgba(255, 71, 87, 0.6); border-color: #ff4757; }
+.orange-glow { box-shadow: 0 0 30px rgba(255, 165, 2, 0.6); border-color: #ffa502; }
+.fade-in-scale { animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+
