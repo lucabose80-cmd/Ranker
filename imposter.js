@@ -89,15 +89,23 @@ export async function loadNextImposter() {
     document.getElementById('imposter-player-name').innerText = currentMatch.displayName || currentMatch.username;
     
     let categoryText = currentMatch.category || "Unbekannt";
-    if (categoryText === "classic") categoryText = "Classic Ranking";
-    if (categoryText === "advanced") categoryText = "Advanced Ranking";
-    if (categoryText === "klon") categoryText = "Klonkriege";
+    const catMap = {
+        'normal': 'Expanded Universe',
+        'klon': 'Nur Klone',
+        'peak': 'Peak Ranking',
+        'vehicle': 'Fahrzeuge',
+        'hardcore': 'Hardcore Peak'
+    };
+    if (catMap[categoryText]) {
+        categoryText = catMap[categoryText];
+    }
     
-    document.getElementById('imposter-category').innerText = categoryText;
+    let typeText = currentMatch.gameType === 'advanced' ? ' (Advanced)' : ' (Classic)';
+    document.getElementById('imposter-category').innerText = categoryText + typeText;
     
     let ratingText = currentMatch.rating || "N/A";
-    if (typeof ratingText === "number") {
-        ratingText = Math.round(ratingText) + "%";
+    if (typeof ratingText === "number" || !isNaN(parseInt(ratingText))) {
+        ratingText = ratingText + "/10";
     }
     document.getElementById('imposter-rating').innerText = ratingText;
     
