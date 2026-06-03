@@ -161,28 +161,29 @@
     </div>
 
     <div id="game-view" class="view-container hidden">
-        
-        <div style="background: rgba(255, 71, 87, 0.1); border: 1px dashed #ff4757; color: #ff4757; padding: 10px 20px; text-align: center; font-size: 0.9rem; max-width: 600px; margin: 15px auto; border-radius: 8px;">
-            <strong>Bug Bounty:</strong> Gefundene Bugs und umgesetzte Vorschläge im "Ideen"-Reiter werden vom Admin mit Credits entlohnt!
-        </div>
+        <div class="glass-panel" style="margin: 20px auto; max-width: 900px; padding: 20px; display: flex; flex-direction: column; gap: 15px;">
+            <div style="background: rgba(255, 71, 87, 0.1); border: 1px dashed #ff4757; color: #ff4757; padding: 10px 20px; text-align: center; font-size: 0.9rem; border-radius: 8px;">
+                <strong>Bug Bounty:</strong> Gefundene Bugs und umgesetzte Vorschläge im "Ideen"-Reiter werden vom Admin mit Credits entlohnt!
+            </div>
 
-        <!-- NEUER HUB HEADER -->
-        <header class="hub-header">
-            <div id="profile-trigger" class="profile-trigger" title="Profil öffnen" style="position:relative;">
-                <img id="topbar-avatar" class="mini-avatar hidden" src="" alt="Avatar">
-                <div style="display:flex; flex-direction:column; align-items:flex-start;">
-                    <span id="player-greeting" class="prompt-text"></span>
-                    <span id="player-title" class="title-badge" style="display:none; font-size:0.7rem; color:#ffd700; margin-top:-5px; font-weight:bold; letter-spacing:1px; text-transform:uppercase;"></span>
-                    <span id="profile-unlock-dot" style="display:none; position:absolute; top:2px; right:2px; width:10px; height:10px; background:#ffd700; border-radius:50%; box-shadow:0 0 6px #ffd700; border:2px solid #0a0e17;"></span>
+            <!-- NEUER HUB HEADER -->
+            <header class="hub-header" style="background: transparent; backdrop-filter: none; border: none; padding: 0; box-shadow: none; position: relative;">
+                <div id="profile-trigger" class="profile-trigger" title="Profil öffnen" style="position:relative;">
+                    <img id="topbar-avatar" class="mini-avatar hidden" src="" alt="Avatar">
+                    <div style="display:flex; flex-direction:column; align-items:flex-start;">
+                        <span id="player-greeting" class="prompt-text"></span>
+                        <span id="player-title" class="title-badge" style="display:none; font-size:0.7rem; color:#ffd700; margin-top:-5px; font-weight:bold; letter-spacing:1px; text-transform:uppercase;"></span>
+                        <span id="profile-unlock-dot" style="display:none; position:absolute; top:2px; right:2px; width:10px; height:10px; background:#ffd700; border-radius:50%; box-shadow:0 0 6px #ffd700; border:2px solid #0a0e17;"></span>
+                    </div>
                 </div>
-            </div>
-            <div class="hub-header-actions" style="display:flex; align-items:center;">
-                <audio id="bg-audio" loop></audio>
-                <button id="mute-toggle-btn" class="icon-btn" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer; margin-right: 15px;" title="Musik umschalten">🔇</button>
-                <button id="hub-options-btn" class="icon-btn" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;" title="Optionen">⚙️</button>
-                <button id="logout-btn" class="text-btn logout-btn">LOGOUT</button>
-            </div>
-        </header>
+                <div class="hub-header-actions" style="display:flex; align-items:center;">
+                    <audio id="bg-audio" loop></audio>
+                    <button id="mute-toggle-btn" class="icon-btn" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer; margin-right: 15px;" title="Musik umschalten">🔇</button>
+                    <button id="hub-options-btn" class="icon-btn" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;" title="Optionen">⚙️</button>
+                    <button id="logout-btn" class="text-btn logout-btn">LOGOUT</button>
+                </div>
+            </header>
+        </div>
 
 
 
