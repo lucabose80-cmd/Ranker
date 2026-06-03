@@ -98,6 +98,11 @@ async function processRewards(oldWeekId) {
         dlePlayers.sort((a, b) => a.starwarsdleAvgTries - b.starwarsdleAvgTries);
         await payoutCategory(dlePlayers.slice(0, 3), 'Starwarsdle-Meister', [600, 300, 150]);
 
+        // Category 4: Marathon Score
+        const marathonPlayers = players.filter(p => p.marathonHighScore && p.marathonHighScore > 0);
+        marathonPlayers.sort((a, b) => b.marathonHighScore - a.marathonHighScore);
+        await payoutCategory(marathonPlayers.slice(0, 3), 'Marathon-Läufer', [600, 300, 150]);
+
     } catch (e) {
         console.error("Error processing weekly rewards:", e);
     }
@@ -146,6 +151,11 @@ export async function updateWeeklyStat(category, value) {
                 data.adventureMaxLevel = value;
                 changed = true;
             }
+        } else if (category === 'marathonScore') {
+            if (!data.marathonHighScore || value > data.marathonHighScore) {
+                data.marathonHighScore = value;
+                changed = true;
+            }
         } else if (category === 'starwarsdleTries') {
             data.starwarsdleWins = (data.starwarsdleWins || 0) + 1;
             data.starwarsdleTotalTries = (data.starwarsdleTotalTries || 0) + value;
@@ -169,10 +179,12 @@ export async function renderChallenges() {
     const html1 = document.getElementById('challenges-cat1-list');
     const html2 = document.getElementById('challenges-cat2-list');
     const html3 = document.getElementById('challenges-cat3-list');
+    const html4 = document.getElementById('challenges-cat4-list');
     
     if (html1) html1.innerHTML = '<div style="text-align:center; padding: 20px;">Lade Daten...</div>';
     if (html2) html2.innerHTML = '<div style="text-align:center; padding: 20px;">Lade Daten...</div>';
     if (html3) html3.innerHTML = '<div style="text-align:center; padding: 20px;">Lade Daten...</div>';
+    if (html4) html4.innerHTML = '<div style="text-align:center; padding: 20px;">Lade Daten...</div>';
 
     try {
         const snap = await getDocs(statsRef);
@@ -219,6 +231,7 @@ export async function renderChallenges() {
         renderCat(html1, players, p => p.rankingGames, v => `${v} Spiele`);
         renderCat(html2, players, p => p.adventureMaxLevel, v => `Level ${v}`);
         renderCat(html3, players, p => p.starwarsdleAvgTries, v => `Ø ${v.toFixed(2)} Versuche`, true);
+        renderCat(html4, players, p => p.marathonHighScore, v => `${v} Charaktere`);
 
         // Update Reset Countdown
         const countdownEl = document.getElementById('challenges-countdown');

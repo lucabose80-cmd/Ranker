@@ -114,6 +114,7 @@ export async function initStarWarsdle() {
     document.addEventListener('click', (e) => {
         if (e.target !== input && e.target !== autocomplete) autocomplete.style.display = 'none';
     });
+    window.starwarsdleStartTime = Date.now();
 }
 
 async function loadProgress() {
@@ -254,18 +255,33 @@ async function saveScoreToFirebase(attempts) {
             await addDoc(collection(db, currentMode + "dle_scores"), { userId, username, attempts, date: seed, timestamp: Timestamp.now() });
             updateWeeklyStat('starwarsdleTries', attempts);
             
+            if (!user.stats) user.stats = {};
+            user.stats.starwarsdleWins = (user.stats.starwarsdleWins || 0) + 1;
+            
+            if (user.stats.starwarsdleWins >= 50) {
+                import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_25'));
+            }
+            if (attempts === 1) {
+                import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_12'));
+            }
+            if (window.starwarsdleStartTime && (Date.now() - window.starwarsdleStartTime) < 10000) {
+                import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_8'));
+            }
+            
             let creditsWon = 10;
             if (attempts < 5) creditsWon = 100;
             else if (attempts < 10) creditsWon = 50;
             else if (attempts < 15) creditsWon = 25;
             
             if (user.role !== 'admin' && !user.isTestUser) {
-                await updateDoc(doc(db, "users", userId), { credits: increment(creditsWon) });
+                await updateDoc(doc(db, "users", userId), { credits: increment(creditsWon), stats: user.stats });
                 if (typeof window.showUnlockNotification === 'function') {
                     window.showUnlockNotification('credits', `StarWarsdle gelöst: Du erhältst ${creditsWon} Credits!`);
                 } else {
                     alert(`StarWarsdle gelöst: Du erhältst ${creditsWon} Credits!`);
                 }
+            } else {
+                await updateDoc(doc(db, "users", userId), { stats: user.stats });
             }
         }
         await saveDailyStateToFirebase();

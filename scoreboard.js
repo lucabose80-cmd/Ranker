@@ -173,6 +173,30 @@ export async function renderScoreboard() {
             return;
         }
 
+        if (selectedType === 'marathon') {
+            trackRead('Scoreboard.Marathon');
+            const snap = await getDocs(collection(db, "marathon_scores"));
+            
+            let results = [];
+            const { userResets } = await getResets();
+            const avatarField = currentMode === 'starwars' ? 'avatarStarWars' : 'avatarWaifu';
+            const userResetsVals = Object.values(userResets);
+
+            results = snap.docs.map(doc => {
+                const d = doc.data();
+                const u = userResetsVals.find(ur => ur.displayName === d.username) || userResetsVals.find(ur => ur.username === d.username);
+                return { name: d.username, score: d.score || 0, img: u?.[avatarField] || 'https://i.imgur.com/kS5x87t.png', suffix: 'CHARS' };
+            }).sort((a, b) => b.score - a.score);
+
+            if (selectedUser !== 'global') {
+                const filtered = results.filter(p => p.name === (userResets[selectedUser]?.displayName || selectedUser));
+                renderScoreboardHTML(filtered, container);
+            } else {
+                renderScoreboardHTML(results, container);
+            }
+            return;
+        }
+
         if (selectedType.startsWith('versus')) {
             // Render Versus Scoreboard (Wins)
             const suffix = selectedType === 'versus_klon' ? '_klon' : '';

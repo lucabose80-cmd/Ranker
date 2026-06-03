@@ -28,6 +28,7 @@ import { BACKGROUNDS } from './backgrounds.js';
 import { initCommunity, stopCommunity } from './community.js?v=8.4.0';
 import { initVersus, stopVersus } from './versus.js';
 import { initStarWarsdle } from './starwarsdle.js';
+import { initMarathon } from './marathon.js';
 import { initLiveSpectating, closeSpectatorModal, stopLiveSpectating } from './live.js';
 import { currentGameType, setCurrentGameType, currentMode, currentGameCategory, setCurrentGameCategory } from './mode-state.js';
 import { initTrackerUI } from './tracker.js';
@@ -493,6 +494,7 @@ function setupGameUI(user) {
     setupSubNav('.shop-sub-nav', ['shop-boosters', 'shop-soundtracks', 'shop-backgrounds']);
     
     initStarWarsdle();
+    initMarathon();
     initCardgame();
 
     const catNormalBtn = document.getElementById('cat-normal-btn');

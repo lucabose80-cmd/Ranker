@@ -504,13 +504,23 @@ export function handleAdventureWin(levelIndex) {
     const lvlNum = levelIndex + 1;
     let creditsWon = 5;
     
+    // Stats & Achievements
+    if (!user.stats) user.stats = {};
+    if (user.adventure_level >= 4) { // Beating lvl 4 makes you reach lvl 5, so next adventure_level will be 5.
+        // wait, we update user.adventure_level below, so let's do it after level up.
+    }
+    
     // Milestones
     if (lvlNum === 10 && !user.adventure_completed_10) {
         creditsWon = 50;
         user.adventure_completed_10 = true;
-    } else if (lvlNum === 20 && !user.adventure_completed_20) {
-        creditsWon = 100;
-        user.adventure_completed_20 = true;
+    } else if (lvlNum === 20) {
+        user.stats.adventureBossWins = (user.stats.adventureBossWins || 0) + 1;
+        import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_3'));
+        if (!user.adventure_completed_20) {
+            creditsWon = 100;
+            user.adventure_completed_20 = true;
+        }
     }
     
     user.credits = (user.credits || 0) + creditsWon;
@@ -522,6 +532,9 @@ export function handleAdventureWin(levelIndex) {
         user.adventure_level += 1;
         if (user.adventure_level > (user.adventure_highest_level || 1)) {
             user.adventure_highest_level = user.adventure_level;
+        }
+        if (user.adventure_level >= 5) {
+            import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_5'));
         }
         updateWeeklyStat('adventureLevel', user.adventure_level);
     }
@@ -543,7 +556,8 @@ export function handleAdventureWin(levelIndex) {
         adventure_highest_level: user.adventure_highest_level || user.adventure_level,
         adventure_deck: user.adventure_deck,
         adventure_completed_10: user.adventure_completed_10 || false,
-        adventure_completed_20: user.adventure_completed_20 || false
+        adventure_completed_20: user.adventure_completed_20 || false,
+        stats: user.stats
     };
     
     updateDoc(doc(db, "users", user.uid), updates);
