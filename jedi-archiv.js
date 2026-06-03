@@ -19,7 +19,7 @@ export async function startJediArchive() {
         const { collection, query, where, getDocs, getDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
         const { db } = await import('./firebase-config.js');
 
-        const historyQuery = query(collection(db, "history"), where("uid", "==", user.uid));
+        const historyQuery = query(collection(db, "history"), where("username", "==", user.username));
         const historySnap = await getDocs(historyQuery);
         const historyDocs = historySnap.docs.map(d => d.data());
         
@@ -45,9 +45,9 @@ function calculateStats(historyDocs, globalStats, user) {
         if (doc.mode === currentMode) {
             if (doc.gameType === 'classic' || doc.gameType === 'advanced' || !doc.gameType) {
                 modeCounts['Ranking']++;
-                if (doc.rankingData && doc.rankingData.length > 0) {
-                    const first = doc.rankingData[0];
-                    const last = doc.rankingData[doc.rankingData.length - 1];
+                if (doc.ranking && doc.ranking.length > 0) {
+                    const first = doc.ranking[0];
+                    const last = doc.ranking[doc.ranking.length - 1];
                     
                     if (!charStats[first.name]) charStats[first.name] = { firsts: 0, lasts: 0, totalScore: 0, count: 0, img: first.img };
                     charStats[first.name].firsts++;
@@ -55,7 +55,7 @@ function calculateStats(historyDocs, globalStats, user) {
                     if (!charStats[last.name]) charStats[last.name] = { firsts: 0, lasts: 0, totalScore: 0, count: 0, img: last.img };
                     charStats[last.name].lasts++;
                     
-                    doc.rankingData.forEach((char, index) => {
+                    doc.ranking.forEach((char, index) => {
                         if (!charStats[char.name]) charStats[char.name] = { firsts: 0, lasts: 0, totalScore: 0, count: 0, img: char.img };
                         charStats[char.name].totalScore += (5 - index);
                         charStats[char.name].count++;
