@@ -1,4 +1,4 @@
-﻿import { LEGENDARY_POOL } from './data-starwars.js';
+import { LEGENDARY_POOL } from './data-starwars.js';
 function getSeenIds() {
     const raw = localStorage.getItem('seen_unlock_ids') || '';
     if (raw.startsWith('[')) {
@@ -1150,9 +1150,24 @@ window.openAlbumShowcaseModal = function(user, slotIndex) {
     };
     list.appendChild(emptyBtn);
 
-    // Get unique highest cards
+    // Get unique highest cards, respecting already showcased cards
+    const showcaseField = currentMode === 'starwars' ? 'album_showcase_starwars' : 'album_showcase_waifu';
+    const currentShowcase = user[showcaseField] || [null, null, null];
+    
+    let availableInventory = [...inventory];
+    
+    // Remove showcased cards from available inventory (excluding the current slot being edited)
+    currentShowcase.forEach((sc, idx) => {
+        if (sc && idx !== slotIndex) {
+            const indexToRemove = availableInventory.findIndex(c => c.charName === sc.charName && c.rarity === sc.rarity);
+            if (indexToRemove !== -1) {
+                availableInventory.splice(indexToRemove, 1);
+            }
+        }
+    });
+
     const grouped = {};
-    inventory.forEach(c => {
+    availableInventory.forEach(c => {
         if (!grouped[c.charName]) grouped[c.charName] = [];
         grouped[c.charName].push(c);
     });
@@ -1662,6 +1677,21 @@ window.dropCardToShowcase = async function(event, slotIndex) {
         
         let showcaseField = currentMode === 'starwars' ? 'album_showcase_starwars' : 'album_showcase_waifu';
         const currentShowcase = user[showcaseField] || [null, null, null];
+        const inventory = currentMode === 'starwars' ? (user.inventory_starwars || []) : (user.inventory_waifu || []);
+        
+        let usedCount = 0;
+        currentShowcase.forEach((sc, idx) => {
+            if (idx !== slotIndex && sc && sc.charName === cardData.charName && sc.rarity === cardData.rarity) {
+                usedCount++;
+            }
+        });
+        
+        let ownedCount = inventory.filter(c => c.charName === cardData.charName && c.rarity === cardData.rarity).length;
+        
+        if (usedCount >= ownedCount) {
+            alert('Du hast nicht genügend Kopien dieser Karte in dieser Seltenheit, um sie mehrfach auszustellen!');
+            return;
+        }
         
         while(currentShowcase.length < 3) currentShowcase.push(null);
         
