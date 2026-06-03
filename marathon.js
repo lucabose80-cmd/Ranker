@@ -294,6 +294,7 @@ async function gameOver() {
     container.innerHTML = `
         <h2 style="color: #ff4757; font-size: 2.5rem; margin-bottom: 10px; margin-top: 0;">GAME OVER</h2>
         <p style="font-size: 1.2rem; color: #fff; margin-bottom: 5px;">Score: <strong style="color:#ffd700;">${marathonScore}</strong> Charaktere</p>
+        <p style="font-size: 1.2rem; color: #fff; margin-bottom: 20px;">Belohnung: <strong style="color:#00d2d3;">+${marathonScore} Credits</strong></p>
         ${positionText}
         <button id="marathon-restart-btn" class="rank-btn" style="width: 100%; height: auto; padding: 15px; font-size: 1.2rem; background: linear-gradient(135deg, rgba(231,76,60,0.7), rgba(192,57,43,0.7)); color: white !important;">Erneut Spielen</button>
     `;
@@ -304,14 +305,31 @@ async function gameOver() {
     if (!user || user.isTestUser || user.role === 'admin') return;
     
     try {
-        // 1. Speichere im persönlichen Profil (All-time highscore)
+        // 1. Speichere im persönlichen Profil (All-time highscore und Credits Belohnung)
         const userRef = doc(db, 'users', user.uid);
         const userDoc = await getDoc(userRef);
         if (userDoc.exists()) {
             const data = userDoc.data();
             const currentHigh = data.marathonHighscore || 0;
+            const currentCredits = data.credits || 0;
+            
+            const updates = {};
+            if (marathonScore > 0) {
+                updates.credits = currentCredits + marathonScore;
+            }
             if (marathonScore > currentHigh) {
-                await updateDoc(userRef, { marathonHighscore: marathonScore });
+                updates.marathonHighscore = marathonScore;
+            }
+            
+            if (Object.keys(updates).length > 0) {
+                await updateDoc(userRef, updates);
+                
+                // Lokalen User aktualisieren für die UI-Anzeige
+                if (updates.credits) {
+                    user.credits = updates.credits;
+                    localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
+                    if (window.updateCreditProgressBars) window.updateCreditProgressBars();
+                }
             }
         }
         
