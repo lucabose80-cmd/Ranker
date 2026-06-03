@@ -1,4 +1,4 @@
-﻿import { LEGENDARY_POOL } from './data-starwars.js';
+import { LEGENDARY_POOL } from './data-starwars.js';
 // community.js
 import { db } from './firebase-config.js';
 import { collection, onSnapshot, query, orderBy, limit, addDoc, Timestamp, getDocs, where, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
@@ -256,6 +256,9 @@ export function initCommunity() {
                 if (section === 'cardgame-content') return '<span style="font-size:0.6rem; color:#2ed573; background:rgba(46,213,115,0.15); border:1px solid rgba(46,213,115,0.5); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">🃏 Cardgame</span>';
                 if (section === 'starwarsdle-content') return '<span style="font-size:0.6rem; color:#3498db; background:rgba(52,152,219,0.15); border:1px solid rgba(52,152,219,0.5); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">🔤 Starwarsdle</span>';
                 if (section === 'scoreboard-hub-content') return '<span style="font-size:0.6rem; color:#9b59b6; background:rgba(155,89,182,0.15); border:1px solid rgba(155,89,182,0.5); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">📊 Scoreboard</span>';
+                if (section === 'marathon-content') return '<span style="font-size:0.6rem; color:#ff4757; background:rgba(255,71,87,0.15); border:1px solid rgba(255,71,87,0.5); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">🏃 Marathon</span>';
+                if (section === 'imposter-content') return '<span style="font-size:0.6rem; color:#3dc1d3; background:rgba(61,193,211,0.15); border:1px solid rgba(61,193,211,0.5); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">🕵️ Imposter</span>';
+                if (section === 'adventure-content') return '<span style="font-size:0.6rem; color:#e15f41; background:rgba(225,95,65,0.15); border:1px solid rgba(225,95,65,0.5); border-radius:4px; padding:1px 4px; margin-top:3px; display:inline-block;">⚔️ Abenteuer</span>';
                 return '';
             }
 
