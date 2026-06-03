@@ -160,15 +160,13 @@ function renderPlacedList() {
         charEl.className = 'glass-panel';
         charEl.style.display = 'flex';
         charEl.style.alignItems = 'center';
-        charEl.style.padding = '5px 15px'; // Kompakter
-        charEl.style.justifyContent = 'space-between';
+        charEl.style.padding = '5px 10px';
+        charEl.style.gap = '8px';
         
         charEl.innerHTML = `
-            <div style="display:flex; align-items:center; gap: 10px;">
-                <div style="font-weight:bold; font-size:1.1rem; color:#aaa; width: 30px;">#${index + 1}</div>
-                <img src="${char.img}" style="width: 35px; height: 35px; object-fit: cover; border-radius: 50%;">
-                <div style="font-size: 1rem; font-weight: bold; color: #fff;">${char.name}</div>
-            </div>
+            <div style="font-weight:bold; font-size:1rem; color:#aaa;">#${index + 1}</div>
+            <img src="${char.img}" style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%;">
+            <div style="font-size: 0.9rem; font-weight: bold; color: #fff;">${char.name}</div>
         `;
         listContainer.appendChild(charEl);
         
@@ -180,14 +178,20 @@ function renderPlacedList() {
 function createInsertButton(insertIndex) {
     const btn = document.createElement('button');
     btn.className = 'rank-btn';
-    btn.style.width = '100%';
-    btn.style.padding = '3px'; // Kompakter
-    btn.style.margin = '1px 0'; // Kompakter
-    btn.style.fontSize = '0.8rem';
+    btn.style.width = '30px';
+    btn.style.height = '40px';
+    btn.style.display = 'flex';
+    btn.style.alignItems = 'center';
+    btn.style.justifyContent = 'center';
+    btn.style.padding = '0';
+    btn.style.margin = '0';
+    btn.style.fontSize = '1.2rem';
+    btn.style.fontWeight = 'bold';
     btn.style.background = 'rgba(255,255,255,0.05)';
     btn.style.border = '1px dashed rgba(255,255,255,0.2)';
     btn.style.color = '#aaa';
-    btn.textContent = 'Hier einfügen';
+    btn.style.borderRadius = '8px';
+    btn.textContent = '+';
     
     btn.onmouseover = () => {
         btn.style.background = 'rgba(231,76,60,0.3)';
@@ -213,21 +217,20 @@ function handleInsert(index) {
     
     // Check upper boundary (Lower index = higher rank = should have HIGHER score)
     // Wenn wir den Charakter einfügen, sollte der Charakter DARÜBER (index - 1) eigentlich BESSER sein (höherer Score).
-    // Falls der Charakter darüber WESENTLICH schlechter ist (Score < newScore - 8), ist es ein Fehler.
-    // Die Scores liegen normalerweise zwischen ~10 und ~45, daher ist eine Varianz von 8 realistisch.
+    // Wenn der Charakter darüber aber schlechter ist, ist es 1 zu 1 ein Fehler im Vergleich zur globalen Liste.
     if (index > 0) {
         const charAbove = placedCharacters[index - 1];
-        if (getGlobalAverageScore(charAbove) < newScore - 6) {
+        if (getGlobalAverageScore(charAbove) < newScore) {
             isMistake = true;
         }
     }
     
     // Check lower boundary (Higher index = lower rank = should have LOWER score)
     // Der Charakter DARUNTER (index) sollte eigentlich SCHLECHTER sein (niedrigerer Score).
-    // Falls der Charakter darunter WESENTLICH besser ist (Score > newScore + 8), ist es ein Fehler.
+    // Wenn er besser ist, ist es ein Fehler.
     if (index < placedCharacters.length) {
         const charBelow = placedCharacters[index];
-        if (getGlobalAverageScore(charBelow) > newScore + 6) {
+        if (getGlobalAverageScore(charBelow) > newScore) {
             isMistake = true;
         }
     }
