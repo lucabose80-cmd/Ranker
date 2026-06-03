@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ranking Game</title>
-    <link rel="stylesheet" href="style.css?v=8.1.5">
-    <link id="theme-stylesheet" rel="stylesheet" href="theme-starwars.css?v=8.1.5">
-    <link rel="stylesheet" href="theme-sith.css?v=8.1.5">
+    <link rel="stylesheet" href="style.css?v=8.2.0">
+    <link id="theme-stylesheet" rel="stylesheet" href="theme-starwars.css?v=8.2.0">
+    <link rel="stylesheet" href="theme-sith.css?v=8.2.0">
 
 </head>
 <body>
@@ -196,6 +196,10 @@
                 <span style="font-size: 0.7rem; color: #aaa;">Shop</span>
                 <div id="shop-unlock-dot" class="notification-dot" style="display:none; position:absolute; top:0px; right:15px; width:10px; height:10px; background:#f1c40f; border-radius:50%; box-shadow:0 0 8px #f1c40f;"></div>
             </button>
+            <button id="nav-bank-btn" class="dock-btn nav-link" data-target="bank-content" title="Galaktische Bank" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px; position: relative;">
+                <span style="font-size: 1.5rem; margin-bottom: 5px;">🏦</span>
+                <span style="font-size: 0.7rem; color: #aaa;">Bank</span>
+            </button>
             <button class="dock-btn nav-link" data-target="lexikon-content" title="Lexikon" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px; position: relative;">
                 <span style="font-size: 1.5rem; margin-bottom: 5px;">📖</span>
                 <span style="font-size: 0.7rem; color: #aaa;">Lexikon</span>
@@ -225,6 +229,38 @@
         </div>
 
         <div class="main-scroll-content">
+
+        <!-- GALAKTISCHE BANK -->
+        <div id="bank-content" class="tab-content hidden app-container">
+            <div style="text-align: center; margin-bottom: 30px; margin-top: 40px;">
+                <h1 style="font-size: 2.5rem; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); margin: 0; letter-spacing: 2px;">🏦 GALAKTISCHE BANK</h1>
+                <p style="color: #aaa; margin-top: 10px;">Lege Credits an und erhalte täglich 1% Zinsen (bis zu 200 Credits Limit).<br>Zinsen werden sekündlich berechnet!</p>
+            </div>
+            <div style="max-width: 600px; margin: 0 auto; background: rgba(26,30,41,0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255,215,0,0.3); border-radius: 20px; padding: 30px; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.3);">
+                <div style="display: flex; justify-content: space-around; margin-bottom: 30px;">
+                    <div>
+                        <div style="color: #aaa; font-size: 0.9rem;">Wallet (Verfügbar)</div>
+                        <div id="bank-wallet-display" style="font-size: 2rem; color: #fff; font-weight: bold;">0</div>
+                    </div>
+                    <div>
+                        <div style="color: #aaa; font-size: 0.9rem;">Angelegt (Bank)</div>
+                        <div id="bank-balance-display" style="font-size: 2rem; color: #ffd700; font-weight: bold; text-shadow: 0 0 10px rgba(255,215,0,0.5);">0</div>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-bottom: 30px;">
+                    <div style="color: #aaa; font-size: 0.9rem; margin-bottom: 5px;">Ausstehende Zinsen</div>
+                    <div id="bank-interest-display" style="font-size: 2.5rem; color: #2ed573; font-weight: bold; text-shadow: 0 0 15px rgba(46,213,115,0.5);">0.0000</div>
+                    <button id="bank-claim-btn" class="rank-btn" style="margin-top: 15px; background: linear-gradient(135deg, #2ed573, #27ae60); border: none; color: white; padding: 10px 20px; font-size: 1.1rem; border-radius: 8px;">Zinsen Auszahlen</button>
+                </div>
+
+                <div style="display: flex; gap: 10px; justify-content: center; align-items: center;">
+                    <input type="number" id="bank-amount-input" placeholder="Betrag..." style="background: rgba(0,0,0,0.5); border: 1px solid #444; color: #fff; padding: 15px; border-radius: 8px; font-size: 1.1rem; width: 150px; text-align: center;" min="1">
+                    <button id="bank-deposit-btn" class="rank-btn" style="background: #3498db; border: none; color: white; padding: 15px; font-size: 1.1rem; border-radius: 8px;">Einzahlen</button>
+                    <button id="bank-withdraw-btn" class="rank-btn" style="background: #e74c3c; border: none; color: white; padding: 15px; font-size: 1.1rem; border-radius: 8px;">Abheben</button>
+                </div>
+            </div>
+        </div>
 
         <!-- HAUPT HUB BEREICH -->
         <div id="hub-content" class="tab-content app-container">
@@ -1025,7 +1061,7 @@
     </div>
 </div>
     
-    <script type="module" src="utils.js?v=8.1.5"></script>
+    <script type="module" src="utils.js?v=8.2.0"></script>
     <div id="private-chat-modal" class="modal hidden">
         <div class="modal-content" style="max-width: 400px; padding: 20px;">
             <h2 id="private-chat-title" class="theme-heading">Chat</h2>
@@ -1094,7 +1130,7 @@
         </div>
     </div>
 
-    <script type="module" src="main.js?v=8.1.5"></script>
+    <script type="module" src="main.js?v=8.2.0"></script>
 </body>
 </html>
 
