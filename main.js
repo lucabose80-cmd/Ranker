@@ -83,7 +83,13 @@ window.applyActiveBackground = function(user) {
         if (bg.type === 'color') {
             document.body.style.background = bg.value;
         } else if (bg.type === 'image') {
-            document.body.style.background = `url('${bg.value}') center/cover fixed`;
+            document.body.style.background = ''; // reset shorthand
+            document.body.style.backgroundColor = '#0d1117'; // fallback
+            document.body.style.backgroundImage = `url('${bg.value}')`;
+            document.body.style.backgroundPosition = 'center';
+            document.body.style.backgroundSize = 'cover';
+            document.body.style.backgroundRepeat = 'no-repeat';
+            document.body.style.backgroundAttachment = 'fixed';
         }
     }
 };

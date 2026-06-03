@@ -287,7 +287,9 @@ function renderBackgroundsShop(user) {
 
     BACKGROUNDS.forEach(bg => {
         const isOwned = bg.price === 0 || unlocked.includes(bg.id);
-        const previewStyle = bg.type === 'color' ? `background: ${bg.value};` : `background: url('${bg.value}') center/cover;`;
+        const previewStyle = bg.type === 'color' 
+            ? `background-color: ${bg.value};` 
+            : `background-image: url('${bg.value}'); background-position: center; background-size: cover; background-repeat: no-repeat;`;
         
         const el = document.createElement('div');
         el.className = 'booster-pack-card';
