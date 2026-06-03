@@ -23,28 +23,6 @@ let playerGraveyard = [];
 let opponentGraveyard = [];
 let pEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
 let oEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false, rule9Done: false, rule18Done: false };
-    if (isAdventureMatch) {
-        const user = getCurrentUser();
-        if (user && user.adventure_buffs) {
-            pEffects.buffs = user.adventure_buffs;
-            if (pEffects.buffs.includes('buff_jedi')) playerScore += 50;
-            if (pEffects.buffs.includes('buff_schurke')) { playerScore += 30; opponentScore -= 30; }
-            if (pEffects.buffs.includes('buff_hutte')) { oEffects.hutteDebuff = true; }
-            if (pEffects.buffs.includes('buff_imperium') && opponentHandRemaining.length > 0) {
-                const rIdx = Math.floor(Math.random() * opponentHandRemaining.length);
-                opponentGraveyard.push(opponentHandRemaining[rIdx]);
-                opponentHandRemaining.splice(rIdx, 1);
-            }
-            if (pEffects.buffs.includes('buff_schmuggel')) {
-                const inv = currentMode === 'starwars' ? (user.inventory_starwars || []) : (user.inventory_waifu || []);
-                if (inv.length > 0) {
-                    const extra = inv[Math.floor(Math.random() * inv.length)];
-                    const cData = activeCharacterDatabase.find(c => c.name === extra.charName);
-                    if (cData) playerHandRemaining.push({ char: cData, rarity: extra.rarity });
-                }
-            }
-        }
-    }
 let globalScoresCache = {};
 let isBotMatch = false;
 let liveMatchActive = false;
@@ -664,6 +642,10 @@ async function startMatch(oppData, oppDeckArr) {
     opponentGraveyard = [];
     pEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
     oEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false, rule9Done: false, rule18Done: false };
+    isBotMatch = true;
+    isAdventureMatch = true;
+    adventureLevelIndex = levelIndex;
+    adventureRule = oppData.ruleId || null;
     if (isAdventureMatch) {
         const user = getCurrentUser();
         if (user && user.adventure_buffs) {
@@ -730,6 +712,10 @@ export async function startAdventureMatch(levelIndex, oppData, oppDeckArr, playe
     opponentGraveyard = [];
     pEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
     oEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false, rule9Done: false, rule18Done: false };
+    isBotMatch = true;
+    isAdventureMatch = true;
+    adventureLevelIndex = levelIndex;
+    adventureRule = oppData.ruleId || null;
     if (isAdventureMatch) {
         const user = getCurrentUser();
         if (user && user.adventure_buffs) {
@@ -752,11 +738,6 @@ export async function startAdventureMatch(levelIndex, oppData, oppDeckArr, playe
             }
         }
     }
-    
-    isBotMatch = true;
-    isAdventureMatch = true;
-    adventureLevelIndex = levelIndex;
-    adventureRule = oppData.ruleId || null;
     
     document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
     document.getElementById('cardgame-content').classList.remove('hidden');
