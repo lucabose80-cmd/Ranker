@@ -480,9 +480,12 @@ function setupGameUI(user) {
     setupSubNav('.cardgame-sub-nav', ['cardgame-matchmaking', 'cardgame-deckbuilder', 'adventure-content', 'cardgame-bots', 'cardgame-match'], { 'cardgame-deckbuilder': () => { document.getElementById('cardgame-btn-deck')?.click(); }, 'cardgame-bots': () => { document.getElementById('cardgame-btn-bot')?.click(); } });
     
     setupSubNav('.scoreboard-sub-nav', ['scoreboard-content', 'history-content'], {
-        'history-content': () => { renderHistory(); }
+        'scoreboard-content': () => { if (typeof window.refreshScoreboardUI === 'function') window.refreshScoreboardUI(getCurrentUser(), 'classic'); },
+        'history-content': () => { if (typeof window.refreshHistoryUI === 'function') window.refreshHistoryUI(getCurrentUser()); }
     });
 
+    setupSubNav('.shop-sub-nav', ['shop-boosters', 'shop-soundtracks', 'shop-backgrounds']);
+    
     initStarWarsdle();
     initCardgame();
 

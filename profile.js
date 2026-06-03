@@ -428,7 +428,7 @@ export function updateTabNotificationDots(user) {
     const unlockedTitles = currentMode === 'starwars' ? (user.unlocked_titles_starwars || []) : (user.unlocked_titles_waifu || []);
     const hasUnseenTitle = (TITLES[currentMode] || []).some(t => {
         let isUnlocked = t.secret ? unlockedTitles.includes(t.id) : gamesPlayed >= t.required;
-        if (t.condition && (t.condition.type === 'bot_defeat' || t.condition.type === 'custom')) isUnlocked = unlockedTitles.includes(t.id);
+        if (t.condition && (t.condition.type === 'bot_defeat' || t.condition.type === 'custom' || t.condition.type === 'stats_check')) isUnlocked = unlockedTitles.includes(t.id);
         return isUnlocked && !seenIds.includes(t.id);
     });
 
@@ -497,17 +497,17 @@ function renderTitleSelection(user, gamesPlayed) {
     availableTitles.sort((a, b) => {
         const aUnlockedList = currentMode === 'starwars' ? (user.unlocked_titles_starwars || []) : (user.unlocked_titles_waifu || []);
         let aLocked = a.secret ? !aUnlockedList.includes(a.id) : gamesPlayed < a.required;
-        if (a.condition && (a.condition.type === 'bot_defeat' || a.condition.type === 'custom')) aLocked = !aUnlockedList.includes(a.id);
+        if (a.condition && (a.condition.type === 'bot_defeat' || a.condition.type === 'custom' || a.condition.type === 'stats_check')) aLocked = !aUnlockedList.includes(a.id);
         const bUnlockedList = currentMode === 'starwars' ? (user.unlocked_titles_starwars || []) : (user.unlocked_titles_waifu || []);
         let bLocked = b.secret ? !bUnlockedList.includes(b.id) : gamesPlayed < b.required;
-        if (b.condition && (b.condition.type === 'bot_defeat' || b.condition.type === 'custom')) bLocked = !bUnlockedList.includes(b.id);
+        if (b.condition && (b.condition.type === 'bot_defeat' || b.condition.type === 'custom' || b.condition.type === 'stats_check')) bLocked = !bUnlockedList.includes(b.id);
         return (aLocked === bLocked) ? 0 : aLocked ? 1 : -1;
     });
 
     availableTitles.forEach(t => {
         let isLocked = gamesPlayed < t.required;
         const unlockedList = currentMode === 'starwars' ? (user.unlocked_titles_starwars || []) : (user.unlocked_titles_waifu || []);
-        if (t.condition && (t.condition.type === 'bot_defeat' || t.condition.type === 'custom')) {
+        if (t.condition && (t.condition.type === 'bot_defeat' || t.condition.type === 'custom' || t.condition.type === 'stats_check')) {
             isLocked = !unlockedList.includes(t.id);
         }
         
@@ -521,7 +521,7 @@ function renderTitleSelection(user, gamesPlayed) {
         if (t.condition) {
             if (t.condition.type === 'bot_defeat') {
                 baseReqText = `Besiege Bot Stufe ${t.condition.level} im Cardgame`;
-            } else if (t.condition.type === 'custom') {
+            } else if (t.condition.type === 'custom' || t.condition.type === 'stats_check') {
                 baseReqText = t.condition.desc;
             } else if (t.condition.type === 'tag_full_team') {
                 const reqCount = t.condition.count || 5;
