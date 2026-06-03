@@ -1,6 +1,6 @@
-﻿export const patchNotesStarWars = [
+export const patchNotesStarWars = [
     {
-        version: "v8.4",
+        version: "v8.5",
         title: "Feature Update: Galaktische Liga & Abenteuer Boss",
         isHotfix: false,
         changes: [
