@@ -342,15 +342,9 @@ export async function markUpdatesAsRead(mode, version) {
 
 export async function logout() {
     if(heartbeatInterval) clearInterval(heartbeatInterval);
-    // Setzt lastActive auf einen weit vergangenen Timestamp, damit der Online-Tracker den User sofort entfernt
-    const user = getCurrentUser();
-    if (user) {
-        try {
-            await updateDoc(doc(db, "users", user.uid), {
-                lastActive: new Timestamp(0, 0) // 1. Januar 1970 = definitiv offline
-            });
-        } catch(e) {}
-    }
+    // Wir setzen lastActive NICHT mehr auf 0, um den Zeitstempel für "Zuletzt online" zu bewahren.
+    // Der User fällt nach 2 Minuten (Heartbeat-Timeout) automatisch aus der Online-Liste.
+    
     // StarWarsdle Fortschritt löschen damit beim Accountwechsel kein fremder Fortschritt sichtbar ist
     localStorage.removeItem('starwarsdle_date');
     localStorage.removeItem('starwarsdle_won');
@@ -360,16 +354,9 @@ export async function logout() {
 }
 
 export async function markCurrentUserOffline() {
-    const user = getCurrentUser();
-    if (!user) return;
-    try {
-        await updateDoc(doc(db, "users", user.uid), {
-            lastActive: new Timestamp(0, 0)
-        });
-        trackWrite(1);
-    } catch (e) {
-        // ignore if request cannot complete during unload
-    }
+    // Wird aufgerufen wenn das Fenster geschlossen wird.
+    // Wir überschreiben lastActive nicht mehr mit 0, damit wir später anzeigen können,
+    // WANN der User zuletzt online war. Er wird ohnehin nach 2 Min offline angezeigt.
 }
 
 export function getCurrentUser() {

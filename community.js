@@ -569,21 +569,26 @@ function openUserProfileModal(u) {
     let isOnlineNow = false;
     if (u.lastActive) {
         const timeMs = typeof u.lastActive.toMillis === 'function' ? u.lastActive.toMillis() : (u.lastActive.seconds ? u.lastActive.seconds * 1000 : Number(u.lastActive));
-        const diffMs = Date.now() - timeMs;
-        if (diffMs < 120000) {
-            isOnlineNow = true;
-            lastOnlineText = "Gerade online";
-        } else {
-            const diffMins = Math.floor(diffMs / 60000);
-            const diffHours = Math.floor(diffMins / 60);
-            const diffDays = Math.floor(diffHours / 24);
-            if (diffMins < 60) {
-                lastOnlineText = `Vor ${diffMins} Minute${diffMins !== 1 ? 'n' : ''}`;
-            } else if (diffHours < 24) {
-                lastOnlineText = `Vor ${diffHours} Stunde${diffHours !== 1 ? 'n' : ''}`;
+        
+        if (timeMs > 10000) {
+            const diffMs = Date.now() - timeMs;
+            if (diffMs < 120000) {
+                isOnlineNow = true;
+                lastOnlineText = "Gerade online";
             } else {
-                lastOnlineText = `Vor ${diffDays} Tag${diffDays !== 1 ? 'en' : ''}`;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMins / 60);
+                const diffDays = Math.floor(diffHours / 24);
+                if (diffMins < 60) {
+                    lastOnlineText = `Vor ${diffMins} Minute${diffMins !== 1 ? 'n' : ''}`;
+                } else if (diffHours < 24) {
+                    lastOnlineText = `Vor ${diffHours} Stunde${diffHours !== 1 ? 'n' : ''}`;
+                } else {
+                    lastOnlineText = `Vor ${diffDays} Tag${diffDays !== 1 ? 'en' : ''}`;
+                }
             }
+        } else {
+            lastOnlineText = "Offline";
         }
     }
     
