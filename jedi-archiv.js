@@ -20,8 +20,10 @@ export async function startJediArchive() {
         const { db } = await import('./firebase-config.js');
 
         const historyQuery = query(collection(db, "history"), where("username", "==", user.username));
-        const historySnap = await getDocs(historyQuery);
-        const historyDocs = historySnap.docs.map(d => d.data());
+        const gamesQuery = query(collection(db, "games"), where("username", "==", user.username));
+        
+        const [historySnap, gamesSnap] = await Promise.all([getDocs(historyQuery), getDocs(gamesQuery)]);
+        const historyDocs = [...historySnap.docs.map(d => d.data()), ...gamesSnap.docs.map(d => d.data())];
         
         const gScoresSnap = await getDoc(doc(db, "scores", `${currentMode}_classic_global`));
         const globalStats = gScoresSnap.exists() ? gScoresSnap.data().characters : {};
@@ -42,22 +44,27 @@ function calculateStats(historyDocs, globalStats, user) {
     let modeCounts = { 'Ranking': 0, 'Cardgame': 0, 'Imposter': 0, 'Marathon': 0 };
     
     historyDocs.forEach(doc => {
-        if (doc.mode === currentMode) {
+        const dMode = doc.mode || 'starwars'; // Fallback for very old games
+        if (dMode === currentMode) {
             if (doc.gameType === 'classic' || doc.gameType === 'advanced' || !doc.gameType) {
                 modeCounts['Ranking']++;
-                if (doc.ranking && doc.ranking.length > 0) {
-                    const first = doc.ranking[0];
-                    const last = doc.ranking[doc.ranking.length - 1];
-                    
-                    if (!charStats[first.name]) charStats[first.name] = { firsts: 0, lasts: 0, totalScore: 0, count: 0, img: first.img };
-                    charStats[first.name].firsts++;
-                    
-                    if (!charStats[last.name]) charStats[last.name] = { firsts: 0, lasts: 0, totalScore: 0, count: 0, img: last.img };
-                    charStats[last.name].lasts++;
-                    
-                    doc.ranking.forEach((char, index) => {
-                        if (!charStats[char.name]) charStats[char.name] = { firsts: 0, lasts: 0, totalScore: 0, count: 0, img: char.img };
-                        charStats[char.name].totalScore += (5 - index);
+                
+                let ranking = doc.ranking;
+                if (!ranking && doc.character1) {
+                    ranking = [];
+                    for (let i = 1; i <= 5; i++) {
+                        if (doc[`character${i}`]) ranking.push({ name: doc[`character${i}`], img: '' });
+                    }
+                }
+                
+                if (ranking && ranking.length > 0) {
+                    const maxIdx = ranking.length - 1;
+                    ranking.forEach((char, idx) => {
+                        if (!charStats[char.name]) charStats[char.name] = { sum: 0, count: 0, img: char.img, name: char.name };
+                        if (!charStats[char.name].img && char.img) charStats[char.name].img = char.img;
+                        
+                        const normalizedRank = maxIdx > 0 ? ((idx / maxIdx) * 4) + 1 : 1;
+                        charStats[char.name].sum += normalizedRank;
                         charStats[char.name].count++;
                     });
                 }
@@ -69,8 +76,8 @@ function calculateStats(historyDocs, globalStats, user) {
     modeCounts['Cardgame'] = user.cardgameStats ? (user.cardgameStats.wins || 0) + (user.cardgameStats.losses || 0) : 0;
     modeCounts['StarWarsdle'] = user.starwarsdle_won || 0;
     
-    let liebling = { name: "Niemand", img: "", count: 0 };
-    let erzfeind = { name: "Niemand", img: "", count: 0 };
+    let liebling = { name: "Niemand", img: "", avg: 999 };
+    let erzfeind = { name: "Niemand", img: "", avg: -1 };
     let hotTake = { name: "Keiner", img: "", diff: 0, userAvg: 0, globalAvg: 0 };
     let totalJediRebel = 0;
     let totalSithEmpire = 0;
@@ -82,26 +89,39 @@ function calculateStats(historyDocs, globalStats, user) {
     
     Object.keys(charStats).forEach(name => {
         const stats = charStats[name];
-        if (stats.firsts > liebling.count) { liebling = { name, count: stats.firsts, img: stats.img }; }
-        if (stats.lasts > erzfeind.count) { erzfeind = { name, count: stats.lasts, img: stats.img }; }
         
+        // Finde Missing Images in charsData falls nötig
         const charInfo = charsData.find(c => c.name === name);
-        if (charInfo && stats.firsts > 0) {
+        if (!stats.img && charInfo && charInfo.img) stats.img = charInfo.img;
+
+        // Liebling / Erzfeind (Minimum 2 gespielte Runden für Repräsentativität)
+        if (stats.count >= 2) {
+            const avg = stats.sum / stats.count;
+            if (avg < liebling.avg) { liebling = { name, avg, img: stats.img, count: stats.count }; }
+            if (avg > erzfeind.avg) { erzfeind = { name, avg, img: stats.img, count: stats.count }; }
+        }
+        
+        if (charInfo && stats.count > 0) {
             const f = charInfo.faction ? charInfo.faction.join(' ').toLowerCase() : '';
-            if (f.includes('jedi') || f.includes('republik') || f.includes('rebell')) totalJediRebel += stats.firsts;
-            if (f.includes('sith') || f.includes('imperium') || f.includes('separatist')) totalSithEmpire += stats.firsts;
+            if (f.includes('jedi') || f.includes('republik') || f.includes('rebell')) totalJediRebel += stats.count;
+            if (f.includes('sith') || f.includes('imperium') || f.includes('separatist')) totalSithEmpire += stats.count;
         }
         
         if (stats.count >= 2 && globalStats && globalStats[name] && globalStats[name].count >= 3) {
-            const userAvgScore = stats.totalScore / stats.count;
+            // Inverse the user average for comparison because global score is higher = better
+            // stats.sum is 1 to 5 (1 is best).
+            const userScore = 6 - (stats.sum / stats.count); 
             const globalAvgScore = globalStats[name].score / globalStats[name].count;
-            const diff = userAvgScore - globalAvgScore;
-            // Positiver diff = User mag ihn viel mehr als die Community
+            const diff = userScore - globalAvgScore;
+            
             if (diff > hotTake.diff) {
-                hotTake = { name, img: stats.img, diff, userAvg: userAvgScore, globalAvg: globalAvgScore };
+                hotTake = { name, img: stats.img, diff, userAvg: userScore, globalAvg: globalAvgScore };
             }
         }
     });
+
+    if (liebling.avg === 999) liebling = { name: "Niemand", img: "", count: 0 };
+    if (erzfeind.avg === -1) erzfeind = { name: "Niemand", img: "", count: 0 };
 
     let bestMode = "Ranking";
     let maxPlays = modeCounts['Ranking'];
@@ -139,7 +159,7 @@ function renderSlide(index) {
                     ${cachedStats.liebling.img ? `<img src="${cachedStats.liebling.img}">` : '<div class="jedi-placeholder"></div>'}
                 </div>
                 <h3>${cachedStats.liebling.name}</h3>
-                <p>Wenn es hart auf hart kommt, wählst du immer ihn. Niemand stand öfter an der Spitze deiner Listen (${cachedStats.liebling.count}x Platz 1).</p>
+                <p>Wenn es hart auf hart kommt, wählst du immer ihn. Niemand steht im Durchschnitt weiter oben auf deinen Listen (Ø Platz ${(cachedStats.liebling.avg||1).toFixed(1)} nach ${cachedStats.liebling.count} Matches).</p>
             </div>
         `;
     } else if (index === 1) {
@@ -151,7 +171,7 @@ function renderSlide(index) {
                     ${cachedStats.erzfeind.img ? `<img src="${cachedStats.erzfeind.img}">` : '<div class="jedi-placeholder"></div>'}
                 </div>
                 <h3>${cachedStats.erzfeind.name}</h3>
-                <p>Jeder Held braucht einen Schurken. Mit ihm wirst du einfach nicht warm. Er landete stolze ${cachedStats.erzfeind.count}x auf deinem letzten Platz.</p>
+                <p>Jeder Held braucht einen Schurken. Mit ihm wirst du einfach nicht warm. Durchschnittlich verbanntest du ihn auf Platz ${(cachedStats.erzfeind.avg||5).toFixed(1)}.</p>
             </div>
         `;
     } else if (index === 2) {
