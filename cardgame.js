@@ -1,4 +1,4 @@
-﻿import { getCurrentUser } from './auth.js';
+import { getCurrentUser } from './auth.js';
 import { activeCharacterDatabase } from './theme.js';
 import { handleAdventureWin, handleAdventureLoss } from './adventure.js';
 import { db } from './firebase-config.js';
@@ -1188,7 +1188,11 @@ function playRound(playerCard, explicitOppCard = null) {
     
     if (isWin && !isDraw) {
         playerScore++;
-        if (!oSilence && pHas('Kopfgeldjäger') && pFac === 'Kopfgeldjäger' && oFac === pEffects.bountyTarget) { playerScore++; pLog.push("Kopfgeldjäger (+1 Extra-Punkt)"); }
+        if (!oSilence && pHas('Kopfgeldjäger') && pFac === 'Kopfgeldjäger' && oFac === pEffects.bountyTarget) { 
+            playerScore++; 
+            pLog.push("Kopfgeldjäger (+1 Extra-Punkt)"); 
+            window.bountyBuffActiveThisMatch = true; 
+        }
     } else if (!isWin && !isDraw) {
         opponentScore++;
         if (!pSilence && oHas('Kopfgeldjäger') && oFac === 'Kopfgeldjäger' && pFac === oEffects.bountyTarget) { opponentScore++; oLog.push("Kopfgeldjäger (+1 Extra-Punkt)"); }
@@ -1760,6 +1764,8 @@ function listenToSpecificCardgameLobby(lobbyId) {
 }
 let isLivePvP = false;
 let livePvPRoundProcessed = false;
+window.usedRevivedCardThisMatch = false;
+window.bountyBuffActiveThisMatch = false;
 
 async function playRoundLive(cardIndex) {
     const user = getCurrentUser();

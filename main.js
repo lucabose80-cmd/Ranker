@@ -1,4 +1,4 @@
-﻿
+
 window.getSharedAudioContext = function() {
     if (!window.sharedAudioContext) {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -23,6 +23,8 @@ import { renderHistory, initHistoryListener, stopHistoryListener } from './histo
 import { renderScoreboard } from './scoreboard.js';
 import { renderLexikon, initLexikonTabs } from './lexikon.js';
 import { initProfile, renderAvatarSelection, updateTopbarAvatarElement, applyColorTheme, refreshProfileContent, clearProfileUnlockDot } from './profile.js';
+import { SOUNDTRACKS } from './soundtracks.js';
+import { BACKGROUNDS } from './backgrounds.js';
 import { initCommunity, stopCommunity } from './community.js?v=8.4.0';
 import { initVersus, stopVersus } from './versus.js';
 import { initStarWarsdle } from './starwarsdle.js';
@@ -40,6 +42,66 @@ import { initChallenges } from './challenges.js';
 
 const eyeOpenSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
 const eyeClosedSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
+
+window.isAudioMuted = localStorage.getItem('isAudioMuted') === 'true';
+
+window.setAudioMuted = function(muted) {
+    window.isAudioMuted = muted;
+    localStorage.setItem('isAudioMuted', muted);
+    const audioEl = document.getElementById('bg-audio');
+    const muteBtn = document.getElementById('mute-toggle-btn');
+    if (audioEl) {
+        if (muted) {
+            audioEl.pause();
+        } else {
+            audioEl.play().catch(() => {});
+        }
+    }
+    if (muteBtn) {
+        muteBtn.textContent = muted ? '🔇' : '🎵';
+    }
+};
+
+window.pauseBackgroundMusic = function() {
+    const audioEl = document.getElementById('bg-audio');
+    if (audioEl && !window.isAudioMuted) {
+        audioEl.pause();
+    }
+};
+
+window.resumeBackgroundMusic = function() {
+    const audioEl = document.getElementById('bg-audio');
+    if (audioEl && !window.isAudioMuted) {
+        audioEl.play().catch(() => {});
+    }
+};
+
+window.applyActiveBackground = function(user) {
+    const activeBgId = user.active_background || 'bg_default';
+    const bg = BACKGROUNDS.find(b => b.id === activeBgId);
+    if (bg) {
+        if (bg.type === 'color') {
+            document.body.style.background = bg.value;
+        } else if (bg.type === 'image') {
+            document.body.style.background = `url('${bg.value}') center/cover fixed`;
+        }
+    }
+};
+
+window.applyActiveSoundtrack = function(user) {
+    const activeStId = user.active_soundtrack || 'st_standard';
+    const st = SOUNDTRACKS.find(s => s.id === activeStId);
+    const audioEl = document.getElementById('bg-audio');
+    if (audioEl && st) {
+        const currentSrc = audioEl.getAttribute('src');
+        if (currentSrc !== st.file) {
+            audioEl.src = st.file;
+            if (!window.isAudioMuted) {
+                audioEl.play().catch(() => {});
+            }
+        }
+    }
+};
 
 // Globaler Cleanup für alle Firebase Listener bei Seitenunload oder Reload
 function cleanupAllListeners() {
@@ -214,6 +276,18 @@ function setupGameUI(user) {
     document.getElementById('player-greeting').textContent = user.displayName;
     updateTopbarAvatarElement(user);
     applyColorTheme(user);
+    
+    window.applyActiveBackground(user);
+    window.applyActiveSoundtrack(user);
+    
+    const muteBtn = document.getElementById('mute-toggle-btn');
+    if (muteBtn) {
+        muteBtn.textContent = window.isAudioMuted ? '🔇' : '🎵';
+        muteBtn.addEventListener('click', () => {
+            window.setAudioMuted(!window.isAudioMuted);
+        });
+    }
+
     document.getElementById('logout-btn').addEventListener('click', logout);
 
     // Horizontal scroll for game-nav on mouse wheel

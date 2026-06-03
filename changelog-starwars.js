@@ -1,5 +1,17 @@
 export const patchNotesStarWars = [
     {
+        version: "v8.8",
+        title: "Major Update: Audio System & Ducking",
+        isHotfix: false,
+        changes: [
+            "Feature: Umfassendes neues Soundtrack und Background System hinzugefügt!",
+            "Feature: In deinem Profil kannst du nun aus verschiedenen exklusiven Soundtracks und dynamischen Hintergründen (Farben & Bilder) wählen.",
+            "Feature: Ducking Mechanik! Beim Öffnen von Booster Packs oder beim Spielen legendärer Karten im Cardgame pausiert der Soundtrack elegant, um die epischen Soundeffekte wirken zu lassen.",
+            "QoL: Ein neuer Mute-Button im Kopfmenü erlaubt es dir, die Hintergrundmusik jederzeit zu pausieren.",
+            "QoL: Deine gewählte Musik und der Hintergrund werden über Firebase gespeichert und laden beim nächsten Login sofort wieder."
+        ]
+    },
+    {
         version: "v8.7",
         title: "Major Update: Abenteuer Boss Buffs & Schwarzmarkt",
         isHotfix: false,

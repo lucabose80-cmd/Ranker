@@ -17,6 +17,8 @@ import { activeCharacterDatabase } from './theme.js';
 import { currentMode } from './mode-state.js';
 import { TITLES } from './titles.js';
 import { THEMES } from './themes.js';
+import { SOUNDTRACKS } from './soundtracks.js';
+import { BACKGROUNDS } from './backgrounds.js';
 
 export function renderAvatarSelection() {
     const user = getCurrentUser();
@@ -162,6 +164,35 @@ export function initProfile() {
     const user = getCurrentUser();
     if (!user) return;
     document.getElementById('profile-displayname').value = user.displayName;
+
+    const stSelect = document.getElementById('profile-soundtrack');
+    const bgSelect = document.getElementById('profile-background');
+    if (stSelect) {
+        stSelect.innerHTML = '';
+        const unlockedSt = user.unlocked_soundtracks || [];
+        SOUNDTRACKS.forEach(st => {
+            if (st.price === 0 || unlockedSt.includes(st.id)) {
+                const opt = document.createElement('option');
+                opt.value = st.id;
+                opt.textContent = st.name;
+                if (user.active_soundtrack === st.id || (!user.active_soundtrack && st.id === 'st_standard')) opt.selected = true;
+                stSelect.appendChild(opt);
+            }
+        });
+    }
+    if (bgSelect) {
+        bgSelect.innerHTML = '';
+        const unlockedBg = user.unlocked_backgrounds || [];
+        BACKGROUNDS.forEach(bg => {
+            if (bg.price === 0 || unlockedBg.includes(bg.id)) {
+                const opt = document.createElement('option');
+                opt.value = bg.id;
+                opt.textContent = bg.name;
+                if (user.active_background === bg.id || (!user.active_background && bg.id === 'bg_default')) opt.selected = true;
+                bgSelect.appendChild(opt);
+            }
+        });
+    }
 
     // Setup Tabs (nur einmal binden)
     document.querySelectorAll('.profile-tab-btn').forEach(btn => {
@@ -313,13 +344,37 @@ export function initProfile() {
         const newPass = document.getElementById('profile-password').value;
         const res = await updateUserProfile(newName, newPass || null, undefined);
         const feedback = document.getElementById('profile-feedback');
-        feedback.classList.remove('hidden');
-        feedback.textContent = res.success ? "Daten gespeichert!" : "Fehler: " + res.message;
-        feedback.style.color = res.success ? "#2ed573" : "#ff4757";
+        
         if (res.success) {
+            const activeSt = document.getElementById('profile-soundtrack')?.value;
+            const activeBg = document.getElementById('profile-background')?.value;
+            user.active_soundtrack = activeSt;
+            user.active_background = activeBg;
+            localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
+
+            try {
+                const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+                const { db } = await import('./firebase-config.js');
+                await updateDoc(doc(db, "users", user.uid), {
+                    active_soundtrack: activeSt,
+                    active_background: activeBg
+                });
+                
+                if (window.applyActiveBackground) window.applyActiveBackground(user);
+                if (window.applyActiveSoundtrack) window.applyActiveSoundtrack(user);
+            } catch(e) {
+                console.error("Fehler beim Speichern der Audio/BG Einstellungen", e);
+            }
+
+            feedback.textContent = "Daten gespeichert!";
+            feedback.style.color = "#2ed573";
             document.getElementById('player-greeting').textContent = newName;
             updateTopbarAvatarElement(res.user);
+        } else {
+            feedback.textContent = "Fehler: " + res.message;
+            feedback.style.color = "#ff4757";
         }
+        feedback.classList.remove('hidden');
     };
 
     document.getElementById('save-profile-btn').addEventListener('click', handleProfileSave);

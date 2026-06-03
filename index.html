@@ -176,7 +176,9 @@
                     <span id="profile-unlock-dot" style="display:none; position:absolute; top:2px; right:2px; width:10px; height:10px; background:#ffd700; border-radius:50%; box-shadow:0 0 6px #ffd700; border:2px solid #0a0e17;"></span>
                 </div>
             </div>
-            <div class="hub-header-actions">
+            <div class="hub-header-actions" style="display:flex; align-items:center;">
+                <audio id="bg-audio" loop></audio>
+                <button id="mute-toggle-btn" class="icon-btn" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer; margin-right: 15px;" title="Musik umschalten">🔇</button>
                 <button id="hub-options-btn" class="icon-btn" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;" title="Optionen">⚙️</button>
                 <button id="logout-btn" class="text-btn logout-btn">LOGOUT</button>
             </div>
@@ -910,23 +912,39 @@
                     </div>
                     <p class="prompt-text">Öffne Booster-Packs und sammle exklusive Karten!</p>
                     
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background:rgba(0,0,0,0.3); padding:15px; border-radius:8px; border:1px solid #333;">
-                        <div>
-                            <h3 style="margin:0; color:#e2e8f0; font-size:1.2rem;">Konto: <span id="shop-credits-display" style="color:#00d2d3;">0</span> Credits</h3>
-                            <h3 style="margin:5px 0 0 0; color:#e2e8f0; font-size:1.2rem;">Kyber: <span id="shop-kyber-display" style="color:#ffd700;">0</span> Kristalle</h3>
-                        </div>
-                        <div style="text-align:center;">
-                            <div style="font-size:0.8rem; color:#94a3b8; margin-bottom:10px;">Kristalle durch doppelte epische Karten.</div>
-                            <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center; align-items:stretch;">
-                                <button id="shop-crafting-btn" class="rank-btn" style="width: auto; height: auto; padding:10px 20px; font-size:1rem; border-color:#9b59b6; color:#9b59b6;">⚗️ Epische Karte herstellen</button>
-                                <button id="shop-reroll-btn" class="rank-btn" style="width: auto; height: auto; padding:10px 20px; font-size:1rem; border-color:#ffd700; color:#ffd700;">🎲 Legendäre neu würfeln</button>
+                    <div class="mode-selector shop-sub-nav" style="margin-bottom: 20px;">
+                        <button class="mode-toggle-btn active" data-subtarget="shop-boosters">Karten & Booster</button>
+                        <button class="mode-toggle-btn" data-subtarget="shop-soundtracks">Soundtracks</button>
+                        <button class="mode-toggle-btn" data-subtarget="shop-backgrounds">Hintergründe</button>
+                    </div>
+
+                    <div id="shop-boosters" class="shop-sub-view">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background:rgba(0,0,0,0.3); padding:15px; border-radius:8px; border:1px solid #333;">
+                            <div>
+                                <h3 style="margin:0; color:#e2e8f0; font-size:1.2rem;">Konto: <span id="shop-credits-display" style="color:#00d2d3;">0</span> Credits</h3>
+                                <h3 style="margin:5px 0 0 0; color:#e2e8f0; font-size:1.2rem;">Kyber: <span id="shop-kyber-display" style="color:#ffd700;">0</span> Kristalle</h3>
                             </div>
-                            <div style="font-size:0.75rem; color:#64748b; margin-top:8px;">Opfere 2 Legendäre desselben Packs für eine zufällige neue aus demselben Pack.</div>
+                            <div style="text-align:center;">
+                                <div style="font-size:0.8rem; color:#94a3b8; margin-bottom:10px;">Kristalle durch doppelte epische Karten.</div>
+                                <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center; align-items:stretch;">
+                                    <button id="shop-crafting-btn" class="rank-btn" style="width: auto; height: auto; padding:10px 20px; font-size:1rem; border-color:#9b59b6; color:#9b59b6;">⚗️ Epische Karte herstellen</button>
+                                    <button id="shop-reroll-btn" class="rank-btn" style="width: auto; height: auto; padding:10px 20px; font-size:1rem; border-color:#ffd700; color:#ffd700;">🎲 Legendäre neu würfeln</button>
+                                </div>
+                                <div style="font-size:0.75rem; color:#64748b; margin-top:8px;">Opfere 2 Legendäre desselben Packs für eine zufällige neue aus demselben Pack.</div>
+                            </div>
+                        </div>
+    
+                        <div id="booster-packs-container" style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;">
+                            <!-- Booster packs rendered here -->
                         </div>
                     </div>
 
-                    <div id="booster-packs-container" style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;">
-                        <!-- Booster packs rendered here -->
+                    <div id="shop-soundtracks" class="shop-sub-view hidden">
+                        <div id="soundtracks-container" style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;"></div>
+                    </div>
+
+                    <div id="shop-backgrounds" class="shop-sub-view hidden">
+                        <div id="backgrounds-container" style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;"></div>
                     </div>
                 </div>
             </div>
@@ -945,6 +963,16 @@
                         <input type="password" id="profile-password" placeholder="Neues Passwort">
                         <button id="save-profile-btn" class="rank-btn auth-btn" style="margin-top: 15px;">Speichern</button>
                         <p id="profile-feedback" class="prompt-text hidden"></p>
+
+                        <hr style="border: 1px solid #333; margin: 20px 0; width: 100%;">
+                        <p class="prompt-text" style="margin-top: 0;">Aktiver Soundtrack</p>
+                        <select id="profile-soundtrack" style="width:100%; padding: 10px; background: rgba(0,0,0,0.5); color: #fff; border: 1px solid #444; border-radius: 6px; margin-bottom: 10px;"></select>
+                        
+                        <p class="prompt-text" style="margin-top: 0;">Aktiver Hintergrund</p>
+                        <select id="profile-background" style="width:100%; padding: 10px; background: rgba(0,0,0,0.5); color: #fff; border: 1px solid #444; border-radius: 6px;"></select>
+
+                        <hr style="border: 1px solid #333; margin: 20px 0; width: 100%;">
+
                         <button id="twin-search-btn" class="rank-btn auth-btn" style="margin-top: 15px; background: linear-gradient(135deg, #a855f7, #6366f1); border-color: #a855f7;">🔮 Zwillings-Suche</button>
                         <div id="twin-search-result" class="prompt-text hidden" style="margin-top: 10px; padding: 10px; border: 1px dashed #a855f7; border-radius: 5px; background: rgba(168, 85, 247, 0.1); font-size: 0.85rem; text-align: left; line-height: 1.4; max-height: 200px; overflow-y: auto;"></div>
                     </div>

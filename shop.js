@@ -12,6 +12,8 @@ const RARITIES = {
 };
 
 import { LEGENDARY_POOL } from './data-starwars.js';
+import { SOUNDTRACKS } from './soundtracks.js';
+import { BACKGROUNDS } from './backgrounds.js';
 
 export const BOOSTERS = [
     {
@@ -241,7 +243,105 @@ export function initShop() {
         container.appendChild(el);
     });
 
+    renderSoundtracksShop(user);
+    renderBackgroundsShop(user);
+
     isShopInitialized = true;
+}
+
+function renderSoundtracksShop(user) {
+    const container = document.getElementById('soundtracks-container');
+    if (!container) return;
+    container.innerHTML = '';
+    const unlocked = user.unlocked_soundtracks || [];
+
+    SOUNDTRACKS.forEach(track => {
+        const isOwned = track.price === 0 || unlocked.includes(track.id);
+        const el = document.createElement('div');
+        el.className = 'booster-pack-card';
+        el.style.cssText = 'background: rgba(0,0,0,0.5); border: 1px solid #333; border-radius: 8px; padding: 15px; width: 250px; text-align: center; display: flex; flex-direction: column; align-items: center; position: relative;';
+        
+        el.innerHTML = `
+            <div style="font-size: 3rem; margin-bottom: 15px;">🎵</div>
+            <h3 style="margin:0 0 10px 0; color:#fff;">${track.name}</h3>
+            ${isOwned ? 
+                `<div style="width:100%; padding:10px; font-size:1rem; color:#fff; background:#555; border-radius:6px; font-weight:bold;">Im Besitz</div>` : 
+                `<button class="rank-btn buy-st-btn" style="width:100%; padding:10px; margin:0; font-size:1rem; border-color:#3498db; color:#3498db; cursor:pointer;" data-id="${track.id}" data-cost="${track.price}">
+                    🛒 ${track.price} Credits
+                </button>`
+            }
+        `;
+        
+        if (!isOwned) {
+            el.querySelector('.buy-st-btn').addEventListener('click', () => buyCosmetic('soundtracks', track, user));
+        }
+        container.appendChild(el);
+    });
+}
+
+function renderBackgroundsShop(user) {
+    const container = document.getElementById('backgrounds-container');
+    if (!container) return;
+    container.innerHTML = '';
+    const unlocked = user.unlocked_backgrounds || [];
+
+    BACKGROUNDS.forEach(bg => {
+        const isOwned = bg.price === 0 || unlocked.includes(bg.id);
+        const previewStyle = bg.type === 'color' ? `background: ${bg.value};` : `background: url('${bg.value}') center/cover;`;
+        
+        const el = document.createElement('div');
+        el.className = 'booster-pack-card';
+        el.style.cssText = 'background: rgba(0,0,0,0.5); border: 1px solid #333; border-radius: 8px; padding: 15px; width: 250px; text-align: center; display: flex; flex-direction: column; align-items: center; position: relative;';
+        
+        el.innerHTML = `
+            <div style="width:100%; height:120px; border-radius:6px; margin-bottom:15px; border:2px solid #555; ${previewStyle}"></div>
+            <h3 style="margin:0 0 10px 0; color:#fff;">${bg.name}</h3>
+            ${isOwned ? 
+                `<div style="width:100%; padding:10px; font-size:1rem; color:#fff; background:#555; border-radius:6px; font-weight:bold;">Im Besitz</div>` : 
+                `<button class="rank-btn buy-bg-btn" style="width:100%; padding:10px; margin:0; font-size:1rem; border-color:#9b59b6; color:#9b59b6; cursor:pointer;" data-id="${bg.id}" data-cost="${bg.price}">
+                    🛒 ${bg.price} Credits
+                </button>`
+            }
+        `;
+        
+        if (!isOwned) {
+            el.querySelector('.buy-bg-btn').addEventListener('click', () => buyCosmetic('backgrounds', bg, user));
+        }
+        container.appendChild(el);
+    });
+}
+
+async function buyCosmetic(type, item, user) {
+    const isAdmin = (user.username && (user.username.toLowerCase() === 'test1' || user.username.toLowerCase() === 'test2'));
+    if (!isAdmin && (user.credits || 0) < item.price) {
+        alert("Nicht genügend Credits!");
+        return;
+    }
+
+    if (!isAdmin) {
+        user.credits -= item.price;
+        document.getElementById('shop-credits-display').textContent = user.credits;
+    }
+    
+    const arrayName = `unlocked_${type}`;
+    if (!user[arrayName]) user[arrayName] = [];
+    user[arrayName].push(item.id);
+    
+    localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
+
+    try {
+        const { doc, updateDoc, increment } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+        const { db } = await import('./firebase-config.js');
+        const updates = { [arrayName]: user[arrayName] };
+        if (!isAdmin) updates.credits = increment(-item.price);
+        await updateDoc(doc(db, "users", user.uid), updates);
+        
+        alert(`Erfolgreich gekauft: ${item.name}`);
+        initShop(); // Re-render shop
+    } catch(e) {
+        console.error("Fehler beim Kauf:", e);
+        alert("Ein Fehler ist aufgetreten.");
+    }
 }
 
 async function claimPackLegendary(booster, pool) {
@@ -400,9 +500,27 @@ async function openBooster(booster, pool, currentCost) {
         const countSpan = document.getElementById(`opened-count-${booster.id}`);
         if (countSpan) countSpan.textContent = user[packCountField];
         
+        if (!user.stats) user.stats = {};
+        user.stats.packsOpened = (user.stats.packsOpened || 0) + 1;
+        
+        const allGrey = pulledCards.every(c => c.rarity.id === 'common');
+        if (allGrey) {
+            import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_27'));
+        }
+        if (user.stats.packsOpened >= 50) {
+            import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_1'));
+        }
+        const hasLegendary = pulledCards.some(c => c.rarity.id === 'legendary');
+        if (hasLegendary && booster.id === 'starwars_all') {
+            import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_6'));
+        }
+
         user[field] = currentInventory;
         if (!isAdmin) {
             user.credits -= currentCost;
+            if (user.credits === 0) {
+                import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_22'));
+            }
             document.getElementById('shop-credits-display').textContent = user.credits;
         }
         
@@ -413,7 +531,7 @@ async function openBooster(booster, pool, currentCost) {
         
         localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
 
-        const updates = { [field]: currentInventory, [packCountField]: user[packCountField] };
+        const updates = { [field]: currentInventory, [packCountField]: user[packCountField], [`stats.packsOpened`]: user.stats.packsOpened };
         if (kyberEarned > 0) updates[kyberField] = increment(kyberEarned);
         if (!isAdmin) updates.credits = increment(-currentCost);
         
@@ -571,6 +689,7 @@ function showPullAnimation(pulledCards, isGodPack) {
     `;
 
     modal.classList.remove('hidden');
+    if (window.pauseBackgroundMusic) window.pauseBackgroundMusic();
 
     let flippedCount = 0;
     const totalCards = pulledCards.length;
@@ -631,6 +750,9 @@ function showPullAnimation(pulledCards, isGodPack) {
 
     document.getElementById('close-pull-btn').addEventListener('click', () => {
         modal.classList.add('hidden');
+        document.getElementById('pull-cards-wrapper').innerHTML = '';
+        document.getElementById('close-pull-btn').classList.add('hidden');
+        if (window.resumeBackgroundMusic) window.resumeBackgroundMusic();
     });
 }
 
@@ -919,8 +1041,21 @@ window.buyBlackMarketCard = async function(char, dateKeyStr) {
         user[field] = currentInventory;
         user[purchaseKey] = userPurchases;
         
+        if (!user.stats) user.stats = {};
+        user.stats.blackMarketBuys = (user.stats.blackMarketBuys || 0) + 1;
+        
+        if (user.stats.blackMarketBuys >= 5) {
+            import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_2'));
+        }
+        if (user.stats.blackMarketBuys >= 10) {
+            import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_16'));
+        }
+        
         if (!isAdmin) {
             user.credits -= 200;
+            if (user.credits === 0) {
+                import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_22'));
+            }
             document.getElementById('shop-credits-display').textContent = user.credits;
         }
         
@@ -928,7 +1063,8 @@ window.buyBlackMarketCard = async function(char, dateKeyStr) {
         
         const updates = { 
             [field]: currentInventory, 
-            [purchaseKey]: userPurchases 
+            [purchaseKey]: userPurchases,
+            [`stats.blackMarketBuys`]: user.stats.blackMarketBuys
         };
         if (!isAdmin) updates.credits = increment(-200);
         
