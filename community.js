@@ -564,6 +564,28 @@ function openUserProfileModal(u) {
     const avatarHtml = avatar ? `<img src="${avatar}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid #555;margin:0 auto 10px; display:block;">` : `<div style="width:80px;height:80px;border-radius:50%;background:#444;margin:0 auto 10px; display:block;"></div>`;
     
     const activeTitle = (currentMode === 'starwars' ? u.activeTitle_starwars : u.activeTitle_waifu) || 'Kein Titel';
+
+    let lastOnlineText = "Unbekannt";
+    let isOnlineNow = false;
+    if (u.lastActive) {
+        const timeMs = typeof u.lastActive.toMillis === 'function' ? u.lastActive.toMillis() : (u.lastActive.seconds ? u.lastActive.seconds * 1000 : Number(u.lastActive));
+        const diffMs = Date.now() - timeMs;
+        if (diffMs < 120000) {
+            isOnlineNow = true;
+            lastOnlineText = "Gerade online";
+        } else {
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMins / 60);
+            const diffDays = Math.floor(diffHours / 24);
+            if (diffMins < 60) {
+                lastOnlineText = `Vor ${diffMins} Minute${diffMins !== 1 ? 'n' : ''}`;
+            } else if (diffHours < 24) {
+                lastOnlineText = `Vor ${diffHours} Stunde${diffHours !== 1 ? 'n' : ''}`;
+            } else {
+                lastOnlineText = `Vor ${diffDays} Tag${diffDays !== 1 ? 'en' : ''}`;
+            }
+        }
+    }
     
     content.innerHTML = `
         <div style="display:flex; gap:0; border: 1px solid #2a3142; border-radius: 10px; overflow: hidden; background: #0d111a; min-height: 400px;">
@@ -572,6 +594,9 @@ function openUserProfileModal(u) {
                 ${avatarHtml}
                 <h3 style="margin:0; font-size:1.4rem; color:#fff; text-align:center;">${u.displayName || u.username}</h3>
                 <p style="color:#ffd700; font-weight:bold; margin:0; text-transform:uppercase; font-size:0.85rem; text-align:center; background:rgba(255,215,0,0.1); padding:4px 10px; border-radius:20px; border:1px solid rgba(255,215,0,0.3);">${activeTitle}</p>
+                <div style="font-size: 0.8rem; color: ${isOnlineNow ? '#2ed573' : '#aaa'}; margin-top: 5px; text-align: center;">
+                    ${isOnlineNow ? '🟢 ' : '🕒 '}${lastOnlineText}
+                </div>
                 
                 <div style="width:100%; height:1px; background:#2a3142; margin: 4px 0;"></div>
                 
