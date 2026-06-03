@@ -1,4 +1,4 @@
-import { getCurrentUser } from './auth.js';
+﻿import { getCurrentUser } from './auth.js';
 import { activeCharacterDatabase } from './theme.js';
 import { handleAdventureWin, handleAdventureLoss } from './adventure.js';
 import { db } from './firebase-config.js';
@@ -23,6 +23,28 @@ let playerGraveyard = [];
 let opponentGraveyard = [];
 let pEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
 let oEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false, rule9Done: false, rule18Done: false };
+    if (isAdventureMatch) {
+        const user = getCurrentUser();
+        if (user && user.adventure_buffs) {
+            pEffects.buffs = user.adventure_buffs;
+            if (pEffects.buffs.includes('buff_jedi')) playerScore += 50;
+            if (pEffects.buffs.includes('buff_schurke')) { playerScore += 30; opponentScore -= 30; }
+            if (pEffects.buffs.includes('buff_hutte')) { oEffects.hutteDebuff = true; }
+            if (pEffects.buffs.includes('buff_imperium') && opponentHandRemaining.length > 0) {
+                const rIdx = Math.floor(Math.random() * opponentHandRemaining.length);
+                opponentGraveyard.push(opponentHandRemaining[rIdx]);
+                opponentHandRemaining.splice(rIdx, 1);
+            }
+            if (pEffects.buffs.includes('buff_schmuggel')) {
+                const inv = currentMode === 'starwars' ? (user.inventory_starwars || []) : (user.inventory_waifu || []);
+                if (inv.length > 0) {
+                    const extra = inv[Math.floor(Math.random() * inv.length)];
+                    const cData = activeCharacterDatabase.find(c => c.name === extra.charName);
+                    if (cData) playerHandRemaining.push({ char: cData, rarity: extra.rarity });
+                }
+            }
+        }
+    }
 let globalScoresCache = {};
 let isBotMatch = false;
 let liveMatchActive = false;
@@ -642,6 +664,28 @@ async function startMatch(oppData, oppDeckArr) {
     opponentGraveyard = [];
     pEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
     oEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false, rule9Done: false, rule18Done: false };
+    if (isAdventureMatch) {
+        const user = getCurrentUser();
+        if (user && user.adventure_buffs) {
+            pEffects.buffs = user.adventure_buffs;
+            if (pEffects.buffs.includes('buff_jedi')) playerScore += 50;
+            if (pEffects.buffs.includes('buff_schurke')) { playerScore += 30; opponentScore -= 30; }
+            if (pEffects.buffs.includes('buff_hutte')) { oEffects.hutteDebuff = true; }
+            if (pEffects.buffs.includes('buff_imperium') && opponentHandRemaining.length > 0) {
+                const rIdx = Math.floor(Math.random() * opponentHandRemaining.length);
+                opponentGraveyard.push(opponentHandRemaining[rIdx]);
+                opponentHandRemaining.splice(rIdx, 1);
+            }
+            if (pEffects.buffs.includes('buff_schmuggel')) {
+                const inv = currentMode === 'starwars' ? (user.inventory_starwars || []) : (user.inventory_waifu || []);
+                if (inv.length > 0) {
+                    const extra = inv[Math.floor(Math.random() * inv.length)];
+                    const cData = activeCharacterDatabase.find(c => c.name === extra.charName);
+                    if (cData) playerHandRemaining.push({ char: cData, rarity: extra.rarity });
+                }
+            }
+        }
+    }
     
     document.getElementById('cardgame-matchmaking').classList.add('hidden');
     document.getElementById('cardgame-bots').classList.add('hidden');
@@ -686,6 +730,28 @@ export async function startAdventureMatch(levelIndex, oppData, oppDeckArr, playe
     opponentGraveyard = [];
     pEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false };
     oEffects = { forceStrongest: false, forceRandom: false, vehicles: null, sithPlayed: 0, cloneChain: 0, lastCloneDead: null, resistanceSacrificed: 0, orbitalStrike: false, nextDroidDouble: false, bountyTarget: null, oppression: false, forceWeakest: false, martyrBuff: false, rule9Done: false, rule18Done: false };
+    if (isAdventureMatch) {
+        const user = getCurrentUser();
+        if (user && user.adventure_buffs) {
+            pEffects.buffs = user.adventure_buffs;
+            if (pEffects.buffs.includes('buff_jedi')) playerScore += 50;
+            if (pEffects.buffs.includes('buff_schurke')) { playerScore += 30; opponentScore -= 30; }
+            if (pEffects.buffs.includes('buff_hutte')) { oEffects.hutteDebuff = true; }
+            if (pEffects.buffs.includes('buff_imperium') && opponentHandRemaining.length > 0) {
+                const rIdx = Math.floor(Math.random() * opponentHandRemaining.length);
+                opponentGraveyard.push(opponentHandRemaining[rIdx]);
+                opponentHandRemaining.splice(rIdx, 1);
+            }
+            if (pEffects.buffs.includes('buff_schmuggel')) {
+                const inv = currentMode === 'starwars' ? (user.inventory_starwars || []) : (user.inventory_waifu || []);
+                if (inv.length > 0) {
+                    const extra = inv[Math.floor(Math.random() * inv.length)];
+                    const cData = activeCharacterDatabase.find(c => c.name === extra.charName);
+                    if (cData) playerHandRemaining.push({ char: cData, rarity: extra.rarity });
+                }
+            }
+        }
+    }
     
     isBotMatch = true;
     isAdventureMatch = true;
@@ -939,7 +1005,14 @@ function playRound(playerCard, explicitOppCard = null) {
     let pFac = pDb ? getMainFaction(pDb.tags) : 'neutral';
     let oFac = oDb ? getMainFaction(oDb.tags) : 'neutral';
     
-    let pTags = pDb && pDb.tags ? pDb.tags.map(t => t.toLowerCase()) : [];
+        let pTags = pDb && pDb.tags ? pDb.tags.map(t => t.toLowerCase()) : [];
+    if (isAdventureMatch && pEffects.buffs) {
+        if (pEffects.buffs.includes('buff_monster')) { if (Math.random() < 0.5) { pBaseRaw += 30; pLog.push('Raserei (+30)'); } else { pBaseRaw -= 15; pLog.push('Raserei (-15)'); } }
+        if (pEffects.buffs.includes('buff_badbatch') && pTags.includes('bad_batch')) { pBaseRaw += 50; pLog.push('Kloneinheit 99 (+50)'); }
+        if (pEffects.buffs.includes('buff_501st') && pTags.includes('501st')) { opponentScore -= 10; pLog.push('Vaders Faust (Gegner -10)'); }
+        if (pEffects.buffs.includes('buff_klon') && pTags.includes('klon')) { if (pEffects.lastWasKlon) { pBaseRaw += 20; pLog.push('Klon-Disziplin (+20)'); } pEffects.lastWasKlon = true; } else { pEffects.lastWasKlon = false; }
+        if (pEffects.buffs.includes('buff_212th') && pTags.includes('212th')) { pEffects.copyMult = true; }
+    }
     let oTags = oDb && oDb.tags ? oDb.tags.map(t => t.toLowerCase()) : [];
     let pSyn = calculateSynergy(playerDeck);
     let oSyn = calculateSynergy(opponentDeck);
@@ -949,7 +1022,8 @@ function playRound(playerCard, explicitOppCard = null) {
     let pSilence = pHas('mandalorianer') && pFac === 'mandalorianer';
     let oSilence = oHas('mandalorianer') && oFac === 'mandalorianer';
     
-    if (isAdventureMatch && adventureRule === 'adv_rule_5') oSilence = true;
+        if (isAdventureMatch && adventureRule === 'adv_rule_5') oSilence = true;
+    if (isAdventureMatch && pEffects.buffs && pEffects.buffs.includes('buff_mandalorian')) oSilence = false;
 
 
     let pRarMult = playerCard ? (RARITY_MULT[playerCard.rarity] || 1.0) : 1.0;
@@ -964,8 +1038,25 @@ function playRound(playerCard, explicitOppCard = null) {
         oLog.push("High Ground (Rarity kopiert)");
     }
 
-    let pBaseRaw = playerCard ? (playerCard.isGhost ? 0 : getCardScore(playerCard.charName)) : 0;
-    let oBaseRaw = oppCard ? (oppCard.isGhost ? 0 : getCardScore(oppCard.charName)) : 0;
+        let pBaseMult = 1.0; let oBaseMult = 1.0;
+    if (isAdventureMatch && pEffects.buffs) {
+        if (pEffects.buffs.includes('buff_rebell') && playerScore < opponentScore) pBaseMult += 0.2;
+        if (pEffects.buffs.includes('buff_sith') && pEffects.sithZornActive) { pBaseMult += 0.5; pEffects.sithZornActive = false; }
+        if (pEffects.buffs.includes('buff_widerstand') && playerHandRemaining.length === 1 && !pEffects.vehicles) pBaseMult += 1.0;
+        if (pEffects.buffs.includes('buff_fahrzeug') && pTags.includes('vehicle')) pBaseMult += 0.3;
+    }
+    let pBaseRaw = playerCard ? (playerCard.isGhost ? 0 : getCardScore(playerCard.charName) * pBaseMult) : 0;
+        let oBaseRaw = oppCard ? (oppCard.isGhost ? 0 : getCardScore(oppCard.charName)) : 0;
+    if (isAdventureMatch && pEffects.buffs && pEffects.buffs.includes('buff_hutte') && oEffects.hutteDebuff) {
+        oBaseRaw -= 30;
+        oEffects.hutteDebuff = false;
+        oLog.push('Erpressung (-30 Punkte)');
+    }
+    if (isAdventureMatch && pEffects.buffs && pEffects.buffs.includes('buff_senat') && !oEffects.senatBurokratie) {
+        oEffects.senatBurokratie = true;
+        oBaseRaw = 0;
+        oLog.push('Bürokratie (Score annulliert)');
+    }
     if (oppCard && oppCard.rule18Revived) oBaseRaw *= 0.5;
 
     

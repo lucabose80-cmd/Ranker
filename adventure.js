@@ -1,4 +1,4 @@
-import { getCurrentUser, CURRENT_USER_KEY } from './auth.js';
+﻿import { getCurrentUser, CURRENT_USER_KEY } from './auth.js';
 import { getResets } from './resets.js';
 import { db } from './firebase-config.js';
 import { doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
@@ -596,17 +596,73 @@ export function handleAdventureLoss(isAbort = false) {
     document.body.appendChild(overlay);
 }
 
-async function showDraftScreen(levelIndex, creditsWon) {
     document.getElementById('adventure-main-screen').classList.add('hidden');
     document.getElementById('adventure-draft-screen').classList.remove('hidden');
-    document.getElementById('adventure-draft-step1').classList.remove('hidden');
+    document.getElementById('adventure-draft-step0').classList.add('hidden');
+    document.getElementById('adventure-draft-step1').classList.add('hidden');
     document.getElementById('adventure-draft-step2').classList.add('hidden');
     
     document.getElementById('adventure-draft-credit-reward').textContent = `${creditsWon} Credits`;
     
     await loadGlobalScores(); // Ensure scores are loaded for display
     
-    draftOptions = [];
+    const dbCopy = [...activeCharacterDatabase];
+    const beatenLevel = ADVENTURE_CAMPAIGN[levelIndex];
+    const isBoss = beatenLevel && beatenLevel.ruleText !== "Keine Sonderregeln.";
+    
+    // Setup Buff Selection if Boss
+    if (isBoss) {
+        document.getElementById('adventure-draft-step0').classList.remove('hidden');
+        const buffOptionsContainer = document.getElementById('adventure-buff-options');
+        buffOptionsContainer.innerHTML = '';
+        
+        const { ADVENTURE_BUFFS } = await import('./buffs.js');
+        const user = getCurrentUser();
+        const activeBuffs = user.adventure_buffs || [];
+        
+        // Filter out already owned buffs
+        let availableBuffs = ADVENTURE_BUFFS.filter(b => !activeBuffs.includes(b.id));
+        if (availableBuffs.length < 3) availableBuffs = [...ADVENTURE_BUFFS]; // fallback if they have almost all
+        
+        const choices = [];
+        for (let i = 0; i < 3; i++) {
+            if (availableBuffs.length === 0) break;
+            const rIdx = Math.floor(Math.random() * availableBuffs.length);
+            choices.push(availableBuffs[rIdx]);
+            availableBuffs.splice(rIdx, 1);
+        }
+        
+        choices.forEach(buff => {
+            const bBtn = document.createElement('div');
+            bBtn.style.cssText = 'background:#2c3e50; border:2px solid #b8860b; border-radius:8px; padding:15px; width:200px; cursor:pointer; text-align:center; transition:transform 0.2s;';
+            bBtn.onmouseenter = () => bBtn.style.transform = 'scale(1.05)';
+            bBtn.onmouseleave = () => bBtn.style.transform = 'scale(1)';
+            bBtn.innerHTML = `
+                <div style="font-size:2rem; margin-bottom:10px;">🌟</div>
+                <div style="color:#ffd700; font-weight:bold; margin-bottom:5px;">${buff.name}</div>
+                <div style="color:#aaa; font-size:0.8rem;">${buff.desc}</div>
+            `;
+            bBtn.onclick = async () => {
+                const user = getCurrentUser();
+                user.adventure_buffs = user.adventure_buffs || [];
+                user.adventure_buffs.push(buff.id);
+                
+                const { db } = await import('./firebase-config.js');
+                const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js');
+                await updateDoc(doc(db, 'users', user.uid), { adventure_buffs: user.adventure_buffs });
+                localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
+                
+                // Hide step 0, show step 1 (draft)
+                document.getElementById('adventure-draft-step0').classList.add('hidden');
+                document.getElementById('adventure-draft-step1').classList.remove('hidden');
+            };
+            buffOptionsContainer.appendChild(bBtn);
+        });
+    } else {
+        document.getElementById('adventure-draft-step1').classList.remove('hidden');
+    }
+    
+    let draftOptions = [];
     
     // Pick random unique cards from ENTIRE database
     const dbCopy = [...activeCharacterDatabase];

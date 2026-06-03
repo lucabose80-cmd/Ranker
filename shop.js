@@ -1,4 +1,4 @@
-﻿import { getCurrentUser } from './auth.js';
+import { getCurrentUser } from './auth.js';
 import { activeCharacterDatabase } from './theme.js';
 import { currentMode } from './mode-state.js';
 
@@ -77,8 +77,57 @@ export function initShop() {
     const container = document.getElementById('booster-packs-container');
     container.innerHTML = '';
 
+    // --- Schwarzmarkt (Black Market) ---
+    const { cards: bmCards, today } = getDailyBlackMarketCards(activeCharacterDatabase);
+    
+    const bmContainer = document.createElement('div');
+    bmContainer.style.cssText = 'width: 100%; margin-bottom: 30px;';
+    
+    const bmHeader = document.createElement('div');
+    bmHeader.style.cssText = 'display:flex; align-items:center; gap:10px; margin-bottom:15px;';
+    bmHeader.innerHTML = `<h2 style="color:#ff4757; margin:0; font-size:1.8rem; text-transform:uppercase; text-shadow: 0 0 10px rgba(255,71,87,0.5);">🛒 Schwarzmarkt</h2><span style="color:#94a3b8; font-size:0.9rem;">(Wechselt täglich)</span>`;
+    bmContainer.appendChild(bmHeader);
+
+    const bmCardsWrapper = document.createElement('div');
+    bmCardsWrapper.style.cssText = 'display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;';
+    
+    bmCards.forEach(char => {
+        const purchaseKey = `dailyMarketPurchases_${today}`;
+        const userPurchases = user[purchaseKey] || {};
+        const isBought = !!userPurchases[char.name];
+
+        const cardEl = document.createElement('div');
+        cardEl.className = 'booster-pack-card';
+        cardEl.style.cssText = 'background: rgba(0,0,0,0.5); border: 1px solid #333; border-radius: 8px; padding: 15px; width: 220px; text-align: center; display: flex; flex-direction: column; align-items: center; position: relative; overflow: hidden;';
+        
+        cardEl.innerHTML = `
+            <div style="color:${RARITIES.RARE.color}; font-weight:bold; font-size:0.9rem; margin-bottom:10px; text-transform:uppercase;">${RARITIES.RARE.name}</div>
+            <img src="${char.img}" style="width:100%; height:220px; object-fit:cover; border-radius:6px; margin-bottom:15px; border: 3px solid ${RARITIES.RARE.color}; box-shadow: inset 0 0 15px rgba(0,0,0,0.8);">
+            <h3 style="margin:0 0 15px 0; color:#fff; font-size:1.1rem;">${char.name}</h3>
+            ${isBought 
+                ? `<div style="width:100%; padding:10px; font-size:1rem; color:#fff; background:#555; border-radius:6px; font-weight:bold;">Ausverkauft</div>`
+                : `<button class="rank-btn buy-bm-btn" style="width:100%; padding:10px; margin:0; font-size:1rem; border-color:#2ed573; color:#2ed573; cursor:pointer;">
+                     🛒 200 Credits
+                   </button>`
+            }
+        `;
+        
+        if (!isBought) {
+            cardEl.querySelector('.buy-bm-btn').addEventListener('click', () => window.buyBlackMarketCard(char, today));
+        }
+        
+        bmCardsWrapper.appendChild(cardEl);
+    });
+    
+    bmContainer.appendChild(bmCardsWrapper);
+    container.appendChild(bmContainer);
+    // --- Ende Schwarzmarkt ---
+
     if (currentMode !== 'starwars') {
-        container.innerHTML = '<div style="color:#94a3b8; text-align:center; width:100%; font-size:1.2rem;">Booster-Packs sind derzeit nur im Star Wars Modus verfügbar.</div>';
+        const altMsg = document.createElement('div');
+        altMsg.style.cssText = 'color:#94a3b8; text-align:center; width:100%; font-size:1.2rem;';
+        altMsg.textContent = 'Booster-Packs sind derzeit nur im Star Wars Modus verfügbar.';
+        container.appendChild(altMsg);
         return;
     }
 
@@ -798,8 +847,103 @@ window.toggleRerollCard = function(el) {
     }
 
     // Show/hide confirm button
-    const confirmBtn = document.querySelector(`.reroll-confirm-btn[data-pack="${pack}"]`);
-    if (confirmBtn) confirmBtn.style.display = sel.length === 2 ? 'block' : 'none';
+    const btn = el.closest('.modal-content').querySelector(`.reroll-confirm-btn[data-pack="${pack}"]`);
+    if (btn) {
+        btn.style.display = sel.length === 2 ? 'block' : 'none';
+    }
+};
+
+function getDailyBlackMarketCards(pool) {
+    const today = new Date().toISOString().split('T')[0];
+    let hash = 0;
+    for (let i = 0; i < today.length; i++) {
+        hash = (hash << 5) - hash + today.charCodeAt(i);
+        hash |= 0; 
+    }
+    const seededRandom = (seed) => {
+        let x = Math.abs(Math.sin(seed) * 10000);
+        return x - Math.floor(x);
+    };
+    
+    let cards = [];
+    let currentSeed = hash;
+    // We only want characters that have images
+    let availablePool = pool.filter(c => c.img && c.name);
+    // Sort to make selection truly deterministic
+    availablePool.sort((a,b) => a.name.localeCompare(b.name));
+    
+    for(let i=0; i<3; i++) {
+        currentSeed += 1;
+        let rand = seededRandom(currentSeed);
+        let idx = Math.floor(rand * availablePool.length);
+        if (availablePool[idx]) {
+            cards.push(availablePool[idx]);
+            availablePool.splice(idx, 1);
+        }
+    }
+    return { cards, today };
+}
+
+window.buyBlackMarketCard = async function(char, dateKeyStr) {
+    const user = getCurrentUser();
+    if (!user) return;
+
+    const isAdmin = (user.username && (user.username.toLowerCase() === 'test1' || user.username.toLowerCase() === 'test2'));
+    
+    if (!isAdmin && (user.credits || 0) < 200) {
+        if (window.showUnlockNotification) window.showUnlockNotification('error', "Nicht genügend Credits!");
+        else alert("Nicht genügend Credits!");
+        return;
+    }
+
+    try {
+        const { doc, updateDoc, increment } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+        const { db } = await import('./firebase-config.js');
+        
+        const field = `inventory_${currentMode}`;
+        const currentInventory = user[field] || [];
+        
+        const isNew = !currentInventory.some(c => c.charName === char.name && c.rarity === 'rare');
+        
+        currentInventory.push({
+            charName: char.name,
+            rarity: 'rare',
+            timestamp: Date.now(),
+            boosterId: 'black_market'
+        });
+        
+        const purchaseKey = `dailyMarketPurchases_${dateKeyStr}`;
+        const userPurchases = user[purchaseKey] || {};
+        userPurchases[char.name] = true;
+        
+        user[field] = currentInventory;
+        user[purchaseKey] = userPurchases;
+        
+        if (!isAdmin) {
+            user.credits -= 200;
+            document.getElementById('shop-credits-display').textContent = user.credits;
+        }
+        
+        localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
+        
+        const updates = { 
+            [field]: currentInventory, 
+            [purchaseKey]: userPurchases 
+        };
+        if (!isAdmin) updates.credits = increment(-200);
+        
+        await updateDoc(doc(db, "users", user.uid), updates);
+        
+        // Show pull animation for the single card
+        showPullAnimation([{ char: char, rarity: RARITIES.RARE, isNew: isNew }], false);
+        
+        // Refresh Shop
+        initShop();
+        
+    } catch(e) {
+        console.error("Fehler beim Schwarzmarkt-Kauf:", e);
+        alert("Ein Fehler ist aufgetreten.");
+    }
 };
 
 window.processLegendaryReroll = async function(packId) {

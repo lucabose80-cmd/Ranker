@@ -1,4 +1,15 @@
-export const patchNotesWaifu = [
+﻿export const patchNotesWaifu = [
+    {
+        version: "v9.4",
+        title: "Major Update: Abenteuer Boss Buffs & Schwarzmarkt",
+        isHotfix: false,
+        changes: [
+            "Feature: Der 'Schwarzmarkt' wurde im Shop hinzugefügt! Jeden Tag werden dort 3 rotierende, seltene Karten angeboten.",
+            "Feature: Karten auf dem Schwarzmarkt kosten 200 Credits und können nur einmal pro Tag gekauft werden.",
+            "Feature: Nach dem Besiegen eines Bosses im Abenteuer darfst du nun einen von 3 zufälligen Buffs wählen!",
+            "Gameplay: Die neuen Buffs geben dir immense Spielvorteile und sind auf verschiedene Fraktionen abgestimmt."
+        ]
+    },
     {
         version: "v9.2.4",
         title: "Hotfix & UI Polishing",

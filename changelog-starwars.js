@@ -1,4 +1,24 @@
-export const patchNotesStarWars = [
+﻿export const patchNotesStarWars = [
+    {
+        version: "v8.6",
+        title: "Major Update: Abenteuer Boss Buffs & Schwarzmarkt",
+        isHotfix: false,
+        changes: [
+            "Feature: Der 'Schwarzmarkt' wurde im Shop hinzugefügt! Jeden Tag werden dort 3 rotierende, seltene Karten angeboten.",
+            "Feature: Karten auf dem Schwarzmarkt kosten 200 Credits und können nur einmal pro Tag gekauft werden.",
+            "Feature: Nach dem Besiegen eines Bosses im Abenteuer (Lvl 5, 10, 15, 20) darfst du nun einen von 3 Fraktions-Buffs wählen!",
+            "Gameplay: Es gibt 22 völlig einzigartige Buffs passend zu jeder Fraktion, die dir gewaltige Vorteile für den restlichen Run bieten."
+        ]
+    },
+    {
+        version: "v8.4.2",
+        title: "Hotfix: Klone & Ausstellung",
+        isHotfix: true,
+        changes: [
+            "Hotfix: In der Profil-Ausstellung können nun nicht mehr versehentlich mehr Kopien einer bestimmten Karte ausgestellt werden, als man tatsächlich besitzt.",
+            "QoL: Um die Klone im Starwarsdle besser unterscheiden zu können, wurden ihre jeweiligen Bataillone (z.B. 501st Legion, 212th Angriffs-Bataillon) als Fraktions-Tipp hinzugefügt."
+        ]
+    },
     {
         version: "v8.4",
         title: "Feature Update: Galaktische Liga & Abenteuer Boss",
