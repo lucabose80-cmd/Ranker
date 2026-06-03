@@ -161,14 +161,16 @@
     </div>
 
     <div id="game-view" class="view-container hidden">
-        <div class="glass-panel" style="margin: 20px auto; max-width: 900px; padding: 20px; display: flex; flex-direction: column; gap: 15px;">
-            <div style="background: rgba(255, 71, 87, 0.1); border: 1px dashed #ff4757; color: #ff4757; padding: 10px 20px; text-align: center; font-size: 0.9rem; border-radius: 8px;">
-                <strong>Bug Bounty:</strong> Gefundene Bugs und umgesetzte Vorschläge im "Ideen"-Reiter werden vom Admin mit Credits entlohnt!
-            </div>
+        <div id="profile-header-container" class="glass-panel" style="margin: 20px auto; max-width: 900px; padding: 20px; display: flex; flex-direction: column; gap: 15px; position: relative;">
+            <button id="profile-header-toggle" class="icon-btn" style="position: absolute; top: 10px; right: 10px; background: none; border: none; color: #888; font-size: 1rem; cursor: pointer; z-index: 10;">➖</button>
+            <div id="profile-header-content" style="display: flex; flex-direction: column; gap: 15px;">
+                <div style="background: rgba(255, 71, 87, 0.1); border: 1px dashed #ff4757; color: #ff4757; padding: 10px 20px; text-align: center; font-size: 0.9rem; border-radius: 8px;">
+                    <strong>Bug Bounty:</strong> Gefundene Bugs und umgesetzte Vorschläge im "Ideen"-Reiter werden vom Admin mit Credits entlohnt!
+                </div>
 
-            <!-- NEUER HUB HEADER -->
-            <header class="hub-header" style="background: transparent; backdrop-filter: none; border: none; padding: 0; box-shadow: none; position: relative;">
-                <div id="profile-trigger" class="profile-trigger" title="Profil öffnen" style="position:relative;">
+                <!-- NEUER HUB HEADER -->
+                <header class="hub-header" style="background: transparent; backdrop-filter: none; border: none; padding: 0; box-shadow: none; display: flex; justify-content: center; align-items: center; gap: 40px; flex-wrap: wrap;">
+                    <div id="profile-trigger" class="profile-trigger" title="Profil öffnen" style="position:relative; margin: 0;">
                     <img id="topbar-avatar" class="mini-avatar hidden" src="" alt="Avatar">
                     <div style="display:flex; flex-direction:column; align-items:flex-start;">
                         <span id="player-greeting" class="prompt-text"></span>
@@ -181,8 +183,9 @@
                     <button id="mute-toggle-btn" class="icon-btn" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer; margin-right: 15px;" title="Musik umschalten">🔇</button>
                     <button id="hub-options-btn" class="icon-btn" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;" title="Optionen">⚙️</button>
                     <button id="logout-btn" class="text-btn logout-btn">LOGOUT</button>
-                </div>
-            </header>
+                    </div>
+                </header>
+            </div>
         </div>
 
 
@@ -747,7 +750,7 @@
                 <div style="width: 100%; max-width: 800px;">
                     
                     
-        <div id="starwarsdle-win" style="display: none; text-align: center; margin-bottom: 20px; padding: 20px; background: rgba(46, 213, 115, 0.1); border: 2px solid #2ed573; border-radius: 6px;">
+        <div id="starwarsdle-win" class="glass-panel" style="display: none; text-align: center; margin-bottom: 20px; padding: 20px; border-color: #2ed573;">
                         <h2 style="color: #2ed573;">GELÖST!</h2>
                         <img id="starwarsdle-win-img" src="" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%; border: 3px solid #2ed573; margin: 10px 0;">
                         <h3 id="starwarsdle-win-name" style="margin: 10px 0;"></h3>
@@ -760,14 +763,14 @@
                         <div id="starwarsdle-autocomplete" style="position: absolute; top: 100%; left: 0; right: 100px; background: #1a1e29; border: 1px solid #333; max-height: 200px; overflow-y: auto; z-index: 100; display: none; border-radius: 6px;"></div>
                     </div>
 
-                    <div id="starwarsdle-hints" style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #ffd700; display: none;">
+                    <div id="starwarsdle-hints" class="glass-panel" style="padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #ffd700; display: none;">
                         <h4 style="color: #ffd700; margin-top: 0;">Hinweise</h4>
                         <div id="starwarsdle-hint-faction" style="display: none; margin-bottom: 10px;">Fraktion: <span id="starwarsdle-hint-faction-text" style="font-weight: bold;"></span></div>
                         <div id="starwarsdle-hint-image" style="display: none; margin-bottom: 10px;">Bild: <canvas id="starwarsdle-hint-canvas" width="80" height="80" style="border-radius: 4px; vertical-align: middle; pointer-events: none;" oncontextmenu="return false;"></canvas></div>
                         <div id="starwarsdle-hint-letter" style="display: none;">Erster Buchstabe: <span id="starwarsdle-hint-letter-text" style="font-weight: bold; font-size: 1.5rem;"></span></div>
                     </div>
 
-                    <div style="overflow-x: auto;">
+                      <div class="glass-panel" style="overflow-x: auto; margin-top: 10px; padding: 10px;">
                         <table style="width: 100%; border-collapse: collapse; min-width: 500px; text-align: center; font-size: 0.85rem;" id="starwarsdle-grid">
                             <thead id="starwarsdle-thead">
                                 <!-- Dynamically generated -->

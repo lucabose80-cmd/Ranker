@@ -1057,3 +1057,20 @@ function renderMailbox() {
         list.insertAdjacentHTML('beforeend', html);
     });
 }
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const profileToggle = document.getElementById('profile-header-toggle');
+    const profileContent = document.getElementById('profile-header-content');
+    if (profileToggle && profileContent) {
+        profileToggle.addEventListener('click', () => {
+            if (profileContent.style.display === 'none') {
+                profileContent.style.display = 'flex';
+                profileToggle.textContent = '?';
+            } else {
+                profileContent.style.display = 'none';
+                profileToggle.textContent = '?';
+            }
+        });
+    }
+});
