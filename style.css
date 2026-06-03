@@ -1,8 +1,7 @@
 /* ==========================================================================
    BASIS LAYOUT (Star Wars Default Theme)
    ========================================================================== */
-html, body {
-    min-height: 100vh;
+body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #050505; 
     color: #ffffff;
@@ -194,9 +193,7 @@ body.alt-theme .card-content:has(img) {
 .cl-tab:hover { color: #e6edf3; background: #21262d; }
 .cl-tab.active { background: #1f6feb22; color: #58a6ff; font-weight: 600; }
 
-.cl-html, body {
-    min-height: 100vh;
-    background-color: #050505;
+.cl-body {
     overflow-y: auto;
     padding: 20px 24px 24px;
     flex: 1;
@@ -1810,9 +1807,7 @@ body.alt-theme #db-tracker-reads {
     font-size: 0.75rem;
 }
 
-.mailbox-message-html, body {
-    min-height: 100vh;
-    background-color: #050505;
+.mailbox-message-body {
     color: #ddd;
     font-size: 0.9rem;
     line-height: 1.4;
@@ -1920,5 +1915,4 @@ body.alt-theme .glass-panel {
     margin: 0 !important;
     transform: rotate(180deg);
 }
-
 
