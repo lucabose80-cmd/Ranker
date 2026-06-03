@@ -1,4 +1,4 @@
-﻿import { getCurrentUser, CURRENT_USER_KEY } from './auth.js';
+import { getCurrentUser, CURRENT_USER_KEY } from './auth.js';
 import { getResets } from './resets.js';
 import { db } from './firebase-config.js';
 import { doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
@@ -596,6 +596,7 @@ export function handleAdventureLoss(isAbort = false) {
     document.body.appendChild(overlay);
 }
 
+async function showDraftScreen(levelIndex, creditsWon) {
     document.getElementById('adventure-main-screen').classList.add('hidden');
     document.getElementById('adventure-draft-screen').classList.remove('hidden');
     document.getElementById('adventure-draft-step0').classList.add('hidden');
@@ -606,9 +607,13 @@ export function handleAdventureLoss(isAbort = false) {
     
     await loadGlobalScores(); // Ensure scores are loaded for display
     
+    // Pick random unique cards from ENTIRE database
     const dbCopy = [...activeCharacterDatabase];
+    
+    // Check if beaten level was a boss to offer 4 choices instead of 3
     const beatenLevel = ADVENTURE_CAMPAIGN[levelIndex];
     const isBoss = beatenLevel && beatenLevel.ruleText !== "Keine Sonderregeln.";
+    const draftCount = isBoss ? 4 : 3;
     
     // Setup Buff Selection if Boss
     if (isBoss) {
@@ -663,14 +668,6 @@ export function handleAdventureLoss(isAbort = false) {
     }
     
     let draftOptions = [];
-    
-    // Pick random unique cards from ENTIRE database
-    const dbCopy = [...activeCharacterDatabase];
-    
-    // Check if beaten level was a boss to offer 4 choices instead of 3
-    const beatenLevel = ADVENTURE_CAMPAIGN[levelIndex];
-    const isBoss = beatenLevel && beatenLevel.ruleText !== "Keine Sonderregeln.";
-    const draftCount = isBoss ? 4 : 3;
     
     while(draftOptions.length < draftCount && dbCopy.length > 0) {
         const randIdx = Math.floor(Math.random() * dbCopy.length);
