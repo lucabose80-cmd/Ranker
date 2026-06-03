@@ -206,9 +206,9 @@ async function performBankTransaction(user, amountDiff, claimAmount, currentTota
             if (window.showUnlockNotification) window.showUnlockNotification('success', `${claimAmount} Zins-Credits ausgezahlt!`);
             else alert(`${claimAmount} Zins-Credits ausgezahlt!`);
         } else if (amountDiff > 0) {
-            if (window.showUnlockNotification) window.showUnlockNotification('success', `${amountDiff} Credits eingezahlt.`);
+            if (window.showUnlockNotification) window.showUnlockNotification('success', `${amountDiff} Credits eingezahlt.`, true);
         } else if (amountDiff < 0) {
-            if (window.showUnlockNotification) window.showUnlockNotification('success', `${-amountDiff} Credits abgehoben.`);
+            if (window.showUnlockNotification) window.showUnlockNotification('success', `${-amountDiff} Credits abgehoben.`, true);
         }
 
     } catch (e) {
