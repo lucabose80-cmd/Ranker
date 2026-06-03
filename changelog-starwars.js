@@ -1,6 +1,6 @@
 export const patchNotesStarWars = [
     {
-        version: "v9.2",
+        version: "v9.3",
         title: "Major Update: Imposter-Modus & Jedi-Archiv",
         isHotfix: false,
         changes: [
