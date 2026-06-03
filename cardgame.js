@@ -695,6 +695,7 @@ export async function startAdventureMatch(levelIndex, oppData, oppDeckArr, playe
     document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
     document.getElementById('cardgame-content').classList.remove('hidden');
     document.getElementById('cardgame-main-menu').classList.add('hidden');
+    document.getElementById('adventure-content').classList.add('hidden');
     document.getElementById('cardgame-match').classList.remove('hidden');
     
     document.getElementById('match-player-score').innerText = '0';
