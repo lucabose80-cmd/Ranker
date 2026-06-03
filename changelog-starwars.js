@@ -1,5 +1,15 @@
 export const patchNotesStarWars = [
     {
+        version: "v9.3.1",
+        title: "Admin Tool: Live Balance Dashboard",
+        isHotfix: true,
+        changes: [
+            "Neues Feature: Neues Live-Balance-Dashboard im Admin Panel! Hier siehst du eine detaillierte Übersicht über die Winrates der verschiedenen Fraktionen und Top/Flop Karten im Cardgame.",
+            "Visualisierung: Das Dashboard generiert wunderschöne, interaktive Balken- und Liniendiagramme aus den aktuellen Live-Daten der Community.",
+            "Feature: Die Abenteuer-Modus Spiele werden ab sofort ebenfalls mit ihrem Level geloggt. So können wir in Zukunft ein Live-Liniendiagramm rendern, das zeigt, welche Level/Bosse die höchste Sieges- bzw. Niederlagen-Quote haben."
+        ]
+    },
+    {
         version: "v9.3",
         title: "Major Update: Imposter-Modus",
         isHotfix: false,
