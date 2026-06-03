@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ranking Game</title>
-    <link rel="stylesheet" href="style.css?v=8.3.4">
-    <link id="theme-stylesheet" rel="stylesheet" href="theme-starwars.css?v=8.3.4">
-    <link rel="stylesheet" href="theme-sith.css?v=8.3.4">
+    <link rel="stylesheet" href="style.css?v=8.4.0">
+    <link id="theme-stylesheet" rel="stylesheet" href="theme-starwars.css?v=8.4.0">
+    <link rel="stylesheet" href="theme-sith.css?v=8.4.0">
 
 </head>
 <body>
@@ -199,6 +199,10 @@
             <button id="nav-bank-btn" class="dock-btn" title="Galaktische Bank" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px; position: relative;">
                 <span style="font-size: 1.5rem; margin-bottom: 5px;">🏦</span>
                 <span style="font-size: 0.7rem; color: #aaa;">Bank</span>
+            </button>
+            <button id="nav-challenges-btn" class="dock-btn" title="Galaktische Liga" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px; position: relative;">
+                <span style="font-size: 1.5rem; margin-bottom: 5px; color: #f39c12;">🏆</span>
+                <span style="font-size: 0.7rem; color: #aaa;">Liga</span>
             </button>
             <button class="dock-btn nav-link" data-target="lexikon-content" title="Lexikon" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px; position: relative;">
                 <span style="font-size: 1.5rem; margin-bottom: 5px;">📖</span>
@@ -825,6 +829,38 @@
                 </div>
             </div>
 
+            <div id="challenges-modal" class="profile-overlay hidden">
+                <div class="panel history-panel profile-panel" style="max-height: 90vh; overflow-y: auto; max-width: 800px; width: 95%;">
+                    <button type="button" class="close-overlay-btn" id="close-challenges-btn">✕</button>
+                    <h2 class="theme-heading" style="font-size: 2rem;">🏆 GALAKTISCHE LIGA</h2>
+                    <p class="prompt-text" style="text-align: center; margin-bottom: 10px;">Wetteifere in 3 wöchentlichen Kategorien um Credits!</p>
+                    <div id="challenges-countdown" style="text-align: center; color: #e74c3c; font-weight: bold; margin-bottom: 20px; font-size: 1.1rem;">Reset in: ...</div>
+
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <!-- Kategorie 1 -->
+                        <div style="background: rgba(0,0,0,0.4); padding: 15px; border-radius: 10px; border: 1px solid #2980b9;">
+                            <h3 style="margin: 0 0 5px 0; color: #3498db; text-align: center;">⚔️ Fleißigster Ranker</h3>
+                            <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #aaa; text-align: center;">Meiste absolvierte Ranking-Spiele diese Woche. (Belohnung: 200c / 100c / 50c)</p>
+                            <div id="challenges-cat1-list" style="display: flex; flex-direction: column; gap: 5px;"></div>
+                        </div>
+
+                        <!-- Kategorie 2 -->
+                        <div style="background: rgba(0,0,0,0.4); padding: 15px; border-radius: 10px; border: 1px solid #e67e22;">
+                            <h3 style="margin: 0 0 5px 0; color: #e67e22; text-align: center;">🌍 Abenteuer-Pionier</h3>
+                            <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #aaa; text-align: center;">Höchstes erreichtes Level im Abenteuer-Modus diese Woche. (Belohnung: 300c / 150c / 75c)</p>
+                            <div id="challenges-cat2-list" style="display: flex; flex-direction: column; gap: 5px;"></div>
+                        </div>
+
+                        <!-- Kategorie 3 -->
+                        <div style="background: rgba(0,0,0,0.4); padding: 15px; border-radius: 10px; border: 1px solid #9b59b6;">
+                            <h3 style="margin: 0 0 5px 0; color: #9b59b6; text-align: center;">🔤 Starwarsdle-Meister</h3>
+                            <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #aaa; text-align: center;">Wenigste Versuche bei einem gewonnenen Starwarsdle diese Woche. (Belohnung: 150c / 75c / 30c)</p>
+                            <div id="challenges-cat3-list" style="display: flex; flex-direction: column; gap: 5px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="bank-modal" class="profile-overlay hidden">
                 <div class="panel history-panel profile-panel" style="max-height: 90vh; overflow-y: auto; max-width: 600px;">
                     <button type="button" class="close-overlay-btn" id="close-bank-btn">✕</button>
@@ -1060,7 +1096,7 @@
     </div>
 </div>
     
-    <script type="module" src="utils.js?v=8.3.4"></script>
+    <script type="module" src="utils.js?v=8.4.0"></script>
     <div id="private-chat-modal" class="modal hidden">
         <div class="modal-content" style="max-width: 400px; padding: 20px;">
             <h2 id="private-chat-title" class="theme-heading">Chat</h2>
@@ -1129,7 +1165,7 @@
         </div>
     </div>
 
-    <script type="module" src="main.js?v=8.3.4"></script>
+    <script type="module" src="main.js?v=8.4.0"></script>
 </body>
 </html>
 

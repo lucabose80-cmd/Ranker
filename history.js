@@ -2,6 +2,7 @@
 import { db } from './firebase-config.js';
 import { collection, addDoc, onSnapshot, query, where, limit, orderBy, Timestamp, setDoc, doc, increment } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { getCurrentUser, markCharactersAsDiscovered, checkDailyCreditsReset } from './auth.js';
+import { updateWeeklyStat } from './challenges.js';
 import { currentMode } from './mode-state.js';
 import { getResets } from './resets.js';
 import { trackRead, trackWrite } from './tracker.js';
@@ -141,6 +142,7 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
         // Update User Games Played locally and in DB
         const gamesPlayedField = `gamesPlayed_${currentMode}`;
         user[gamesPlayedField] = (user[gamesPlayedField] || 0) + 1;
+        updateWeeklyStat('rankingGames', 1);
         
         const klonGamesPlayedField = `gamesPlayed_${currentMode}_klon`;
         if (category === 'klon') {

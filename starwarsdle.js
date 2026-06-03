@@ -3,6 +3,7 @@ import { getCurrentUser, refreshCurrentUser } from './auth.js';
 import { currentMode } from './mode-state.js';
 import { activeCharacterDatabase } from './theme.js';
 import { collection, addDoc, Timestamp, query, where, getDocs, doc, updateDoc, increment } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+import { updateWeeklyStat } from './challenges.js';
 
 let dailyCharacter = null;
 let currentGuesses = [];
@@ -251,6 +252,7 @@ async function saveScoreToFirebase(attempts) {
         const snap = await getDocs(q);
         if (snap.empty) {
             await addDoc(collection(db, currentMode + "dle_scores"), { userId, username, attempts, date: seed, timestamp: Timestamp.now() });
+            updateWeeklyStat('starwarsdleTries', attempts);
             
             let creditsWon = 10;
             if (attempts < 5) creditsWon = 100;

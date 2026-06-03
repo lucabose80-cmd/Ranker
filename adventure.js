@@ -1,9 +1,10 @@
-﻿import { getCurrentUser, CURRENT_USER_KEY } from './auth.js';
+import { getCurrentUser, CURRENT_USER_KEY } from './auth.js';
 import { getResets } from './resets.js';
 import { db } from './firebase-config.js';
 import { doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { activeCharacterDatabase } from './theme.js';
 import { trackWrite, trackRead } from './tracker.js';
+import { updateWeeklyStat } from './challenges.js';
 
 import { startAdventureMatch, loadGlobalScores, getCardScore, getRarityColor } from './cardgame.js';
 
@@ -522,6 +523,7 @@ export function handleAdventureWin(levelIndex) {
         if (user.adventure_level > (user.adventure_highest_level || 1)) {
             user.adventure_highest_level = user.adventure_level;
         }
+        updateWeeklyStat('adventureLevel', user.adventure_level);
     }
     
     // Reset to 1 if beaten the game! (or stay at 20? Let's stay at 21 to signify completion)
