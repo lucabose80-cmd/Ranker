@@ -174,7 +174,7 @@ export const patchNotesStarWars = [
         ]
     },
     {
-        version: "v9.1",
+        version: "v8.6.3",
         title: "Update: Legendäre Karte neu würfeln",
         isHotfix: false,
         changes: [
@@ -186,7 +186,7 @@ export const patchNotesStarWars = [
     },
     {
 
-        version: "v9.0.1",
+        version: "v8.6.2",
         title: "Hotfix: Profil-Dot, Online-Klicks & Modus-Anzeige",
         isHotfix: true,
         changes: [
@@ -198,7 +198,7 @@ export const patchNotesStarWars = [
     },
     {
 
-        version: "v9.0",
+        version: "v8.6.1",
         title: "Update: Massive UI Overhaul & Quality of Life",
         isHotfix: false,
         changes: [
