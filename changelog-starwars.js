@@ -1,6 +1,6 @@
 export const patchNotesStarWars = [
     {
-        version: "v8.5",
+        version: "v8.4",
         title: "Feature Update: Galaktische Liga & Abenteuer Boss",
         isHotfix: false,
         changes: [
@@ -21,7 +21,7 @@ export const patchNotesStarWars = [
         ]
     },
     {
-        version: "v8.4",
+        version: "v8.3.5",
         title: "MAJOR UPDATE: Cardgame 15-Fraktionen Rework",
         isHotfix: false,
         changes: [
