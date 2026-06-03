@@ -1,4 +1,4 @@
-import { collection, query, where, getDocs, limit, orderBy } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { collection, query, where, getDocs, limit, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { db } from './firebase-config.js';
 import { currentMode } from './mode-state.js';
 import { updateWeeklyStat } from './challenges.js';
@@ -231,6 +231,19 @@ function handleImposterSubmit() {
         imposterScore++;
         updateScoreDisplay();
         updateWeeklyStat('imposterScore', 1);
+        
+        // 20 Credits Belohnung
+        const userStr = localStorage.getItem('ranking_game_active_user');
+        if (userStr) {
+            const user = JSON.parse(userStr);
+            user.credits = (user.credits || 0) + 20;
+            localStorage.setItem('ranking_game_active_user', JSON.stringify(user));
+            if (window.updateCreditProgressBars) window.updateCreditProgressBars();
+            
+            // Firebase Update
+            const userRef = doc(db, 'users', user.uid);
+            updateDoc(userRef, { credits: user.credits }).catch(e => console.error("Error updating credits: ", e));
+        }
         
         // Highlight correct
         cards.forEach((card, idx) => {
