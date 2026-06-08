@@ -694,3 +694,30 @@ function initChatModeration() {
     });
 }
 
+
+// --- Retroaktive Auszahlung Galaktische Liga ---
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        const retroBtn = document.getElementById('admin-retroactive-payout');
+        if (retroBtn) {
+            retroBtn.addEventListener('click', async () => {
+                if (confirm('Moechtest du die Belohnungen der Galaktischen Liga fuer die Woche 2026-06-01 jetzt manuell auszahlen?')) {
+                    try {
+                        retroBtn.disabled = true;
+                        retroBtn.textContent = 'Auszahlung laeuft...';
+                        const { processRewards } = await import('./challenges.js');
+                        await processRewards('2026-06-01');
+                        alert('Die Auszahlung wurde erfolgreich abgeschlossen! Die Spieler finden die Belohnungen nun in ihren Briefkaesten.');
+                        retroBtn.textContent = 'Bereits ausgezahlt';
+                    } catch (e) {
+                        console.error('Fehler bei retroaktiver Auszahlung:', e);
+                        alert('Fehler bei der Auszahlung.');
+                        retroBtn.disabled = false;
+                        retroBtn.textContent = 'Retroaktive Auszahlung (Galaktische Liga 2026-06-01)';
+                    }
+                }
+            });
+        }
+    }, 1000); // Give it time to render if inside a modal
+});
+
