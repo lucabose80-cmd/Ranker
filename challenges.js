@@ -75,7 +75,7 @@ export async function checkWeeklyReset() {
     }
 }
 
-async function processRewards(oldWeekId) {
+export async function processRewards(oldWeekId) {
     if (!oldWeekId) return;
 
     try {
