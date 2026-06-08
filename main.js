@@ -826,9 +826,8 @@ window.updateCreditProgressBars = function() {
     const container = document.getElementById('credit-progress-bars-container');
     if (!container) return;
     
-    // Check if we are in classic mode and the category container is visible
-    const catContainer = document.getElementById('category-selector-container');
-    if (catContainer && catContainer.classList.contains('hidden')) {
+    // We want to show progress bars in both classic and advanced mode
+    if (typeof currentGameType !== 'undefined' && currentGameType !== 'classic' && currentGameType !== 'advanced') {
         container.innerHTML = '';
         return;
     }

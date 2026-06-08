@@ -159,9 +159,9 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
             
             user[catField] = totalEarned + 1;
             if (totalEarned < 20) {
-                earnedCreditAmount = 10;
+                earnedCreditAmount = (gameType === 'advanced') ? 20 : 10;
             } else {
-                earnedCreditAmount = 5;
+                earnedCreditAmount = (gameType === 'advanced') ? 10 : 5;
             }
             
             user.credits = (user.credits || 0) + earnedCreditAmount;
