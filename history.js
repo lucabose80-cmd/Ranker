@@ -152,7 +152,7 @@ export async function saveGameToHistory(placedCharacters, rating, pool, gameType
         // Grant Credits (10 for first 20 times per category, 5 afterwards)
         let earnedCredits = false;
         let earnedCreditAmount = 0;
-        if (gameType === 'classic' || gameType === 'hardcore') {
+        if (gameType === 'classic' || gameType === 'hardcore' || gameType === 'advanced') {
             const cat = category || 'normal';
             const catField = `credits_earned_${currentMode}_${cat}`;
             const totalEarned = user[catField] || 0;
