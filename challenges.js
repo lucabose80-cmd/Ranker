@@ -120,15 +120,21 @@ async function payoutCategory(topPlayers, categoryName, rewards) {
         const reward = rewards[i];
         if (reward > 0) {
             try {
-                const mailRef = doc(collection(db, "users", p.uid, "mailbox"));
-                await setDoc(mailRef, {
-                    title: `🏆 Sieg: ${categoryName}`,
-                    message: `Herzlichen Glückwunsch! Du hast in der letzten Woche den ${i + 1}. Platz in der Kategorie '${categoryName}' belegt.\n\nZur Belohnung erhältst du ${reward} Credits.`,
-                    credits: reward,
-                    date: Date.now(),
-                    read: false,
-                    sender: "System"
-                });
+                const userRef = doc(db, "users", p.uid);
+                const userSnap = await getDoc(userRef);
+                if (userSnap.exists()) {
+                    const userData = userSnap.data();
+                    const currentMailbox = userData.mailbox || [];
+                    const newMsg = {
+                        id: 'mail_' + Date.now() + '_' + Math.floor(Math.random()*1000),
+                        title: `🏆 Sieg: ${categoryName}`,
+                        text: `Herzlichen Glückwunsch! Du hast in der letzten Woche den ${i + 1}. Platz in der Kategorie '${categoryName}' belegt.\n\nZur Belohnung erhältst du ${reward} Credits.`,
+                        credits: reward,
+                        timestamp: Date.now()
+                    };
+                    currentMailbox.push(newMsg);
+                    await updateDoc(userRef, { mailbox: currentMailbox });
+                }
             } catch(e) {
                 console.error("Could not send reward mail to", p.uid, e);
             }
