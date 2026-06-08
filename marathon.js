@@ -341,10 +341,19 @@ async function gameOver(failedIndex) {
         }
     }
 
+    let earnedCredits = 0;
+    for (let i = 1; i <= marathonScore; i++) {
+        if (i <= 5) {
+            earnedCredits += 1;
+        } else {
+            earnedCredits += (i - 4);
+        }
+    }
+
     container.innerHTML = `
         <h2 style="color: #ff4757; font-size: 2.5rem; margin-bottom: 10px; margin-top: 0;">GAME OVER</h2>
         <p style="font-size: 1.2rem; color: #fff; margin-bottom: 5px;">Score: <strong style="color:#ffd700;">${marathonScore}</strong> Charaktere</p>
-        <p style="font-size: 1.2rem; color: #fff; margin-bottom: 20px;">Belohnung: <strong style="color:#00d2d3;">+${marathonScore} Credits</strong></p>
+        <p style="font-size: 1.2rem; color: #fff; margin-bottom: 20px;">Belohnung: <strong style="color:#00d2d3;">+${earnedCredits} Credits</strong></p>
         <button id="marathon-restart-btn" class="rank-btn" style="width: 100%; height: auto; padding: 15px; font-size: 1.2rem; background: linear-gradient(135deg, rgba(231,76,60,0.7), rgba(192,57,43,0.7)); color: white !important;">Erneut Spielen</button>
     `;
     
@@ -364,7 +373,7 @@ async function gameOver(failedIndex) {
             
             const updates = {};
             if (marathonScore > 0) {
-                updates.credits = currentCredits + marathonScore;
+                updates.credits = currentCredits + earnedCredits;
             }
             if (marathonScore > currentHigh) {
                 updates.marathonHighscore = marathonScore;
