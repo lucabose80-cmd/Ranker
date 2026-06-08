@@ -259,13 +259,13 @@ async function saveScoreToFirebase(attempts) {
             user.stats.starwarsdleWins = (user.stats.starwarsdleWins || 0) + 1;
             
             if (user.stats.starwarsdleWins >= 50) {
-                import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_25'));
+                import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_8'));
             }
             if (attempts === 1) {
-                import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_12'));
+                import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_7'));
             }
             if (window.starwarsdleStartTime && (Date.now() - window.starwarsdleStartTime) < 10000) {
-                import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_8'));
+                import('./achievements.js').then(ach => ach.checkAndUnlockTitle('sw_new_25'));
             }
             
             let creditsWon = 10;
