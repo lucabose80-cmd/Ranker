@@ -848,7 +848,8 @@ window.updateCreditProgressBars = function() {
         { id: 'klon', name: 'Nur Klone', color: '#3498db' },
         { id: 'peak', name: 'Peak Ranking', color: '#e67e22' },
         { id: 'vehicle', name: 'Fahrzeuge', color: '#9b59b6' },
-        { id: 'hardcore', name: 'Hardcore Peak', color: '#e74c3c' }
+        { id: 'hardcore', name: 'Hardcore Peak', color: '#e74c3c' },
+        { id: 'advanced', name: 'Advanced Ranking', color: '#ffd700' }
     ];
 
     let html = '<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span style="font-size:0.8rem; color:#94a3b8; text-transform:uppercase;">Daily Booster-Credits Limit</span></div>';

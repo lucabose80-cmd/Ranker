@@ -330,5 +330,5 @@ export async function handleAdvancedRankSelection(rank, buttonElement) {
 export function submitAdvancedFinalRating(value) {
     localStorage.removeItem('punish_pool_' + currentMode + '_advanced');
     localStorage.removeItem('punish_state_' + currentMode + '_advanced');
-    saveGameToHistory(placedCharacters, value, activePool, 'advanced');
+    saveGameToHistory(placedCharacters, value, activePool, 'advanced', 'advanced');
 }
