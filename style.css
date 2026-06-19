@@ -640,8 +640,8 @@ body.alt-theme .mini-avatar { border-color: #ff2a9d; }
     display: flex; justify-content: center; align-items: center;
 }
 .profile-panel { width: 95%; max-width: 1050px; position: relative; max-height: 90vh; overflow-y: auto; }
-.close-overlay-btn { position: absolute; top: 15px; right: 20px; font-size: 1.8rem; background: none; border: none; color: #888; cursor: pointer; }
-.close-overlay-btn:hover { color: #fff; }
+.close-overlay-btn { position: sticky; top: 10px; float: right; margin-right: 10px; z-index: 100; font-size: 1.8rem; background: rgba(0,0,0,0.5); border-radius: 50%; width: 40px; height: 40px; border: none; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+.close-overlay-btn:hover { background: rgba(255,255,255,0.2); }
 
 .profile-layout { display: flex; gap: 30px; text-align: left; }
 .profile-settings { flex: 1; }
@@ -878,14 +878,10 @@ body.alt-theme .live-progress-fill {
 /* ==========================================================================
    CHAT WIDGET & TAGS
    ========================================================================== */
+/* Chat Button is now in dock */
 .chat-toggle-btn {
-    position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%;
-    background: #3b82f6; color: white; font-size: 1.5rem; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-    cursor: pointer; z-index: 1000; transition: transform 0.2s; display: flex; align-items: center; justify-content: center;
+    position: relative;
 }
-.chat-toggle-btn:hover { transform: scale(1.1); }
-body.alt-theme .chat-toggle-btn { background: #ff2a9d; }
-
 .chat-toggle-btn.has-new::after {
     content: '';
     position: absolute;
