@@ -1,0 +1,17 @@
+{
+  "name": "Ranking Game",
+  "short_name": "Ranking",
+  "description": "Das Ranking Game als App",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1a1e29",
+  "theme_color": "#1a1e29",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
