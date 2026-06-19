@@ -1641,6 +1641,7 @@ body.alt-theme #db-tracker-reads {
         min-width: 100px;
     }
     
+    /* Live games grid fix */
     .live-grid, .lexikon-grid, .history-list {
         grid-template-columns: 1fr;
     }
@@ -1652,6 +1653,37 @@ body.alt-theme #db-tracker-reads {
     #rank-buttons-container {
         flex-wrap: wrap;
         justify-content: center;
+    }
+
+    /* Profile & Shop Overlay fixes */
+    #db-tracker-widget {
+        display: none !important;
+    }
+    .profile-panel {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        border-radius: 0 !important;
+        padding-bottom: 100px !important;
+    }
+    .profile-layout {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .profile-avatar-selection {
+        border-left: none;
+        padding-left: 0;
+        border-top: 1px solid #333;
+        padding-top: 15px;
+    }
+    .profile-tabs {
+        overflow-x: auto !important;
+        flex-wrap: nowrap !important;
+        padding-bottom: 5px !important;
+    }
+    .profile-tabs button {
+        white-space: nowrap;
     }
 }
 

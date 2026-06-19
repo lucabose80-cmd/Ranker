@@ -648,6 +648,12 @@ function showPullAnimation(pulledCards, isGodPack) {
                     transform: rotateY(180deg); border-radius:15px; overflow:hidden; 
                     background-size: cover; background-position: center; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
                 }
+                @media (max-width: 600px) {
+                    .pull-card-container { width: 140px; height: 210px; }
+                    .pull-card-front { font-size: 2.5rem; }
+                    #pull-cards-wrapper { gap: 10px !important; }
+                    #pull-animation-modal .modal-content { padding: 15px !important; min-width: 95vw !important; }
+                }
             `;
             document.head.appendChild(style);
         }
