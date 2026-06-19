@@ -1672,6 +1672,7 @@ body.alt-theme #db-tracker-reads {
         display: none !important;
     }
     .profile-panel {
+        box-sizing: border-box !important;
         width: 100% !important;
         max-width: 100% !important;
         height: 100vh !important;
