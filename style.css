@@ -1485,6 +1485,14 @@ body.alt-theme #db-tracker-reads {
     gap: 15px; 
     position: relative;
 }
+.hub-grid {
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 30px; 
+    max-width: 900px; 
+    margin: 0 auto; 
+    padding: 20px;
+}
 .game-dock {
     position: fixed; 
     bottom: 20px; 
@@ -1515,6 +1523,15 @@ body.alt-theme #db-tracker-reads {
         margin: 0;
         padding: 10px;
         border-radius: 0;
+    }
+    #bug-bounty-banner {
+        display: none !important; /* Hide to save space on mobile */
+    }
+    
+    .hub-grid {
+        grid-template-columns: 1fr; /* Force 1 column on mobile */
+        gap: 15px;
+        padding: 10px;
     }
     
     /* Online-Sidebar fix: bottom-anchored modal/drawer */

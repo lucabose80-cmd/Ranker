@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ranking-game-v1';
+const CACHE_NAME = 'ranking-game-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
