@@ -1835,6 +1835,7 @@ body.alt-theme #db-tracker-reads {
     #adventure-map-container {
         min-width: 0 !important;
         flex-wrap: nowrap !important;
+        justify-content: flex-start !important;
     }
 }
 
