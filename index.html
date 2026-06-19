@@ -186,7 +186,7 @@
     </div>
 
     <div id="game-view" class="view-container hidden">
-        <div id="profile-header-container" class="glass-panel" style="margin: 20px auto; max-width: 900px; padding: 20px; display: flex; flex-direction: column; gap: 15px; position: relative;">
+        <div id="profile-header-container" class="glass-panel profile-header-container">
             <button id="profile-header-toggle" class="sidebar-toggle-btn" style="position: absolute; top: 15px; right: 15px; z-index: 10;; color:#888;">&#9650;</button>
             <div id="profile-header-content" style="display: flex; flex-direction: column; gap: 15px;">
                 <div style="background: rgba(255, 71, 87, 0.1); border: 1px dashed #ff4757; color: #ff4757; padding: 10px 20px; text-align: center; font-size: 0.9rem; border-radius: 8px;">
@@ -216,7 +216,7 @@
 
 
         <!-- DOCK UNTEN -->
-        <div class="game-dock" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; align-items: center; justify-content: center; background: rgba(20, 24, 34, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); padding: 15px 25px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 100;">
+        <div class="game-dock" id="game-dock">
             <button id="mailbox-btn" class="dock-btn" title="Briefkasten" style="background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; min-width: 60px; position: relative;">
                 <span style="font-size: 1.5rem; margin-bottom: 5px;">✉️</span>
                 <span style="font-size: 0.7rem; color: #aaa;">Post</span>

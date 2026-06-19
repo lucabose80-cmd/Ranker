@@ -1475,28 +1475,78 @@ body.alt-theme #db-tracker-reads {
     position: relative;
 }
 
+/* Base classes for components that used inline styles */
+.profile-header-container {
+    margin: 20px auto; 
+    max-width: 900px; 
+    padding: 20px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 15px; 
+    position: relative;
+}
+.game-dock {
+    position: fixed; 
+    bottom: 20px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    display: flex; 
+    gap: 15px; 
+    align-items: center; 
+    justify-content: center; 
+    background: rgba(20, 24, 34, 0.7); 
+    backdrop-filter: blur(15px); 
+    -webkit-backdrop-filter: blur(15px); 
+    padding: 15px 25px; 
+    border-radius: 30px; 
+    border: 1px solid rgba(255,255,255,0.1); 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+    z-index: 100;
+}
+
 /* Responsive Design for Mobile and Tablets */
 @media (max-width: 900px) {
     .main-content {
         flex-direction: column;
     }
+    
+    /* Header compact */
+    .profile-header-container {
+        margin: 0;
+        padding: 10px;
+        border-radius: 0;
+    }
+    
+    /* Online-Sidebar fix: bottom-anchored modal/drawer */
     .online-sidebar {
+        position: fixed !important;
+        top: auto !important;
+        bottom: 75px !important; /* Above the dock */
+        left: 0 !important;
         width: 100% !important;
-        max-height: 250px;
+        max-height: 40vh;
         border-left: none;
-        border-top: 1px solid #333;
-        order: 2; /* Sidebar unten */
+        border-right: none;
+        border-radius: 12px 12px 0 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        z-index: 90;
+        box-sizing: border-box;
     }
     .online-sidebar.collapsed {
         max-height: 60px;
-        padding: 5px !important;
+        width: auto !important;
+        padding: 5px 15px !important;
         display: flex;
         align-items: center;
         gap: 10px;
+        bottom: 80px !important;
+        left: 10px !important;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
     .online-sidebar.collapsed .sidebar-toggle-btn {
         margin: 0;
-        transform: rotate(90deg);
+        transform: rotate(-90deg); /* Zeigt nach oben */
     }
     .online-sidebar.collapsed .online-users-list {
         display: flex;
@@ -1509,6 +1559,22 @@ body.alt-theme #db-tracker-reads {
     .online-sidebar.collapsed .online-user-card {
         width: auto;
         padding: 0;
+    }
+    
+    /* Game Dock Mobile Fix */
+    .game-dock {
+        bottom: 0;
+        left: 0;
+        transform: none;
+        width: 100%;
+        border-radius: 0;
+        padding: 10px 5px;
+        justify-content: flex-start;
+        overflow-x: auto;
+        box-sizing: border-box;
+    }
+    .game-dock::-webkit-scrollbar {
+        height: 0px; /* Hide scrollbar for dock */
     }
     
     .horizontal-board {
@@ -1543,6 +1609,33 @@ body.alt-theme #db-tracker-reads {
     #rank-buttons-container {
         flex-wrap: wrap;
         justify-content: center;
+    }
+}
+
+/* Landscape Mode Fix */
+@media (max-width: 900px) and (orientation: landscape) {
+    .profile-header-container {
+        padding: 5px;
+    }
+    .hub-card {
+        padding: 20px 10px;
+    }
+    .hub-card div {
+        font-size: 2rem !important;
+        margin-bottom: 5px !important;
+    }
+    .game-dock {
+        padding: 5px;
+    }
+    .game-dock .dock-btn span:first-child {
+        font-size: 1.2rem !important;
+        margin-bottom: 2px !important;
+    }
+    .online-sidebar {
+        bottom: 55px !important;
+    }
+    .online-sidebar.collapsed {
+        bottom: 60px !important;
     }
 }
 

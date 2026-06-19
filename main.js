@@ -567,8 +567,13 @@ function setupGameUI(user) {
     const onlineSidebarToggle = document.getElementById('online-sidebar-toggle');
     if (onlineSidebar && onlineSidebarToggle) {
         // Zustand laden
-        if (localStorage.getItem('online-sidebar-collapsed') === 'true') {
+        const isMobile = window.innerWidth <= 900;
+        const savedState = localStorage.getItem('online-sidebar-collapsed');
+        
+        if (savedState === 'true' || (isMobile && !savedState)) {
             onlineSidebar.classList.add('collapsed');
+        } else if (savedState === 'false') {
+            onlineSidebar.classList.remove('collapsed');
         }
         
         onlineSidebarToggle.addEventListener('click', () => {
