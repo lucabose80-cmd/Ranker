@@ -888,6 +888,7 @@ body.alt-theme .live-progress-fill {
     /* Normal dock button - no floating override */
 }
 .chat-toggle-btn:hover { transform: scale(1.1) !important; }
+.chat-toggle-btn:focus, .chat-toggle-btn:active { outline: none !important; box-shadow: none !important; }
 body.alt-theme .chat-toggle-btn { }
 .chat-toggle-btn span:nth-child(2) { display: block !important; }
 .chat-toggle-btn span:nth-child(1) { margin-bottom: 5px !important; }
@@ -1513,9 +1514,29 @@ body.alt-theme #db-tracker-reads {
     -webkit-backdrop-filter: blur(15px); 
     padding: 15px 25px; 
     border-radius: 30px; 
-    border: 1px solid rgba(255,255,255,0.1); 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+    border: 1px solid rgba(255,255,255,0.1) !important; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important; 
     z-index: 100;
+}
+/* Dock buttons must never be colored by the active theme */
+.game-dock .dock-btn {
+    color: white !important;
+    border: none !important;
+    background: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+.game-dock .dock-btn:focus,
+.game-dock .dock-btn:active {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+.game-dock .dock-btn:hover {
+    transform: translateY(-5px);
+    color: #ffd700 !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
 /* Responsive Design for Mobile and Tablets */
