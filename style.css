@@ -640,7 +640,7 @@ body.alt-theme .mini-avatar { border-color: #ff2a9d; }
     display: flex; justify-content: center; align-items: center;
 }
 .profile-panel { width: 95%; max-width: 1050px; position: relative; max-height: 90vh; overflow-y: auto; }
-.close-overlay-btn { position: sticky; top: 10px; float: right; margin-right: 10px; z-index: 100; font-size: 1.8rem; background: rgba(0,0,0,0.5); border-radius: 50%; width: 40px; height: 40px; border: none; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+.close-overlay-btn { position: sticky; top: 25px; margin-top: 25px; float: right; margin-right: 15px; z-index: 100; font-size: 1.8rem; background: rgba(0,0,0,0.6); border-radius: 50%; width: 45px; height: 45px; border: 1px solid rgba(255,255,255,0.1); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
 .close-overlay-btn:hover { background: rgba(255,255,255,0.2); }
 
 .profile-layout { display: flex; gap: 30px; text-align: left; }
@@ -878,10 +878,26 @@ body.alt-theme .live-progress-fill {
 /* ==========================================================================
    CHAT WIDGET & TAGS
    ========================================================================== */
-/* Chat Button is now in dock */
+/* Chat Button (Desktop Floating, Mobile Dock) */
 .chat-toggle-btn {
-    position: relative;
+    position: fixed !important; 
+    bottom: 30px !important; 
+    right: 30px !important; 
+    width: 60px !important; 
+    height: 60px !important; 
+    border-radius: 50% !important;
+    background: #3b82f6 !important; 
+    color: white !important; 
+    border: none !important; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5) !important;
+    z-index: 1000 !important;
+    min-width: unset !important;
 }
+.chat-toggle-btn:hover { transform: scale(1.1) !important; }
+body.alt-theme .chat-toggle-btn { background: #ff2a9d !important; }
+.chat-toggle-btn span:nth-child(2) { display: none !important; }
+.chat-toggle-btn span:nth-child(1) { margin-bottom: 0 !important; }
+
 .chat-toggle-btn.has-new::after {
     content: '';
     position: absolute;
@@ -1681,6 +1697,22 @@ body.alt-theme #db-tracker-reads {
     .profile-tabs button {
         white-space: nowrap;
     }
+    
+    /* Reset Chat Button to Dock Style on Mobile */
+    .chat-toggle-btn {
+        position: relative !important;
+        bottom: auto !important;
+        right: auto !important;
+        width: auto !important;
+        height: auto !important;
+        border-radius: 0 !important;
+        background: none !important;
+        box-shadow: none !important;
+        min-width: 60px !important;
+        z-index: auto !important;
+    }
+    .chat-toggle-btn span:nth-child(2) { display: block !important; }
+    .chat-toggle-btn span:nth-child(1) { margin-bottom: 5px !important; }
 }
 
 /* Landscape Mode Fix */
