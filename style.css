@@ -1676,6 +1676,16 @@ body.alt-theme #db-tracker-reads {
     #db-tracker-widget {
         display: none !important;
     }
+    .close-overlay-btn {
+        position: fixed !important;
+        top: 20px !important;
+        right: 20px !important;
+        margin: 0 !important;
+        float: none !important;
+        z-index: 9999 !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.8) !important;
+    }
+    
     .profile-panel {
         box-sizing: border-box !important;
         width: 100% !important;
@@ -1686,6 +1696,7 @@ body.alt-theme #db-tracker-reads {
         border-radius: 0 !important;
         padding-bottom: 100px !important;
         overflow-x: hidden !important;
+        padding: 20px !important;
     }
     .profile-layout {
         flex-direction: column;
@@ -1756,12 +1767,48 @@ body.alt-theme #db-tracker-reads {
         white-space: nowrap;
     }
     
-    /* Deckbuilder & Marathon Fixes */
+    /* Deckbuilder & Cardgame Fixes */
     #cardgame-deckbuilder > div:first-child {
         flex-wrap: wrap;
         gap: 15px;
         justify-content: center !important;
     }
+    
+    #cardgame-main-menu {
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+    #cardgame-main-menu > div {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    #cardgame-deckbuilder > div:nth-child(2),
+    #cardgame-match > div:nth-child(2) {
+        flex-direction: column !important;
+    }
+    #cardgame-deckbuilder > div:nth-child(2) > div,
+    #cardgame-match > div:nth-child(2) > div {
+        width: 100% !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+    }
+    #cardgame-inventory {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)) !important;
+    }
+    
+    /* VS Card Display Fix */
+    #cardgame-match > div:nth-child(2) > div:first-child > div:first-child {
+        gap: 10px !important;
+        padding: 10px !important;
+    }
+    #match-player-active, #match-opponent-active {
+        width: 110px !important;
+        height: 155px !important;
+    }
+    
     #marathon-draw-container {
         max-width: 100% !important;
         position: relative !important;
