@@ -108,6 +108,33 @@ export async function processRewards(oldWeekId) {
         imposterPlayers.sort((a, b) => b.imposterScore - a.imposterScore);
         await payoutCategory(imposterPlayers.slice(0, 3), 'Meister-Detektiv', [600, 300, 150]);
 
+        // --- Weekly Adventure Reset ---
+        // After payouts, reset ALL players' adventure progress so everyone starts fresh next week.
+        // We reset all users in Firestore (not just those in weekly_stats, in case someone didn't play).
+        try {
+            const { BASE_ADVENTURE_DECK } = await import('./adventure.js');
+            const allUsersSnap = await getDocs(collection(db, "users"));
+            const resetPromises = [];
+            allUsersSnap.forEach(docSnap => {
+                const data = docSnap.data();
+                // Skip test/admin accounts
+                if (data.isTestUser || data.username === 'admin') return;
+                resetPromises.push(
+                    updateDoc(doc(db, "users", docSnap.id), {
+                        adventure_level: 1,
+                        adventure_deck: BASE_ADVENTURE_DECK,
+                        adventure_highest_level: 1
+                        // adventure_completed_10 and adventure_completed_20 are kept
+                        // so milestone credits are only paid once ever (by design)
+                    }).catch(e => console.warn("Adventure reset failed for", docSnap.id, e))
+                );
+            });
+            await Promise.all(resetPromises);
+            console.log(`[Weekly Reset] Adventure progress reset for ${resetPromises.length} players.`);
+        } catch(e) {
+            console.error("Could not reset adventure progress:", e);
+        }
+
     } catch (e) {
         console.error("Error processing weekly rewards:", e);
     }
