@@ -885,11 +885,26 @@ body.alt-theme .live-progress-fill {
    ========================================================================== */
 /* Chat Button (always in dock on all devices) */
 .chat-toggle-btn {
-    /* Normal dock button - no floating override */
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    background: none !important;
+    background-color: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-tap-highlight-color: transparent !important;
 }
-.chat-toggle-btn:hover { transform: scale(1.1) !important; }
-.chat-toggle-btn:focus, .chat-toggle-btn:active { outline: none !important; box-shadow: none !important; }
-body.alt-theme .chat-toggle-btn { }
+.chat-toggle-btn:hover,
+.chat-toggle-btn:focus,
+.chat-toggle-btn:active,
+.chat-toggle-btn:focus-visible {
+    background: none !important;
+    background-color: transparent !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
 .chat-toggle-btn span:nth-child(2) { display: block !important; }
 .chat-toggle-btn span:nth-child(1) { margin-bottom: 5px !important; }
 
@@ -902,7 +917,7 @@ body.alt-theme .chat-toggle-btn { }
     height: 10px;
     background-color: #ff4757;
     border-radius: 50%;
-    border: 2px solid #fff;
+    border: 2px solid #1a1f2e;
     box-shadow: 0 0 5px rgba(255, 71, 87, 0.8);
 }
 
@@ -1523,20 +1538,28 @@ body.alt-theme #db-tracker-reads {
     color: white !important;
     border: none !important;
     background: none !important;
+    background-color: transparent !important;
     box-shadow: none !important;
     outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
 }
 .game-dock .dock-btn:focus,
-.game-dock .dock-btn:active {
+.game-dock .dock-btn:active,
+.game-dock .dock-btn:focus-visible {
     outline: none !important;
     box-shadow: none !important;
     border: none !important;
+    background: none !important;
+    background-color: transparent !important;
 }
 .game-dock .dock-btn:hover {
     transform: translateY(-5px);
     color: #ffd700 !important;
     border: none !important;
     box-shadow: none !important;
+    background: none !important;
 }
 
 /* Responsive Design for Mobile and Tablets */
